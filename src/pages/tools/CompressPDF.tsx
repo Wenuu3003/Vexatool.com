@@ -4,10 +4,12 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { PDFDocument } from "pdf-lib";
 
 const CompressPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [compressedSize, setCompressedSize] = useState<number | null>(null);
 
   const handleCompress = async () => {
     if (files.length === 0) {
@@ -22,31 +24,48 @@ const CompressPDF = () => {
     setIsProcessing(true);
 
     try {
-      // Note: True PDF compression requires server-side processing
-      // This is a placeholder that downloads the original file
-      // In production, you would send to a backend service
-      
       const file = files[0];
-      const url = URL.createObjectURL(file);
+      const arrayBuffer = await file.arrayBuffer();
+      
+      // Load the PDF document
+      const pdfDoc = await PDFDocument.load(arrayBuffer, {
+        ignoreEncryption: true,
+      });
 
+      // Compress by removing unused objects and optimizing
+      const compressedBytes = await pdfDoc.save({
+        useObjectStreams: true,
+        addDefaultPage: false,
+        objectsPerTick: 50,
+      });
+
+      const compressedBlob = new Blob([new Uint8Array(compressedBytes)], { type: "application/pdf" });
+      const originalSize = file.size;
+      const newSize = compressedBlob.size;
+      const savings = ((originalSize - newSize) / originalSize * 100).toFixed(1);
+      
+      setCompressedSize(newSize);
+
+      // Create download link
+      const url = URL.createObjectURL(compressedBlob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `compressed_${file.name}`;
       link.click();
-
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Download started",
-        description: "Note: Full compression requires server-side processing. File downloaded as-is.",
+        title: "Compression complete!",
+        description: `File size reduced by ${savings}% (${(originalSize / 1024 / 1024).toFixed(2)} MB → ${(newSize / 1024 / 1024).toFixed(2)} MB)`,
       });
 
       setFiles([]);
+      setCompressedSize(null);
     } catch (error) {
       console.error("Compress error:", error);
       toast({
         title: "Error",
-        description: "Failed to process PDF. Please try again.",
+        description: "Failed to compress PDF. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -87,6 +106,11 @@ const CompressPDF = () => {
           <p className="text-sm text-muted-foreground mt-4">
             Current file size: {(files[0].size / 1024 / 1024).toFixed(2)} MB
           </p>
+          {compressedSize && (
+            <p className="text-sm text-green-600 mt-2">
+              Compressed size: {(compressedSize / 1024 / 1024).toFixed(2)} MB
+            </p>
+          )}
         </div>
       )}
     </ToolLayout>

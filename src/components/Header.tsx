@@ -1,36 +1,66 @@
 import { FileText, ChevronDown, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-card border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
               <FileText className="w-5 h-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">
               <span className="text-primary">We</span>lovePDF
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary"
+              onClick={() => handleNavigation("/merge-pdf")}
+            >
               Merge PDF
             </Button>
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary"
+              onClick={() => handleNavigation("/split-pdf")}
+            >
               Split PDF
             </Button>
-            <Button variant="ghost" className="text-foreground hover:text-primary">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary"
+              onClick={() => handleNavigation("/compress-pdf")}
+            >
               Compress PDF
             </Button>
-            <Button variant="ghost" className="text-foreground hover:text-primary flex items-center gap-1">
+            <Button 
+              variant="ghost" 
+              className="text-foreground hover:text-primary flex items-center gap-1"
+              onClick={() => {
+                const toolsSection = document.getElementById('tools-grid');
+                if (toolsSection) {
+                  toolsSection.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  handleNavigation("/");
+                }
+              }}
+            >
               All PDF tools
               <ChevronDown className="w-4 h-4" />
             </Button>
@@ -61,16 +91,32 @@ export const Header = () => {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <nav className="flex flex-col gap-2">
-              <Button variant="ghost" className="justify-start text-foreground">
+              <Button 
+                variant="ghost" 
+                className="justify-start text-foreground"
+                onClick={() => handleNavigation("/merge-pdf")}
+              >
                 Merge PDF
               </Button>
-              <Button variant="ghost" className="justify-start text-foreground">
+              <Button 
+                variant="ghost" 
+                className="justify-start text-foreground"
+                onClick={() => handleNavigation("/split-pdf")}
+              >
                 Split PDF
               </Button>
-              <Button variant="ghost" className="justify-start text-foreground">
+              <Button 
+                variant="ghost" 
+                className="justify-start text-foreground"
+                onClick={() => handleNavigation("/compress-pdf")}
+              >
                 Compress PDF
               </Button>
-              <Button variant="ghost" className="justify-start text-foreground">
+              <Button 
+                variant="ghost" 
+                className="justify-start text-foreground"
+                onClick={() => handleNavigation("/")}
+              >
                 All PDF tools
               </Button>
               <div className="flex gap-2 mt-4">

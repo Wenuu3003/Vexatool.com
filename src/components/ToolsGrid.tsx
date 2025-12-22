@@ -11,6 +11,11 @@ import {
   Lock,
   LayoutGrid,
   Wrench,
+  Image,
+  QrCode,
+  Code,
+  Presentation,
+  Table,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -42,6 +47,55 @@ const tools = [
     icon: FileType2,
     colorClass: "bg-tool-convert",
     href: "/pdf-to-word",
+  },
+  {
+    title: "PDF to PowerPoint",
+    description: "Convert PDF documents to editable PowerPoint presentations.",
+    icon: Presentation,
+    colorClass: "bg-orange-500",
+    href: "/pdf-to-powerpoint",
+  },
+  {
+    title: "PDF to Excel",
+    description: "Extract tables and data from PDF to Excel spreadsheets.",
+    icon: Table,
+    colorClass: "bg-green-500",
+    href: "/pdf-to-excel",
+  },
+  {
+    title: "Image to PDF",
+    description: "Convert JPG, PNG, and other images to PDF documents.",
+    icon: Image,
+    colorClass: "bg-blue-500",
+    href: "/image-to-pdf",
+  },
+  {
+    title: "PowerPoint to PDF",
+    description: "Convert PPT and PPTX presentations to PDF format.",
+    icon: Presentation,
+    colorClass: "bg-orange-600",
+    href: "/ppt-to-pdf",
+  },
+  {
+    title: "Excel to PDF",
+    description: "Convert Excel spreadsheets to PDF documents.",
+    icon: Table,
+    colorClass: "bg-green-600",
+    href: "/excel-to-pdf",
+  },
+  {
+    title: "HTML to PDF",
+    description: "Convert HTML code and web pages to PDF documents.",
+    icon: Code,
+    colorClass: "bg-orange-500",
+    href: "/html-to-pdf",
+  },
+  {
+    title: "QR Code Generator",
+    description: "Generate QR codes for URLs, text, or any data instantly.",
+    icon: QrCode,
+    colorClass: "bg-purple-500",
+    href: "/qr-code-generator",
   },
   {
     title: "Edit PDF",

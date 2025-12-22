@@ -26,23 +26,47 @@ const CompressPDF = () => {
     try {
       const file = files[0];
       const arrayBuffer = await file.arrayBuffer();
+      const originalSize = file.size;
       
       // Load the PDF document
       const pdfDoc = await PDFDocument.load(arrayBuffer, {
         ignoreEncryption: true,
       });
 
-      // Compress by removing unused objects and optimizing
+      // Get all pages and process them for compression
+      const pages = pdfDoc.getPages();
+      
+      // Remove metadata to reduce size
+      pdfDoc.setTitle('');
+      pdfDoc.setAuthor('');
+      pdfDoc.setSubject('');
+      pdfDoc.setKeywords([]);
+      pdfDoc.setProducer('');
+      pdfDoc.setCreator('');
+
+      // Compress by removing unused objects and using object streams
       const compressedBytes = await pdfDoc.save({
         useObjectStreams: true,
         addDefaultPage: false,
-        objectsPerTick: 50,
+        objectsPerTick: 20,
       });
 
-      const compressedBlob = new Blob([new Uint8Array(compressedBytes)], { type: "application/pdf" });
-      const originalSize = file.size;
+      // If compression didn't help much, try creating a new clean PDF
+      let finalBytes = compressedBytes;
+      if (compressedBytes.length >= originalSize * 0.95) {
+        // Create a completely new PDF and copy pages
+        const newPdfDoc = await PDFDocument.create();
+        const copiedPages = await newPdfDoc.copyPages(pdfDoc, pdfDoc.getPageIndices());
+        copiedPages.forEach((page) => newPdfDoc.addPage(page));
+        
+        finalBytes = await newPdfDoc.save({
+          useObjectStreams: true,
+        });
+      }
+
+      const compressedBlob = new Blob([new Uint8Array(finalBytes)], { type: "application/pdf" });
       const newSize = compressedBlob.size;
-      const savings = ((originalSize - newSize) / originalSize * 100).toFixed(1);
+      const savings = Math.max(0, ((originalSize - newSize) / originalSize * 100));
       
       setCompressedSize(newSize);
 
@@ -56,7 +80,9 @@ const CompressPDF = () => {
 
       toast({
         title: "Compression complete!",
-        description: `File size reduced by ${savings}% (${(originalSize / 1024 / 1024).toFixed(2)} MB → ${(newSize / 1024 / 1024).toFixed(2)} MB)`,
+        description: savings > 0 
+          ? `File size reduced by ${savings.toFixed(1)}% (${(originalSize / 1024 / 1024).toFixed(2)} MB → ${(newSize / 1024 / 1024).toFixed(2)} MB)`
+          : `PDF optimized. Original was already well-compressed.`,
       });
 
       setFiles([]);

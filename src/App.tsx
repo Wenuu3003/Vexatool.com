@@ -19,6 +19,13 @@ import UnlockPDF from "./pages/tools/UnlockPDF";
 import ProtectPDF from "./pages/tools/ProtectPDF";
 import OrganizePDF from "./pages/tools/OrganizePDF";
 import RepairPDF from "./pages/tools/RepairPDF";
+import ImageToPDF from "./pages/tools/ImageToPDF";
+import QRCodeGenerator from "./pages/tools/QRCodeGenerator";
+import HTMLToPDF from "./pages/tools/HTMLToPDF";
+import PPTToPDF from "./pages/tools/PPTToPDF";
+import ExcelToPDF from "./pages/tools/ExcelToPDF";
+import PDFToPowerPoint from "./pages/tools/PDFToPowerPoint";
+import PDFToExcel from "./pages/tools/PDFToExcel";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +51,13 @@ const App = () => (
             <Route path="/protect-pdf" element={<ProtectPDF />} />
             <Route path="/organize-pdf" element={<OrganizePDF />} />
             <Route path="/repair-pdf" element={<RepairPDF />} />
+            <Route path="/image-to-pdf" element={<ImageToPDF />} />
+            <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
+            <Route path="/html-to-pdf" element={<HTMLToPDF />} />
+            <Route path="/ppt-to-pdf" element={<PPTToPDF />} />
+            <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
+            <Route path="/pdf-to-powerpoint" element={<PDFToPowerPoint />} />
+            <Route path="/pdf-to-excel" element={<PDFToExcel />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

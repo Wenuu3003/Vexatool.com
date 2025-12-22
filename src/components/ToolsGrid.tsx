@@ -16,6 +16,10 @@ import {
   Code,
   Presentation,
   Table,
+  Calculator,
+  Tags,
+  Coins,
+  BarChart3,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -152,6 +156,34 @@ const tools = [
     icon: Wrench,
     colorClass: "bg-tool-repair",
     href: "/repair-pdf",
+  },
+  {
+    title: "Calculator",
+    description: "A powerful calculator for all your mathematical needs.",
+    icon: Calculator,
+    colorClass: "bg-indigo-500",
+    href: "/calculator",
+  },
+  {
+    title: "Tags Generator",
+    description: "Generate relevant tags and hashtags for your content and SEO.",
+    icon: Tags,
+    colorClass: "bg-pink-500",
+    href: "/tags-generator",
+  },
+  {
+    title: "Currency Converter",
+    description: "Convert between world currencies with exchange rates.",
+    icon: Coins,
+    colorClass: "bg-emerald-500",
+    href: "/currency-converter",
+  },
+  {
+    title: "SEO Analyzer",
+    description: "Analyze and optimize your website and YouTube videos for SEO.",
+    icon: BarChart3,
+    colorClass: "bg-blue-600",
+    href: "/seo-tool",
   },
 ];
 

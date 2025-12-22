@@ -21,22 +21,3 @@ export const useFileHistory = () => {
 
   return { saveFileHistory };
 };
-import { PDFDocument } from "pdf-lib";
-import fs from "fs";
-
-export const imageToPDF = async (req, res) => {
-  const pdf = await PDFDocument.create();
-
-  for (const file of req.files) {
-    const imgBytes = fs.readFileSync(file.path);
-    const img = await pdf.embedJpg(imgBytes);
-    const page = pdf.addPage([img.width, img.height]);
-    page.drawImage(img, { x: 0, y: 0 });
-    fs.unlinkSync(file.path);
-  }
-
-  const output = `uploads/images_${Date.now()}.pdf`;
-  fs.writeFileSync(output, await pdf.save());
-
-  res.download(output, () => fs.unlinkSync(output));
-};

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, forwardRef } from 'react';
 
 interface AdBannerProps {
   slot: string;
@@ -12,36 +12,47 @@ declare global {
   }
 }
 
-export const AdBanner = ({ slot, format = 'auto', className = '' }: AdBannerProps) => {
-  useEffect(() => {
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
-        window.adsbygoogle.push({});
+export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
+  ({ slot, format = 'auto', className = '' }, ref) => {
+    useEffect(() => {
+      try {
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          window.adsbygoogle.push({});
+        }
+      } catch (error) {
+        console.error('AdSense error:', error);
       }
-    } catch (error) {
-      console.error('AdSense error:', error);
-    }
-  }, []);
+    }, []);
 
-  return (
-    <div className={`ad-container ${className}`}>
-      <ins
-        className="adsbygoogle"
-        style={{ display: 'block' }}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-        data-ad-slot={slot}
-        data-ad-format={format}
-        data-full-width-responsive="true"
-      />
-    </div>
-  );
-};
+    return (
+      <div ref={ref} className={`ad-container ${className}`}>
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block' }}
+          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+          data-ad-slot={slot}
+          data-ad-format={format}
+          data-full-width-responsive="true"
+        />
+      </div>
+    );
+  }
+);
+
+AdBanner.displayName = 'AdBanner';
 
 // Placeholder component for development
-export const AdPlaceholder = ({ className = '' }: { className?: string }) => {
-  return (
-    <div className={`bg-muted/50 border border-dashed border-border rounded-lg p-4 text-center ${className}`}>
-      <p className="text-xs text-muted-foreground">Advertisement</p>
-    </div>
-  );
-};
+export const AdPlaceholder = forwardRef<HTMLDivElement, { className?: string }>(
+  ({ className = '' }, ref) => {
+    return (
+      <div 
+        ref={ref} 
+        className={`bg-muted/50 border border-dashed border-border rounded-lg p-4 text-center ${className}`}
+      >
+        <p className="text-xs text-muted-foreground">Advertisement</p>
+      </div>
+    );
+  }
+);
+
+AdPlaceholder.displayName = 'AdPlaceholder';

@@ -26,6 +26,10 @@ import PPTToPDF from "./pages/tools/PPTToPDF";
 import ExcelToPDF from "./pages/tools/ExcelToPDF";
 import PDFToPowerPoint from "./pages/tools/PDFToPowerPoint";
 import PDFToExcel from "./pages/tools/PDFToExcel";
+import Calculator from "./pages/tools/Calculator";
+import TagsGenerator from "./pages/tools/TagsGenerator";
+import CurrencyConverter from "./pages/tools/CurrencyConverter";
+import SEOTool from "./pages/tools/SEOTool";
 
 const queryClient = new QueryClient();
 
@@ -58,7 +62,10 @@ const App = () => (
             <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
             <Route path="/pdf-to-powerpoint" element={<PDFToPowerPoint />} />
             <Route path="/pdf-to-excel" element={<PDFToExcel />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/calculator" element={<Calculator />} />
+            <Route path="/tags-generator" element={<TagsGenerator />} />
+            <Route path="/currency-converter" element={<CurrencyConverter />} />
+            <Route path="/seo-tool" element={<SEOTool />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 interface ToolLayoutProps {
   title: string;
   description: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   colorClass: string;
   children: ReactNode;
 }
@@ -40,7 +40,7 @@ export const ToolLayout = ({
                   colorClass
                 )}
               >
-                <Icon className="w-8 h-8 text-primary-foreground" />
+                {Icon && <Icon className="w-8 h-8 text-primary-foreground" />}
               </div>
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground">

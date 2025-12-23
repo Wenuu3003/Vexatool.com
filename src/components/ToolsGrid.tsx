@@ -23,6 +23,7 @@ import {
   BarChart3,
   MessageCircle,
   Cloud,
+  ImageDown,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -47,6 +48,13 @@ const tools = [
     icon: FileDown,
     colorClass: "bg-tool-compress",
     href: "/compress-pdf",
+  },
+  {
+    title: "Compress Images",
+    description: "Reduce image file sizes while maintaining quality. Supports JPG, PNG, WebP.",
+    icon: ImageDown,
+    colorClass: "bg-teal-500",
+    href: "/compress-image",
   },
   {
     title: "PDF to Word",

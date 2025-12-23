@@ -21,10 +21,8 @@ import {
   Tags,
   Coins,
   BarChart3,
-  MessageCircle,
   Cloud,
   ImageDown,
-  Search,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -119,20 +117,6 @@ const tools = [
     icon: ScanLine,
     colorClass: "bg-violet-500",
     href: "/qr-code-scanner",
-  },
-  {
-    title: "AI Chat Assistant",
-    description: "Ask any question and get instant AI-powered answers and help.",
-    icon: MessageCircle,
-    colorClass: "bg-gradient-to-r from-blue-500 to-purple-500",
-    href: "/ai-chat",
-  },
-  {
-    title: "AI Web Search",
-    description: "Search the web with AI-powered answers and cited sources.",
-    icon: Search,
-    colorClass: "bg-gradient-to-r from-violet-500 to-purple-600",
-    href: "/ai-search",
   },
   {
     title: "Google Drive to PDF",

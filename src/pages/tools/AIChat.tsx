@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, Send, Bot, User, Loader2 } from "lucide-react";
+import { MessageCircle, Send, Bot, User, Loader2, LogIn } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 interface Message {
   role: "user" | "assistant";
@@ -12,6 +14,7 @@ interface Message {
 }
 
 const AIChat = () => {
+  const { user, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +31,15 @@ const AIChat = () => {
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
+
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to use the AI Chat feature.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const userMessage: Message = { role: "user", content: input.trim() };
     setMessages(prev => [...prev, userMessage]);
@@ -46,7 +58,13 @@ const AIChat = () => {
       const data = response.data;
       
       if (data.error) {
-        if (data.error.includes("Rate limit") || data.error.includes("429")) {
+        if (data.error.includes("Authentication") || data.error.includes("401")) {
+          toast({
+            title: "Login Required",
+            description: "Please log in to use the AI Chat feature.",
+            variant: "destructive",
+          });
+        } else if (data.error.includes("Rate limit") || data.error.includes("429")) {
           toast({
             title: "Rate Limited",
             description: "Too many requests. Please wait a moment and try again.",
@@ -91,6 +109,34 @@ const AIChat = () => {
     }
   };
 
+  // Show login prompt if not authenticated
+  if (!authLoading && !user) {
+    return (
+      <ToolLayout
+        title="AI Chat Assistant"
+        description="Ask any question and get instant AI-powered answers"
+        icon={MessageCircle}
+        colorClass="bg-gradient-to-r from-blue-500 to-purple-500"
+      >
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-card border rounded-xl overflow-hidden flex flex-col items-center justify-center h-[400px] p-8 text-center">
+            <LogIn className="w-16 h-16 mb-4 text-muted-foreground opacity-50" />
+            <h3 className="font-medium text-xl mb-2">Login Required</h3>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              Please log in to use the AI Chat feature. This helps us provide you with a personalized experience and prevent abuse.
+            </p>
+            <Link to="/auth">
+              <Button size="lg" className="gap-2">
+                <LogIn className="w-4 h-4" />
+                Login to Chat
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </ToolLayout>
+    );
+  }
+
   return (
     <ToolLayout
       title="AI Chat Assistant"
@@ -106,7 +152,7 @@ const AIChat = () => {
               <div className="text-center py-12 text-muted-foreground">
                 <Bot className="w-16 h-16 mx-auto mb-4 opacity-20" />
                 <h3 className="font-medium text-lg mb-2">Welcome to AI Chat!</h3>
-                <p className="text-sm">Ask me anything - I'm here to help with questions about any topic.</p>
+                <p className="text-sm">Ask me anything - I&apos;m here to help with questions about any topic.</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2">
                   {["How to merge PDF files?", "What is SEO?", "Explain QR codes"].map((suggestion) => (
                     <Button

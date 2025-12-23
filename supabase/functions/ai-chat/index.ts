@@ -29,7 +29,7 @@ serve(async (req) => {
         messages: [
           { 
             role: "system", 
-            content: `You are a helpful AI assistant for WelovePDF, a website with various online tools. 
+            content: `You are a helpful AI assistant for Mypdfs, a website with various online tools.
 You help users with:
 - PDF tools (merge, split, compress, convert, edit, sign, watermark, rotate, unlock, protect, organize, repair)
 - QR code generation and scanning

@@ -31,7 +31,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
     ],
   };
 
-  const contactEmail = "welovepdf3003@gmail.com";
+  const contactEmail = "mypdfs3003@gmail.com";
 
   return (
     <footer ref={ref} className="bg-card border-t border-border pt-16 pb-8">
@@ -44,11 +44,11 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
                 <FileText className="w-5 h-5 text-primary-foreground" />
               </div>
               <span className="text-xl font-bold text-foreground">
-                <span className="text-primary">We</span>lovePDF
+                <span className="text-primary">My</span>pdfs
               </span>
             </a>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              WelovePDF is an online service to work with PDF files completely free and easy to use.
+              Mypdfs is an online service to work with PDF files completely free and easy to use.
             </p>
           </div>
 
@@ -87,7 +87,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {currentYear} WelovePDF. All rights reserved.
+              © {currentYear} Mypdfs. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">

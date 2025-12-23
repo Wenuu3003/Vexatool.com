@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import DOMPurify from "dompurify";
 
 const HTMLToPDF = () => {
   const [html, setHtml] = useState("");
@@ -102,7 +103,12 @@ const HTMLToPDF = () => {
               <h3 className="font-medium mb-2">Preview</h3>
               <div 
                 className="bg-white p-4 rounded border min-h-[200px]"
-                dangerouslySetInnerHTML={{ __html: html }}
+                dangerouslySetInnerHTML={{ 
+                  __html: DOMPurify.sanitize(html, {
+                    ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'br', 'strong', 'em', 'u', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'a', 'img', 'blockquote', 'pre', 'code', 'hr', 'b', 'i', 'sub', 'sup', 'dl', 'dt', 'dd', 'figure', 'figcaption', 'section', 'article', 'header', 'footer', 'nav', 'main', 'aside'],
+                    ALLOWED_ATTR: ['class', 'id', 'style', 'href', 'src', 'alt', 'title', 'width', 'height', 'colspan', 'rowspan']
+                  })
+                }}
               />
             </div>
 

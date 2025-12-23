@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { QrCode, Download, Upload, Palette } from "lucide-react";
+import { QrCode, Download, Upload, Cloud, Image, Type } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import QRCode from "qrcode";
 
 const QRCodeGenerator = () => {
@@ -16,11 +18,31 @@ const QRCodeGenerator = () => {
   const [logoSize, setLogoSize] = useState([30]);
   const [darkColor, setDarkColor] = useState("#000000");
   const [lightColor, setLightColor] = useState("#ffffff");
+  const [activeTab, setActiveTab] = useState("text");
+  const [driveLink, setDriveLink] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const getQRContent = useCallback(() => {
+    switch (activeTab) {
+      case "text":
+        return text.trim();
+      case "drive":
+        return driveLink.trim();
+      case "image":
+        return uploadedImageUrl || "";
+      default:
+        return "";
+    }
+  }, [activeTab, text, driveLink, uploadedImageUrl]);
 
   const generateQR = useCallback(async () => {
-    if (!text.trim()) {
+    const content = getQRContent();
+    if (!content) {
       setQrDataUrl(null);
       return;
     }
@@ -30,32 +52,28 @@ const QRCodeGenerator = () => {
       canvas.width = size;
       canvas.height = size;
       
-      await QRCode.toCanvas(canvas, text, {
+      await QRCode.toCanvas(canvas, content, {
         width: size,
         margin: 2,
         color: {
           dark: darkColor,
           light: lightColor,
         },
-        errorCorrectionLevel: logo ? 'H' : 'M', // Higher error correction for logo
+        errorCorrectionLevel: logo ? 'H' : 'M',
       });
 
-      // Add logo if present
       if (logo) {
         const ctx = canvas.getContext("2d");
         if (ctx) {
-          const img = new Image();
+          const img = document.createElement("img");
           img.crossOrigin = "anonymous";
           img.onload = () => {
             const logoSizeValue = (size * logoSize[0]) / 100;
             const logoX = (size - logoSizeValue) / 2;
             const logoY = (size - logoSizeValue) / 2;
             
-            // Draw white background for logo
             ctx.fillStyle = lightColor;
             ctx.fillRect(logoX - 4, logoY - 4, logoSizeValue + 8, logoSizeValue + 8);
-            
-            // Draw logo
             ctx.drawImage(img, logoX, logoY, logoSizeValue, logoSizeValue);
             
             setQrDataUrl(canvas.toDataURL("image/png"));
@@ -75,7 +93,7 @@ const QRCodeGenerator = () => {
         variant: "destructive",
       });
     }
-  }, [text, size, logo, logoSize, darkColor, lightColor]);
+  }, [getQRContent, size, logo, logoSize, darkColor, lightColor]);
 
   useEffect(() => {
     generateQR();
@@ -100,6 +118,56 @@ const QRCodeGenerator = () => {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Image must be smaller than 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setImageFile(file);
+    setIsUploading(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `public/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('qr-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('qr-images')
+        .getPublicUrl(filePath);
+
+      setUploadedImageUrl(publicUrl);
+      toast({
+        title: "Image uploaded!",
+        description: "QR code will link to your image.",
+      });
+    } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error("Upload error:", error);
+      }
+      toast({
+        title: "Upload failed",
+        description: "Could not upload image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const removeLogo = () => {
     setLogo(null);
     if (logoInputRef.current) {
@@ -107,8 +175,17 @@ const QRCodeGenerator = () => {
     }
   };
 
+  const clearImage = () => {
+    setImageFile(null);
+    setUploadedImageUrl(null);
+    if (imageInputRef.current) {
+      imageInputRef.current.value = "";
+    }
+  };
+
   const downloadQR = (format: 'png' | 'svg') => {
     if (!qrDataUrl) return;
+    const content = getQRContent();
 
     if (format === 'png') {
       const link = document.createElement("a");
@@ -116,7 +193,7 @@ const QRCodeGenerator = () => {
       link.download = "qrcode.png";
       link.click();
     } else {
-      QRCode.toString(text, { type: 'svg', width: size, color: { dark: darkColor, light: lightColor } }, (err, svg) => {
+      QRCode.toString(content, { type: 'svg', width: size, color: { dark: darkColor, light: lightColor } }, (err, svg) => {
         if (err) {
           toast({
             title: "Error",
@@ -144,7 +221,7 @@ const QRCodeGenerator = () => {
   return (
     <ToolLayout
       title="QR Code Generator"
-      description="Generate custom QR codes with logos and colors"
+      description="Generate custom QR codes from text, images, or Google Drive links"
       icon={QrCode}
       colorClass="bg-purple-500"
     >
@@ -152,16 +229,94 @@ const QRCodeGenerator = () => {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Controls */}
           <div className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="qr-text">Enter URL or text</Label>
-              <Input
-                id="qr-text"
-                placeholder="https://example.com or any text..."
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                className="text-lg"
-              />
-            </div>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="text" className="gap-2">
+                  <Type className="w-4 h-4" />
+                  Text/URL
+                </TabsTrigger>
+                <TabsTrigger value="image" className="gap-2">
+                  <Image className="w-4 h-4" />
+                  Image
+                </TabsTrigger>
+                <TabsTrigger value="drive" className="gap-2">
+                  <Cloud className="w-4 h-4" />
+                  Drive
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="text" className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="qr-text">Enter URL or text</Label>
+                  <Input
+                    id="qr-text"
+                    placeholder="https://example.com or any text..."
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    className="text-lg"
+                  />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="image" className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label>Upload Image to QR Code</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Upload an image and generate a QR code that links to it
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    ref={imageInputRef}
+                    className="hidden"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => imageInputRef.current?.click()}
+                      disabled={isUploading}
+                      className="gap-2"
+                    >
+                      <Upload className="w-4 h-4" />
+                      {isUploading ? "Uploading..." : "Upload Image"}
+                    </Button>
+                    {uploadedImageUrl && (
+                      <Button variant="destructive" onClick={clearImage}>
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                  {uploadedImageUrl && (
+                    <div className="mt-3 p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
+                      <p className="text-sm text-green-700 dark:text-green-300">
+                        Image uploaded! QR code will link to your image.
+                      </p>
+                      <img 
+                        src={uploadedImageUrl} 
+                        alt="Uploaded" 
+                        className="mt-2 max-h-24 rounded"
+                      />
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="drive" className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="drive-link">Google Drive Link</Label>
+                  <Input
+                    id="drive-link"
+                    placeholder="Paste your Google Drive file link..."
+                    value={driveLink}
+                    onChange={(e) => setDriveLink(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Paste any Google Drive share link to generate a QR code for it
+                  </p>
+                </div>
+              </TabsContent>
+            </Tabs>
 
             <div className="space-y-2">
               <Label>Size: {size}px</Label>
@@ -262,7 +417,11 @@ const QRCodeGenerator = () => {
             ) : (
               <div className="text-center py-12 text-muted-foreground">
                 <QrCode className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                <p>Enter text or URL to generate a QR code</p>
+                <p>
+                  {activeTab === "text" && "Enter text or URL to generate a QR code"}
+                  {activeTab === "image" && "Upload an image to generate a QR code"}
+                  {activeTab === "drive" && "Paste a Google Drive link to generate a QR code"}
+                </p>
               </div>
             )}
           </div>

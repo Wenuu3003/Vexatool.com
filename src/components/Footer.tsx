@@ -1,9 +1,10 @@
 import { forwardRef } from "react";
-import { FileText } from "lucide-react";
+import { FileText, Mail } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {
+  const { user } = useAuth();
   const currentYear = new Date().getFullYear();
-
   const footerLinks = {
     "PDF Tools": [
       "Merge PDF",
@@ -29,6 +30,8 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       "Terms & Conditions",
     ],
   };
+
+  const contactEmail = "welovepdf3003@gmail.com";
 
   return (
     <footer ref={ref} className="bg-card border-t border-border pt-16 pb-8">
@@ -64,6 +67,17 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
                     </a>
                   </li>
                 ))}
+                {category === "Company" && user && (
+                  <li>
+                    <a
+                      href={`mailto:${contactEmail}`}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                    >
+                      <Mail className="w-3 h-3" />
+                      {contactEmail}
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
           ))}

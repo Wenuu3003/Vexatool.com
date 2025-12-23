@@ -32,6 +32,7 @@ import TagsGenerator from "./pages/tools/TagsGenerator";
 import CurrencyConverter from "./pages/tools/CurrencyConverter";
 import SEOTool from "./pages/tools/SEOTool";
 import AIChat from "./pages/tools/AIChat";
+import GoogleDriveToPDF from "./pages/tools/GoogleDriveToPDF";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/currency-converter" element={<CurrencyConverter />} />
             <Route path="/seo-tool" element={<SEOTool />} />
             <Route path="/ai-chat" element={<AIChat />} />
+            <Route path="/google-drive-to-pdf" element={<GoogleDriveToPDF />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

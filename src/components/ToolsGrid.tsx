@@ -22,6 +22,7 @@ import {
   Coins,
   BarChart3,
   MessageCircle,
+  Cloud,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -116,6 +117,13 @@ const tools = [
     icon: MessageCircle,
     colorClass: "bg-gradient-to-r from-blue-500 to-purple-500",
     href: "/ai-chat",
+  },
+  {
+    title: "Google Drive to PDF",
+    description: "Convert Google Docs, Sheets, Slides and Drive files to PDF format.",
+    icon: Cloud,
+    colorClass: "bg-blue-400",
+    href: "/google-drive-to-pdf",
   },
   {
     title: "Edit PDF",

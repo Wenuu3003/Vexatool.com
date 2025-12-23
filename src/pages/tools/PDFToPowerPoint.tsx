@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PDFDocument } from "pdf-lib";
+import { Helmet } from "react-helmet";
 
 const PDFToPowerPoint = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -48,12 +49,19 @@ const PDFToPowerPoint = () => {
   };
 
   return (
-    <ToolLayout
-      title="PDF to PowerPoint"
-      description="Convert PDF documents to PowerPoint presentations"
-      icon={FileType2}
-      colorClass="bg-orange-500"
-    >
+    <>
+      <Helmet>
+        <title>PDF to PowerPoint Converter Free Online | Mypdfs</title>
+        <meta name="description" content="Free PDF to PowerPoint converter. Convert PDF documents to editable PPT presentations. Get conversion tips and recommendations." />
+        <meta name="keywords" content="PDF to PowerPoint, PDF to PPT, convert PDF to slides, PDF to presentation, free PDF to PPT" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-powerpoint" />
+      </Helmet>
+      <ToolLayout
+        title="PDF to PowerPoint"
+        description="Convert PDF documents to PowerPoint presentations"
+        icon={FileType2}
+        colorClass="bg-orange-500"
+      >
       <div className="max-w-2xl mx-auto space-y-6">
         <Alert>
           <Info className="h-4 w-4" />
@@ -100,7 +108,8 @@ const PDFToPowerPoint = () => {
           </ul>
         </div>
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

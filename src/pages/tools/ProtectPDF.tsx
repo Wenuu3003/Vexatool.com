@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
 
 const ProtectPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -69,12 +70,19 @@ const ProtectPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Protect PDF"
-      description="Add password protection to your PDF documents"
-      icon={Lock}
-      colorClass="bg-tool-protect"
-    >
+    <>
+      <Helmet>
+        <title>Protect PDF with Password Free Online | Mypdfs</title>
+        <meta name="description" content="Free online PDF protection tool. Add password protection to your PDF documents. Secure your PDFs with encryption." />
+        <meta name="keywords" content="protect PDF, password PDF, encrypt PDF, secure PDF, PDF password protection, lock PDF" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/protect-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Protect PDF"
+        description="Add password protection to your PDF documents"
+        icon={Lock}
+        colorClass="bg-tool-protect"
+      >
       <FileUpload
         files={files}
         onFilesChange={setFiles}
@@ -116,7 +124,8 @@ const ProtectPDF = () => {
           </div>
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

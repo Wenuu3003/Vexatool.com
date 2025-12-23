@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
+import { Helmet } from "react-helmet";
 
 const ConvertPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -94,12 +95,19 @@ The PDF contains ${pageCount} page(s).\\par
   };
 
   return (
-    <ToolLayout
-      title="PDF to Word"
-      description="Convert PDF documents to editable Word files"
-      icon={FileType2}
-      colorClass="bg-tool-convert"
-    >
+    <>
+      <Helmet>
+        <title>PDF to Word Converter Free Online - Convert PDF to DOC | Mypdfs</title>
+        <meta name="description" content="Free PDF to Word converter. Convert PDF documents to editable Word files online. No registration, instant conversion." />
+        <meta name="keywords" content="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-word" />
+      </Helmet>
+      <ToolLayout
+        title="PDF to Word"
+        description="Convert PDF documents to editable Word files"
+        icon={FileType2}
+        colorClass="bg-tool-convert"
+      >
       <div className="space-y-6">
         <AdPlaceholder className="h-20" />
         
@@ -151,7 +159,8 @@ The PDF contains ${pageCount} page(s).\\par
         
         <AdPlaceholder className="h-20" />
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

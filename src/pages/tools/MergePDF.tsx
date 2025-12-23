@@ -5,6 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
 
 const MergePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -64,12 +65,19 @@ const MergePDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Merge PDF"
-      description="Combine multiple PDF files into one document"
-      icon={Layers}
-      colorClass="bg-tool-merge"
-    >
+    <>
+      <Helmet>
+        <title>Merge PDF Files Online Free - Combine PDFs | Mypdfs</title>
+        <meta name="description" content="Free online PDF merger. Combine multiple PDF files into one document. Easy to use, no registration required. Merge PDFs instantly." />
+        <meta name="keywords" content="merge PDF, combine PDF, join PDF files, PDF merger, free PDF combine, online PDF merger" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/merge-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Merge PDF"
+        description="Combine multiple PDF files into one document"
+        icon={Layers}
+        colorClass="bg-tool-merge"
+      >
       <FileUpload
         files={files}
         onFilesChange={setFiles}
@@ -97,7 +105,8 @@ const MergePDF = () => {
           </Button>
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
+import { Helmet } from "react-helmet";
 
 const RepairPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -79,12 +80,19 @@ const RepairPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Repair PDF"
-      description="Fix corrupted or damaged PDF files"
-      icon={Wrench}
-      colorClass="bg-tool-repair"
-    >
+    <>
+      <Helmet>
+        <title>Repair Corrupted PDF Free Online | Mypdfs</title>
+        <meta name="description" content="Free online PDF repair tool. Fix corrupted or damaged PDF files. Recover data from broken PDFs and restore documents." />
+        <meta name="keywords" content="repair PDF, fix corrupted PDF, recover PDF, damaged PDF, PDF repair tool, free PDF fix" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/repair-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Repair PDF"
+        description="Fix corrupted or damaged PDF files"
+        icon={Wrench}
+        colorClass="bg-tool-repair"
+      >
       <div className="space-y-6">
         <AdPlaceholder className="h-20" />
         
@@ -142,7 +150,8 @@ const RepairPDF = () => {
         
         <AdPlaceholder className="h-20" />
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

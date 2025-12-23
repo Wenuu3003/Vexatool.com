@@ -4,6 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Helmet } from "react-helmet";
 
 const ExcelToPDF = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -45,12 +46,19 @@ const ExcelToPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Excel to PDF"
-      description="Convert XLS, XLSX, and CSV files to PDF"
-      icon={Table}
-      colorClass="bg-green-600"
-    >
+    <>
+      <Helmet>
+        <title>Excel to PDF Converter Free Online | Mypdfs</title>
+        <meta name="description" content="Free Excel to PDF converter. Convert XLS, XLSX, and CSV files to PDF format. Easy conversion guide with formatting preserved." />
+        <meta name="keywords" content="Excel to PDF, XLS to PDF, XLSX to PDF, CSV to PDF, spreadsheet to PDF, free Excel converter" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/excel-to-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Excel to PDF"
+        description="Convert XLS, XLSX, and CSV files to PDF"
+        icon={Table}
+        colorClass="bg-green-600"
+      >
       <div className="max-w-2xl mx-auto space-y-6">
         <Alert>
           <Info className="h-4 w-4" />
@@ -116,7 +124,8 @@ const ExcelToPDF = () => {
           </p>
         </div>
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

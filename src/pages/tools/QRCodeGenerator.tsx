@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import QRCode from "qrcode";
+import { Helmet } from "react-helmet";
 
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
@@ -206,12 +207,19 @@ const QRCodeGenerator = () => {
   };
 
   return (
-    <ToolLayout
-      title="QR Code Generator"
-      description="Generate custom QR codes from text, images, or Google Drive links"
-      icon={QrCode}
-      colorClass="bg-purple-500"
-    >
+    <>
+      <Helmet>
+        <title>QR Code Generator Free Online - Create Custom QR Codes | Mypdfs</title>
+        <meta name="description" content="Free QR code generator. Create custom QR codes with logos and colors. Generate QR codes for URLs, text, and images instantly." />
+        <meta name="keywords" content="QR code generator, create QR code, free QR code, custom QR code, QR code with logo, QR maker" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/qr-code-generator" />
+      </Helmet>
+      <ToolLayout
+        title="QR Code Generator"
+        description="Generate custom QR codes from text, images, or Google Drive links"
+        icon={QrCode}
+        colorClass="bg-purple-500"
+      >
       <div className="max-w-4xl mx-auto">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Controls */}
@@ -416,7 +424,8 @@ const QRCodeGenerator = () => {
 
         <canvas ref={canvasRef} className="hidden" />
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

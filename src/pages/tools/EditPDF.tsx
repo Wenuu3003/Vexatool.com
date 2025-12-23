@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
+import { Helmet } from "react-helmet";
 
 interface TextAnnotation {
   id: string;
@@ -127,12 +128,19 @@ const EditPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Edit PDF"
-      description="Add text, images, and annotations to your PDF"
-      icon={FileEdit}
-      colorClass="bg-tool-edit"
-    >
+    <>
+      <Helmet>
+        <title>Edit PDF Online Free - Add Text & Annotations | Mypdfs</title>
+        <meta name="description" content="Free online PDF editor. Add text, annotations, and images to your PDF documents. Easy to use, no software required." />
+        <meta name="keywords" content="edit PDF, PDF editor, add text to PDF, annotate PDF, free PDF editor, online PDF edit" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/edit-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Edit PDF"
+        description="Add text, images, and annotations to your PDF"
+        icon={FileEdit}
+        colorClass="bg-tool-edit"
+      >
       <div className="space-y-6">
         <AdPlaceholder className="h-20" />
         
@@ -210,7 +218,8 @@ const EditPDF = () => {
         
         <AdPlaceholder className="h-20" />
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

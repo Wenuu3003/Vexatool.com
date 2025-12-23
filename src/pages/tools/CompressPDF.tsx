@@ -5,6 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
+import { Helmet } from "react-helmet";
 
 const CompressPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -102,12 +103,19 @@ const CompressPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Compress PDF"
-      description="Reduce the file size of your PDF documents"
-      icon={FileDown}
-      colorClass="bg-tool-compress"
-    >
+    <>
+      <Helmet>
+        <title>Compress PDF Online Free - Reduce PDF File Size | Mypdfs</title>
+        <meta name="description" content="Free online PDF compressor. Reduce PDF file size while maintaining quality. Compress large PDFs instantly without losing quality." />
+        <meta name="keywords" content="compress PDF, reduce PDF size, PDF compressor, shrink PDF, optimize PDF, free PDF compression" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/compress-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Compress PDF"
+        description="Reduce the file size of your PDF documents"
+        icon={FileDown}
+        colorClass="bg-tool-compress"
+      >
       <FileUpload
         files={files}
         onFilesChange={setFiles}
@@ -141,7 +149,8 @@ const CompressPDF = () => {
           )}
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

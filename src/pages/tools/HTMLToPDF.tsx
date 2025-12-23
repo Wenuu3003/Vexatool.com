@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import DOMPurify from "dompurify";
+import { Helmet } from "react-helmet";
 
 const HTMLToPDF = () => {
   const [html, setHtml] = useState("");
@@ -87,12 +88,19 @@ const HTMLToPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="HTML to PDF"
-      description="Convert HTML code to PDF documents"
-      icon={Code}
-      colorClass="bg-orange-500"
-    >
+    <>
+      <Helmet>
+        <title>HTML to PDF Converter Free Online | Mypdfs</title>
+        <meta name="description" content="Free online HTML to PDF converter. Convert HTML code to PDF documents. Preview and convert web content to PDF instantly." />
+        <meta name="keywords" content="HTML to PDF, convert HTML, web to PDF, code to PDF, free HTML converter, online HTML to PDF" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/html-to-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="HTML to PDF"
+        description="Convert HTML code to PDF documents"
+        icon={Code}
+        colorClass="bg-orange-500"
+      >
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="space-y-2">
           <Label htmlFor="html-content">Enter HTML Content</Label>
@@ -143,7 +151,8 @@ const HTMLToPDF = () => {
           </div>
         )}
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

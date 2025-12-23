@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Search, Globe, Youtube, CheckCircle, XCircle, AlertCircle, Loader2, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet";
 
 interface SEOResult {
   category: string;
@@ -164,12 +165,19 @@ const SEOTool = () => {
   };
 
   return (
-    <ToolLayout
-      title="SEO Analyzer"
-      description="Analyze and optimize your website and YouTube videos for search engines"
-      icon={BarChart3}
-      colorClass="bg-blue-600"
-    >
+    <>
+      <Helmet>
+        <title>SEO Analyzer Free Online - Website & YouTube SEO | Mypdfs</title>
+        <meta name="description" content="Free SEO analyzer for websites and YouTube videos. Get actionable recommendations to improve search rankings and visibility." />
+        <meta name="keywords" content="SEO analyzer, SEO checker, website SEO, YouTube SEO, free SEO tool, SEO audit" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/seo-tool" />
+      </Helmet>
+      <ToolLayout
+        title="SEO Analyzer"
+        description="Analyze and optimize your website and YouTube videos for search engines"
+        icon={BarChart3}
+        colorClass="bg-blue-600"
+      >
       <div className="max-w-3xl mx-auto space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-2">
@@ -309,7 +317,8 @@ const SEOTool = () => {
           </>
         )}
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

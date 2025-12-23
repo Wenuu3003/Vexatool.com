@@ -33,6 +33,7 @@ import CurrencyConverter from "./pages/tools/CurrencyConverter";
 import SEOTool from "./pages/tools/SEOTool";
 import AIChat from "./pages/tools/AIChat";
 import GoogleDriveToPDF from "./pages/tools/GoogleDriveToPDF";
+import CompressImage from "./pages/tools/CompressImage";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App = () => (
             <Route path="/seo-tool" element={<SEOTool />} />
             <Route path="/ai-chat" element={<AIChat />} />
             <Route path="/google-drive-to-pdf" element={<GoogleDriveToPDF />} />
+            <Route path="/compress-image" element={<CompressImage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

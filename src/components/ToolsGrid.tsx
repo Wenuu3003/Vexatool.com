@@ -13,6 +13,7 @@ import {
   Wrench,
   Image,
   QrCode,
+  ScanLine,
   Code,
   Presentation,
   Table,
@@ -20,6 +21,7 @@ import {
   Tags,
   Coins,
   BarChart3,
+  MessageCircle,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -96,10 +98,24 @@ const tools = [
   },
   {
     title: "QR Code Generator",
-    description: "Generate QR codes for URLs, text, or any data instantly.",
+    description: "Create custom QR codes with logos, colors, and instant download.",
     icon: QrCode,
     colorClass: "bg-purple-500",
     href: "/qr-code-generator",
+  },
+  {
+    title: "QR Code Scanner",
+    description: "Scan QR codes from images or camera. Fast and accurate detection.",
+    icon: ScanLine,
+    colorClass: "bg-violet-500",
+    href: "/qr-code-scanner",
+  },
+  {
+    title: "AI Chat Assistant",
+    description: "Ask any question and get instant AI-powered answers and help.",
+    icon: MessageCircle,
+    colorClass: "bg-gradient-to-r from-blue-500 to-purple-500",
+    href: "/ai-chat",
   },
   {
     title: "Edit PDF",

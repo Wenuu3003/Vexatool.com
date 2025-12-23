@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tags, Copy, RefreshCw, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet";
 
 const TagsGenerator = () => {
   const [input, setInput] = useState("");
@@ -71,12 +72,19 @@ const TagsGenerator = () => {
   };
 
   return (
-    <ToolLayout
-      title="Tags Generator"
-      description="Generate relevant tags and hashtags for your content, social media, and SEO"
-      icon={Tags}
-      colorClass="bg-pink-500"
-    >
+    <>
+      <Helmet>
+        <title>Tags Generator Free Online - Hashtag Generator | Mypdfs</title>
+        <meta name="description" content="Free tags and hashtag generator. Generate relevant tags for SEO, social media, and content. Improve your reach with smart tagging." />
+        <meta name="keywords" content="tags generator, hashtag generator, SEO tags, social media tags, keyword generator, free tag maker" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/tags-generator" />
+      </Helmet>
+      <ToolLayout
+        title="Tags Generator"
+        description="Generate relevant tags and hashtags for your content, social media, and SEO"
+        icon={Tags}
+        colorClass="bg-pink-500"
+      >
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="bg-card border border-border rounded-2xl p-6">
           <label className="block text-sm font-medium text-foreground mb-2">
@@ -151,7 +159,8 @@ const TagsGenerator = () => {
           </ul>
         </div>
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRightLeft, RefreshCw, Coins } from "lucide-react";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet";
 
 const currencies = [
   { code: "USD", name: "US Dollar", symbol: "$" },
@@ -85,12 +86,19 @@ const CurrencyConverter = () => {
   };
 
   return (
-    <ToolLayout
-      title="Currency Converter"
-      description="Convert between world currencies with real-time exchange rates"
-      icon={Coins}
-      colorClass="bg-emerald-500"
-    >
+    <>
+      <Helmet>
+        <title>Currency Converter Free Online - Exchange Rates | Mypdfs</title>
+        <meta name="description" content="Free currency converter with real-time exchange rates. Convert between USD, EUR, GBP, and 15+ world currencies instantly." />
+        <meta name="keywords" content="currency converter, exchange rate, money converter, forex, USD to EUR, free currency calculator" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/currency-converter" />
+      </Helmet>
+      <ToolLayout
+        title="Currency Converter"
+        description="Convert between world currencies with real-time exchange rates"
+        icon={Coins}
+        colorClass="bg-emerald-500"
+      >
       <div className="max-w-xl mx-auto space-y-6">
         <div className="bg-card border border-border rounded-2xl p-6">
           <div className="space-y-4">
@@ -193,7 +201,8 @@ const CurrencyConverter = () => {
           </p>
         </div>
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

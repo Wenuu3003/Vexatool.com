@@ -4,6 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import jsQR from "jsqr";
+import { Helmet } from "react-helmet";
 
 const QRCodeScanner = () => {
   const [scannedResult, setScannedResult] = useState<string | null>(null);
@@ -127,12 +128,19 @@ const QRCodeScanner = () => {
   const isUrl = scannedResult && (scannedResult.startsWith("http://") || scannedResult.startsWith("https://"));
 
   return (
-    <ToolLayout
-      title="QR Code Scanner"
-      description="Scan QR codes from images or using your camera"
-      icon={ScanLine}
-      colorClass="bg-violet-500"
-    >
+    <>
+      <Helmet>
+        <title>QR Code Scanner Free Online - Scan QR from Image | Mypdfs</title>
+        <meta name="description" content="Free online QR code scanner. Scan QR codes from images or camera. Fast and accurate QR code reading with instant results." />
+        <meta name="keywords" content="QR code scanner, scan QR code, read QR code, QR reader, free QR scanner, camera QR scan" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/qr-code-scanner" />
+      </Helmet>
+      <ToolLayout
+        title="QR Code Scanner"
+        description="Scan QR codes from images or using your camera"
+        icon={ScanLine}
+        colorClass="bg-violet-500"
+      >
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <input
@@ -209,7 +217,8 @@ const QRCodeScanner = () => {
           </div>
         )}
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

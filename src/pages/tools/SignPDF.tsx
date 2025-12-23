@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
+import { Helmet } from "react-helmet";
 
 const SignPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -141,12 +142,19 @@ const SignPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Sign PDF"
-      description="Add your signature to PDF documents"
-      icon={PenTool}
-      colorClass="bg-tool-sign"
-    >
+    <>
+      <Helmet>
+        <title>Sign PDF Online Free - Add Digital Signature | Mypdfs</title>
+        <meta name="description" content="Free online PDF signing tool. Add your signature to PDF documents. Draw or type your signature easily. No registration required." />
+        <meta name="keywords" content="sign PDF, e-signature PDF, digital signature, add signature to PDF, free PDF signer" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/sign-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Sign PDF"
+        description="Add your signature to PDF documents"
+        icon={PenTool}
+        colorClass="bg-tool-sign"
+      >
       <div className="space-y-6">
         <AdPlaceholder className="h-20" />
         
@@ -230,7 +238,8 @@ const SignPDF = () => {
         
         <AdPlaceholder className="h-20" />
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

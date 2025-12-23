@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
 
 const UnlockPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -65,12 +66,19 @@ const UnlockPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Unlock PDF"
-      description="Remove password protection from PDF documents"
-      icon={Unlock}
-      colorClass="bg-tool-unlock"
-    >
+    <>
+      <Helmet>
+        <title>Unlock PDF Free Online - Remove PDF Password | Mypdfs</title>
+        <meta name="description" content="Free online PDF unlocker. Remove password protection from PDF files. Unlock secured PDFs instantly without software." />
+        <meta name="keywords" content="unlock PDF, remove PDF password, PDF unlocker, decrypt PDF, free PDF unlock, remove PDF protection" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/unlock-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Unlock PDF"
+        description="Remove password protection from PDF documents"
+        icon={Unlock}
+        colorClass="bg-tool-unlock"
+      >
       <FileUpload
         files={files}
         onFilesChange={setFiles}
@@ -112,7 +120,8 @@ const UnlockPDF = () => {
           </div>
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

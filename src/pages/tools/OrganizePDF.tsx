@@ -5,6 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
 
 const OrganizePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -92,12 +93,19 @@ const OrganizePDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Organize PDF"
-      description="Reorder pages in your PDF document"
-      icon={LayoutGrid}
-      colorClass="bg-tool-organize"
-    >
+    <>
+      <Helmet>
+        <title>Organize PDF Pages Free Online - Reorder PDF | Mypdfs</title>
+        <meta name="description" content="Free online PDF organizer. Reorder, rearrange, and reorganize PDF pages with drag and drop. Easy page management." />
+        <meta name="keywords" content="organize PDF, reorder PDF pages, rearrange PDF, PDF page order, sort PDF pages, free PDF organizer" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/organize-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Organize PDF"
+        description="Reorder pages in your PDF document"
+        icon={LayoutGrid}
+        colorClass="bg-tool-organize"
+      >
       <FileUpload
         files={files}
         onFilesChange={handleFileChange}
@@ -150,7 +158,8 @@ const OrganizePDF = () => {
           </div>
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

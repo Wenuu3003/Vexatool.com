@@ -3,6 +3,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Calculator as CalcIcon, Divide, X, Minus, Plus, Equal, Percent } from "lucide-react";
 import { toast } from "sonner";
+import { Helmet } from "react-helmet";
 
 const Calculator = () => {
   const [display, setDisplay] = useState("0");
@@ -131,12 +132,19 @@ const Calculator = () => {
   const buttonClass = "h-14 text-lg font-semibold transition-all hover:scale-105";
 
   return (
-    <ToolLayout
-      title="Calculator"
-      description="A powerful calculator for all your mathematical needs"
-      icon={CalcIcon}
-      colorClass="bg-indigo-500"
-    >
+    <>
+      <Helmet>
+        <title>Online Calculator Free - Scientific Calculator | Mypdfs</title>
+        <meta name="description" content="Free online calculator with history. Perform basic and advanced calculations. Easy to use scientific calculator." />
+        <meta name="keywords" content="calculator, online calculator, free calculator, math calculator, scientific calculator" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/calculator" />
+      </Helmet>
+      <ToolLayout
+        title="Calculator"
+        description="A powerful calculator for all your mathematical needs"
+        icon={CalcIcon}
+        colorClass="bg-indigo-500"
+      >
       <div className="max-w-md mx-auto space-y-6">
         <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
           <div className="bg-muted rounded-xl p-4 mb-4">
@@ -205,7 +213,8 @@ const Calculator = () => {
           </div>
         )}
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

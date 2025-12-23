@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { PDFDocument, rgb } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
 
 const WatermarkPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -89,12 +90,19 @@ const WatermarkPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Watermark PDF"
-      description="Add text watermark to your PDF documents"
-      icon={Droplets}
-      colorClass="bg-tool-watermark"
-    >
+    <>
+      <Helmet>
+        <title>Add Watermark to PDF Free Online | Mypdfs</title>
+        <meta name="description" content="Free online PDF watermark tool. Add text watermarks to protect your PDF documents. Customize opacity and position easily." />
+        <meta name="keywords" content="watermark PDF, add watermark, PDF stamp, protect PDF, text watermark, free PDF watermark" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/watermark-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Watermark PDF"
+        description="Add text watermark to your PDF documents"
+        icon={Droplets}
+        colorClass="bg-tool-watermark"
+      >
       <FileUpload
         files={files}
         onFilesChange={setFiles}
@@ -143,7 +151,8 @@ const WatermarkPDF = () => {
           </div>
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

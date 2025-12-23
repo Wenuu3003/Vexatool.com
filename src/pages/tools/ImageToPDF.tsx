@@ -4,6 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
+import { Helmet } from "react-helmet";
 
 const ImageToPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -106,12 +107,19 @@ const ImageToPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Image to PDF"
-      description="Convert JPG, PNG, and other images to PDF"
-      icon={Image}
-      colorClass="bg-tool-convert"
-    >
+    <>
+      <Helmet>
+        <title>Image to PDF Converter Free Online - JPG PNG to PDF | Mypdfs</title>
+        <meta name="description" content="Free online image to PDF converter. Convert JPG, PNG, GIF, and other images to PDF. Combine multiple images into one PDF document." />
+        <meta name="keywords" content="image to PDF, JPG to PDF, PNG to PDF, convert images, photo to PDF, free image converter" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/image-to-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Image to PDF"
+        description="Convert JPG, PNG, and other images to PDF"
+        icon={Image}
+        colorClass="bg-tool-convert"
+      >
       <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
         <input
           type="file"
@@ -175,7 +183,8 @@ const ImageToPDF = () => {
           </div>
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

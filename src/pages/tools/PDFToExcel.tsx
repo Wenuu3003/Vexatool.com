@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PDFDocument } from "pdf-lib";
+import { Helmet } from "react-helmet";
 
 const PDFToExcel = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -48,12 +49,19 @@ const PDFToExcel = () => {
   };
 
   return (
-    <ToolLayout
-      title="PDF to Excel"
-      description="Convert PDF tables and data to Excel spreadsheets"
-      icon={Table}
-      colorClass="bg-green-500"
-    >
+    <>
+      <Helmet>
+        <title>PDF to Excel Converter Free Online | Mypdfs</title>
+        <meta name="description" content="Free PDF to Excel converter. Extract tables and data from PDF files to Excel spreadsheets. Get conversion tips and recommendations." />
+        <meta name="keywords" content="PDF to Excel, PDF to XLS, extract PDF tables, PDF to spreadsheet, free PDF to Excel" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-excel" />
+      </Helmet>
+      <ToolLayout
+        title="PDF to Excel"
+        description="Convert PDF tables and data to Excel spreadsheets"
+        icon={Table}
+        colorClass="bg-green-500"
+      >
       <div className="max-w-2xl mx-auto space-y-6">
         <Alert>
           <Info className="h-4 w-4" />
@@ -103,7 +111,8 @@ const PDFToExcel = () => {
           </p>
         </div>
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

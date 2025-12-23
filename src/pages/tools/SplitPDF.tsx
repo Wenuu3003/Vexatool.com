@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
 
 const SplitPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -118,12 +119,19 @@ const SplitPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="Split PDF"
-      description="Extract specific pages from your PDF document"
-      icon={Scissors}
-      colorClass="bg-tool-split"
-    >
+    <>
+      <Helmet>
+        <title>Split PDF Online Free - Extract Pages from PDF | Mypdfs</title>
+        <meta name="description" content="Free online PDF splitter. Extract specific pages from PDF files. Split PDFs into multiple documents easily. No registration required." />
+        <meta name="keywords" content="split PDF, extract PDF pages, PDF splitter, divide PDF, separate PDF pages, free PDF split" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/split-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="Split PDF"
+        description="Extract specific pages from your PDF document"
+        icon={Scissors}
+        colorClass="bg-tool-split"
+      >
       <FileUpload
         files={files}
         onFilesChange={handleFileChange}
@@ -167,7 +175,8 @@ const SplitPDF = () => {
           </div>
         </div>
       )}
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

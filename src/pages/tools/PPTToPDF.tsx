@@ -4,6 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Helmet } from "react-helmet";
 
 const PPTToPDF = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -47,12 +48,19 @@ const PPTToPDF = () => {
   };
 
   return (
-    <ToolLayout
-      title="PowerPoint to PDF"
-      description="Convert PPT and PPTX files to PDF"
-      icon={Presentation}
-      colorClass="bg-orange-600"
-    >
+    <>
+      <Helmet>
+        <title>PowerPoint to PDF Converter Free Online | Mypdfs</title>
+        <meta name="description" content="Free PowerPoint to PDF converter. Convert PPT and PPTX presentations to PDF format. Easy conversion guide included." />
+        <meta name="keywords" content="PowerPoint to PDF, PPT to PDF, PPTX to PDF, convert presentation, free PPT converter" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/ppt-to-pdf" />
+      </Helmet>
+      <ToolLayout
+        title="PowerPoint to PDF"
+        description="Convert PPT and PPTX files to PDF"
+        icon={Presentation}
+        colorClass="bg-orange-600"
+      >
       <div className="max-w-2xl mx-auto space-y-6">
         <Alert>
           <Info className="h-4 w-4" />
@@ -117,7 +125,8 @@ const PPTToPDF = () => {
           </p>
         </div>
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

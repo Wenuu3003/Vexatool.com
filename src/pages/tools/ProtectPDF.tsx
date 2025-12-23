@@ -55,7 +55,9 @@ const ProtectPDF = () => {
       setFiles([]);
       setPassword("");
     } catch (error) {
-      console.error("Protect error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Protect error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to protect PDF. Please try again.",

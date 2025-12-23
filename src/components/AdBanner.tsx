@@ -20,7 +20,9 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
           window.adsbygoogle.push({});
         }
       } catch (error) {
-        console.error('AdSense error:', error);
+        if (import.meta.env.DEV) {
+          console.error('AdSense error:', error);
+        }
       }
     }, []);
 

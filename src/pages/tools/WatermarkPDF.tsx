@@ -75,7 +75,9 @@ const WatermarkPDF = () => {
 
       setFiles([]);
     } catch (error) {
-      console.error("Watermark error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Watermark error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to add watermark. Please try again.",

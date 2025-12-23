@@ -35,7 +35,9 @@ const QRCodeGenerator = () => {
       });
       setQrDataUrl(dataUrl);
     } catch (error) {
-      console.error("QR generation error:", error);
+      if (import.meta.env.DEV) {
+        console.error("QR generation error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to generate QR code.",

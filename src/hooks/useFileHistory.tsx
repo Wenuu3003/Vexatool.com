@@ -15,7 +15,9 @@ export const useFileHistory = () => {
         tool_used: toolUsed,
       });
     } catch (error) {
-      console.error('Error saving file history:', error);
+      if (import.meta.env.DEV) {
+        console.error('Error saving file history:', error);
+      }
     }
   };
 

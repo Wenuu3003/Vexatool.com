@@ -50,7 +50,9 @@ const RotatePDF = () => {
 
       setFiles([]);
     } catch (error) {
-      console.error("Rotate error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Rotate error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to rotate PDF. Please try again.",

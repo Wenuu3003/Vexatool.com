@@ -88,7 +88,9 @@ const CompressPDF = () => {
       setFiles([]);
       setCompressedSize(null);
     } catch (error) {
-      console.error("Compress error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Compress error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to compress PDF. Please try again.",

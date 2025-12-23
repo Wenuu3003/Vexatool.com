@@ -50,7 +50,9 @@ const MergePDF = () => {
 
       setFiles([]);
     } catch (error) {
-      console.error("Merge error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Merge error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to merge PDFs. Please try again.",

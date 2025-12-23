@@ -20,7 +20,9 @@ const PDFToExcel = () => {
         const pdfDoc = await PDFDocument.load(arrayBuffer);
         setPageCount(pdfDoc.getPageCount());
       } catch (error) {
-        console.error("Error loading PDF:", error);
+        if (import.meta.env.DEV) {
+          console.error("Error loading PDF:", error);
+        }
       }
     }
   };

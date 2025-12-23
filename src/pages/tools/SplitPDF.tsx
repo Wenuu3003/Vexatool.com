@@ -104,7 +104,9 @@ const SplitPDF = () => {
         description: `Extracted ${pageIndices.length} page(s) successfully.`,
       });
     } catch (error) {
-      console.error("Split error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Split error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to split PDF. Please try again.",

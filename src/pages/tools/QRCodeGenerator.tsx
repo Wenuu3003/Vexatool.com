@@ -7,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import QRCode from "qrcode";
 
 const QRCodeGenerator = () => {
@@ -21,8 +20,8 @@ const QRCodeGenerator = () => {
   const [activeTab, setActiveTab] = useState("text");
   const [driveLink, setDriveLink] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -132,18 +131,21 @@ const QRCodeGenerator = () => {
     }
 
     setImageFile(file);
+    setIsLoading(true);
     
     // Use client-side data URL instead of server upload for security
     const reader = new FileReader();
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
       setUploadedImageUrl(dataUrl);
+      setIsLoading(false);
       toast({
         title: "Image loaded!",
         description: "QR code will contain your image data.",
       });
     };
     reader.onerror = () => {
+      setIsLoading(false);
       toast({
         title: "Load failed",
         description: "Could not load image. Please try again.",
@@ -260,11 +262,11 @@ const QRCodeGenerator = () => {
                     <Button
                       variant="outline"
                       onClick={() => imageInputRef.current?.click()}
-                      disabled={isUploading}
+                      disabled={isLoading}
                       className="gap-2"
                     >
                       <Upload className="w-4 h-4" />
-                      {isUploading ? "Uploading..." : "Upload Image"}
+                      {isLoading ? "Loading..." : "Upload Image"}
                     </Button>
                     {uploadedImageUrl && (
                       <Button variant="destructive" onClick={clearImage}>

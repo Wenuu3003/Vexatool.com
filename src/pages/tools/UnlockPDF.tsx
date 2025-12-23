@@ -51,7 +51,9 @@ const UnlockPDF = () => {
       setFiles([]);
       setPassword("");
     } catch (error) {
-      console.error("Unlock error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Unlock error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to unlock PDF. Check your password and try again.",

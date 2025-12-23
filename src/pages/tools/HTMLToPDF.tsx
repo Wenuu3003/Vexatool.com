@@ -35,6 +35,12 @@ const HTMLToPDF = () => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
       if (!iframeDoc) throw new Error('Could not access iframe document');
 
+      // Sanitize HTML before writing to iframe
+      const sanitizedHtml = DOMPurify.sanitize(html, {
+        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span', 'br', 'strong', 'em', 'u', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'a', 'img', 'blockquote', 'pre', 'code', 'hr', 'b', 'i', 'sub', 'sup', 'dl', 'dt', 'dd', 'figure', 'figcaption', 'section', 'article', 'header', 'footer', 'nav', 'main', 'aside'],
+        ALLOWED_ATTR: ['class', 'id', 'style', 'href', 'src', 'alt', 'title', 'width', 'height', 'colspan', 'rowspan']
+      });
+
       // Write HTML content
       iframeDoc.open();
       iframeDoc.write(`
@@ -46,7 +52,7 @@ const HTMLToPDF = () => {
             * { box-sizing: border-box; }
           </style>
         </head>
-        <body>${html}</body>
+        <body>${sanitizedHtml}</body>
         </html>
       `);
       iframeDoc.close();
@@ -67,7 +73,9 @@ const HTMLToPDF = () => {
         description: "Select 'Save as PDF' in the print dialog to save your PDF.",
       });
     } catch (error) {
-      console.error("Convert error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Convert error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to convert HTML to PDF. Please try again.",

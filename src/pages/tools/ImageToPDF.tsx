@@ -92,7 +92,9 @@ const ImageToPDF = () => {
 
       setFiles([]);
     } catch (error) {
-      console.error("Convert error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Convert error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to convert images to PDF. Please try again.",

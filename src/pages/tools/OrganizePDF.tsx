@@ -78,7 +78,9 @@ const OrganizePDF = () => {
       setPageOrder([]);
       setTotalPages(0);
     } catch (error) {
-      console.error("Organize error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Organize error:", error);
+      }
       toast({
         title: "Error",
         description: "Failed to organize PDF. Please try again.",

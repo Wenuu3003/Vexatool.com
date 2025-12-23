@@ -29,8 +29,12 @@ const AIChat = () => {
     scrollToBottom();
   }, [messages]);
 
+  const MAX_MESSAGE_LENGTH = 10000;
+  const MAX_MESSAGES = 50;
+
   const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+    const trimmedInput = input.trim();
+    if (!trimmedInput || isLoading) return;
 
     if (!user) {
       toast({
@@ -41,7 +45,26 @@ const AIChat = () => {
       return;
     }
 
-    const userMessage: Message = { role: "user", content: input.trim() };
+    // Client-side validation
+    if (trimmedInput.length > MAX_MESSAGE_LENGTH) {
+      toast({
+        title: "Message Too Long",
+        description: `Message cannot exceed ${MAX_MESSAGE_LENGTH} characters.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (messages.length >= MAX_MESSAGES) {
+      toast({
+        title: "Conversation Too Long",
+        description: "Please start a new conversation. Maximum messages reached.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const userMessage: Message = { role: "user", content: trimmedInput };
     setMessages(prev => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);

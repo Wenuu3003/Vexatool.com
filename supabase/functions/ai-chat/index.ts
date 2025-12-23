@@ -1,12 +1,76 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+const ALLOWED_ORIGINS = [
+  'https://mypdfs.lovable.app',
+  'https://mrjefpimgfzzjwoidocf.lovable.app',
+  'http://localhost:5173',
+  'http://localhost:8080',
+];
+
+const getCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Max-Age": "86400",
+  };
 };
 
+const MAX_MESSAGES = 50;
+const MAX_MESSAGE_LENGTH = 10000;
+const VALID_ROLES = ['user', 'assistant', 'system'];
+
+interface ChatMessage {
+  role: string;
+  content: string;
+}
+
+function validateMessages(messages: unknown): { valid: boolean; error?: string } {
+  if (!Array.isArray(messages)) {
+    return { valid: false, error: 'Invalid messages format: expected an array' };
+  }
+
+  if (messages.length === 0) {
+    return { valid: false, error: 'Messages array cannot be empty' };
+  }
+
+  if (messages.length > MAX_MESSAGES) {
+    return { valid: false, error: `Too many messages: maximum ${MAX_MESSAGES} allowed` };
+  }
+
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i] as ChatMessage;
+    
+    if (!msg || typeof msg !== 'object') {
+      return { valid: false, error: `Invalid message at index ${i}: expected an object` };
+    }
+
+    if (!msg.role || typeof msg.role !== 'string') {
+      return { valid: false, error: `Invalid message at index ${i}: missing or invalid role` };
+    }
+
+    if (!VALID_ROLES.includes(msg.role)) {
+      return { valid: false, error: `Invalid message at index ${i}: role must be one of ${VALID_ROLES.join(', ')}` };
+    }
+
+    if (!msg.content || typeof msg.content !== 'string') {
+      return { valid: false, error: `Invalid message at index ${i}: missing or invalid content` };
+    }
+
+    if (msg.content.length > MAX_MESSAGE_LENGTH) {
+      return { valid: false, error: `Message at index ${i} exceeds maximum length of ${MAX_MESSAGE_LENGTH} characters` };
+    }
+  }
+
+  return { valid: true };
+}
+
 serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -40,7 +104,29 @@ serve(async (req) => {
 
     console.log("Authenticated user:", user.id);
 
-    const { messages } = await req.json();
+    // Parse and validate request body
+    let body: { messages?: unknown };
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON in request body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { messages } = body;
+    
+    // Validate messages input
+    const validation = validateMessages(messages);
+    if (!validation.valid) {
+      console.error("Message validation failed:", validation.error);
+      return new Response(
+        JSON.stringify({ error: validation.error }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -68,7 +154,7 @@ You help users with:
 Be concise, friendly, and helpful. Provide practical advice and step-by-step instructions when needed.
 If asked about using tools on the website, guide them to the appropriate tool.`
           },
-          ...messages,
+          ...(messages as ChatMessage[]),
         ],
       }),
     });
@@ -103,6 +189,8 @@ If asked about using tools on the website, guide them to the appropriate tool.`
     );
   } catch (error) {
     console.error("AI Chat error:", error);
+    const origin = req.headers.get('origin');
+    const corsHeaders = getCorsHeaders(origin);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

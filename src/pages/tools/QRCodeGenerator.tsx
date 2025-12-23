@@ -118,7 +118,7 @@ const QRCodeGenerator = () => {
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -132,40 +132,25 @@ const QRCodeGenerator = () => {
     }
 
     setImageFile(file);
-    setIsUploading(true);
-
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `public/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('qr-images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('qr-images')
-        .getPublicUrl(filePath);
-
-      setUploadedImageUrl(publicUrl);
+    
+    // Use client-side data URL instead of server upload for security
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      setUploadedImageUrl(dataUrl);
       toast({
-        title: "Image uploaded!",
-        description: "QR code will link to your image.",
+        title: "Image loaded!",
+        description: "QR code will contain your image data.",
       });
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Upload error:", error);
-      }
+    };
+    reader.onerror = () => {
       toast({
-        title: "Upload failed",
-        description: "Could not upload image. Please try again.",
+        title: "Load failed",
+        description: "Could not load image. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsUploading(false);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   const removeLogo = () => {

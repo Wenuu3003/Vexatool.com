@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,37 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { FileText, Mail, Lock, Loader2 } from 'lucide-react';
+import { FileText, Mail, Lock, Loader2, Check, X } from 'lucide-react';
+
+// Password validation rules
+const validatePassword = (password: string) => {
+  const errors: string[] = [];
+  
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters");
+  }
+  if (!/[A-Z]/.test(password)) {
+    errors.push("Password must contain at least one uppercase letter");
+  }
+  if (!/[a-z]/.test(password)) {
+    errors.push("Password must contain at least one lowercase letter");
+  }
+  if (!/[0-9]/.test(password)) {
+    errors.push("Password must contain at least one number");
+  }
+  
+  return errors;
+};
+
+// Password requirement checker for UI display
+const getPasswordRequirements = (password: string) => {
+  return [
+    { label: "At least 8 characters", met: password.length >= 8 },
+    { label: "One uppercase letter", met: /[A-Z]/.test(password) },
+    { label: "One lowercase letter", met: /[a-z]/.test(password) },
+    { label: "One number", met: /[0-9]/.test(password) },
+  ];
+};
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +46,10 @@ const Auth = () => {
   const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Track password requirements for signup flow
+  const passwordRequirements = useMemo(() => getPasswordRequirements(password), [password]);
+  const isPasswordValid = useMemo(() => passwordRequirements.every(req => req.met), [passwordRequirements]);
 
   useEffect(() => {
     if (user) {
@@ -35,13 +69,17 @@ const Auth = () => {
       return;
     }
 
-    if (password.length < 6) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 6 characters",
-        variant: "destructive",
-      });
-      return;
+    // For signup, enforce strong password requirements
+    if (!isLogin) {
+      const passwordErrors = validatePassword(password);
+      if (passwordErrors.length > 0) {
+        toast({
+          title: "Weak Password",
+          description: passwordErrors[0],
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -139,8 +177,29 @@ const Auth = () => {
                   className="pl-10"
                 />
               </div>
+              
+              {/* Password requirements display for signup */}
+              {!isLogin && password.length > 0 && (
+                <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+                  <p className="text-xs font-medium text-muted-foreground">Password requirements:</p>
+                  <div className="grid grid-cols-2 gap-1">
+                    {passwordRequirements.map((req, index) => (
+                      <div key={index} className="flex items-center gap-1.5 text-xs">
+                        {req.met ? (
+                          <Check className="w-3 h-3 text-green-500" />
+                        ) : (
+                          <X className="w-3 h-3 text-muted-foreground" />
+                        )}
+                        <span className={req.met ? "text-green-600" : "text-muted-foreground"}>
+                          {req.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button type="submit" className="w-full" disabled={isSubmitting || (!isLogin && !isPasswordValid)}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

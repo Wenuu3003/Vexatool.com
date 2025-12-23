@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { StructuredData } from "@/components/StructuredData";
 import { LucideIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface ToolLayoutProps {
@@ -12,6 +13,7 @@ interface ToolLayoutProps {
   icon?: LucideIcon;
   colorClass: string;
   children: ReactNode;
+  category?: string;
 }
 
 export const ToolLayout = ({
@@ -20,9 +22,29 @@ export const ToolLayout = ({
   icon: Icon,
   colorClass,
   children,
+  category = "UtilitiesApplication",
 }: ToolLayoutProps) => {
+  const location = useLocation();
+  const baseUrl = "https://mypdfs.lovable.app";
+  const currentUrl = `${baseUrl}${location.pathname}`;
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <>
+      <StructuredData
+        type="WebApplication"
+        data={{
+          name: title,
+          description: description,
+          url: currentUrl,
+          applicationCategory: category,
+          operatingSystem: "All",
+          offers: {
+            price: "0",
+            priceCurrency: "USD"
+          }
+        }}
+      />
+      <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main className="flex-1">
         <section className="py-8 md:py-12 bg-background">
@@ -55,7 +77,8 @@ export const ToolLayout = ({
           <div className="container mx-auto px-4">{children}</div>
         </section>
       </main>
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 };

@@ -21,6 +21,7 @@ import OrganizePDF from "./pages/tools/OrganizePDF";
 import RepairPDF from "./pages/tools/RepairPDF";
 import ImageToPDF from "./pages/tools/ImageToPDF";
 import QRCodeGenerator from "./pages/tools/QRCodeGenerator";
+import QRCodeScanner from "./pages/tools/QRCodeScanner";
 import HTMLToPDF from "./pages/tools/HTMLToPDF";
 import PPTToPDF from "./pages/tools/PPTToPDF";
 import ExcelToPDF from "./pages/tools/ExcelToPDF";
@@ -30,6 +31,7 @@ import Calculator from "./pages/tools/Calculator";
 import TagsGenerator from "./pages/tools/TagsGenerator";
 import CurrencyConverter from "./pages/tools/CurrencyConverter";
 import SEOTool from "./pages/tools/SEOTool";
+import AIChat from "./pages/tools/AIChat";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +59,7 @@ const App = () => (
             <Route path="/repair-pdf" element={<RepairPDF />} />
             <Route path="/image-to-pdf" element={<ImageToPDF />} />
             <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
+            <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
             <Route path="/html-to-pdf" element={<HTMLToPDF />} />
             <Route path="/ppt-to-pdf" element={<PPTToPDF />} />
             <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
@@ -66,6 +69,7 @@ const App = () => (
             <Route path="/tags-generator" element={<TagsGenerator />} />
             <Route path="/currency-converter" element={<CurrencyConverter />} />
             <Route path="/seo-tool" element={<SEOTool />} />
+            <Route path="/ai-chat" element={<AIChat />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

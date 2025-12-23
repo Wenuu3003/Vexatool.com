@@ -31,7 +31,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
         <ins
           className="adsbygoogle"
           style={{ display: 'block' }}
-          data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+          data-ad-client="ca-pub-7714287689646578"
           data-ad-slot={slot}
           data-ad-format={format}
           data-full-width-responsive="true"

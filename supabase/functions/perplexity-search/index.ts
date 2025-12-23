@@ -1,9 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const MAX_QUERY_LENGTH = 2000;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -11,11 +14,56 @@ serve(async (req) => {
   }
 
   try {
+    // Authentication validation
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("Missing authorization header");
+      return new Response(
+        JSON.stringify({ error: "Authentication required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      console.error("Authentication failed:", authError?.message || "No user found");
+      return new Response(
+        JSON.stringify({ error: "Authentication failed" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Authenticated user:", user.id);
+
     const { query } = await req.json();
 
-    if (!query) {
+    // Input validation - check query exists and is a string
+    if (!query || typeof query !== 'string') {
       return new Response(
-        JSON.stringify({ error: "Query is required" }),
+        JSON.stringify({ error: "Query must be a non-empty string" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Validate length
+    const trimmedQuery = query.trim();
+
+    if (trimmedQuery.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Query cannot be empty" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (trimmedQuery.length > MAX_QUERY_LENGTH) {
+      return new Response(
+        JSON.stringify({ error: `Query exceeds maximum length of ${MAX_QUERY_LENGTH} characters` }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -29,7 +77,7 @@ serve(async (req) => {
       );
     }
 
-    console.log("Searching with Perplexity:", query);
+    console.log("Searching with Perplexity for user:", user.id, "query length:", trimmedQuery.length);
 
     const response = await fetch("https://api.perplexity.ai/chat/completions", {
       method: "POST",
@@ -46,7 +94,7 @@ serve(async (req) => {
           },
           {
             role: "user",
-            content: query
+            content: trimmedQuery
           }
         ],
       }),
@@ -70,7 +118,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    console.log("Perplexity search successful");
+    console.log("Perplexity search successful for user:", user.id);
 
     return new Response(
       JSON.stringify({

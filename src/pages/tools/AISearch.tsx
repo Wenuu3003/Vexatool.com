@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, Loader2, ExternalLink, Sparkles } from "lucide-react";
+import { Search, Loader2, ExternalLink, Sparkles, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 interface SearchResult {
   answer: string;
   citations: string[];
 }
 
+const MAX_QUERY_LENGTH = 2000;
+
 const AISearch = () => {
+  const { user, loading } = useAuth();
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<SearchResult | null>(null);
@@ -21,8 +26,20 @@ const AISearch = () => {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!query.trim()) {
+    const trimmedQuery = query.trim();
+    
+    if (!trimmedQuery) {
       toast.error("Please enter a search query");
+      return;
+    }
+
+    if (trimmedQuery.length > MAX_QUERY_LENGTH) {
+      toast.error(`Query exceeds maximum length of ${MAX_QUERY_LENGTH} characters`);
+      return;
+    }
+
+    if (!user) {
+      toast.error("Please log in to use AI Search");
       return;
     }
 
@@ -31,7 +48,7 @@ const AISearch = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("perplexity-search", {
-        body: { query: query.trim() },
+        body: { query: trimmedQuery },
       });
 
       if (error) {
@@ -45,7 +62,12 @@ const AISearch = () => {
       setResult(data);
     } catch (error) {
       console.error("Search error:", error);
-      toast.error(error instanceof Error ? error.message : "Search failed. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Search failed. Please try again.";
+      if (errorMessage.includes("Authentication")) {
+        toast.error("Please log in to use AI Search");
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -64,6 +86,58 @@ const AISearch = () => {
     "Best practices for web development in 2024",
     "Explain climate change solutions",
   ];
+
+  // Show login prompt if not authenticated
+  if (!loading && !user) {
+    return (
+      <>
+        <Helmet>
+          <title>AI Web Search - Real-time Search with Sources | Mypdfs</title>
+          <meta
+            name="description"
+            content="Search the web with AI-powered answers and cited sources. Get accurate, real-time information with Perplexity-powered search."
+          />
+        </Helmet>
+        
+        <ToolLayout
+          title="AI Web Search"
+          description="Search the web with AI-powered answers backed by real sources"
+          icon={Search}
+          colorClass="bg-gradient-to-br from-violet-500 to-purple-600"
+          category="SearchApplication"
+        >
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-2">
+              <CardContent className="pt-8 pb-8 text-center space-y-6">
+                <div className="p-4 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-600/20 w-fit mx-auto">
+                  <LogIn className="h-10 w-10 text-primary" />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-xl font-semibold">Login Required</h3>
+                  <p className="text-muted-foreground">
+                    Please log in to use the AI Web Search feature. This helps us provide a better experience and manage usage.
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link to="/auth">
+                    <Button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700">
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Log In
+                    </Button>
+                  </Link>
+                  <Link to="/auth">
+                    <Button variant="outline">
+                      Create Account
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </ToolLayout>
+      </>
+    );
+  }
 
   return (
     <>

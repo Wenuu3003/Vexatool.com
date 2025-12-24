@@ -202,14 +202,27 @@
     }
     </script>
 
-    <!-- Google AdSense with Auto Ads -->
+    <!-- Google AdSense - Only loads after consent -->
     <meta name="google-adsense-account" content="ca-pub-3192107856471636">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3192107856471636" crossorigin="anonymous"></script>
     <script>
-      (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-3192107856471636",
-        enable_page_level_ads: true
-      });
+      // Check for cookie consent before loading AdSense
+      (function() {
+        var consent = localStorage.getItem('cookie_consent');
+        if (consent === 'accepted') {
+          // Load AdSense script dynamically
+          var script = document.createElement('script');
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3192107856471636';
+          script.async = true;
+          script.crossOrigin = 'anonymous';
+          script.onload = function() {
+            (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-3192107856471636",
+              enable_page_level_ads: true
+            });
+          };
+          document.head.appendChild(script);
+        }
+      })();
     </script>
 
     <!-- Fonts with display swap for performance -->

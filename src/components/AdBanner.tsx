@@ -1,4 +1,5 @@
-import { useEffect, forwardRef, useRef } from 'react';
+import { useEffect, forwardRef, useRef, useState } from 'react';
+import { hasAdConsent } from './CookieConsent';
 
 interface AdBannerProps {
   slot?: string;
@@ -16,8 +17,16 @@ declare global {
 export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
   ({ slot, format = 'auto', className = '', network = 'effectivegate' }, ref) => {
     const scriptLoaded = useRef(false);
+    const [hasConsent, setHasConsent] = useState(false);
 
     useEffect(() => {
+      // Check consent status
+      setHasConsent(hasAdConsent());
+    }, []);
+
+    useEffect(() => {
+      if (!hasConsent) return;
+
       if (network === 'google') {
         try {
           if (typeof window !== 'undefined' && window.adsbygoogle) {
@@ -44,7 +53,12 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
           }
         };
       }
-    }, [network]);
+    }, [network, hasConsent]);
+
+    // Don't render ads without consent
+    if (!hasConsent) {
+      return null;
+    }
 
     if (network === 'google') {
       return (

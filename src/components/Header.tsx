@@ -26,13 +26,13 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-card border-b border-border">
+    <header className="sticky top-0 z-50 bg-card border-b border-border" role="banner">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2" aria-label="Mypdfs Home - Free Online PDF Tools">
             <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-primary-foreground" />
+              <FileText className="w-5 h-5 text-primary-foreground" aria-hidden="true" />
             </div>
             <span className="text-xl font-bold text-foreground">
               <span className="text-primary">My</span>pdfs
@@ -40,11 +40,12 @@ export const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
             <Button 
               variant="ghost" 
               className="text-foreground hover:text-primary"
               onClick={() => handleNavigation("/merge-pdf")}
+              aria-label="Merge multiple PDF files into one"
             >
               Merge PDF
             </Button>
@@ -52,6 +53,7 @@ export const Header = () => {
               variant="ghost" 
               className="text-foreground hover:text-primary"
               onClick={() => handleNavigation("/split-pdf")}
+              aria-label="Split PDF into separate pages"
             >
               Split PDF
             </Button>
@@ -59,6 +61,7 @@ export const Header = () => {
               variant="ghost" 
               className="text-foreground hover:text-primary"
               onClick={() => handleNavigation("/compress-pdf")}
+              aria-label="Compress PDF to reduce file size"
             >
               Compress PDF
             </Button>
@@ -73,9 +76,10 @@ export const Header = () => {
                   handleNavigation("/");
                 }
               }}
+              aria-label="View all available PDF tools"
             >
               All PDF tools
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-4 h-4" aria-hidden="true" />
             </Button>
           </nav>
 
@@ -114,8 +118,10 @@ export const Header = () => {
             size="icon"
             className="md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
           >
-            <Menu className="w-6 h-6" />
+            <Menu className="w-6 h-6" aria-hidden="true" />
           </Button>
         </div>
 

@@ -38,14 +38,14 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
   };
 
   return (
-    <footer ref={ref} className="bg-card border-t border-border pt-16 pb-8">
+    <footer ref={ref} className="bg-card border-t border-border pt-16 pb-8" role="contentinfo" aria-label="Site footer">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div>
-            <a href="/" className="flex items-center gap-2 mb-4">
+            <a href="/" className="flex items-center gap-2 mb-4" aria-label="Mypdfs Home">
               <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-primary-foreground" />
+                <FileText className="w-5 h-5 text-primary-foreground" aria-hidden="true" />
               </div>
               <span className="text-xl font-bold text-foreground">
                 <span className="text-primary">My</span>pdfs
@@ -58,7 +58,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
 
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
+            <nav key={category} aria-label={`${category} links`}>
               <h4 className="font-semibold text-foreground mb-4">{category}</h4>
               <ul className="space-y-2">
                 {links.map((link) => (
@@ -66,20 +66,21 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
                     <a
                       href="#"
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      aria-label={`Go to ${link}`}
                     >
                       {link}
                     </a>
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           ))}
         </div>
 
         {/* Social Links */}
         <div className="flex flex-col items-center gap-4 mb-8">
           <h4 className="font-semibold text-foreground">Connect With Us</h4>
-          <div className="flex items-center gap-4">
+          <nav className="flex items-center gap-4" aria-label="Social media links">
             {socialLinks.map((social) => (
               <a
                 key={social.name}
@@ -87,20 +88,22 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-                aria-label={social.name}
+                aria-label={`Follow us on ${social.name}`}
+                title={`Follow us on ${social.name}`}
               >
-                <social.icon className="w-5 h-5" />
+                <social.icon className="w-5 h-5" aria-hidden="true" />
               </a>
             ))}
-          </div>
+          </nav>
           {/* ScamAdviser Trust Badge */}
           <a
             href="https://www.scamadviser.com/check-website/mypdfs.lovable.app"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mt-2"
+            aria-label="View our ScamAdviser verification"
           >
-            <ShieldCheck className="w-4 h-4 text-green-500" />
+            <ShieldCheck className="w-4 h-4 text-green-500" aria-hidden="true" />
             Verified on ScamAdviser
           </a>
         </div>
@@ -111,14 +114,14 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
             <p className="text-sm text-muted-foreground">
               © {currentYear} Mypdfs. All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+            <nav className="flex items-center gap-6" aria-label="Legal links">
+              <a href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Privacy Policy
               </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="/terms-and-conditions" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Terms & Conditions
               </a>
-            </div>
+            </nav>
           </div>
         </div>
       </div>

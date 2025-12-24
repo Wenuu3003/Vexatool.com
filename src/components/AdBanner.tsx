@@ -1,4 +1,4 @@
-import { useEffect, forwardRef, useRef, useState } from 'react';
+import { useEffect, forwardRef, useRef, useState, useId } from 'react';
 import { hasAdConsent } from './CookieConsent';
 
 interface AdBannerProps {
@@ -6,26 +6,35 @@ interface AdBannerProps {
   format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle' | 'responsive';
   className?: string;
   network?: 'google' | 'effectivegate';
-  mobileSlot?: string; // Optional different slot for mobile
+  mobileSlot?: string;
 }
 
 declare global {
   interface Window {
     adsbygoogle: unknown[];
+    adsbyoogleInitialized?: Set<string>;
   }
 }
 
+// Track which ad slots have been initialized globally
+const getInitializedAds = (): Set<string> => {
+  if (typeof window === 'undefined') return new Set();
+  if (!window.adsbyoogleInitialized) {
+    window.adsbyoogleInitialized = new Set();
+  }
+  return window.adsbyoogleInitialized;
+};
+
 export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
   ({ slot, format = 'auto', className = '', network = 'google', mobileSlot }, ref) => {
+    const uniqueId = useId();
     const scriptLoaded = useRef(false);
-    const adInitialized = useRef(false);
     const [hasConsent, setHasConsent] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
       setHasConsent(hasAdConsent());
       
-      // Check screen size
       const checkMobile = () => {
         setIsMobile(window.innerWidth < 768);
       };
@@ -36,13 +45,17 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
     }, []);
 
     useEffect(() => {
-      if (!hasConsent || adInitialized.current) return;
+      if (!hasConsent) return;
 
-      if (network === 'google') {
+      const activeSlot = isMobile && mobileSlot ? mobileSlot : slot;
+      const adKey = `${activeSlot}-${uniqueId}`;
+      const initializedAds = getInitializedAds();
+
+      if (network === 'google' && !initializedAds.has(adKey)) {
         try {
           if (typeof window !== 'undefined' && window.adsbygoogle) {
+            initializedAds.add(adKey);
             window.adsbygoogle.push({});
-            adInitialized.current = true;
           }
         } catch (error) {
           if (import.meta.env.DEV) {
@@ -63,7 +76,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
           }
         };
       }
-    }, [network, hasConsent]);
+    }, [network, hasConsent, slot, mobileSlot, isMobile, uniqueId]);
 
     if (!hasConsent) {
       return null;
@@ -129,27 +142,32 @@ AdBanner.displayName = 'AdBanner';
 // Mobile-optimized banner (320x50 or 320x100)
 export const MobileAdBanner = forwardRef<HTMLDivElement, { slot?: string; className?: string }>(
   ({ slot = "1234567890", className = '' }, ref) => {
+    const uniqueId = useId();
     const [hasConsent, setHasConsent] = useState(false);
-    const adInitialized = useRef(false);
 
     useEffect(() => {
       setHasConsent(hasAdConsent());
     }, []);
 
     useEffect(() => {
-      if (!hasConsent || adInitialized.current) return;
+      if (!hasConsent) return;
 
-      try {
-        if (typeof window !== 'undefined' && window.adsbygoogle) {
-          window.adsbygoogle.push({});
-          adInitialized.current = true;
-        }
-      } catch (error) {
-        if (import.meta.env.DEV) {
-          console.error('AdSense mobile error:', error);
+      const adKey = `mobile-${slot}-${uniqueId}`;
+      const initializedAds = getInitializedAds();
+
+      if (!initializedAds.has(adKey)) {
+        try {
+          if (typeof window !== 'undefined' && window.adsbygoogle) {
+            initializedAds.add(adKey);
+            window.adsbygoogle.push({});
+          }
+        } catch (error) {
+          if (import.meta.env.DEV) {
+            console.error('AdSense mobile error:', error);
+          }
         }
       }
-    }, [hasConsent]);
+    }, [hasConsent, slot, uniqueId]);
 
     if (!hasConsent) return null;
 
@@ -171,27 +189,32 @@ MobileAdBanner.displayName = 'MobileAdBanner';
 // Desktop-only leaderboard (728x90)
 export const DesktopAdBanner = forwardRef<HTMLDivElement, { slot?: string; className?: string }>(
   ({ slot = "1234567891", className = '' }, ref) => {
+    const uniqueId = useId();
     const [hasConsent, setHasConsent] = useState(false);
-    const adInitialized = useRef(false);
 
     useEffect(() => {
       setHasConsent(hasAdConsent());
     }, []);
 
     useEffect(() => {
-      if (!hasConsent || adInitialized.current) return;
+      if (!hasConsent) return;
 
-      try {
-        if (typeof window !== 'undefined' && window.adsbygoogle) {
-          window.adsbygoogle.push({});
-          adInitialized.current = true;
-        }
-      } catch (error) {
-        if (import.meta.env.DEV) {
-          console.error('AdSense desktop error:', error);
+      const adKey = `desktop-${slot}-${uniqueId}`;
+      const initializedAds = getInitializedAds();
+
+      if (!initializedAds.has(adKey)) {
+        try {
+          if (typeof window !== 'undefined' && window.adsbygoogle) {
+            initializedAds.add(adKey);
+            window.adsbygoogle.push({});
+          }
+        } catch (error) {
+          if (import.meta.env.DEV) {
+            console.error('AdSense desktop error:', error);
+          }
         }
       }
-    }, [hasConsent]);
+    }, [hasConsent, slot, uniqueId]);
 
     if (!hasConsent) return null;
 

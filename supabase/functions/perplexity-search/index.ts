@@ -134,6 +134,17 @@ serve(async (req) => {
     const data = await response.json();
     console.log("Perplexity search successful for user:", user.id);
 
+    // Log audit event for successful AI search
+    try {
+      await supabaseClient.from('audit_log').insert([{
+        user_id: user.id,
+        action_type: 'ai_search',
+        action_details: { query_length: trimmedQuery.length },
+      }]);
+    } catch (auditErr) {
+      console.error("Failed to log audit event:", auditErr);
+    }
+
     return new Response(
       JSON.stringify({
         answer: data.choices?.[0]?.message?.content || "No answer found",
@@ -145,7 +156,7 @@ serve(async (req) => {
     const corsHeaders = getCorsHeaders(req.headers.get("origin"));
     console.error("Error in perplexity-search:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Search failed" }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

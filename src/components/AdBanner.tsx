@@ -3,9 +3,10 @@ import { hasAdConsent } from './CookieConsent';
 
 interface AdBannerProps {
   slot?: string;
-  format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle';
+  format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle' | 'responsive';
   className?: string;
   network?: 'google' | 'effectivegate';
+  mobileSlot?: string; // Optional different slot for mobile
 }
 
 declare global {
@@ -15,22 +16,33 @@ declare global {
 }
 
 export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
-  ({ slot, format = 'auto', className = '', network = 'effectivegate' }, ref) => {
+  ({ slot, format = 'auto', className = '', network = 'google', mobileSlot }, ref) => {
     const scriptLoaded = useRef(false);
+    const adInitialized = useRef(false);
     const [hasConsent, setHasConsent] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
-      // Check consent status
       setHasConsent(hasAdConsent());
+      
+      // Check screen size
+      const checkMobile = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+      
+      checkMobile();
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     useEffect(() => {
-      if (!hasConsent) return;
+      if (!hasConsent || adInitialized.current) return;
 
       if (network === 'google') {
         try {
           if (typeof window !== 'undefined' && window.adsbygoogle) {
             window.adsbygoogle.push({});
+            adInitialized.current = true;
           }
         } catch (error) {
           if (import.meta.env.DEV) {
@@ -38,7 +50,6 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
           }
         }
       } else if (network === 'effectivegate' && !scriptLoaded.current) {
-        // Load EffectiveGateCPM script
         scriptLoaded.current = true;
         const script = document.createElement('script');
         script.src = 'https://pl28322651.effectivegatecpm.com/5d/b1/c4/5db1c48fa530f15ff066f2b7992b8f2d.js';
@@ -47,7 +58,6 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
         document.body.appendChild(script);
 
         return () => {
-          // Cleanup on unmount
           if (script.parentNode) {
             script.parentNode.removeChild(script);
           }
@@ -55,27 +65,57 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
       }
     }, [network, hasConsent]);
 
-    // Don't render ads without consent
     if (!hasConsent) {
       return null;
     }
 
+    // Determine responsive format based on screen size
+    const getResponsiveFormat = () => {
+      if (format === 'responsive' || format === 'auto') {
+        return isMobile ? 'rectangle' : 'horizontal';
+      }
+      return format;
+    };
+
+    // Use mobile slot if provided and on mobile
+    const activeSlot = isMobile && mobileSlot ? mobileSlot : slot;
+    const activeFormat = getResponsiveFormat();
+
     if (network === 'google') {
       return (
         <div ref={ref} className={`ad-container ${className}`}>
-          <ins
-            className="adsbygoogle"
-            style={{ display: 'block' }}
-            data-ad-client="ca-pub-3192107856471636"
-            data-ad-slot={slot}
-            data-ad-format={format}
-            data-full-width-responsive="true"
-          />
+          {/* Mobile: smaller, centered ad */}
+          {isMobile ? (
+            <div className="flex justify-center">
+              <ins
+                className="adsbygoogle"
+                style={{ 
+                  display: 'block',
+                  width: '320px',
+                  height: activeFormat === 'rectangle' ? '250px' : '100px',
+                  maxWidth: '100%'
+                }}
+                data-ad-client="ca-pub-3192107856471636"
+                data-ad-slot={activeSlot}
+                data-ad-format={activeFormat}
+              />
+            </div>
+          ) : (
+            /* Desktop: full-width responsive ad */
+            <ins
+              className="adsbygoogle"
+              style={{ display: 'block' }}
+              data-ad-client="ca-pub-3192107856471636"
+              data-ad-slot={activeSlot}
+              data-ad-format={activeFormat}
+              data-full-width-responsive="true"
+            />
+          )}
         </div>
       );
     }
 
-    // EffectiveGateCPM - the script auto-injects ads
+    // EffectiveGateCPM
     return (
       <div ref={ref} className={`ad-container ${className}`}>
         <div id="effectivegate-ad" />
@@ -85,6 +125,90 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
 );
 
 AdBanner.displayName = 'AdBanner';
+
+// Mobile-optimized banner (320x50 or 320x100)
+export const MobileAdBanner = forwardRef<HTMLDivElement, { slot?: string; className?: string }>(
+  ({ slot = "1234567890", className = '' }, ref) => {
+    const [hasConsent, setHasConsent] = useState(false);
+    const adInitialized = useRef(false);
+
+    useEffect(() => {
+      setHasConsent(hasAdConsent());
+    }, []);
+
+    useEffect(() => {
+      if (!hasConsent || adInitialized.current) return;
+
+      try {
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          window.adsbygoogle.push({});
+          adInitialized.current = true;
+        }
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.error('AdSense mobile error:', error);
+        }
+      }
+    }, [hasConsent]);
+
+    if (!hasConsent) return null;
+
+    return (
+      <div ref={ref} className={`md:hidden flex justify-center ${className}`}>
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'inline-block', width: '320px', height: '100px' }}
+          data-ad-client="ca-pub-3192107856471636"
+          data-ad-slot={slot}
+        />
+      </div>
+    );
+  }
+);
+
+MobileAdBanner.displayName = 'MobileAdBanner';
+
+// Desktop-only leaderboard (728x90)
+export const DesktopAdBanner = forwardRef<HTMLDivElement, { slot?: string; className?: string }>(
+  ({ slot = "1234567891", className = '' }, ref) => {
+    const [hasConsent, setHasConsent] = useState(false);
+    const adInitialized = useRef(false);
+
+    useEffect(() => {
+      setHasConsent(hasAdConsent());
+    }, []);
+
+    useEffect(() => {
+      if (!hasConsent || adInitialized.current) return;
+
+      try {
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          window.adsbygoogle.push({});
+          adInitialized.current = true;
+        }
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.error('AdSense desktop error:', error);
+        }
+      }
+    }, [hasConsent]);
+
+    if (!hasConsent) return null;
+
+    return (
+      <div ref={ref} className={`hidden md:flex justify-center ${className}`}>
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'inline-block', width: '728px', height: '90px' }}
+          data-ad-client="ca-pub-3192107856471636"
+          data-ad-slot={slot}
+        />
+      </div>
+    );
+  }
+);
+
+DesktopAdBanner.displayName = 'DesktopAdBanner';
 
 // Placeholder component for development
 export const AdPlaceholder = forwardRef<HTMLDivElement, { className?: string }>(

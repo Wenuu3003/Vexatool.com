@@ -1,1 +1,10 @@
 project_id = "mrjefpimgfzzjwoidocf"
+
+[functions.generate-tags]
+verify_jwt = true
+
+[functions.ai-chat]
+verify_jwt = true
+
+[functions.perplexity-search]
+verify_jwt = true

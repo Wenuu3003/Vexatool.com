@@ -105,7 +105,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
           </a>
         </div>
 
-        {/* Bottom */}
+        {/* Bottom - Copyright, Privacy, Terms */}
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
@@ -113,13 +113,10 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
             </p>
             <div className="flex items-center gap-6">
               <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Privacy
+                Privacy Policy
               </a>
               <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Terms
-              </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Cookies
+                Terms & Conditions
               </a>
             </div>
           </div>

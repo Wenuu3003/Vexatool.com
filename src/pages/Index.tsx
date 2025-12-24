@@ -4,77 +4,42 @@ import { AIToolsBanner } from "@/components/AIToolsBanner";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { Footer } from "@/components/Footer";
 import { Helmet } from "react-helmet";
-import { StructuredData } from "@/components/StructuredData";
 
 const Index = () => {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Mypdfs - Free Online PDF Tools",
-    "description": "Free online PDF tools to merge, split, compress, convert, edit PDFs. Also includes QR code tools, currency converter, SEO analyzer, calculator and more.",
-    "url": "https://mypdfs.lovable.app",
-    "applicationCategory": "UtilitiesApplication",
-    "operatingSystem": "Any",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "featureList": [
-      "Merge PDF",
-      "Split PDF", 
-      "Compress PDF",
-      "PDF to Word",
-      "Word to PDF",
-      "PDF to Excel",
-      "Excel to PDF",
-      "PDF to Image",
-      "Image to PDF",
-      "JPG to PDF",
-      "PNG to PDF",
-      "PDF to JPG",
-      "PDF to PNG",
-      "PDF to HTML",
-      "QR Code Generator",
-      "QR Code Scanner",
-      "Currency Converter",
-      "SEO Analyzer",
-      "Tags Generator",
-      "Calculator",
-      "File Compressor"
-    ]
-  };
-
   return (
     <>
       <Helmet>
-        <title>Mypdfs - Free Online PDF Tools, QR Code Generator, Currency Converter & More</title>
-        <meta name="description" content="Free online tools to merge, split, compress, convert PDF files. QR code generator & scanner, currency converter, SEO analyzer, calculator. 100% free, no registration required." />
-        <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF to Word, Word to PDF, PDF to Excel, JPG to PDF, PNG to PDF, QR code generator, QR scanner, currency converter, SEO tool, free online tools" />
-        <meta name="robots" content="index, follow" />
+        <title>Mypdfs - Free Online PDF Tools, QR Code Generator & Scanner | 30+ Tools</title>
+        <meta name="description" content="Free online PDF editor with 30+ tools. Merge, split, compress, convert PDFs instantly. QR code generator with custom logos. AI chat assistant. Calculator, currency converter, SEO analyzer. 100% free, no registration." />
+        <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF to Word, Word to PDF, PDF to Excel, JPG to PDF, PNG to PDF, QR code generator, QR code scanner, currency converter, SEO tool, free online tools, AI chat, file compressor" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="author" content="Mypdfs" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/" />
+        <meta name="publisher" content="Mypdfs" />
+        <link rel="canonical" href="https://www.mypdfs.com/" />
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Mypdfs - Free Online PDF Tools & Utilities" />
-        <meta property="og:description" content="Free online tools for PDF editing, QR codes, currency conversion, SEO analysis and more. No registration required." />
-        <meta property="og:url" content="https://mypdfs.lovable.app/" />
+        <meta property="og:title" content="Mypdfs - Free Online PDF Tools & Utilities | 30+ Tools" />
+        <meta property="og:description" content="Free online PDF editor with 30+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI chat. Calculator, SEO analyzer. No registration required." />
+        <meta property="og:url" content="https://www.mypdfs.com/" />
         <meta property="og:site_name" content="Mypdfs" />
+        <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="en_US" />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@Mypdfs5" />
+        <meta name="twitter:creator" content="@Mypdfs5" />
         <meta name="twitter:title" content="Mypdfs - Free Online PDF Tools & Utilities" />
-        <meta name="twitter:description" content="Free online tools for PDF editing, QR codes, currency conversion, SEO analysis and more." />
+        <meta name="twitter:description" content="Free online PDF editor with 30+ tools. QR code generator & scanner, AI chat, currency converter, SEO analyzer. 100% free." />
+        <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
       </Helmet>
-      
-      <script type="application/ld+json">
-        {JSON.stringify(structuredData)}
-      </script>
       
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1" role="main">
           <Hero />
           <AIToolsBanner />
           <ToolsGrid />

@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { AIToolsBanner } from "@/components/AIToolsBanner";
 import { ToolsGrid } from "@/components/ToolsGrid";
 import { Footer } from "@/components/Footer";
+import { AdBanner } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
 
 const Index = () => {
@@ -41,8 +42,19 @@ const Index = () => {
         <Header />
         <main className="flex-1" role="main">
           <Hero />
+          
+          {/* Ad after hero */}
+          <div className="container mx-auto px-4 py-4">
+            <AdBanner network="google" slot="1234567890" format="horizontal" className="max-w-4xl mx-auto" />
+          </div>
+          
           <AIToolsBanner />
           <ToolsGrid />
+          
+          {/* Ad after tools grid */}
+          <div className="container mx-auto px-4 py-8">
+            <AdBanner network="google" slot="1234567891" format="horizontal" className="max-w-4xl mx-auto" />
+          </div>
         </main>
         <Footer />
       </div>

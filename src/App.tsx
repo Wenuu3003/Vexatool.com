@@ -8,6 +8,7 @@ import { CookieConsent } from "./components/CookieConsent";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Account from "./pages/Account";
 import MergePDF from "./pages/tools/MergePDF";
 import SplitPDF from "./pages/tools/SplitPDF";
 import CompressPDF from "./pages/tools/CompressPDF";
@@ -59,6 +60,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/account" element={<Account />} />
             {/* Utility Tools */}
             <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
             <Route path="/qr-code-generator" element={<QRCodeGenerator />} />

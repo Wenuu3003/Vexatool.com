@@ -183,6 +183,17 @@ If asked about using tools on the website, guide them to the appropriate tool.`
     const data = await response.json();
     const assistantResponse = data.choices?.[0]?.message?.content || "I couldn't generate a response.";
 
+    // Log audit event for successful AI chat
+    try {
+      await supabaseClient.from('audit_log').insert([{
+        user_id: user.id,
+        action_type: 'ai_chat',
+        action_details: { message_count: (messages as ChatMessage[]).length },
+      }]);
+    } catch (auditErr) {
+      console.error("Failed to log audit event:", auditErr);
+    }
+
     return new Response(
       JSON.stringify({ response: assistantResponse }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -192,7 +203,7 @@ If asked about using tools on the website, guide them to the appropriate tool.`
     const origin = req.headers.get('origin');
     const corsHeaders = getCorsHeaders(origin);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

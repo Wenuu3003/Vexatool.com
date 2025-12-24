@@ -35,6 +35,16 @@ import AIChat from "./pages/tools/AIChat";
 import GoogleDriveToPDF from "./pages/tools/GoogleDriveToPDF";
 import CompressImage from "./pages/tools/CompressImage";
 import AISearch from "./pages/tools/AISearch";
+import WordToPDF from "./pages/tools/WordToPDF";
+import WordToExcel from "./pages/tools/WordToExcel";
+import ExcelToWord from "./pages/tools/ExcelToWord";
+import PDFToImage from "./pages/tools/PDFToImage";
+import JPGToPDF from "./pages/tools/JPGToPDF";
+import PDFToJPG from "./pages/tools/PDFToJPG";
+import PNGToPDF from "./pages/tools/PNGToPDF";
+import PDFToPNG from "./pages/tools/PDFToPNG";
+import PDFToHTML from "./pages/tools/PDFToHTML";
+import FileCompressor from "./pages/tools/FileCompressor";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +58,17 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            {/* Utility Tools */}
+            <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
+            <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
+            <Route path="/currency-converter" element={<CurrencyConverter />} />
+            <Route path="/seo-tool" element={<SEOTool />} />
+            <Route path="/tags-generator" element={<TagsGenerator />} />
+            <Route path="/calculator" element={<Calculator />} />
+            {/* AI Tools */}
+            <Route path="/ai-chat" element={<AIChat />} />
+            <Route path="/ai-search" element={<AISearch />} />
+            {/* PDF Tools */}
             <Route path="/merge-pdf" element={<MergePDF />} />
             <Route path="/split-pdf" element={<SplitPDF />} />
             <Route path="/compress-pdf" element={<CompressPDF />} />
@@ -60,22 +81,26 @@ const App = () => (
             <Route path="/protect-pdf" element={<ProtectPDF />} />
             <Route path="/organize-pdf" element={<OrganizePDF />} />
             <Route path="/repair-pdf" element={<RepairPDF />} />
+            <Route path="/pdf-to-image" element={<PDFToImage />} />
+            <Route path="/pdf-to-jpg" element={<PDFToJPG />} />
+            <Route path="/pdf-to-png" element={<PDFToPNG />} />
+            <Route path="/pdf-to-html" element={<PDFToHTML />} />
+            <Route path="/pdf-to-powerpoint" element={<PDFToPowerPoint />} />
+            <Route path="/pdf-to-excel" element={<PDFToExcel />} />
+            {/* Image Tools */}
             <Route path="/image-to-pdf" element={<ImageToPDF />} />
-            <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
-            <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
+            <Route path="/jpg-to-pdf" element={<JPGToPDF />} />
+            <Route path="/png-to-pdf" element={<PNGToPDF />} />
+            <Route path="/compress-image" element={<CompressImage />} />
+            <Route path="/file-compressor" element={<FileCompressor />} />
+            {/* Document Converters */}
+            <Route path="/word-to-pdf" element={<WordToPDF />} />
+            <Route path="/word-to-excel" element={<WordToExcel />} />
+            <Route path="/excel-to-word" element={<ExcelToWord />} />
             <Route path="/html-to-pdf" element={<HTMLToPDF />} />
             <Route path="/ppt-to-pdf" element={<PPTToPDF />} />
             <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
-            <Route path="/pdf-to-powerpoint" element={<PDFToPowerPoint />} />
-            <Route path="/pdf-to-excel" element={<PDFToExcel />} />
-            <Route path="/calculator" element={<Calculator />} />
-            <Route path="/tags-generator" element={<TagsGenerator />} />
-            <Route path="/currency-converter" element={<CurrencyConverter />} />
-            <Route path="/seo-tool" element={<SEOTool />} />
-            <Route path="/ai-chat" element={<AIChat />} />
             <Route path="/google-drive-to-pdf" element={<GoogleDriveToPDF />} />
-            <Route path="/compress-image" element={<CompressImage />} />
-            <Route path="/ai-search" element={<AISearch />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -132,12 +132,15 @@ const PNGToPDF = () => {
                 <div key={index} className="relative group">
                   <img
                     src={URL.createObjectURL(file)}
-                    alt={file.name}
+                    alt={`Selected image: ${file.name}`}
                     className="w-full h-24 object-cover rounded-lg bg-gray-100"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <button
                     onClick={() => removeFile(index)}
                     className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    aria-label={`Remove ${file.name}`}
                   >
                     ×
                   </button>

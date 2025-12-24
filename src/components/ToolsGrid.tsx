@@ -294,13 +294,18 @@ export const ToolsGrid = () => {
   return (
     <section id="tools-grid" className="py-12 md:py-16 bg-background" aria-labelledby="tools-section-heading">
       <div className="container mx-auto px-4">
-        <h2 id="tools-section-heading" className="sr-only">All Available PDF Tools</h2>
+        <h2 id="tools-section-heading" className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">
+          All Free Online Tools
+        </h2>
+        <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10">
+          Choose from our collection of 30+ free tools for PDF editing, QR codes, file conversion, and more.
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" role="list" aria-label="PDF and utility tools">
           {tools.map((tool, index) => (
             <div
               key={tool.title}
               className="animate-fade-in"
-              style={{ animationDelay: `${index * 0.05}s` }}
+              style={{ animationDelay: `${Math.min(index * 0.03, 0.3)}s` }}
               role="listitem"
             >
               <ToolCard {...tool} />

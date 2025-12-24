@@ -1,7 +1,18 @@
+# Robots.txt for Mypdfs
+# https://www.mypdfs.com
+
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
 Allow: /
 
 User-agent: Twitterbot
@@ -10,7 +21,13 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
 Allow: /
 
-Sitemap: https://mypdfs.lovable.app/sitemap.xml
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_functions/
+
+# Sitemap location
+Sitemap: https://www.mypdfs.com/sitemap.xml

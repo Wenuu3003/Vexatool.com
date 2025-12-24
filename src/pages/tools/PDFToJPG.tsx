@@ -188,8 +188,10 @@ const PDFToJPG = () => {
                 <div key={index} className="relative group border rounded-lg overflow-hidden">
                   <img
                     src={img}
-                    alt={`Page ${index + 1}`}
+                    alt={`PDF page ${index + 1} converted to JPG image`}
                     className="w-full h-40 object-contain bg-gray-100"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Button

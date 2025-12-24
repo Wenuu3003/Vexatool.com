@@ -112,24 +112,59 @@ const QRCodeScanner = () => {
       setScannedResult(null);
       setPreviewImage(null);
       
+      // First check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        toast.error("Camera not supported in this browser");
+        return;
+      }
+
+      // Set scanning state immediately to show video element
+      setIsScanning(true);
+      
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }
+        video: { 
+          facingMode: { ideal: "environment" },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
       });
       
       streamRef.current = stream;
       
+      // Wait for next tick to ensure video element is mounted
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.onloadedmetadata = () => {
-          videoRef.current?.play();
-          setIsScanning(true);
-          // Start scanning after video is ready
-          animationFrameRef.current = requestAnimationFrame(scanFrame);
+        
+        // Use both onloadedmetadata and oncanplay for better compatibility
+        const startScanning = () => {
+          if (videoRef.current) {
+            videoRef.current.play().then(() => {
+              animationFrameRef.current = requestAnimationFrame(scanFrame);
+            }).catch(err => {
+              console.error("Video play error:", err);
+            });
+          }
         };
+        
+        videoRef.current.onloadedmetadata = startScanning;
+        videoRef.current.oncanplay = startScanning;
       }
     } catch (error) {
       console.error("Camera error:", error);
-      toast.error("Could not access camera. Please check permissions.");
+      setIsScanning(false);
+      if (error instanceof DOMException) {
+        if (error.name === 'NotAllowedError') {
+          toast.error("Camera access denied. Please allow camera permissions.");
+        } else if (error.name === 'NotFoundError') {
+          toast.error("No camera found on this device.");
+        } else {
+          toast.error("Could not access camera. Please check permissions.");
+        }
+      } else {
+        toast.error("Could not access camera. Please check permissions.");
+      }
     }
   };
 
@@ -210,6 +245,7 @@ const QRCodeScanner = () => {
                 className="w-full h-full object-cover" 
                 playsInline 
                 muted
+                autoPlay
                 aria-label="Camera feed for QR code scanning"
               />
               <canvas ref={canvasRef} className="hidden" aria-hidden="true" />

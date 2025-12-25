@@ -1,14 +1,21 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { QrCode, Download, Upload, Cloud, Image, Type } from "lucide-react";
+import { QrCode, Download, Upload, Cloud, Image, Type, List, Trash2, X } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import QRCode from "qrcode";
 import { Helmet } from "react-helmet";
+
+interface BatchQRItem {
+  url: string;
+  dataUrl: string | null;
+  error?: string;
+}
 
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
@@ -23,6 +30,9 @@ const QRCodeGenerator = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [batchUrls, setBatchUrls] = useState("");
+  const [batchQRCodes, setBatchQRCodes] = useState<BatchQRItem[]>([]);
+  const [isBatchGenerating, setIsBatchGenerating] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -233,6 +243,109 @@ const QRCodeGenerator = () => {
     });
   };
 
+  // Batch QR generation
+  const generateBatchQR = async () => {
+    const urls = batchUrls
+      .split('\n')
+      .map(url => url.trim())
+      .filter(url => url.length > 0);
+
+    if (urls.length === 0) {
+      toast({
+        title: "No URLs",
+        description: "Please enter at least one URL.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (urls.length > 50) {
+      toast({
+        title: "Too many URLs",
+        description: "Maximum 50 URLs allowed per batch.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsBatchGenerating(true);
+    const results: BatchQRItem[] = [];
+
+    for (const url of urls) {
+      if (url.length > 2000) {
+        results.push({ url, dataUrl: null, error: "URL too long" });
+        continue;
+      }
+
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+
+        await QRCode.toCanvas(canvas, url, {
+          width: size,
+          margin: 2,
+          color: { dark: darkColor, light: lightColor },
+          errorCorrectionLevel: 'M',
+        });
+
+        results.push({ url, dataUrl: canvas.toDataURL("image/png") });
+      } catch {
+        results.push({ url, dataUrl: null, error: "Failed to generate" });
+      }
+    }
+
+    setBatchQRCodes(results);
+    setIsBatchGenerating(false);
+
+    const successCount = results.filter(r => r.dataUrl).length;
+    toast({
+      title: "Batch Complete",
+      description: `Generated ${successCount} of ${urls.length} QR codes.`,
+    });
+  };
+
+  const downloadBatchQR = (item: BatchQRItem, index: number) => {
+    if (!item.dataUrl) return;
+    const link = document.createElement("a");
+    link.href = item.dataUrl;
+    const filename = item.url.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+    link.download = `qrcode_${index + 1}_${filename}.png`;
+    link.click();
+  };
+
+  const downloadAllBatchQR = async () => {
+    const validCodes = batchQRCodes.filter(item => item.dataUrl);
+    if (validCodes.length === 0) return;
+
+    for (let i = 0; i < validCodes.length; i++) {
+      const item = validCodes[i];
+      if (item.dataUrl) {
+        const link = document.createElement("a");
+        link.href = item.dataUrl;
+        const filename = item.url.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 30);
+        link.download = `qrcode_${i + 1}_${filename}.png`;
+        link.click();
+        // Small delay to prevent browser blocking multiple downloads
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    }
+
+    toast({
+      title: "Downloaded!",
+      description: `${validCodes.length} QR codes downloaded.`,
+    });
+  };
+
+  const removeBatchItem = (index: number) => {
+    setBatchQRCodes(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const clearBatch = () => {
+    setBatchQRCodes([]);
+    setBatchUrls("");
+  };
+
   return (
     <>
       <Helmet>
@@ -252,17 +365,22 @@ const QRCodeGenerator = () => {
           {/* Controls */}
           <div className="space-y-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="text" className="gap-2">
-                  <Type className="w-4 h-4" />
-                  Text/URL
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="text" className="gap-1 text-xs sm:text-sm">
+                  <Type className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Text/URL</span>
+                  <span className="sm:hidden">URL</span>
                 </TabsTrigger>
-                <TabsTrigger value="image" className="gap-2">
-                  <Image className="w-4 h-4" />
+                <TabsTrigger value="batch" className="gap-1 text-xs sm:text-sm">
+                  <List className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Batch
+                </TabsTrigger>
+                <TabsTrigger value="image" className="gap-1 text-xs sm:text-sm">
+                  <Image className="w-3 h-3 sm:w-4 sm:h-4" />
                   Image
                 </TabsTrigger>
-                <TabsTrigger value="drive" className="gap-2">
-                  <Cloud className="w-4 h-4" />
+                <TabsTrigger value="drive" className="gap-1 text-xs sm:text-sm">
+                  <Cloud className="w-3 h-3 sm:w-4 sm:h-4" />
                   Drive
                 </TabsTrigger>
               </TabsList>
@@ -277,6 +395,52 @@ const QRCodeGenerator = () => {
                     onChange={(e) => setText(e.target.value)}
                     className="text-lg"
                   />
+                </div>
+              </TabsContent>
+
+              <TabsContent value="batch" className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="batch-urls">Enter URLs (one per line)</Label>
+                  <Textarea
+                    id="batch-urls"
+                    placeholder={"https://example.com\nhttps://google.com\nhttps://github.com"}
+                    value={batchUrls}
+                    onChange={(e) => setBatchUrls(e.target.value)}
+                    className="min-h-[120px] font-mono text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Enter up to 50 URLs, one per line. Each will generate a separate QR code.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={generateBatchQR} 
+                    disabled={isBatchGenerating || !batchUrls.trim()}
+                    className="gap-2"
+                  >
+                    <QrCode className="w-4 h-4" />
+                    {isBatchGenerating ? "Generating..." : "Generate All"}
+                  </Button>
+                  {batchQRCodes.length > 0 && (
+                    <>
+                      <Button 
+                        variant="outline" 
+                        onClick={downloadAllBatchQR}
+                        className="gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download All
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        onClick={clearBatch}
+                        className="gap-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Clear
+                      </Button>
+                    </>
+                  )}
                 </div>
               </TabsContent>
 
@@ -392,7 +556,66 @@ const QRCodeGenerator = () => {
 
           {/* Preview */}
           <div className="flex flex-col items-center justify-center space-y-6">
-            {qrDataUrl ? (
+            {activeTab === "batch" ? (
+              batchQRCodes.length > 0 ? (
+                <div className="w-full space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                  <p className="text-sm text-muted-foreground text-center">
+                    {batchQRCodes.filter(r => r.dataUrl).length} QR codes generated
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {batchQRCodes.map((item, index) => (
+                      <div 
+                        key={index} 
+                        className="relative group bg-card border rounded-lg p-2 flex flex-col items-center"
+                      >
+                        {item.dataUrl ? (
+                          <>
+                            <img 
+                              src={item.dataUrl} 
+                              alt={`QR ${index + 1}`} 
+                              className="w-full max-w-[100px] rounded"
+                            />
+                            <p className="text-xs text-muted-foreground mt-1 truncate w-full text-center" title={item.url}>
+                              {item.url.length > 20 ? item.url.substring(0, 20) + '...' : item.url}
+                            </p>
+                            <div className="flex gap-1 mt-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => downloadBatchQR(item, index)}
+                                className="h-7 px-2 text-xs"
+                              >
+                                <Download className="w-3 h-3" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="ghost"
+                                onClick={() => removeBatchItem(index)}
+                                className="h-7 px-2 text-xs text-destructive hover:text-destructive"
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-center py-4">
+                            <p className="text-xs text-destructive">{item.error || "Failed"}</p>
+                            <p className="text-xs text-muted-foreground truncate w-full" title={item.url}>
+                              {item.url.substring(0, 15)}...
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <List className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                  <p>Enter URLs and click "Generate All" to create multiple QR codes</p>
+                </div>
+              )
+            ) : qrDataUrl ? (
               <>
                 <div className="p-4 bg-white rounded-xl shadow-lg">
                   <img src={qrDataUrl} alt="QR Code" className="max-w-full" />
@@ -414,7 +637,7 @@ const QRCodeGenerator = () => {
                 <QrCode className="w-16 h-16 mx-auto mb-4 opacity-20" />
                 <p>
                   {activeTab === "text" && "Enter text or URL to generate a QR code"}
-                  {activeTab === "image" && "Upload an image to generate a QR code"}
+                  {activeTab === "image" && "Enter an image URL to generate a QR code"}
                   {activeTab === "drive" && "Paste a Google Drive link to generate a QR code"}
                 </p>
               </div>

@@ -12,7 +12,7 @@ interface SidebarAdProps {
   className?: string;
 }
 
-export const SidebarAd = ({ slot = "3456789012", className = "" }: SidebarAdProps) => {
+export const SidebarAd = ({ slot = "8307043387", className = "" }: SidebarAdProps) => {
   const [hasConsent, setHasConsent] = useState(false);
   const adInitialized = useRef(false);
 
@@ -55,7 +55,7 @@ export const SidebarAd = ({ slot = "3456789012", className = "" }: SidebarAdProp
   );
 };
 
-export const InArticleAd = ({ slot = "4567890123", className = "" }: SidebarAdProps) => {
+export const InArticleAd = ({ slot = "8307043387", className = "" }: SidebarAdProps) => {
   const [hasConsent, setHasConsent] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const adInitialized = useRef(false);
@@ -108,7 +108,7 @@ export const InArticleAd = ({ slot = "4567890123", className = "" }: SidebarAdPr
 };
 
 // Anchor/Sticky ad for mobile (shows at bottom of screen)
-export const MobileAnchorAd = ({ slot = "5678901234" }: { slot?: string }) => {
+export const MobileAnchorAd = ({ slot = "8307043387" }: { slot?: string }) => {
   const [hasConsent, setHasConsent] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const adInitialized = useRef(false);

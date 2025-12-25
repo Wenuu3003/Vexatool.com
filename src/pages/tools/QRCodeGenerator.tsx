@@ -47,6 +47,29 @@ const QRCodeGenerator = () => {
       return;
     }
 
+    // QR codes have a max data capacity. Data URLs are too long.
+    // For image tab, we should inform the user this feature needs a hosted URL
+    if (activeTab === "image" && content.startsWith("data:")) {
+      toast({
+        title: "Image QR Limitation",
+        description: "QR codes cannot store full images. Please use Text/URL tab with a link to your hosted image instead.",
+        variant: "destructive",
+      });
+      setQrDataUrl(null);
+      return;
+    }
+
+    // Check content length - QR codes have practical limits (~2000 chars for reliable scanning)
+    if (content.length > 2000) {
+      toast({
+        title: "Content too long",
+        description: "QR code content is too long. Please use a shorter URL or text.",
+        variant: "destructive",
+      });
+      setQrDataUrl(null);
+      return;
+    }
+
     try {
       const canvas = document.createElement("canvas");
       canvas.width = size;
@@ -78,6 +101,9 @@ const QRCodeGenerator = () => {
             
             setQrDataUrl(canvas.toDataURL("image/png"));
           };
+          img.onerror = () => {
+            setQrDataUrl(canvas.toDataURL("image/png"));
+          };
           img.src = logo;
         }
       } else {
@@ -89,11 +115,12 @@ const QRCodeGenerator = () => {
       }
       toast({
         title: "Error",
-        description: "Failed to generate QR code.",
+        description: "Failed to generate QR code. Content may be too long.",
         variant: "destructive",
       });
+      setQrDataUrl(null);
     }
-  }, [getQRContent, size, logo, logoSize, darkColor, lightColor]);
+  }, [getQRContent, activeTab, size, logo, logoSize, darkColor, lightColor]);
 
   useEffect(() => {
     generateQR();
@@ -255,45 +282,18 @@ const QRCodeGenerator = () => {
 
               <TabsContent value="image" className="space-y-4 mt-4">
                 <div className="space-y-2">
-                  <Label>Upload Image to QR Code</Label>
+                  <Label>Image URL for QR Code</Label>
                   <p className="text-sm text-muted-foreground">
-                    Upload an image and generate a QR code that links to it
+                    Enter a URL to your hosted image (e.g., from Google Drive, Imgur, or any image hosting service)
                   </p>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    ref={imageInputRef}
-                    className="hidden"
+                  <Input
+                    placeholder="https://example.com/your-image.jpg"
+                    value={uploadedImageUrl || ""}
+                    onChange={(e) => setUploadedImageUrl(e.target.value)}
                   />
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => imageInputRef.current?.click()}
-                      disabled={isLoading}
-                      className="gap-2"
-                    >
-                      <Upload className="w-4 h-4" />
-                      {isLoading ? "Loading..." : "Upload Image"}
-                    </Button>
-                    {uploadedImageUrl && (
-                      <Button variant="destructive" onClick={clearImage}>
-                        Clear
-                      </Button>
-                    )}
-                  </div>
-                  {uploadedImageUrl && (
-                    <div className="mt-3 p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
-                      <p className="text-sm text-green-700 dark:text-green-300">
-                        Image uploaded! QR code will link to your image.
-                      </p>
-                      <img 
-                        src={uploadedImageUrl} 
-                        alt="Uploaded" 
-                        className="mt-2 max-h-24 rounded"
-                      />
-                    </div>
-                  )}
+                  <p className="text-xs text-muted-foreground">
+                    Tip: QR codes link to URLs, not store images. Use an image hosting service and paste the link here.
+                  </p>
                 </div>
               </TabsContent>
 

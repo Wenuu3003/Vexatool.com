@@ -5,11 +5,6 @@ declare global {
   interface Window {
     adsbygoogle: unknown[];
     __adsenseLoaded?: boolean;
-    // requestIdleCallback is not in the default TS lib for all targets
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    requestIdleCallback?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cancelIdleCallback?: any;
   }
 }
 
@@ -42,10 +37,8 @@ export function AdSenseLoader({ delayMs = 2500 }: { delayMs?: number }) {
     // Prefer idle time on capable browsers to reduce main-thread contention.
     if ("requestIdleCallback" in window) {
       window.clearTimeout(timeoutId);
-      // @ts-expect-error requestIdleCallback is not typed in some TS configs
       const idleId = window.requestIdleCallback(load, { timeout: delayMs + 500 });
       return () => {
-        // @ts-expect-error cancelIdleCallback is not typed in some TS configs
         if ("cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
       };
     }

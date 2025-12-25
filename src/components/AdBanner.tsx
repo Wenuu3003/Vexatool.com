@@ -70,10 +70,8 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
 
         if ('requestIdleCallback' in window) {
           window.clearTimeout(timeoutId);
-          // @ts-expect-error requestIdleCallback not typed in some TS configs
           const idleId = window.requestIdleCallback(run, { timeout: 2500 });
           return () => {
-            // @ts-expect-error cancelIdleCallback not typed in some TS configs
             if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
           };
         }
@@ -192,10 +190,8 @@ export const MobileAdBanner = forwardRef<HTMLDivElement, { slot?: string; classN
 
       if ('requestIdleCallback' in window) {
         window.clearTimeout(timeoutId);
-        // @ts-expect-error requestIdleCallback not typed in some TS configs
         const idleId = window.requestIdleCallback(run, { timeout: 2500 });
         return () => {
-          // @ts-expect-error cancelIdleCallback not typed in some TS configs
           if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
         };
       }
@@ -254,10 +250,8 @@ export const DesktopAdBanner = forwardRef<HTMLDivElement, { slot?: string; class
 
       if ('requestIdleCallback' in window) {
         window.clearTimeout(timeoutId);
-        // @ts-expect-error requestIdleCallback not typed in some TS configs
         const idleId = window.requestIdleCallback(run, { timeout: 2500 });
         return () => {
-          // @ts-expect-error cancelIdleCallback not typed in some TS configs
           if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
         };
       }

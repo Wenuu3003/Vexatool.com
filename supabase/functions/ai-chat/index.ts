@@ -11,7 +11,7 @@ const ALLOWED_ORIGINS = [
 const isLovableAppOrigin = (origin: string) => {
   try {
     const url = new URL(origin);
-    return url.hostname.endsWith(".lovable.app");
+    return url.hostname.endsWith(".lovable.app") || url.hostname.endsWith(".lovableproject.com");
   } catch {
     return false;
   }

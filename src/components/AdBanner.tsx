@@ -52,17 +52,36 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(
       const initializedAds = getInitializedAds();
 
       if (network === 'google' && !initializedAds.has(adKey)) {
-        try {
-          if (typeof window !== 'undefined' && window.adsbygoogle) {
-            initializedAds.add(adKey);
-            window.adsbygoogle.push({});
+        const run = () => {
+          try {
+            if (typeof window !== 'undefined' && window.adsbygoogle) {
+              initializedAds.add(adKey);
+              window.adsbygoogle.push({});
+            }
+          } catch (error) {
+            if (import.meta.env.DEV) {
+              console.error('AdSense error:', error);
+            }
           }
-        } catch (error) {
-          if (import.meta.env.DEV) {
-            console.error('AdSense error:', error);
-          }
+        };
+
+        // Defer ad initialization to reduce main-thread blocking on mobile.
+        const timeoutId = window.setTimeout(run, 1200);
+
+        if ('requestIdleCallback' in window) {
+          window.clearTimeout(timeoutId);
+          // @ts-expect-error requestIdleCallback not typed in some TS configs
+          const idleId = window.requestIdleCallback(run, { timeout: 2500 });
+          return () => {
+            // @ts-expect-error cancelIdleCallback not typed in some TS configs
+            if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+          };
         }
-      } else if (network === 'effectivegate' && !scriptLoaded.current) {
+
+        return () => window.clearTimeout(timeoutId);
+      }
+
+      if (network === 'effectivegate' && !scriptLoaded.current) {
         scriptLoaded.current = true;
         const script = document.createElement('script');
         script.src = 'https://pl28322651.effectivegatecpm.com/5d/b1/c4/5db1c48fa530f15ff066f2b7992b8f2d.js';
@@ -154,8 +173,9 @@ export const MobileAdBanner = forwardRef<HTMLDivElement, { slot?: string; classN
 
       const adKey = `mobile-${slot}-${uniqueId}`;
       const initializedAds = getInitializedAds();
+      if (initializedAds.has(adKey)) return;
 
-      if (!initializedAds.has(adKey)) {
+      const run = () => {
         try {
           if (typeof window !== 'undefined' && window.adsbygoogle) {
             initializedAds.add(adKey);
@@ -166,7 +186,21 @@ export const MobileAdBanner = forwardRef<HTMLDivElement, { slot?: string; classN
             console.error('AdSense mobile error:', error);
           }
         }
+      };
+
+      const timeoutId = window.setTimeout(run, 1200);
+
+      if ('requestIdleCallback' in window) {
+        window.clearTimeout(timeoutId);
+        // @ts-expect-error requestIdleCallback not typed in some TS configs
+        const idleId = window.requestIdleCallback(run, { timeout: 2500 });
+        return () => {
+          // @ts-expect-error cancelIdleCallback not typed in some TS configs
+          if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+        };
       }
+
+      return () => window.clearTimeout(timeoutId);
     }, [hasConsent, slot, uniqueId]);
 
     if (!hasConsent) return null;
@@ -201,8 +235,9 @@ export const DesktopAdBanner = forwardRef<HTMLDivElement, { slot?: string; class
 
       const adKey = `desktop-${slot}-${uniqueId}`;
       const initializedAds = getInitializedAds();
+      if (initializedAds.has(adKey)) return;
 
-      if (!initializedAds.has(adKey)) {
+      const run = () => {
         try {
           if (typeof window !== 'undefined' && window.adsbygoogle) {
             initializedAds.add(adKey);
@@ -213,7 +248,21 @@ export const DesktopAdBanner = forwardRef<HTMLDivElement, { slot?: string; class
             console.error('AdSense desktop error:', error);
           }
         }
+      };
+
+      const timeoutId = window.setTimeout(run, 1200);
+
+      if ('requestIdleCallback' in window) {
+        window.clearTimeout(timeoutId);
+        // @ts-expect-error requestIdleCallback not typed in some TS configs
+        const idleId = window.requestIdleCallback(run, { timeout: 2500 });
+        return () => {
+          // @ts-expect-error cancelIdleCallback not typed in some TS configs
+          if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+        };
       }
+
+      return () => window.clearTimeout(timeoutId);
     }, [hasConsent, slot, uniqueId]);
 
     if (!hasConsent) return null;

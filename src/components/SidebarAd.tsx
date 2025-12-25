@@ -23,16 +23,32 @@ export const SidebarAd = ({ slot = "8307043387", className = "" }: SidebarAdProp
   useEffect(() => {
     if (!hasConsent || adInitialized.current) return;
 
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
-        window.adsbygoogle.push({});
-        adInitialized.current = true;
+    const run = () => {
+      try {
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          window.adsbygoogle.push({});
+          adInitialized.current = true;
+        }
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.error('AdSense sidebar error:', error);
+        }
       }
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('AdSense sidebar error:', error);
-      }
+    };
+
+    const timeoutId = window.setTimeout(run, 1200);
+
+    if ('requestIdleCallback' in window) {
+      window.clearTimeout(timeoutId);
+      // @ts-expect-error requestIdleCallback not typed in some TS configs
+      const idleId = window.requestIdleCallback(run, { timeout: 2500 });
+      return () => {
+        // @ts-expect-error cancelIdleCallback not typed in some TS configs
+        if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      };
     }
+
+    return () => window.clearTimeout(timeoutId);
   }, [hasConsent]);
 
   if (!hasConsent) {
@@ -72,16 +88,32 @@ export const InArticleAd = ({ slot = "8307043387", className = "" }: SidebarAdPr
   useEffect(() => {
     if (!hasConsent || adInitialized.current) return;
 
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
-        window.adsbygoogle.push({});
-        adInitialized.current = true;
+    const run = () => {
+      try {
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          window.adsbygoogle.push({});
+          adInitialized.current = true;
+        }
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.error('AdSense in-article error:', error);
+        }
       }
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('AdSense in-article error:', error);
-      }
+    };
+
+    const timeoutId = window.setTimeout(run, 1200);
+
+    if ('requestIdleCallback' in window) {
+      window.clearTimeout(timeoutId);
+      // @ts-expect-error requestIdleCallback not typed in some TS configs
+      const idleId = window.requestIdleCallback(run, { timeout: 2500 });
+      return () => {
+        // @ts-expect-error cancelIdleCallback not typed in some TS configs
+        if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      };
     }
+
+    return () => window.clearTimeout(timeoutId);
   }, [hasConsent]);
 
   if (!hasConsent) {
@@ -125,16 +157,32 @@ export const MobileAnchorAd = ({ slot = "8307043387" }: { slot?: string }) => {
   useEffect(() => {
     if (!hasConsent || !isMobile || adInitialized.current) return;
 
-    try {
-      if (typeof window !== 'undefined' && window.adsbygoogle) {
-        window.adsbygoogle.push({});
-        adInitialized.current = true;
+    const run = () => {
+      try {
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          window.adsbygoogle.push({});
+          adInitialized.current = true;
+        }
+      } catch (error) {
+        if (import.meta.env.DEV) {
+          console.error('AdSense anchor error:', error);
+        }
       }
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error('AdSense anchor error:', error);
-      }
+    };
+
+    const timeoutId = window.setTimeout(run, 1200);
+
+    if ('requestIdleCallback' in window) {
+      window.clearTimeout(timeoutId);
+      // @ts-expect-error requestIdleCallback not typed in some TS configs
+      const idleId = window.requestIdleCallback(run, { timeout: 2500 });
+      return () => {
+        // @ts-expect-error cancelIdleCallback not typed in some TS configs
+        if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      };
     }
+
+    return () => window.clearTimeout(timeoutId);
   }, [hasConsent, isMobile]);
 
   if (!hasConsent || !isMobile) {

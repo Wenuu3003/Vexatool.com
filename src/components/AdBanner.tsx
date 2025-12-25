@@ -141,7 +141,7 @@ AdBanner.displayName = 'AdBanner';
 
 // Mobile-optimized banner (320x50 or 320x100)
 export const MobileAdBanner = forwardRef<HTMLDivElement, { slot?: string; className?: string }>(
-  ({ slot = "1234567890", className = '' }, ref) => {
+  ({ slot = "8307043387", className = '' }, ref) => {
     const uniqueId = useId();
     const [hasConsent, setHasConsent] = useState(false);
 
@@ -188,7 +188,7 @@ MobileAdBanner.displayName = 'MobileAdBanner';
 
 // Desktop-only leaderboard (728x90)
 export const DesktopAdBanner = forwardRef<HTMLDivElement, { slot?: string; className?: string }>(
-  ({ slot = "1234567891", className = '' }, ref) => {
+  ({ slot = "8307043387", className = '' }, ref) => {
     const uniqueId = useId();
     const [hasConsent, setHasConsent] = useState(false);
 

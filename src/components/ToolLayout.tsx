@@ -6,8 +6,10 @@ import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner
 import { SidebarAd, InArticleAd } from "@/components/SidebarAd";
 import { LucideIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Helmet } from "react-helmet";
+import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
 
 interface ToolLayoutProps {
   title: string;
@@ -26,18 +28,20 @@ export const ToolLayout = ({
   children,
   category = "UtilitiesApplication",
 }: ToolLayoutProps) => {
-  const location = useLocation();
-  const baseUrl = "https://mypdfs.lovable.app";
-  const currentUrl = `${baseUrl}${location.pathname}`;
+  const canonicalUrl = useCanonicalUrl();
 
   return (
     <>
+      <Helmet>
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:url" content={canonicalUrl} />
+      </Helmet>
       <StructuredData
         type="WebApplication"
         data={{
           name: title,
           description: description,
-          url: currentUrl,
+          url: canonicalUrl,
           applicationCategory: category,
           operatingSystem: "All",
           offers: {

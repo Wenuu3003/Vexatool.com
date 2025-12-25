@@ -5,8 +5,11 @@ import { ToolsGrid } from "@/components/ToolsGrid";
 import { Footer } from "@/components/Footer";
 import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
+import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
 
 const Index = () => {
+  const canonicalUrl = useCanonicalUrl();
+  
   return (
     <>
       <Helmet>
@@ -16,15 +19,15 @@ const Index = () => {
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="author" content="Mypdfs" />
         <meta name="publisher" content="Mypdfs" />
-        <link rel="canonical" href="https://www.mypdfs.com/" />
+        <link rel="canonical" href={canonicalUrl} />
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Mypdfs - Free Online PDF Tools & Utilities | 30+ Tools" />
         <meta property="og:description" content="Free online PDF editor with 30+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI chat. Calculator, SEO analyzer. No registration required." />
-        <meta property="og:url" content="https://www.mypdfs.com/" />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:site_name" content="Mypdfs" />
-        <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:locale" content="en_US" />
@@ -35,7 +38,7 @@ const Index = () => {
         <meta name="twitter:creator" content="@Mypdfs5" />
         <meta name="twitter:title" content="Mypdfs - Free Online PDF Tools & Utilities" />
         <meta name="twitter:description" content="Free online PDF editor with 30+ tools. QR code generator & scanner, AI chat, currency converter, SEO analyzer. 100% free." />
-        <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
       </Helmet>
       
       <div className="min-h-screen flex flex-col bg-background">

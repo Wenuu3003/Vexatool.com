@@ -1,12 +1,18 @@
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { AIToolsBanner } from "@/components/AIToolsBanner";
-import { ToolsGrid } from "@/components/ToolsGrid";
 import { Footer } from "@/components/Footer";
 import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
+
+const AIToolsBanner = lazy(() =>
+  import("@/components/AIToolsBanner").then((m) => ({ default: m.AIToolsBanner }))
+);
+
+const ToolsGrid = lazy(() =>
+  import("@/components/ToolsGrid").then((m) => ({ default: m.ToolsGrid }))
+);
 
 // Lazy load non-critical ads after initial render
 const LazyAds = () => {
@@ -92,13 +98,30 @@ const Index = () => {
                 </div>
               </div>
               
-              <AIToolsBanner />
+              <Suspense fallback={null}>
+                <AIToolsBanner />
+              </Suspense>
               
               <LazyAds />
             </>
           )}
           
-          <ToolsGrid />
+          <Suspense
+            fallback={
+              <section className="py-12 md:py-16 bg-background" aria-hidden="true">
+                <div className="container mx-auto px-4">
+                  <div className="h-8 w-64 mx-auto rounded-md loading-skeleton" />
+                  <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <div key={i} className="h-40 rounded-xl loading-skeleton" />
+                    ))}
+                  </div>
+                </div>
+              </section>
+            }
+          >
+            <ToolsGrid />
+          </Suspense>
           
           {showDeferredContent && (
             <>

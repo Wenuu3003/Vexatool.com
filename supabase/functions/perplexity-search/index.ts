@@ -1,19 +1,34 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Allowed origins for CORS - restrict to legitimate application domains
 const ALLOWED_ORIGINS = [
-  'https://mypdfs.lovable.app',
-  'https://mrjefpimgfzzjwoidocf.lovable.app',
-  'http://localhost:5173',
-  'http://localhost:8080',
+  "https://mypdfs.lovable.app",
+  "https://mrjefpimgfzzjwoidocf.lovable.app",
+  "http://localhost:5173",
+  "http://localhost:8080",
 ];
 
+const isLovableAppOrigin = (origin: string) => {
+  try {
+    const url = new URL(origin);
+    return url.hostname.endsWith(".lovable.app") || url.hostname.endsWith(".lovableproject.com");
+  } catch {
+    return false;
+  }
+};
+
 const getCorsHeaders = (origin: string | null) => {
-  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  const allowedOrigin =
+    origin && (ALLOWED_ORIGINS.includes(origin) || isLovableAppOrigin(origin))
+      ? origin
+      : "*";
+
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Max-Age": "86400",
+    Vary: "Origin",
   };
 };
 

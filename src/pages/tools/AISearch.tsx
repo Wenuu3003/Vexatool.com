@@ -61,8 +61,15 @@ const AISearch = () => {
 
       setResult(data);
     } catch (error) {
-      console.error("Search error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Search failed. Please try again.";
+      if (import.meta.env.DEV) {
+        console.error("Search error:", error);
+      }
+      const errorMessage = error instanceof Error 
+        ? error.message.includes("Failed to fetch")
+          ? "Network error. Please refresh and try again."
+          : error.message
+        : "Search failed. Please try again.";
+      
       if (errorMessage.includes("Authentication")) {
         toast.error("Please log in to use AI Search");
       } else {

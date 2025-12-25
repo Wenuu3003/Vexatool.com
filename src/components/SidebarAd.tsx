@@ -40,10 +40,8 @@ export const SidebarAd = ({ slot = "8307043387", className = "" }: SidebarAdProp
 
     if ('requestIdleCallback' in window) {
       window.clearTimeout(timeoutId);
-      // @ts-expect-error requestIdleCallback not typed in some TS configs
       const idleId = window.requestIdleCallback(run, { timeout: 2500 });
       return () => {
-        // @ts-expect-error cancelIdleCallback not typed in some TS configs
         if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
       };
     }
@@ -105,10 +103,8 @@ export const InArticleAd = ({ slot = "8307043387", className = "" }: SidebarAdPr
 
     if ('requestIdleCallback' in window) {
       window.clearTimeout(timeoutId);
-      // @ts-expect-error requestIdleCallback not typed in some TS configs
       const idleId = window.requestIdleCallback(run, { timeout: 2500 });
       return () => {
-        // @ts-expect-error cancelIdleCallback not typed in some TS configs
         if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
       };
     }
@@ -174,10 +170,8 @@ export const MobileAnchorAd = ({ slot = "8307043387" }: { slot?: string }) => {
 
     if ('requestIdleCallback' in window) {
       window.clearTimeout(timeoutId);
-      // @ts-expect-error requestIdleCallback not typed in some TS configs
       const idleId = window.requestIdleCallback(run, { timeout: 2500 });
       return () => {
-        // @ts-expect-error cancelIdleCallback not typed in some TS configs
         if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
       };
     }

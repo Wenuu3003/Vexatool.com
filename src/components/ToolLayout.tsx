@@ -37,10 +37,8 @@ export const ToolLayout = ({
 
     if ('requestIdleCallback' in window) {
       window.clearTimeout(timeoutId);
-      // @ts-expect-error requestIdleCallback not typed in some TS configs
       const idleId = window.requestIdleCallback(enable, { timeout: 2500 });
       return () => {
-        // @ts-expect-error cancelIdleCallback not typed in some TS configs
         if ('cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
       };
     }

@@ -1,5 +1,5 @@
 # Robots.txt for Mypdfs
-# https://www.mypdfs.com
+# https://mypdfs.in
 
 User-agent: Googlebot
 Allow: /
@@ -30,4 +30,4 @@ Disallow: /api/
 Disallow: /_functions/
 
 # Sitemap location
-Sitemap: https://www.mypdfs.com/sitemap.xml
+Sitemap: https://mypdfs.in/sitemap.xml

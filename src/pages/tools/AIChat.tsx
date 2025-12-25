@@ -114,9 +114,17 @@ const AIChat = () => {
       if (import.meta.env.DEV) {
         console.error("AI Chat error:", error);
       }
+
+      const message =
+        error instanceof Error
+          ? error.message.includes("Failed to fetch")
+            ? "Network error (blocked request). Please refresh and try again."
+            : error.message
+          : "Failed to get AI response. Please try again.";
+
       toast({
         title: "Error",
-        description: "Failed to get AI response. Please try again.",
+        description: message,
         variant: "destructive",
       });
     } finally {

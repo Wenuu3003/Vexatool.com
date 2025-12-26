@@ -3,6 +3,7 @@ import { FileArchive, Download, Trash2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { compressImageFile } from "@/lib/imageCompression";
 import { Helmet } from "react-helmet";
 import { Slider } from "@/components/ui/slider";
 import { PDFDocument } from "pdf-lib";
@@ -10,6 +11,7 @@ import { PDFDocument } from "pdf-lib";
 interface CompressedFile {
   original: File;
   compressed: Blob;
+  compressedType: string;
   originalSize: number;
   compressedSize: number;
   previewUrl?: string;
@@ -34,45 +36,8 @@ const FileCompressor = () => {
     setCompressedFiles([]);
   };
 
-  const compressImage = async (file: File, quality: number): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d')!;
-        
-        // Calculate new dimensions (max 2000px while maintaining aspect ratio)
-        let width = img.width;
-        let height = img.height;
-        const maxDimension = quality < 50 ? 1000 : quality < 80 ? 1500 : 2000;
-        
-        if (width > maxDimension || height > maxDimension) {
-          if (width > height) {
-            height = (height / width) * maxDimension;
-            width = maxDimension;
-          } else {
-            width = (width / height) * maxDimension;
-            height = maxDimension;
-          }
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        ctx.drawImage(img, 0, 0, width, height);
-        
-        canvas.toBlob(
-          (blob) => {
-            if (blob) resolve(blob);
-            else reject(new Error('Failed to compress image'));
-          },
-          file.type === 'image/png' ? 'image/png' : 'image/jpeg',
-          quality / 100
-        );
-      };
-      img.onerror = reject;
-      img.src = URL.createObjectURL(file);
-    });
-  };
+  // Image compression is handled by a shared helper so all tools stay consistent.
+
 
   const compressPDF = async (file: File): Promise<Blob> => {
     const arrayBuffer = await file.arrayBuffer();
@@ -111,22 +76,34 @@ const FileCompressor = () => {
     try {
       for (const file of files) {
         let compressed: Blob;
-        
-        if (file.type.startsWith('image/')) {
-          compressed = await compressImage(file, quality[0]);
-        } else if (file.type === 'application/pdf') {
+        let compressedType = file.type || "application/octet-stream";
+
+        if (file.type.startsWith("image/")) {
+          const maxDimension =
+            quality[0] < 50 ? 1000 : quality[0] < 80 ? 1500 : 2000;
+
+          const res = await compressImageFile(file, {
+            quality: quality[0],
+            maxDimension,
+          });
+
+          compressed = res.blob;
+          compressedType = res.outputType;
+        } else if (file.type === "application/pdf") {
           compressed = await compressPDF(file);
+          compressedType = "application/pdf";
         } else {
           // For other files, just pass through (can't compress)
           compressed = file;
         }
-        
+
         results.push({
           original: file,
           compressed,
+          compressedType,
           originalSize: file.size,
           compressedSize: compressed.size,
-          previewUrl: file.type.startsWith('image/') ? URL.createObjectURL(compressed) : undefined,
+          previewUrl: file.type.startsWith("image/") ? URL.createObjectURL(compressed) : undefined,
         });
       }
 
@@ -134,11 +111,14 @@ const FileCompressor = () => {
       
       const totalOriginal = results.reduce((acc, r) => acc + r.originalSize, 0);
       const totalCompressed = results.reduce((acc, r) => acc + r.compressedSize, 0);
-      const savings = ((totalOriginal - totalCompressed) / totalOriginal * 100);
+      const savings = Math.max(0, ((totalOriginal - totalCompressed) / totalOriginal * 100));
 
       toast({
         title: "Compression complete!",
-        description: `Reduced by ${savings.toFixed(1)}% (${formatSize(totalOriginal)} → ${formatSize(totalCompressed)})`,
+        description:
+          savings > 0.5
+            ? `Reduced by ${savings.toFixed(1)}% (${formatSize(totalOriginal)} → ${formatSize(totalCompressed)})`
+            : `Optimized. Try lowering quality for smaller files (${formatSize(totalOriginal)} → ${formatSize(totalCompressed)}).`,
       });
     } catch (error) {
       if (import.meta.env.DEV) {
@@ -164,7 +144,20 @@ const FileCompressor = () => {
     const url = URL.createObjectURL(compressed.compressed);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `compressed_${compressed.original.name}`;
+
+    const baseName = compressed.original.name.replace(/\.[^/.]+$/, "");
+    const ext =
+      compressed.compressedType === "application/pdf"
+        ? ".pdf"
+        : compressed.compressedType === "image/webp"
+          ? ".webp"
+          : compressed.compressedType === "image/png"
+            ? ".png"
+            : compressed.compressedType.startsWith("image/")
+              ? ".jpg"
+              : "";
+
+    link.download = `compressed_${baseName}${ext}`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -269,18 +262,24 @@ const FileCompressor = () => {
               
               <div className="space-y-2">
                 {compressedFiles.map((file, index) => {
-                  const savings = ((file.originalSize - file.compressedSize) / file.originalSize * 100);
+                  const percent = ((file.originalSize - file.compressedSize) / file.originalSize * 100);
+                  const label = percent > 0.5 ? `(-${percent.toFixed(1)}%)` : "(optimized)";
+
                   return (
                     <div key={index} className="flex items-center justify-between p-4 bg-muted rounded-lg">
                       <div className="flex items-center gap-4">
                         {file.previewUrl && (
-                          <img src={file.previewUrl} alt="" className="w-12 h-12 object-cover rounded" />
+                          <img
+                            src={file.previewUrl}
+                            alt={`${file.original.name} preview`}
+                            className="w-12 h-12 object-cover rounded"
+                          />
                         )}
                         <div>
                           <p className="font-medium truncate max-w-xs">{file.original.name}</p>
                           <p className="text-sm text-muted-foreground">
                             {formatSize(file.originalSize)} → {formatSize(file.compressedSize)}
-                            <span className="text-green-600 ml-2">(-{savings.toFixed(1)}%)</span>
+                            <span className="text-primary ml-2">{label}</span>
                           </p>
                         </div>
                       </div>

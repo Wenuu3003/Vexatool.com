@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { PenTool, Download, Trash2, Type } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
@@ -57,14 +57,26 @@ const SignPDF = () => {
     }
   };
 
-  const clearCanvas = () => {
+  const clearCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Fill with white background for proper PNG export
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     setSignatureDataUrl(null);
-  };
+  }, []);
+
+  // Initialize canvas with white background when component mounts or tab changes
+  const initCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
 
   const handleProcess = async () => {
     if (files.length === 0) {
@@ -189,10 +201,20 @@ const SignPDF = () => {
                     </Button>
                   </div>
                   <canvas
-                    ref={canvasRef}
+                    ref={(el) => {
+                      (canvasRef as React.MutableRefObject<HTMLCanvasElement | null>).current = el;
+                      if (el) {
+                        const ctx = el.getContext("2d");
+                        if (ctx) {
+                          ctx.fillStyle = "#ffffff";
+                          ctx.fillRect(0, 0, el.width, el.height);
+                        }
+                      }
+                    }}
                     width={400}
                     height={150}
-                    className="w-full border border-border rounded bg-background cursor-crosshair"
+                    className="w-full border border-border rounded cursor-crosshair"
+                    style={{ backgroundColor: "#ffffff" }}
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}

@@ -56,7 +56,7 @@ const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
 const QRCodeGenerator = lazy(() => import("./pages/tools/QRCodeGenerator"));
 const QRCodeScanner = lazy(() => import("./pages/tools/QRCodeScanner"));
 const Calculator = lazy(() => import("./pages/tools/Calculator"));
-const TagsGenerator = lazy(() => import("./pages/tools/TagsGenerator"));
+
 const CurrencyConverter = lazy(() => import("./pages/tools/CurrencyConverter"));
 const SEOTool = lazy(() => import("./pages/tools/SEOTool"));
 
@@ -91,7 +91,7 @@ const App = () => (
               <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
               <Route path="/currency-converter" element={<CurrencyConverter />} />
               <Route path="/seo-tool" element={<SEOTool />} />
-              <Route path="/tags-generator" element={<TagsGenerator />} />
+              
               <Route path="/calculator" element={<Calculator />} />
               {/* AI Tools */}
               <Route path="/ai-chat" element={<AIChat />} />

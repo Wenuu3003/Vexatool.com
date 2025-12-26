@@ -18,7 +18,22 @@ const QRCodeScanner = () => {
 
   const scanImage = useCallback((imageData: ImageData): boolean => {
     try {
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      // Try with default options first
+      let code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "attemptBoth",
+      });
+      
+      if (code) {
+        setScannedResult(code.data);
+        toast.success("QR Code found!");
+        return true;
+      }
+      
+      // If not found, try with dontInvert option
+      code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert",
+      });
+      
       if (code) {
         setScannedResult(code.data);
         toast.success("QR Code found!");
@@ -38,30 +53,73 @@ const QRCodeScanner = () => {
     setScannedResult(null);
     setPreviewImage(null);
 
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        toast.error("Failed to process image");
-        return;
-      }
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewImage(objectUrl);
 
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    
+    img.onload = () => {
+      // Try multiple scales for better detection
+      const scales = [1, 0.5, 2, 0.75, 1.5];
+      let found = false;
       
-      setPreviewImage(URL.createObjectURL(file));
+      for (const scale of scales) {
+        if (found) break;
+        
+        const canvas = document.createElement("canvas");
+        const scaledWidth = Math.floor(img.width * scale);
+        const scaledHeight = Math.floor(img.height * scale);
+        
+        // Limit max size for performance
+        const maxSize = 2000;
+        const finalScale = Math.min(1, maxSize / Math.max(scaledWidth, scaledHeight));
+        canvas.width = Math.floor(scaledWidth * finalScale);
+        canvas.height = Math.floor(scaledHeight * finalScale);
+        
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (!ctx) continue;
+
+        // Apply image smoothing for better quality
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        if (scanImage(imageData)) {
+          found = true;
+          break;
+        }
+        
+        // Try with increased contrast
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          // Convert to grayscale
+          const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+          // Increase contrast
+          const contrast = gray < 128 ? 0 : 255;
+          data[i] = contrast;
+          data[i + 1] = contrast;
+          data[i + 2] = contrast;
+        }
+        
+        if (scanImage(imageData)) {
+          found = true;
+          break;
+        }
+      }
       
-      if (!scanImage(imageData)) {
-        toast.error("No QR code found in image. Try a clearer image.");
+      if (!found) {
+        toast.error("No QR code found. Try a clearer image with good contrast.");
       }
     };
+    
     img.onerror = () => {
       toast.error("Failed to load image");
     };
-    img.src = URL.createObjectURL(file);
+    
+    img.src = objectUrl;
     
     // Reset file input
     e.target.value = "";

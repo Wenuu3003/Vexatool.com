@@ -3,6 +3,7 @@ import { ImageDown, Download, Settings2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { compressImageFile } from "@/lib/imageCompression";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { Helmet } from "react-helmet";
 interface CompressedImage {
   original: File;
   compressed: Blob;
+  outputType: string;
   originalSize: number;
   compressedSize: number;
   previewUrl: string;
@@ -58,69 +60,8 @@ const CompressImage = () => {
     e.target.value = '';
   }, []);
 
-  const compressImage = (file: File, targetQuality: number): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      
-      img.onload = () => {
-        URL.revokeObjectURL(url);
-        
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        if (!ctx) {
-          reject(new Error('Could not get canvas context'));
-          return;
-        }
+  // Image compression is handled by a shared helper so all tools stay consistent.
 
-        // Calculate new dimensions (max 2048px while maintaining aspect ratio)
-        let { width, height } = img;
-        const maxDimension = 2048;
-        
-        if (width > maxDimension || height > maxDimension) {
-          if (width > height) {
-            height = (height / width) * maxDimension;
-            width = maxDimension;
-          } else {
-            width = (width / height) * maxDimension;
-            height = maxDimension;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        
-        // Use better quality rendering
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(img, 0, 0, width, height);
-
-        // Convert to blob with quality setting
-        const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-        const qualityValue = outputType === 'image/png' ? undefined : targetQuality / 100;
-        
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              resolve(blob);
-            } else {
-              reject(new Error('Could not compress image'));
-            }
-          },
-          outputType,
-          qualityValue
-        );
-      };
-
-      img.onerror = () => {
-        URL.revokeObjectURL(url);
-        reject(new Error('Could not load image'));
-      };
-
-      img.src = url;
-    });
-  };
 
   const handleCompress = async () => {
     if (files.length === 0) {
@@ -137,12 +78,16 @@ const CompressImage = () => {
 
     try {
       for (const file of files) {
-        const compressed = await compressImage(file, quality);
+        const { blob: compressed, outputType } = await compressImageFile(file, {
+          quality,
+          maxDimension: 2048,
+        });
         const previewUrl = URL.createObjectURL(compressed);
-        
+
         results.push({
           original: file,
           compressed,
+          outputType,
           originalSize: file.size,
           compressedSize: compressed.size,
           previewUrl,
@@ -157,7 +102,10 @@ const CompressImage = () => {
 
       toast({
         title: "Compression complete!",
-        description: `Reduced by ${savings.toFixed(1)}% (${formatSize(totalOriginal)} → ${formatSize(totalCompressed)})`,
+        description:
+          savings > 0.5
+            ? `Reduced by ${savings.toFixed(1)}% (${formatSize(totalOriginal)} → ${formatSize(totalCompressed)})`
+            : `Optimized. Try lowering quality for smaller files (${formatSize(totalOriginal)} → ${formatSize(totalCompressed)}).`,
       });
     } catch (error) {
       if (import.meta.env.DEV) {
@@ -177,8 +125,15 @@ const CompressImage = () => {
     const url = URL.createObjectURL(image.compressed);
     const link = document.createElement("a");
     link.href = url;
-    const ext = image.original.type === 'image/png' ? '.png' : '.jpg';
-    link.download = `compressed_${image.original.name.replace(/\.[^/.]+$/, '')}${ext}`;
+
+    const ext =
+      image.outputType === "image/webp"
+        ? ".webp"
+        : image.outputType === "image/png"
+          ? ".png"
+          : ".jpg";
+
+    link.download = `compressed_${image.original.name.replace(/\.[^/.]+$/, "")}${ext}`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -298,12 +253,17 @@ const CompressImage = () => {
                       <p className="font-medium truncate">{file.name}</p>
                       <p className="text-sm text-muted-foreground">
                         Original: {formatSize(file.size)}
-                        {compressedImages[index] && (
-                          <span className="text-green-600 ml-2">
-                            → {formatSize(compressedImages[index].compressedSize)}
-                            {" "}({Math.max(0, ((file.size - compressedImages[index].compressedSize) / file.size * 100)).toFixed(0)}% smaller)
-                          </span>
-                        )}
+                        {compressedImages[index] && (() => {
+                          const c = compressedImages[index];
+                          const percent = ((file.size - c.compressedSize) / file.size) * 100;
+                          const label = percent > 0.5 ? `${percent.toFixed(0)}% smaller` : "optimized";
+
+                          return (
+                            <span className="text-primary ml-2">
+                              → {formatSize(c.compressedSize)} {" "}({label})
+                            </span>
+                          );
+                        })()}
                       </p>
                     </div>
 

@@ -445,19 +445,60 @@ const QRCodeGenerator = () => {
               </TabsContent>
 
               <TabsContent value="image" className="space-y-4 mt-4">
-                <div className="space-y-2">
-                  <Label>Image URL for QR Code</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Enter a URL to your hosted image (e.g., from Google Drive, Imgur, or any image hosting service)
-                  </p>
-                  <Input
-                    placeholder="https://example.com/your-image.jpg"
-                    value={uploadedImageUrl || ""}
-                    onChange={(e) => setUploadedImageUrl(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Tip: QR codes link to URLs, not store images. Use an image hosting service and paste the link here.
-                  </p>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Upload Image</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Upload an image to host it and generate a QR code linking to it
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      ref={imageInputRef}
+                      className="hidden"
+                    />
+                    <div className="flex gap-2 items-center">
+                      <Button
+                        variant="outline"
+                        onClick={() => imageInputRef.current?.click()}
+                        disabled={isLoading}
+                        className="gap-2"
+                      >
+                        <Upload className="w-4 h-4" />
+                        {isLoading ? "Uploading..." : "Upload Image"}
+                      </Button>
+                      {imageFile && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <span className="truncate max-w-[150px]">{imageFile.name}</span>
+                          <Button variant="ghost" size="icon" onClick={clearImage} className="h-6 w-6">
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="relative flex items-center">
+                    <div className="flex-grow border-t border-muted"></div>
+                    <span className="px-3 text-xs text-muted-foreground">OR</span>
+                    <div className="flex-grow border-t border-muted"></div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Image URL</Label>
+                    <Input
+                      placeholder="https://example.com/your-image.jpg"
+                      value={uploadedImageUrl || ""}
+                      onChange={(e) => {
+                        setUploadedImageUrl(e.target.value);
+                        setImageFile(null);
+                      }}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Paste a direct link to your image from any hosting service
+                    </p>
+                  </div>
                 </div>
               </TabsContent>
 

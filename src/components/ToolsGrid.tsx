@@ -18,7 +18,6 @@ import {
   Presentation,
   Table,
   Calculator,
-  Tags,
   Coins,
   BarChart3,
   Cloud,
@@ -58,13 +57,6 @@ const tools = [
     icon: BarChart3,
     colorClass: "bg-blue-600",
     href: "/seo-tool",
-  },
-  {
-    title: "Tags Generator",
-    description: "Generate relevant tags and hashtags for your content and SEO.",
-    icon: Tags,
-    colorClass: "bg-pink-500",
-    href: "/tags-generator",
   },
   {
     title: "Calculator",

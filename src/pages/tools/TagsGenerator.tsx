@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tags, Copy, RefreshCw, Sparkles, X, Loader2 } from "lucide-react";
+import { Tags, Copy, RefreshCw, Sparkles, X, Loader2, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
 import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
+import { User } from "@supabase/supabase-js";
 
 const TagsGenerator = () => {
   const [input, setInput] = useState("");
@@ -15,10 +17,30 @@ const TagsGenerator = () => {
   const [generatedTags, setGeneratedTags] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const generateTags = async () => {
     if (!input.trim()) {
       toast.error("Please enter some text or keywords");
+      return;
+    }
+
+    if (!user) {
+      toast.error("Please sign in to generate tags");
       return;
     }
 
@@ -32,6 +54,10 @@ const TagsGenerator = () => {
       });
 
       if (error) {
+        if (error.message?.includes("401") || error.message?.includes("Authentication")) {
+          toast.error("Please sign in to use this feature");
+          return;
+        }
         throw error;
       }
 
@@ -128,29 +154,41 @@ const TagsGenerator = () => {
                 </Select>
               </div>
 
-              <div className="flex gap-2">
-                <Button 
-                  onClick={generateTags} 
-                  disabled={isGenerating} 
-                  className="flex-1"
-                  aria-busy={isGenerating}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                      Generating with AI...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
-                      Generate AI Tags
-                    </>
-                  )}
-                </Button>
-                <Button variant="outline" onClick={clearAll} aria-label="Clear all">
-                  Clear
-                </Button>
-              </div>
+              {!user ? (
+                <div className="bg-muted/50 rounded-xl p-4 text-center">
+                  <p className="text-muted-foreground mb-3">Sign in to generate AI-powered tags</p>
+                  <Link to="/auth">
+                    <Button>
+                      <LogIn className="w-4 h-4 mr-2" aria-hidden="true" />
+                      Sign In
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={generateTags} 
+                    disabled={isGenerating} 
+                    className="flex-1"
+                    aria-busy={isGenerating}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                        Generating with AI...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
+                        Generate AI Tags
+                      </>
+                    )}
+                  </Button>
+                  <Button variant="outline" onClick={clearAll} aria-label="Clear all">
+                    Clear
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
 

@@ -50,6 +50,7 @@ export const routes: RouteConfig[] = [
   { path: '/png-to-pdf', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
   { path: '/compress-image', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
   { path: '/file-compressor', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/background-remover', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
   
   // Document Converters
   { path: '/word-to-pdf', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },

@@ -42,6 +42,7 @@ const JPGToPDF = lazy(() => import("./pages/tools/JPGToPDF"));
 const PNGToPDF = lazy(() => import("./pages/tools/PNGToPDF"));
 const CompressImage = lazy(() => import("./pages/tools/CompressImage"));
 const FileCompressor = lazy(() => import("./pages/tools/FileCompressor"));
+const BackgroundRemover = lazy(() => import("./pages/tools/BackgroundRemover"));
 
 // Document Converters - lazy loaded
 const WordToPDF = lazy(() => import("./pages/tools/WordToPDF"));
@@ -121,6 +122,7 @@ const App = () => (
               <Route path="/png-to-pdf" element={<PNGToPDF />} />
               <Route path="/compress-image" element={<CompressImage />} />
               <Route path="/file-compressor" element={<FileCompressor />} />
+              <Route path="/background-remover" element={<BackgroundRemover />} />
               {/* Document Converters */}
               <Route path="/word-to-pdf" element={<WordToPDF />} />
               <Route path="/word-to-excel" element={<WordToExcel />} />

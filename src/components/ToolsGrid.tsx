@@ -25,6 +25,7 @@ import {
   FileText,
   FileSpreadsheet,
   FileArchive,
+  Eraser,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -86,6 +87,13 @@ const tools = [
     icon: ImageDown,
     colorClass: "bg-teal-500",
     href: "/compress-image",
+  },
+  {
+    title: "Background Remover",
+    description: "Remove background from any image using AI. Download as PNG, JPG, or WebP.",
+    icon: Eraser,
+    colorClass: "bg-gradient-to-br from-purple-500 to-pink-500",
+    href: "/background-remover",
   },
   // PDF Core Tools
   {

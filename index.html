@@ -19,12 +19,30 @@
     <!-- Preconnect for critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Preload critical fonts to prevent layout shift -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiEyp8kv8JHgFVrJJfecnFHGPc.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLGT9Z1xlFd2JQEk.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2" as="font" type="font/woff2" crossorigin>
+    
     <!-- Critical CSS for above-the-fold content -->
     <style>
-      body{margin:0;font-family:'Poppins',system-ui,-apple-system,sans-serif;background:#f1f1f2}
+      /* Fallback font with size-adjust to prevent CLS */
+      @font-face {
+        font-family: 'Poppins Fallback';
+        src: local('Arial');
+        size-adjust: 105%;
+        ascent-override: 105%;
+        descent-override: 35%;
+        line-gap-override: 10%;
+      }
+      body{margin:0;font-family:'Poppins','Poppins Fallback',system-ui,-apple-system,sans-serif;background:#f1f1f2}
       #root{min-height:100vh}
       .loading-skeleton{background:linear-gradient(90deg,#e0e0e0 25%,#f0f0f0 50%,#e0e0e0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
       @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+      /* Reserve space for tools grid to prevent CLS */
+      #tools-grid-placeholder{min-height:2000px}
     </style>
 
     <!-- Open Graph / Facebook -->

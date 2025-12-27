@@ -108,11 +108,16 @@ const Index = () => {
           
           <Suspense
             fallback={
-              <section className="py-12 md:py-16 bg-background" aria-hidden="true">
+              <section 
+                id="tools-grid-placeholder"
+                className="py-12 md:py-16 bg-background" 
+                aria-hidden="true"
+                style={{ minHeight: '2000px' }}
+              >
                 <div className="container mx-auto px-4">
                   <div className="h-8 w-64 mx-auto rounded-md loading-skeleton" />
                   <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {Array.from({ length: 8 }).map((_, i) => (
+                    {Array.from({ length: 32 }).map((_, i) => (
                       <div key={i} className="h-40 rounded-xl loading-skeleton" />
                     ))}
                   </div>

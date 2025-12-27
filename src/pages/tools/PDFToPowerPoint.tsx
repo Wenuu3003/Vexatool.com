@@ -58,7 +58,7 @@ const PDFToPowerPoint = () => {
         const [copiedPage] = await newPdf.copyPages(pdfDoc, [i]);
         newPdf.addPage(copiedPage);
         const pdfBytes = await newPdf.save();
-        const blob = new Blob([pdfBytes], { type: "application/pdf" });
+        const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
         extractedPages.push({ blob, name: `slide_${i + 1}.pdf` });
       }
 

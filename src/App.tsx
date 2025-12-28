@@ -64,6 +64,25 @@ const SEOTool = lazy(() => import("./pages/tools/SEOTool"));
 // AI Tools - lazy loaded
 const AIChat = lazy(() => import("./pages/tools/AIChat"));
 const AISearch = lazy(() => import("./pages/tools/AISearch"));
+const AITextGenerator = lazy(() => import("./pages/tools/AITextGenerator"));
+const AIGrammarTool = lazy(() => import("./pages/tools/AIGrammarTool"));
+const AIResumeBuilder = lazy(() => import("./pages/tools/AIResumeBuilder"));
+const HashtagGenerator = lazy(() => import("./pages/tools/HashtagGenerator"));
+const YouTubeGenerator = lazy(() => import("./pages/tools/YouTubeGenerator"));
+
+// Image Tools - additional
+const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
+const ImageFormatConverter = lazy(() => import("./pages/tools/ImageFormatConverter"));
+
+// Calculator Tools
+const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
+const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
+const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
+const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
+
+// Utility Tools - additional
+const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
+const WordCounter = lazy(() => import("./pages/tools/WordCounter"));
 
 const queryClient = new QueryClient();
 
@@ -97,6 +116,22 @@ const App = () => (
               {/* AI Tools */}
               <Route path="/ai-chat" element={<AIChat />} />
               <Route path="/ai-search" element={<AISearch />} />
+              <Route path="/ai-text-generator" element={<AITextGenerator />} />
+              <Route path="/ai-grammar-tool" element={<AIGrammarTool />} />
+              <Route path="/ai-resume-builder" element={<AIResumeBuilder />} />
+              <Route path="/hashtag-generator" element={<HashtagGenerator />} />
+              <Route path="/youtube-generator" element={<YouTubeGenerator />} />
+              {/* Calculator Tools */}
+              <Route path="/age-calculator" element={<AgeCalculator />} />
+              <Route path="/bmi-calculator" element={<BMICalculator />} />
+              <Route path="/emi-calculator" element={<EMICalculator />} />
+              <Route path="/gst-calculator" element={<GSTCalculator />} />
+              {/* Image Tools */}
+              <Route path="/image-resizer" element={<ImageResizer />} />
+              <Route path="/image-format-converter" element={<ImageFormatConverter />} />
+              {/* Utility Tools */}
+              <Route path="/unit-converter" element={<UnitConverter />} />
+              <Route path="/word-counter" element={<WordCounter />} />
               {/* PDF Tools */}
               <Route path="/merge-pdf" element={<MergePDF />} />
               <Route path="/split-pdf" element={<SplitPDF />} />

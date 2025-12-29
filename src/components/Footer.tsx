@@ -3,7 +3,7 @@ import { FileText, Mail, Send, Facebook, Twitter, ShieldCheck } from "lucide-rea
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {
   const currentYear = new Date().getFullYear();
-  
+
   const socialLinks = [
     { name: "Telegram", icon: Send, url: "https://t.me/mypdfs5" },
     { name: "Facebook", icon: Facebook, url: "https://www.facebook.com/share/1APrgMPiYZ/" },
@@ -19,6 +19,11 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       "PDF to Word",
       "PDF to PowerPoint",
       "PDF to Excel",
+      "AI Text generator",
+      "you tube seo generator",
+      "Hastags Generator",
+      "Age caluculator",
+      "BMI Caluculator",
     ],
     "Convert to PDF": [
       "Word to PDF",
@@ -26,15 +31,14 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       "Excel to PDF",
       "JPG to PDF",
       "HTML to PDF",
+      "Image Resizer",
+      "EMI Caluculator",
+      "GST Caluculator",
+      "QR Code generator",
+      "QR Code Scanner",
+      "Image convertor",
     ],
-    Company: [
-      "About Us",
-      "Pricing",
-      "Blog",
-      "Contact",
-      "Privacy Policy",
-      "Terms & Conditions",
-    ],
+    Company: ["About Us", "Pricing", "Blog", "Contact", "Privacy Policy", "Terms & Conditions"],
   };
 
   return (
@@ -111,14 +115,15 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         {/* Bottom - Copyright, Privacy, Terms */}
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">
-              © {currentYear} Mypdfs. All rights reserved.
-            </p>
+            <p className="text-sm text-muted-foreground">© {currentYear} Mypdfs. All rights reserved.</p>
             <nav className="flex items-center gap-6" aria-label="Legal links">
               <a href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Privacy Policy
               </a>
-              <a href="/terms-and-conditions" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="/terms-and-conditions"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
                 Terms & Conditions
               </a>
             </nav>

@@ -54,17 +54,19 @@ export default function HashtagGenerator() {
         },
       });
 
-      if (response.error) throw response.error;
+      if (response.error) throw new Error(response.error.message || "Request failed");
 
       const data = response.data;
-      if (data?.content) {
-        const generated = data.content
+      if (data?.response) {
+        const generated = data.response
           .split("\n")
           .map((h: string) => h.trim())
           .filter((h: string) => h.startsWith("#"));
         setHashtags(generated);
       } else if (data?.error) {
         throw new Error(data.error);
+      } else {
+        throw new Error("No response received");
       }
     } catch (error) {
       console.error("Generation error:", error);

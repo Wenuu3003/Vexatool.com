@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { PenLine, Copy, ArrowRightLeft, Loader2 } from "lucide-react";
+import { SpellCheck, Copy, ArrowRightLeft, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -71,13 +71,15 @@ export default function AIGrammarTool() {
         },
       });
 
-      if (response.error) throw response.error;
+      if (response.error) throw new Error(response.error.message || "Request failed");
 
       const data = response.data;
-      if (data?.content) {
-        setOutputText(data.content);
+      if (data?.response) {
+        setOutputText(data.response);
       } else if (data?.error) {
         throw new Error(data.error);
+      } else {
+        throw new Error("No response received");
       }
     } catch (error) {
       console.error("Processing error:", error);
@@ -105,9 +107,9 @@ export default function AIGrammarTool() {
   return (
     <ToolLayout
       title="AI Grammar & Rewrite Tool"
-      description="Fix grammar, rewrite, paraphrase, and improve your text with AI assistance."
-      icon={PenLine}
-      colorClass="bg-gradient-to-br from-emerald-500 to-teal-600"
+      description="Fix grammar, spelling, and punctuation errors. Rewrite, paraphrase, simplify, or enhance your text with AI."
+      icon={SpellCheck}
+      colorClass="bg-gradient-to-br from-blue-500 to-cyan-500"
       category="AI Tools"
     >
       <div className="space-y-6">
@@ -179,7 +181,7 @@ export default function AIGrammarTool() {
               </>
             ) : (
               <>
-                <PenLine className="mr-2 h-4 w-4" />
+                <SpellCheck className="mr-2 h-4 w-4" />
                 Process Text
               </>
             )}

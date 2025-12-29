@@ -72,15 +72,17 @@ export default function YouTubeGenerator() {
         },
       });
 
-      if (response.error) throw response.error;
+      if (response.error) throw new Error(response.error.message || "Request failed");
 
       const data = response.data;
-      if (data?.content) {
+      if (data?.response) {
         try {
-          const jsonMatch = data.content.match(/\{[\s\S]*\}/);
+          const jsonMatch = data.response.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             const parsed = JSON.parse(jsonMatch[0]);
             setGenerated(parsed);
+          } else {
+            throw new Error("Could not parse response");
           }
         } catch {
           toast({
@@ -91,6 +93,8 @@ export default function YouTubeGenerator() {
         }
       } else if (data?.error) {
         throw new Error(data.error);
+      } else {
+        throw new Error("No response received");
       }
     } catch (error) {
       console.error("Generation error:", error);

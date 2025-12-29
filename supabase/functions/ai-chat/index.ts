@@ -1,35 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const ALLOWED_ORIGINS = [
-  "https://mypdfs.lovable.app",
-  "https://mrjefpimgfzzjwoidocf.lovable.app",
-  "http://localhost:5173",
-  "http://localhost:8080",
-];
-
-const isLovableAppOrigin = (origin: string) => {
-  try {
-    const url = new URL(origin);
-    return url.hostname.endsWith(".lovable.app") || url.hostname.endsWith(".lovableproject.com");
-  } catch {
-    return false;
-  }
-};
-
-const getCorsHeaders = (origin: string | null) => {
-  const allowedOrigin =
-    origin && (ALLOWED_ORIGINS.includes(origin) || isLovableAppOrigin(origin))
-      ? origin
-      : "*";
-
-  return {
-    "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Max-Age": "86400",
-    Vary: "Origin",
-  };
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 const MAX_MESSAGES = 50;
@@ -82,44 +56,13 @@ function validateMessages(messages: unknown): { valid: boolean; error?: string }
 }
 
 serve(async (req) => {
-  const origin = req.headers.get('origin');
-  const corsHeaders = getCorsHeaders(origin);
-
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Validate user authentication
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      console.error("No authorization header provided");
-      return new Response(
-        JSON.stringify({ error: "Authentication required. Please log in to use AI Chat." }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-    
-    if (authError || !user) {
-      console.error("Authentication failed:", authError?.message);
-      return new Response(
-        JSON.stringify({ error: "Authentication failed. Please log in again." }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    console.log("Authenticated user:", user.id);
-
     // Parse and validate request body
-    let body: { messages?: unknown };
+    let body: { messages?: unknown; systemPrompt?: string };
     try {
       body = await req.json();
     } catch {
@@ -129,7 +72,7 @@ serve(async (req) => {
       );
     }
 
-    const { messages } = body;
+    const { messages, systemPrompt } = body;
     
     // Validate messages input
     const validation = validateMessages(messages);
@@ -144,9 +87,22 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
+      console.error("LOVABLE_API_KEY is not configured");
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    const defaultSystemPrompt = `You are a helpful AI assistant for Mypdfs, a website with various online tools.
+You help users with:
+- PDF tools (merge, split, compress, convert, edit, sign, watermark, rotate, unlock, protect, organize, repair)
+- QR code generation and scanning
+- Calculator, currency converter, SEO analyzer, tags generator
+- Any general questions they may have
+
+Be concise, friendly, and helpful. Provide practical advice and step-by-step instructions when needed.
+If asked about using tools on the website, guide them to the appropriate tool.`;
+
+    console.log("Calling Lovable AI Gateway...");
+    
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -158,15 +114,7 @@ serve(async (req) => {
         messages: [
           { 
             role: "system", 
-            content: `You are a helpful AI assistant for Mypdfs, a website with various online tools.
-You help users with:
-- PDF tools (merge, split, compress, convert, edit, sign, watermark, rotate, unlock, protect, organize, repair)
-- QR code generation and scanning
-- Calculator, currency converter, SEO analyzer, tags generator
-- Any general questions they may have
-
-Be concise, friendly, and helpful. Provide practical advice and step-by-step instructions when needed.
-If asked about using tools on the website, guide them to the appropriate tool.`
+            content: systemPrompt || defaultSystemPrompt
           },
           ...(messages as ChatMessage[]),
         ],
@@ -175,12 +123,14 @@ If asked about using tools on the website, guide them to the appropriate tool.`
 
     if (!response.ok) {
       if (response.status === 429) {
+        console.error("Rate limit exceeded");
         return new Response(
           JSON.stringify({ error: "Rate limits exceeded, please try again later." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       if (response.status === 402) {
+        console.error("Payment required");
         return new Response(
           JSON.stringify({ error: "Payment required, please add funds to your workspace." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -197,16 +147,7 @@ If asked about using tools on the website, guide them to the appropriate tool.`
     const data = await response.json();
     const assistantResponse = data.choices?.[0]?.message?.content || "I couldn't generate a response.";
 
-    // Log audit event for successful AI chat
-    try {
-      await supabaseClient.from('audit_log').insert([{
-        user_id: user.id,
-        action_type: 'ai_chat',
-        action_details: { message_count: (messages as ChatMessage[]).length },
-      }]);
-    } catch (auditErr) {
-      console.error("Failed to log audit event:", auditErr);
-    }
+    console.log("AI response generated successfully");
 
     return new Response(
       JSON.stringify({ response: assistantResponse }),
@@ -214,8 +155,6 @@ If asked about using tools on the website, guide them to the appropriate tool.`
     );
   } catch (error) {
     console.error("AI Chat error:", error);
-    const origin = req.headers.get('origin');
-    const corsHeaders = getCorsHeaders(origin);
     return new Response(
       JSON.stringify({ error: "An unexpected error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

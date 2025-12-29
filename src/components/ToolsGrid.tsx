@@ -45,7 +45,7 @@ const tools = [
   // AI Tools - Top Priority
   {
     title: "AI Text Generator",
-    description: "Generate creative content, articles, and stories using AI. Perfect for writers and marketers.",
+    description: "Generate creative content, articles, and stories using AI Free. Perfect for writers and marketers.",
     icon: MessageSquare,
     colorClass: "bg-gradient-to-br from-violet-500 to-purple-600",
     href: "/ai-text-generator",
@@ -59,21 +59,21 @@ const tools = [
   },
   {
     title: "AI Resume Builder",
-    description: "Create professional resumes with AI-powered suggestions and formatting.",
+    description: "Create professional resumes with AI-powered suggestions and formatting for free.",
     icon: FileUser,
     colorClass: "bg-gradient-to-br from-emerald-500 to-teal-500",
     href: "/ai-resume-builder",
   },
   {
     title: "Hashtag Generator",
-    description: "Generate trending hashtags for Instagram, Twitter, TikTok, and more.",
+    description: "Generate trending hashtags for Instagram, X, facebook,You tube, and more.",
     icon: Hash,
     colorClass: "bg-gradient-to-br from-pink-500 to-rose-500",
     href: "/hashtag-generator",
   },
   {
     title: "YouTube Generator",
-    description: "Create SEO-optimized YouTube titles, descriptions, and tags with AI.",
+    description: "Create SEO-optimized YouTube titles, Instagram,Facebook,descriptions, and tags with AI.",
     icon: Youtube,
     colorClass: "bg-gradient-to-br from-red-500 to-red-600",
     href: "/youtube-generator",
@@ -81,7 +81,7 @@ const tools = [
   // Image Tools
   {
     title: "Image Resizer",
-    description: "Resize images for passport, social media, and custom dimensions. Quick and easy.",
+    description: "Resize images for passport, social media, wedding photos,and custom dimensions. Quick and easy.",
     icon: Crop,
     colorClass: "bg-gradient-to-br from-orange-500 to-amber-500",
     href: "/image-resizer",
@@ -102,7 +102,7 @@ const tools = [
   },
   {
     title: "Compress Images",
-    description: "Reduce image file sizes while maintaining quality. Supports JPG, PNG, WebP.",
+    description: "Reduce image file sizes compressing while maintaining quality. Supports JPG, PNG, WebP.",
     icon: ImageDown,
     colorClass: "bg-teal-500",
     href: "/compress-image",
@@ -117,7 +117,7 @@ const tools = [
   },
   {
     title: "BMI Calculator",
-    description: "Calculate your Body Mass Index and get health recommendations.",
+    description: "Calculate your Body Mass Index and get good health health recommendations.",
     icon: Heart,
     colorClass: "bg-gradient-to-br from-red-400 to-pink-500",
     href: "/bmi-calculator",
@@ -131,14 +131,14 @@ const tools = [
   },
   {
     title: "GST Calculator",
-    description: "Calculate GST amounts, inclusive and exclusive prices for Indian taxes.",
+    description: "Calculate GST amounts, inclusive and exclusive prices for All Indian taxes.",
     icon: Percent,
     colorClass: "bg-gradient-to-br from-orange-400 to-amber-500",
     href: "/gst-calculator",
   },
   {
     title: "Unit Converter",
-    description: "Convert between length, weight, temperature, area, and more units.",
+    description: "Convert between length, weight, temperature, area, kilometers,and more units.",
     icon: Scale,
     colorClass: "bg-gradient-to-br from-cyan-500 to-blue-500",
     href: "/unit-converter",
@@ -160,7 +160,7 @@ const tools = [
   },
   {
     title: "QR Code Generator",
-    description: "Create custom QR codes with logos, colors, and instant download.",
+    description: "Create custom QR codes with logos, upload logo in center of qr code,colors, and instant download.",
     icon: QrCode,
     colorClass: "bg-purple-500",
     href: "/qr-code-generator",
@@ -406,7 +406,11 @@ export const ToolsGrid = () => {
         <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10">
           Choose from our collection of 30+ free tools for PDF editing, QR codes, file conversion, and more.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" role="list" aria-label="PDF and utility tools">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          role="list"
+          aria-label="PDF and utility tools"
+        >
           {tools.map((tool, index) => (
             <div
               key={tool.title}

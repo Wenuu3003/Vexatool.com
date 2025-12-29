@@ -80,9 +80,9 @@ export default function AgeCalculator() {
   return (
     <ToolLayout
       title="Age Calculator"
-      description="Calculate your exact age in years, months, days, and more. Find out when your next birthday is."
+      description="Calculate your exact age in years, months, days, hours, and minutes. Find your next birthday countdown."
       icon={Calendar}
-      colorClass="bg-gradient-to-br from-green-500 to-emerald-600"
+      colorClass="bg-gradient-to-br from-pink-400 to-rose-400"
       category="Calculators"
     >
       <div className="space-y-6">

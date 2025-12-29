@@ -102,13 +102,15 @@ export default function AIResumeBuilder() {
         },
       });
 
-      if (response.error) throw response.error;
+      if (response.error) throw new Error(response.error.message || "Request failed");
 
       const data = response.data;
-      if (data?.content) {
-        setGeneratedResume(data.content);
+      if (data?.response) {
+        setGeneratedResume(data.response);
       } else if (data?.error) {
         throw new Error(data.error);
+      } else {
+        throw new Error("No response received");
       }
     } catch (error) {
       console.error("Generation error:", error);
@@ -142,9 +144,9 @@ export default function AIResumeBuilder() {
   return (
     <ToolLayout
       title="AI Resume Builder"
-      description="Create a professional, ATS-friendly resume with AI assistance. Fill in your details and generate a polished resume."
+      description="Create professional, ATS-friendly resumes with AI. Fill in your details and get a polished resume in seconds."
       icon={FileUser}
-      colorClass="bg-gradient-to-br from-blue-500 to-indigo-600"
+      colorClass="bg-gradient-to-br from-emerald-500 to-teal-500"
       category="AI Tools"
     >
       <div className="space-y-8">

@@ -57,13 +57,15 @@ export default function AITextGenerator() {
         },
       });
 
-      if (response.error) throw response.error;
+      if (response.error) throw new Error(response.error.message || "Request failed");
 
       const data = response.data;
-      if (data?.content) {
-        setGeneratedText(data.content);
+      if (data?.response) {
+        setGeneratedText(data.response);
       } else if (data?.error) {
         throw new Error(data.error);
+      } else {
+        throw new Error("No response received");
       }
     } catch (error) {
       console.error("Generation error:", error);

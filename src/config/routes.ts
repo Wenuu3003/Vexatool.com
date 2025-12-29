@@ -23,6 +23,23 @@ export const routes: RouteConfig[] = [
   // AI Tools - High priority
   { path: '/ai-chat', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
   { path: '/ai-search', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/ai-text-generator', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/ai-grammar-tool', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/ai-resume-builder', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/hashtag-generator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/youtube-generator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/word-counter', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  
+  // Calculator Tools
+  { path: '/age-calculator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/bmi-calculator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/emi-calculator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/gst-calculator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/unit-converter', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  
+  // Image Tools
+  { path: '/image-resizer', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/image-format-converter', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
   
   // PDF Tools
   { path: '/merge-pdf', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },

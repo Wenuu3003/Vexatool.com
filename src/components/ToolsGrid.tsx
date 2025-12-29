@@ -26,11 +26,131 @@ import {
   FileSpreadsheet,
   FileArchive,
   Eraser,
+  MessageSquare,
+  SpellCheck,
+  FileUser,
+  Hash,
+  Youtube,
+  Crop,
+  RefreshCw,
+  Cake,
+  Heart,
+  Percent,
+  Scale,
+  AlignLeft,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
 const tools = [
-  // Top Priority Tools - Utilities
+  // AI Tools - Top Priority
+  {
+    title: "AI Text Generator",
+    description: "Generate creative content, articles, and stories using AI. Perfect for writers and marketers.",
+    icon: MessageSquare,
+    colorClass: "bg-gradient-to-br from-violet-500 to-purple-600",
+    href: "/ai-text-generator",
+  },
+  {
+    title: "AI Grammar & Rewrite",
+    description: "Fix grammar, improve clarity, and rewrite text professionally with AI assistance.",
+    icon: SpellCheck,
+    colorClass: "bg-gradient-to-br from-blue-500 to-cyan-500",
+    href: "/ai-grammar-tool",
+  },
+  {
+    title: "AI Resume Builder",
+    description: "Create professional resumes with AI-powered suggestions and formatting.",
+    icon: FileUser,
+    colorClass: "bg-gradient-to-br from-emerald-500 to-teal-500",
+    href: "/ai-resume-builder",
+  },
+  {
+    title: "Hashtag Generator",
+    description: "Generate trending hashtags for Instagram, Twitter, TikTok, and more.",
+    icon: Hash,
+    colorClass: "bg-gradient-to-br from-pink-500 to-rose-500",
+    href: "/hashtag-generator",
+  },
+  {
+    title: "YouTube Generator",
+    description: "Create SEO-optimized YouTube titles, descriptions, and tags with AI.",
+    icon: Youtube,
+    colorClass: "bg-gradient-to-br from-red-500 to-red-600",
+    href: "/youtube-generator",
+  },
+  // Image Tools
+  {
+    title: "Image Resizer",
+    description: "Resize images for passport, social media, and custom dimensions. Quick and easy.",
+    icon: Crop,
+    colorClass: "bg-gradient-to-br from-orange-500 to-amber-500",
+    href: "/image-resizer",
+  },
+  {
+    title: "Image Converter",
+    description: "Convert images between PNG, JPG, WebP, and more formats instantly.",
+    icon: RefreshCw,
+    colorClass: "bg-gradient-to-br from-indigo-500 to-blue-500",
+    href: "/image-format-converter",
+  },
+  {
+    title: "Background Remover",
+    description: "Remove background from any image using AI. Download as PNG, JPG, or WebP.",
+    icon: Eraser,
+    colorClass: "bg-gradient-to-br from-purple-500 to-pink-500",
+    href: "/background-remover",
+  },
+  {
+    title: "Compress Images",
+    description: "Reduce image file sizes while maintaining quality. Supports JPG, PNG, WebP.",
+    icon: ImageDown,
+    colorClass: "bg-teal-500",
+    href: "/compress-image",
+  },
+  // Calculator Tools
+  {
+    title: "Age Calculator",
+    description: "Calculate your exact age in years, months, days, hours, and minutes.",
+    icon: Cake,
+    colorClass: "bg-gradient-to-br from-pink-400 to-rose-400",
+    href: "/age-calculator",
+  },
+  {
+    title: "BMI Calculator",
+    description: "Calculate your Body Mass Index and get health recommendations.",
+    icon: Heart,
+    colorClass: "bg-gradient-to-br from-red-400 to-pink-500",
+    href: "/bmi-calculator",
+  },
+  {
+    title: "EMI Calculator",
+    description: "Calculate loan EMI, total interest, and monthly payments instantly.",
+    icon: Percent,
+    colorClass: "bg-gradient-to-br from-green-500 to-emerald-500",
+    href: "/emi-calculator",
+  },
+  {
+    title: "GST Calculator",
+    description: "Calculate GST amounts, inclusive and exclusive prices for Indian taxes.",
+    icon: Percent,
+    colorClass: "bg-gradient-to-br from-orange-400 to-amber-500",
+    href: "/gst-calculator",
+  },
+  {
+    title: "Unit Converter",
+    description: "Convert between length, weight, temperature, area, and more units.",
+    icon: Scale,
+    colorClass: "bg-gradient-to-br from-cyan-500 to-blue-500",
+    href: "/unit-converter",
+  },
+  {
+    title: "Word Counter",
+    description: "Count words, characters, sentences, and paragraphs. Estimate reading time.",
+    icon: AlignLeft,
+    colorClass: "bg-gradient-to-br from-slate-500 to-gray-600",
+    href: "/word-counter",
+  },
+  // Utility Tools
   {
     title: "QR Code Scanner",
     description: "Scan QR codes from images or camera. Fast and accurate detection.",
@@ -80,20 +200,6 @@ const tools = [
     icon: FileDown,
     colorClass: "bg-tool-compress",
     href: "/compress-pdf",
-  },
-  {
-    title: "Compress Images",
-    description: "Reduce image file sizes while maintaining quality. Supports JPG, PNG, WebP.",
-    icon: ImageDown,
-    colorClass: "bg-teal-500",
-    href: "/compress-image",
-  },
-  {
-    title: "Background Remover",
-    description: "Remove background from any image using AI. Download as PNG, JPG, or WebP.",
-    icon: Eraser,
-    colorClass: "bg-gradient-to-br from-purple-500 to-pink-500",
-    href: "/background-remover",
   },
   // PDF Core Tools
   {

@@ -12,32 +12,8 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
   ];
 
   const footerLinks = {
-    "PDF Tools": [
-      "Merge PDF",
-      "Split PDF",
-      "Compress PDF",
-      "PDF to Word",
-      "PDF to PowerPoint",
-      "PDF to Excel",
-      "AI Text generator",
-      "you tube seo generator",
-      "Hastags Generator",
-      "Age caluculator",
-      "BMI Caluculator",
-    ],
-    "Convert to PDF": [
-      "Word to PDF",
-      "PowerPoint to PDF",
-      "Excel to PDF",
-      "JPG to PDF",
-      "HTML to PDF",
-      "Image Resizer",
-      "EMI Caluculator",
-      "GST Caluculator",
-      "QR Code generator",
-      "QR Code Scanner",
-      "Image convertor",
-    ],
+    "PDF Tools": ["Merge PDF", "Split PDF", "Compress PDF", "PDF to Word", "PDF to PowerPoint", "PDF to Excel"],
+    "Convert to PDF": ["Word to PDF", "PowerPoint to PDF", "Excel to PDF", "JPG to PDF", "HTML to PDF"],
     Company: ["About Us", "Pricing", "Blog", "Contact", "Privacy Policy", "Terms & Conditions"],
   };
 
@@ -56,7 +32,10 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               </span>
             </a>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Mypdfs is an online service to work with PDF files completely free and easy to use.
+              Mypdfs free online tools,pdf tools online,merge pdf online split pdf online,compress pdf online edit pdf
+              free,pdf converter,image tools online,image converter,ai tools online free ai tools,resume builder
+              online,qr code generator,online calculators,unit converter online currency converter,file compression
+              online,word to pdf,pdf to word,jpg to pdf,png to pdf,all in one online tools
             </p>
           </div>
 

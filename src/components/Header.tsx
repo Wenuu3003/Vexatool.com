@@ -22,7 +22,7 @@ export const Header = () => {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -35,43 +35,35 @@ export const Header = () => {
               <FileText className="w-5 h-5 text-primary-foreground" aria-hidden="true" />
             </div>
             <span className="text-xl font-bold text-foreground">
-              <span className="text-primary">My</span>pdfs
+              <span className="text-primary">My</span>pdfsAI
             </span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="text-foreground hover:text-primary"
               onClick={() => handleNavigation("/merge-pdf")}
               aria-label="Merge multiple PDF files into one"
             >
               Merge PDF
             </Button>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="text-foreground hover:text-primary"
               onClick={() => handleNavigation("/split-pdf")}
               aria-label="Split PDF into separate pages"
             >
-              Split PDF
+              Caluculators
             </Button>
-            <Button 
-              variant="ghost" 
-              className="text-foreground hover:text-primary"
-              onClick={() => handleNavigation("/compress-pdf")}
-              aria-label="Compress PDF to reduce file size"
-            >
-              Compress PDF
-            </Button>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               className="text-foreground hover:text-primary flex items-center gap-1"
               onClick={() => {
-                const toolsSection = document.getElementById('tools-grid');
+                const toolsSection = document.getElementById("tools-grid");
                 if (toolsSection) {
-                  toolsSection.scrollIntoView({ behavior: 'smooth' });
+                  toolsSection.scrollIntoView({ behavior: "smooth" });
                 } else {
                   handleNavigation("/");
                 }
@@ -90,7 +82,7 @@ export const Header = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="gap-2">
                     <User className="w-4 h-4" />
-                    {user.email?.split('@')[0]}
+                    {user.email?.split("@")[0]}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -102,10 +94,10 @@ export const Header = () => {
               </DropdownMenu>
             ) : (
               <>
-                <Button variant="ghost" className="text-foreground" onClick={() => handleNavigation('/auth')}>
+                <Button variant="ghost" className="text-foreground" onClick={() => handleNavigation("/auth")}>
                   Login
                 </Button>
-                <Button variant="default" onClick={() => handleNavigation('/auth')}>
+                <Button variant="default" onClick={() => handleNavigation("/auth")}>
                   Sign up
                 </Button>
               </>
@@ -129,32 +121,28 @@ export const Header = () => {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <nav className="flex flex-col gap-2">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="justify-start text-foreground"
                 onClick={() => handleNavigation("/merge-pdf")}
               >
                 Merge PDF
               </Button>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="justify-start text-foreground"
                 onClick={() => handleNavigation("/split-pdf")}
               >
                 Split PDF
               </Button>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="justify-start text-foreground"
                 onClick={() => handleNavigation("/compress-pdf")}
               >
                 Compress PDF
               </Button>
-              <Button 
-                variant="ghost" 
-                className="justify-start text-foreground"
-                onClick={() => handleNavigation("/")}
-              >
+              <Button variant="ghost" className="justify-start text-foreground" onClick={() => handleNavigation("/")}>
                 All PDF tools
               </Button>
               <div className="flex gap-2 mt-4">
@@ -165,10 +153,10 @@ export const Header = () => {
                   </Button>
                 ) : (
                   <>
-                    <Button variant="outline" className="flex-1" onClick={() => handleNavigation('/auth')}>
+                    <Button variant="outline" className="flex-1" onClick={() => handleNavigation("/auth")}>
                       Login
                     </Button>
-                    <Button variant="default" className="flex-1" onClick={() => handleNavigation('/auth')}>
+                    <Button variant="default" className="flex-1" onClick={() => handleNavigation("/auth")}>
                       Sign up
                     </Button>
                   </>

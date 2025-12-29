@@ -55,7 +55,7 @@ export const Header = () => {
               onClick={() => handleNavigation("/split-pdf")}
               aria-label="Split PDF into separate pages"
             >
-              Caluculators
+              Split PDF
             </Button>
             <Button
               variant="ghost"

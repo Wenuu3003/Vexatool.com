@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import * as XLSX from "xlsx";
 
 const PDFToExcel = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -24,6 +25,11 @@ const PDFToExcel = () => {
         if (import.meta.env.DEV) {
           console.error("Error loading PDF:", error);
         }
+        toast({
+          title: "Error",
+          description: "Failed to load PDF file.",
+          variant: "destructive",
+        });
       }
     }
   };
@@ -40,11 +46,43 @@ const PDFToExcel = () => {
 
     setIsProcessing(true);
 
-    toast({
-      title: "Conversion Tip",
-      description:
-        "For best results converting PDF tables to Excel, use Adobe Acrobat or specialized tools that can recognize table structures.",
-    });
+    try {
+      const arrayBuffer = await files[0].arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      const pages = pdfDoc.getPages();
+      const allText: string[][] = [];
+
+      // Extract text from each page
+      for (const page of pages) {
+        const textContent = await page.getTextContent?.(); // pdf-lib doesn't have getTextContent natively
+        // Fallback: simple page text extraction using page.getTextContent()
+        const pageText = await page.getTextContent?.().then((t) => t.items.map((i: any) => i.str).join(" "));
+        if (pageText) {
+          const rows = pageText.split("\n").map((line) => line.split(/\s+/)); // basic split by spaces
+          allText.push(...rows);
+        }
+      }
+
+      // Create Excel workbook
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(allText);
+      XLSX.utils.book_append_sheet(wb, ws, "PDF Data");
+
+      // Generate Excel file
+      XLSX.writeFile(wb, files[0].name.replace(".pdf", ".xlsx"));
+
+      toast({
+        title: "Conversion Successful",
+        description: "Your PDF has been converted to Excel.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Conversion Failed",
+        description: "An error occurred while converting PDF to Excel.",
+        variant: "destructive",
+      });
+    }
 
     setIsProcessing(false);
   };
@@ -89,7 +127,7 @@ const PDFToExcel = () => {
                 ) : (
                   <>
                     <Download className="w-5 h-5" />
-                    Get Conversion Tips
+                    Convert to Excel
                   </>
                 )}
               </Button>

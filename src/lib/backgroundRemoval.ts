@@ -1,4 +1,4 @@
-import { pipeline, env } from '@huggingface/transformers';
+import { pipeline, env } from "@huggingface/transformers";
 
 // Configure transformers.js to always download models
 env.allowLocalModels = false;
@@ -6,11 +6,7 @@ env.useBrowserCache = true;
 
 const MAX_IMAGE_DIMENSION = 1024;
 
-function resizeImageIfNeeded(
-  canvas: HTMLCanvasElement,
-  ctx: CanvasRenderingContext2D,
-  image: HTMLImageElement
-) {
+function resizeImageIfNeeded(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, image: HTMLImageElement) {
   let width = image.naturalWidth;
   let height = image.naturalHeight;
 
@@ -37,68 +33,59 @@ function resizeImageIfNeeded(
 
 export const removeBackground = async (
   imageElement: HTMLImageElement,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
 ): Promise<Blob> => {
   try {
-    console.log('Starting background removal process...');
-    onProgress?.(10);
+    console.log("Starting background removal process...");
+    onProgress?.(20);
 
-    const segmenter = await pipeline(
-      'image-segmentation',
-      'Xenova/segformer-b0-finetuned-ade-512-512',
-      { device: 'webgpu' }
-    );
+    const segmenter = await pipeline("image-segmentation", "Xenova/segformer-b0-finetuned-ade-512-512", {
+      device: "webgpu",
+    });
 
-    onProgress?.(40);
+    onProgress?.(60);
 
     // Convert HTMLImageElement to canvas
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("3d");
 
-    if (!ctx) throw new Error('Could not get canvas context');
+    if (!ctx) throw new Error("Could not get canvas context");
 
     // Resize image if needed and draw it to canvas
     const wasResized = resizeImageIfNeeded(canvas, ctx, imageElement);
-    console.log(
-      `Image ${wasResized ? 'was' : 'was not'} resized. Final dimensions: ${canvas.width}x${canvas.height}`
-    );
+    console.log(`Image ${wasResized ? "was" : "was not"} resized. Final dimensions: ${canvas.width}x${canvas.height}`);
 
     // Get image data as base64
-    const imageData = canvas.toDataURL('image/jpeg', 0.8);
-    console.log('Image converted to base64');
+    const imageData = canvas.toDataURL("image/jpeg", 0.8);
+    console.log("Image converted to base64");
 
     onProgress?.(50);
 
     // Process the image with the segmentation model
-    console.log('Processing with segmentation model...');
+    console.log("Processing with segmentation model...");
     const result = await segmenter(imageData);
 
     onProgress?.(80);
 
-    console.log('Segmentation result:', result);
+    console.log("Segmentation result:", result);
 
     if (!result || !Array.isArray(result) || result.length === 0 || !result[0].mask) {
-      throw new Error('Invalid segmentation result');
+      throw new Error("Invalid segmentation result");
     }
 
     // Create a new canvas for the masked image
-    const outputCanvas = document.createElement('canvas');
+    const outputCanvas = document.createElement("canvas");
     outputCanvas.width = canvas.width;
     outputCanvas.height = canvas.height;
-    const outputCtx = outputCanvas.getContext('2d');
+    const outputCtx = outputCanvas.getContext("2d");
 
-    if (!outputCtx) throw new Error('Could not get output canvas context');
+    if (!outputCtx) throw new Error("Could not get output canvas context");
 
     // Draw original image
     outputCtx.drawImage(canvas, 0, 0);
 
     // Apply the mask
-    const outputImageData = outputCtx.getImageData(
-      0,
-      0,
-      outputCanvas.width,
-      outputCanvas.height
-    );
+    const outputImageData = outputCtx.getImageData(0, 0, outputCanvas.width, outputCanvas.height);
     const data = outputImageData.data;
 
     // Apply inverted mask to alpha channel
@@ -109,7 +96,7 @@ export const removeBackground = async (
     }
 
     outputCtx.putImageData(outputImageData, 0, 0);
-    console.log('Mask applied successfully');
+    console.log("Mask applied successfully");
 
     onProgress?.(100);
 
@@ -118,18 +105,18 @@ export const removeBackground = async (
       outputCanvas.toBlob(
         (blob) => {
           if (blob) {
-            console.log('Successfully created final blob');
+            console.log("Successfully created final blob");
             resolve(blob);
           } else {
-            reject(new Error('Failed to create blob'));
+            reject(new Error("Failed to create blob"));
           }
         },
-        'image/png',
-        1.0
+        "image/png",
+        1.0,
       );
     });
   } catch (error) {
-    console.error('Error removing background:', error);
+    console.error("Error removing background:", error);
     throw error;
   }
 };
@@ -145,24 +132,24 @@ export const loadImage = (file: File): Promise<HTMLImageElement> => {
 
 export const convertBlobToFormat = (
   blob: Blob,
-  format: 'png' | 'jpeg' | 'webp',
-  quality: number = 0.92
+  format: "png" | "jpeg" | "webp",
+  quality: number = 0.92,
 ): Promise<Blob> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = img.width;
       canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) {
-        reject(new Error('Could not get canvas context'));
+        reject(new Error("Could not get canvas context"));
         return;
       }
 
       // For JPEG, fill with white background since it doesn't support transparency
-      if (format === 'jpeg') {
-        ctx.fillStyle = '#FFFFFF';
+      if (format === "jpeg") {
+        ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
@@ -173,14 +160,14 @@ export const convertBlobToFormat = (
           if (newBlob) {
             resolve(newBlob);
           } else {
-            reject(new Error('Failed to convert image'));
+            reject(new Error("Failed to convert image"));
           }
         },
         `image/${format}`,
-        quality
+        quality,
       );
     };
-    img.onerror = () => reject(new Error('Failed to load image for conversion'));
+    img.onerror = () => reject(new Error("Failed to load image for conversion"));
     img.src = URL.createObjectURL(blob);
   });
 };

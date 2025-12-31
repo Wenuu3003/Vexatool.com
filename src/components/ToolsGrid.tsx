@@ -38,6 +38,7 @@ import {
   Percent,
   Scale,
   AlignLeft,
+  MapPin,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -185,6 +186,13 @@ const tools = [
     icon: Calculator,
     colorClass: "bg-indigo-500",
     href: "/calculator",
+  },
+  {
+    title: "PIN Code Generator",
+    description: "Generate & find Indian PIN codes by state, district, city. Bulk generate, reverse lookup.",
+    icon: MapPin,
+    colorClass: "bg-gradient-to-br from-pink-500 to-purple-600",
+    href: "/pincode-generator",
   },
   // File Compression Tools
   {

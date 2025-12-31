@@ -83,6 +83,7 @@ const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
 // Utility Tools - additional
 const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
 const WordCounter = lazy(() => import("./pages/tools/WordCounter"));
+const PinCodeGenerator = lazy(() => import("./pages/tools/PinCodeGenerator"));
 
 const queryClient = new QueryClient();
 
@@ -131,6 +132,7 @@ const App = () => (
               <Route path="/image-format-converter" element={<ImageFormatConverter />} />
               {/* Utility Tools */}
               <Route path="/unit-converter" element={<UnitConverter />} />
+              <Route path="/pincode-generator" element={<PinCodeGenerator />} />
               <Route path="/word-counter" element={<WordCounter />} />
               {/* PDF Tools */}
               <Route path="/merge-pdf" element={<MergePDF />} />

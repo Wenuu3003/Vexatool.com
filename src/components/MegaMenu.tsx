@@ -44,6 +44,7 @@ import {
   Link2,
   Hash,
   Share2,
+  MapPin,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -123,7 +124,8 @@ const categories: Category[] = [
     name: "Social Tools",
     icon: Share2,
     tools: [
-      { name: "YouTube Generator", href: "/youtube-generator", icon: Youtube, badge: "new" },
+      { name: "PIN Code Generator", href: "/pincode-generator", icon: MapPin, badge: "new" },
+      { name: "YouTube Generator", href: "/youtube-generator", icon: Youtube },
       { name: "Hashtag Generator", href: "/hashtag-generator", icon: Hash },
       { name: "QR Code Scanner", href: "/qr-code-scanner", icon: QrCode },
       { name: "Word Counter", href: "/word-counter", icon: FileText },

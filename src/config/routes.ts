@@ -36,6 +36,7 @@ export const routes: RouteConfig[] = [
   { path: '/emi-calculator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
   { path: '/gst-calculator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
   { path: '/unit-converter', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/pincode-generator', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
   
   // Image Tools
   { path: '/image-resizer', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },

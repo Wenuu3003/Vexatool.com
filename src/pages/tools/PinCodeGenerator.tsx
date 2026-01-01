@@ -50,9 +50,9 @@ import {
   lookupByPincode, 
   getUniqueStates,
   getDistrictsForState,
-  getTaluksForDistrict,
-  getAreasForTaluk,
-  getAreasForDistrict,
+  getMandalsForDistrict,
+  getVillagesForMandal,
+  getVillagesForDistrict,
   searchVillagesAutocomplete,
   formatPinCodeDisplay,
   type SearchResult 
@@ -115,9 +115,9 @@ const PinCodeGenerator = () => {
   // Get dropdown data from EXTENDED database
   const states = getUniqueStates();
   const districts = selectedState ? getDistrictsForState(selectedState) : [];
-  const taluks = selectedState && selectedDistrict ? getTaluksForDistrict(selectedState, selectedDistrict) : [];
-  const areas = selectedState && selectedDistrict 
-    ? (selectedTaluk ? getAreasForTaluk(selectedState, selectedDistrict, selectedTaluk) : getAreasForDistrict(selectedState, selectedDistrict))
+  const mandals = selectedState && selectedDistrict ? getMandalsForDistrict(selectedState, selectedDistrict) : [];
+  const villages = selectedState && selectedDistrict 
+    ? (selectedTaluk ? getVillagesForMandal(selectedState, selectedDistrict, selectedTaluk) : getVillagesForDistrict(selectedState, selectedDistrict))
     : [];
   
   // Handle village input change for autocomplete
@@ -137,8 +137,8 @@ const PinCodeGenerator = () => {
   // Handle village selection from autocomplete
   const handleVillageSelect = (data: ExtendedPinCodeData) => {
     setSelectedVillageData(data);
-    setVillageInput(data.area);
-    setSelectedArea(data.area);
+    setVillageInput(data.village);
+    setSelectedArea(data.village);
     setVillagePopoverOpen(false);
     setGeneratedPin(data.pincode);
     saveToHistory(data.pincode);
@@ -193,7 +193,7 @@ const PinCodeGenerator = () => {
       filtered = filtered.filter(d => d.district === selectedDistrict);
     }
     if (selectedArea) {
-      filtered = filtered.filter(d => d.area === selectedArea);
+      filtered = filtered.filter(d => d.village === selectedArea);
     }
     if (filtered.length === 0) filtered = EXTENDED_PIN_DATABASE;
     const randomEntry = filtered[Math.floor(Math.random() * filtered.length)];
@@ -435,7 +435,7 @@ const PinCodeGenerator = () => {
                     </div>
                   )}
 
-                  {selectedDistrict && taluks.length > 0 && (
+                  {selectedDistrict && mandals.length > 0 && (
                     <div>
                       <Label>Mandal / Taluk</Label>
                       <Select value={selectedTaluk || "any"} onValueChange={(v) => {
@@ -449,8 +449,8 @@ const PinCodeGenerator = () => {
                         </SelectTrigger>
                         <SelectContent className="bg-background z-50">
                           <SelectItem value="any">Any Mandal/Taluk</SelectItem>
-                          {taluks.map(taluk => (
-                            <SelectItem key={taluk} value={taluk}>{taluk}</SelectItem>
+                          {mandals.map(mandal => (
+                            <SelectItem key={mandal} value={mandal}>{mandal}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -480,14 +480,14 @@ const PinCodeGenerator = () => {
                                   {villageResults.map((data, idx) => (
                                     <CommandItem
                                       key={`${data.pincode}-${idx}`}
-                                      value={data.area}
+                                      value={data.village}
                                       onSelect={() => handleVillageSelect(data)}
                                       className="cursor-pointer"
                                     >
                                       <MapPin className="w-4 h-4 mr-2 text-pink-500" />
                                       <div className="flex flex-col">
                                         <span className="font-medium">{formatPinCodeDisplay(data)}</span>
-                                        <span className="text-xs text-muted-foreground">{data.postOffice}</span>
+                                        <span className="text-xs text-muted-foreground">{data.post_office}</span>
                                       </div>
                                     </CommandItem>
                                   ))}
@@ -517,7 +517,7 @@ const PinCodeGenerator = () => {
                         Selected Village
                       </p>
                       <p className="text-sm mt-1">{formatPinCodeDisplay(selectedVillageData)}</p>
-                      <p className="text-xs text-muted-foreground">{selectedVillageData.postOffice}</p>
+                      <p className="text-xs text-muted-foreground">{selectedVillageData.post_office}</p>
                     </div>
                   )}
 
@@ -675,7 +675,7 @@ const PinCodeGenerator = () => {
                         <p className="text-sm font-medium">
                           {formatPinCodeDisplay(result.data)}
                         </p>
-                        <p className="text-xs text-muted-foreground">{result.data.postOffice}</p>
+                        <p className="text-xs text-muted-foreground">{result.data.post_office}</p>
                       </div>
                       <Button 
                         size="sm" 
@@ -751,13 +751,13 @@ const PinCodeGenerator = () => {
                     </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Village/Area:</span>
-                        <span className="font-medium">{lookupResult.area}</span>
+                        <span className="text-muted-foreground">Village:</span>
+                        <span className="font-medium">{lookupResult.village}</span>
                       </div>
-                      {lookupResult.taluk && (
+                      {lookupResult.mandal && (
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Mandal/Taluk:</span>
-                          <span className="font-medium">{lookupResult.taluk}</span>
+                          <span className="text-muted-foreground">Mandal:</span>
+                          <span className="font-medium">{lookupResult.mandal}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
@@ -770,7 +770,7 @@ const PinCodeGenerator = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Post Office:</span>
-                        <span className="font-medium">{lookupResult.postOffice}</span>
+                        <span className="font-medium">{lookupResult.post_office}</span>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-4 justify-center">

@@ -50,9 +50,26 @@ import {
   lookupByPincode, 
   getUniqueStates,
   getDistrictsForState,
+  getTaluksForDistrict,
+  getAreasForTaluk,
   getAreasForDistrict,
+  searchVillagesAutocomplete,
+  formatPinCodeDisplay,
   type SearchResult 
 } from "@/lib/pinCodeSearch";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const PinCodeGenerator = () => {
   const canonicalUrl = useCanonicalUrl();
@@ -60,8 +77,15 @@ const PinCodeGenerator = () => {
   // State for generation
   const [selectedState, setSelectedState] = useState<string>("");
   const [selectedDistrict, setSelectedDistrict] = useState<string>("");
+  const [selectedTaluk, setSelectedTaluk] = useState<string>("");
   const [selectedArea, setSelectedArea] = useState<string>("");
   const [generatedPin, setGeneratedPin] = useState<string>("");
+  
+  // Village autocomplete state
+  const [villageInput, setVillageInput] = useState<string>("");
+  const [villageResults, setVillageResults] = useState<ExtendedPinCodeData[]>([]);
+  const [selectedVillageData, setSelectedVillageData] = useState<ExtendedPinCodeData | null>(null);
+  const [villagePopoverOpen, setVillagePopoverOpen] = useState(false);
   
   // State for bulk generation
   const [bulkCount, setBulkCount] = useState<number>(10);
@@ -91,7 +115,35 @@ const PinCodeGenerator = () => {
   // Get dropdown data from EXTENDED database
   const states = getUniqueStates();
   const districts = selectedState ? getDistrictsForState(selectedState) : [];
-  const areas = selectedState && selectedDistrict ? getAreasForDistrict(selectedState, selectedDistrict) : [];
+  const taluks = selectedState && selectedDistrict ? getTaluksForDistrict(selectedState, selectedDistrict) : [];
+  const areas = selectedState && selectedDistrict 
+    ? (selectedTaluk ? getAreasForTaluk(selectedState, selectedDistrict, selectedTaluk) : getAreasForDistrict(selectedState, selectedDistrict))
+    : [];
+  
+  // Handle village input change for autocomplete
+  const handleVillageInputChange = (value: string) => {
+    setVillageInput(value);
+    setSelectedVillageData(null);
+    if (value.length >= 3 && selectedState && selectedDistrict) {
+      const results = searchVillagesAutocomplete(value, selectedState, selectedDistrict, selectedTaluk);
+      setVillageResults(results);
+      setVillagePopoverOpen(results.length > 0);
+    } else {
+      setVillageResults([]);
+      setVillagePopoverOpen(false);
+    }
+  };
+  
+  // Handle village selection from autocomplete
+  const handleVillageSelect = (data: ExtendedPinCodeData) => {
+    setSelectedVillageData(data);
+    setVillageInput(data.area);
+    setSelectedArea(data.area);
+    setVillagePopoverOpen(false);
+    setGeneratedPin(data.pincode);
+    saveToHistory(data.pincode);
+    toast.success(`Found: ${formatPinCodeDisplay(data)}`);
+  };
 
   // Load history and stats from localStorage
   useEffect(() => {
@@ -191,10 +243,10 @@ const PinCodeGenerator = () => {
     }
   };
 
-  // Search with advanced matching
+  // Search with advanced matching - require 3 chars minimum
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query.length >= 2) {
+    if (query.length >= 3) {
       const { results, message } = advancedSearchPinCodes(query, { limit: 50, includeNearby: true });
       setSearchResults(results);
       setSearchMessage(message || "");
@@ -339,12 +391,19 @@ const PinCodeGenerator = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <Label>State (Optional)</Label>
-                    <Select value={selectedState || "any"} onValueChange={(v) => { setSelectedState(v === "any" ? "" : v); setSelectedDistrict(""); setSelectedArea(""); }}>
+                    <Label>State</Label>
+                    <Select value={selectedState || "any"} onValueChange={(v) => { 
+                      setSelectedState(v === "any" ? "" : v); 
+                      setSelectedDistrict(""); 
+                      setSelectedTaluk("");
+                      setSelectedArea(""); 
+                      setVillageInput("");
+                      setSelectedVillageData(null);
+                    }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select state..." />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-background z-50">
                         <SelectItem value="any">Any State</SelectItem>
                         {states.map(state => (
                           <SelectItem key={state} value={state}>{state}</SelectItem>
@@ -355,12 +414,18 @@ const PinCodeGenerator = () => {
 
                   {selectedState && (
                     <div>
-                      <Label>District (Optional)</Label>
-                      <Select value={selectedDistrict || "any"} onValueChange={(v) => { setSelectedDistrict(v === "any" ? "" : v); setSelectedArea(""); }}>
+                      <Label>District</Label>
+                      <Select value={selectedDistrict || "any"} onValueChange={(v) => { 
+                        setSelectedDistrict(v === "any" ? "" : v); 
+                        setSelectedTaluk("");
+                        setSelectedArea(""); 
+                        setVillageInput("");
+                        setSelectedVillageData(null);
+                      }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select district..." />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-background z-50">
                           <SelectItem value="any">Any District</SelectItem>
                           {districts.map(district => (
                             <SelectItem key={district} value={district}>{district}</SelectItem>
@@ -370,20 +435,89 @@ const PinCodeGenerator = () => {
                     </div>
                   )}
 
-                  {selectedDistrict && (
+                  {selectedDistrict && taluks.length > 0 && (
                     <div>
-                      <Label>Area (Optional)</Label>
-                      <Select value={selectedArea || "any"} onValueChange={(v) => setSelectedArea(v === "any" ? "" : v)}>
+                      <Label>Mandal / Taluk</Label>
+                      <Select value={selectedTaluk || "any"} onValueChange={(v) => {
+                        setSelectedTaluk(v === "any" ? "" : v);
+                        setSelectedArea("");
+                        setVillageInput("");
+                        setSelectedVillageData(null);
+                      }}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select area..." />
+                          <SelectValue placeholder="Select mandal/taluk..." />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="any">Any Area</SelectItem>
-                          {areas.map(area => (
-                            <SelectItem key={area} value={area}>{area}</SelectItem>
+                        <SelectContent className="bg-background z-50">
+                          <SelectItem value="any">Any Mandal/Taluk</SelectItem>
+                          {taluks.map(taluk => (
+                            <SelectItem key={taluk} value={taluk}>{taluk}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                    </div>
+                  )}
+
+                  {selectedDistrict && (
+                    <div>
+                      <Label>Village / Area (Type to search)</Label>
+                      <Popover open={villagePopoverOpen} onOpenChange={setVillagePopoverOpen}>
+                        <PopoverTrigger asChild>
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input
+                              placeholder="Type village name (min 3 chars)..."
+                              value={villageInput}
+                              onChange={(e) => handleVillageInputChange(e.target.value)}
+                              className="pl-10"
+                            />
+                          </div>
+                        </PopoverTrigger>
+                        {villageResults.length > 0 && (
+                          <PopoverContent className="w-[400px] p-0 bg-background z-50" align="start">
+                            <Command>
+                              <CommandList>
+                                <CommandGroup heading="Matching Villages">
+                                  {villageResults.map((data, idx) => (
+                                    <CommandItem
+                                      key={`${data.pincode}-${idx}`}
+                                      value={data.area}
+                                      onSelect={() => handleVillageSelect(data)}
+                                      className="cursor-pointer"
+                                    >
+                                      <MapPin className="w-4 h-4 mr-2 text-pink-500" />
+                                      <div className="flex flex-col">
+                                        <span className="font-medium">{formatPinCodeDisplay(data)}</span>
+                                        <span className="text-xs text-muted-foreground">{data.postOffice}</span>
+                                      </div>
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        )}
+                      </Popover>
+                      {villageInput.length > 0 && villageInput.length < 3 && (
+                        <p className="text-xs text-muted-foreground mt-1">Type at least 3 characters to search</p>
+                      )}
+                      {villageInput.length >= 3 && villageResults.length === 0 && !selectedVillageData && (
+                        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" />
+                          No exact village match found
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Selected Village Display */}
+                  {selectedVillageData && (
+                    <div className="p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg border border-green-500/30">
+                      <p className="text-sm font-medium text-green-700 dark:text-green-400 flex items-center gap-2">
+                        <Check className="w-4 h-4" />
+                        Selected Village
+                      </p>
+                      <p className="text-sm mt-1">{formatPinCodeDisplay(selectedVillageData)}</p>
+                      <p className="text-xs text-muted-foreground">{selectedVillageData.postOffice}</p>
                     </div>
                   )}
 
@@ -538,8 +672,8 @@ const PinCodeGenerator = () => {
                             {copiedPin === result.data.pincode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                           </Button>
                         </div>
-                        <p className="text-sm text-muted-foreground">
-                          {result.data.area}, {result.data.district}, {result.data.state}
+                        <p className="text-sm font-medium">
+                          {formatPinCodeDisplay(result.data)}
                         </p>
                         <p className="text-xs text-muted-foreground">{result.data.postOffice}</p>
                       </div>
@@ -555,15 +689,22 @@ const PinCodeGenerator = () => {
                 </div>
               )}
 
-              {searchQuery.length >= 2 && searchResults.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">
-                  No results found for "{searchQuery}"
+              {searchQuery.length >= 3 && searchResults.length === 0 && (
+                <p className="text-center text-destructive py-8 flex items-center justify-center gap-2">
+                  <AlertCircle className="w-5 h-5" />
+                  No exact village match found for "{searchQuery}"
                 </p>
               )}
 
-              {searchQuery.length < 2 && (
+              {searchQuery.length > 0 && searchQuery.length < 3 && (
                 <p className="text-center text-muted-foreground py-8">
-                  Type at least 2 characters to search
+                  Type at least 3 characters to search
+                </p>
+              )}
+              
+              {searchQuery.length === 0 && (
+                <p className="text-center text-muted-foreground py-8">
+                  Search by village, mandal, district or PIN code
                 </p>
               )}
             </Card>
@@ -605,18 +746,27 @@ const PinCodeGenerator = () => {
                         {lookupResult.pincode}
                       </span>
                     </div>
+                    <div className="text-center mb-4">
+                      <p className="font-medium text-lg">{formatPinCodeDisplay(lookupResult)}</p>
+                    </div>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">State:</span>
-                        <span className="font-medium">{lookupResult.state}</span>
+                        <span className="text-muted-foreground">Village/Area:</span>
+                        <span className="font-medium">{lookupResult.area}</span>
                       </div>
+                      {lookupResult.taluk && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Mandal/Taluk:</span>
+                          <span className="font-medium">{lookupResult.taluk}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">District:</span>
                         <span className="font-medium">{lookupResult.district}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Area:</span>
-                        <span className="font-medium">{lookupResult.area}</span>
+                        <span className="text-muted-foreground">State:</span>
+                        <span className="font-medium">{lookupResult.state}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Post Office:</span>

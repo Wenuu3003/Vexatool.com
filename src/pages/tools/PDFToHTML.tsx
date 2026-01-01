@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import DOMPurify from "dompurify";
+
+// Escape HTML special characters to prevent XSS
+const escapeHtml = (text: string): string => {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+};
 
 const PDFToHTML = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -44,10 +52,11 @@ const PDFToHTML = () => {
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pages = pdfDoc.getPages();
       
-      // Get metadata
-      const title = pdfDoc.getTitle() || file.name.replace('.pdf', '');
-      const author = pdfDoc.getAuthor() || 'Unknown';
+      // Get metadata and escape to prevent XSS
+      const title = escapeHtml(pdfDoc.getTitle() || file.name.replace('.pdf', ''));
+      const author = escapeHtml(pdfDoc.getAuthor() || 'Unknown');
       const creationDate = pdfDoc.getCreationDate();
+      const fileName = escapeHtml(file.name);
 
       // Generate HTML structure
       let htmlContent = `<!DOCTYPE html>
@@ -128,8 +137,8 @@ const PDFToHTML = () => {
             <div class="document-meta">
                 <p>Author: ${author}</p>
                 <p>Pages: ${pages.length}</p>
-                ${creationDate ? `<p>Created: ${creationDate.toLocaleDateString()}</p>` : ''}
-                <p>Converted from: ${file.name}</p>
+                ${creationDate ? `<p>Created: ${escapeHtml(creationDate.toLocaleDateString())}</p>` : ''}
+                <p>Converted from: ${fileName}</p>
             </div>
         </div>
 `;
@@ -155,7 +164,14 @@ const PDFToHTML = () => {
 </body>
 </html>`;
 
-      setHtmlPreview(htmlContent);
+      // Sanitize HTML to prevent any remaining XSS vectors
+      const sanitizedHtml = DOMPurify.sanitize(htmlContent, {
+        ALLOWED_TAGS: ['html', 'head', 'body', 'meta', 'title', 'style', 'div', 'h1', 'h2', 'p', 'span'],
+        ALLOWED_ATTR: ['class', 'charset', 'name', 'content', 'lang'],
+        FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'link', 'form'],
+        FORBID_ATTR: ['onclick', 'onerror', 'onload', 'onmouseover']
+      });
+      setHtmlPreview(sanitizedHtml);
 
       // Download HTML file
       const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
@@ -264,7 +280,7 @@ const PDFToHTML = () => {
                 srcDoc={htmlPreview}
                 className="w-full h-96"
                 title="HTML Preview"
-                sandbox="allow-same-origin"
+                sandbox=""
               />
             </div>
           </div>

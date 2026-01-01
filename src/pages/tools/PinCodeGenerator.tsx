@@ -500,24 +500,24 @@ const PinCodeGenerator = () => {
                     >
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-lg text-pink-500">{result.pincode}</span>
+                          <span className="font-mono font-bold text-lg text-pink-500">{result.data.pincode}</span>
                           <Button 
                             size="sm" 
                             variant="ghost"
-                            onClick={() => copyToClipboard(result.pincode)}
+                            onClick={() => copyToClipboard(result.data.pincode)}
                           >
-                            {copiedPin === result.pincode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                            {copiedPin === result.data.pincode ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                           </Button>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {result.area}, {result.district}, {result.state}
+                          {result.data.area}, {result.data.district}, {result.data.state}
                         </p>
-                        <p className="text-xs text-muted-foreground">{result.postOffice}</p>
+                        <p className="text-xs text-muted-foreground">{result.data.postOffice}</p>
                       </div>
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => shareViaWhatsApp(result.pincode)}
+                        onClick={() => shareViaWhatsApp(result.data.pincode)}
                       >
                         <Share2 className="w-4 h-4" />
                       </Button>

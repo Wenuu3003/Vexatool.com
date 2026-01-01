@@ -43,7 +43,7 @@ const PHONETIC_MAP: Record<string, string[]> = {
 let villageIndex: Map<string, ExtendedPinCodeData[]>;
 let localityIndex: Map<string, ExtendedPinCodeData[]>;
 let districtIndex: Map<string, ExtendedPinCodeData[]>;
-let talukIndex: Map<string, ExtendedPinCodeData[]>;
+let mandalIndex: Map<string, ExtendedPinCodeData[]>;
 let pincodeIndex: Map<string, ExtendedPinCodeData>;
 let stateIndex: Map<string, ExtendedPinCodeData[]>;
 
@@ -53,7 +53,7 @@ function buildIndexes() {
   villageIndex = new Map();
   localityIndex = new Map();
   districtIndex = new Map();
-  talukIndex = new Map();
+  mandalIndex = new Map();
   pincodeIndex = new Map();
   stateIndex = new Map();
   
@@ -61,15 +61,15 @@ function buildIndexes() {
     // Index by pincode
     pincodeIndex.set(entry.pincode, entry);
     
-    // Index by area/village (normalized)
-    const areaKey = normalizeString(entry.area);
-    if (!villageIndex.has(areaKey)) {
-      villageIndex.set(areaKey, []);
+    // Index by village (normalized)
+    const villageKey = normalizeString(entry.village);
+    if (!villageIndex.has(villageKey)) {
+      villageIndex.set(villageKey, []);
     }
-    villageIndex.get(areaKey)!.push(entry);
+    villageIndex.get(villageKey)!.push(entry);
     
     // Index by post office name
-    const poKey = normalizeString(entry.postOffice.replace(/ (SO|BO|HO|GPO)$/, ''));
+    const poKey = normalizeString(entry.post_office.replace(/ (SO|BO|HO|GPO)$/, ''));
     if (!localityIndex.has(poKey)) {
       localityIndex.set(poKey, []);
     }
@@ -82,13 +82,13 @@ function buildIndexes() {
     }
     districtIndex.get(distKey)!.push(entry);
     
-    // Index by taluk
-    if (entry.taluk) {
-      const talukKey = normalizeString(entry.taluk);
-      if (!talukIndex.has(talukKey)) {
-        talukIndex.set(talukKey, []);
+    // Index by mandal
+    if (entry.mandal) {
+      const mandalKey = normalizeString(entry.mandal);
+      if (!mandalIndex.has(mandalKey)) {
+        mandalIndex.set(mandalKey, []);
       }
-      talukIndex.get(talukKey)!.push(entry);
+      mandalIndex.get(mandalKey)!.push(entry);
     }
     
     // Index by state
@@ -304,15 +304,15 @@ export function advancedSearchPinCodes(
     }
   }
   
-  // Priority 3: Exact taluk/mandal match
-  if (talukIndex.has(normalizedQuery)) {
-    for (const data of talukIndex.get(normalizedQuery)!) {
+  // Priority 3: Exact mandal match
+  if (mandalIndex.has(normalizedQuery)) {
+    for (const data of mandalIndex.get(normalizedQuery)!) {
       if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
         results.push({
           data,
           score: 90,
           matchType: 'exact',
-          matchedField: 'taluk'
+          matchedField: 'mandal'
         });
         seenPincodes.add(data.pincode);
       }
@@ -351,7 +351,7 @@ export function advancedSearchPinCodes(
     }
   }
   
-  for (const [key, dataList] of talukIndex.entries()) {
+  for (const [key, dataList] of mandalIndex.entries()) {
     if (key.startsWith(normalizedQuery) && key !== normalizedQuery) {
       for (const data of dataList) {
         if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
@@ -359,7 +359,7 @@ export function advancedSearchPinCodes(
             data,
             score: 75,
             matchType: 'startsWith',
-            matchedField: 'taluk'
+            matchedField: 'mandal'
           });
           seenPincodes.add(data.pincode);
         }
@@ -406,15 +406,15 @@ export function advancedSearchPinCodes(
         }
       }
       
-      // Check taluk index
-      if (talukIndex.has(variation)) {
-        for (const data of talukIndex.get(variation)!) {
+      // Check mandal index
+      if (mandalIndex.has(variation)) {
+        for (const data of mandalIndex.get(variation)!) {
           if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
             results.push({
               data,
               score: 60,
               matchType: 'phonetic',
-              matchedField: 'taluk'
+              matchedField: 'mandal'
             });
             seenPincodes.add(data.pincode);
           }
@@ -444,7 +444,7 @@ export function advancedSearchPinCodes(
       }
     }
     
-    for (const [key, dataList] of talukIndex.entries()) {
+    for (const [key, dataList] of mandalIndex.entries()) {
       if (seenPincodes.size >= limit) break;
       
       const distance = levenshteinDistance(normalizedQuery, key);
@@ -455,7 +455,7 @@ export function advancedSearchPinCodes(
               data,
               score: Math.max(35, 55 - distance * 10),
               matchType: 'fuzzy',
-              matchedField: 'taluk'
+              matchedField: 'mandal'
             });
             seenPincodes.add(data.pincode);
           }
@@ -489,7 +489,7 @@ export function advancedSearchPinCodes(
           matchType: 'includes' as const,
           matchedField: 'nearby'
         }));
-        message = `Found "${topResult.data.area}" - Showing nearby areas in ${topResult.data.district}`;
+        message = `Found "${topResult.data.village}" - Showing nearby areas in ${topResult.data.district}`;
       }
     } else if (results[0].score < 80) {
       message = "Showing similar matches. Try a more specific search.";
@@ -507,9 +507,9 @@ export function advancedSearchPinCodes(
         if (matchesFilters(entry) && !seenPincodes.has(entry.pincode)) {
           // Check if any field contains part of the query
           const searchFields = [
-            normalizeString(entry.area),
-            normalizeString(entry.postOffice),
-            normalizeString(entry.taluk || ''),
+            normalizeString(entry.village),
+            normalizeString(entry.post_office),
+            normalizeString(entry.mandal || ''),
           ];
           
           for (const field of searchFields) {
@@ -562,10 +562,10 @@ export function getByDistrict(district: string): ExtendedPinCodeData[] {
   return districtIndex.get(normalizeString(district)) || [];
 }
 
-// Get all entries for a taluk
-export function getByTaluk(taluk: string): ExtendedPinCodeData[] {
+// Get all entries for a mandal
+export function getByMandal(mandal: string): ExtendedPinCodeData[] {
   buildIndexes();
-  return talukIndex.get(normalizeString(taluk)) || [];
+  return mandalIndex.get(normalizeString(mandal)) || [];
 }
 
 // Get unique states from EXTENDED database
@@ -581,33 +581,33 @@ export function getDistrictsForState(state: string): string[] {
   return [...new Set(stateData.map(d => d.district))].sort();
 }
 
-// Get taluks for a district from EXTENDED database
-export function getTaluksForDistrict(state: string, district: string): string[] {
+// Get mandals for a district from EXTENDED database
+export function getMandalsForDistrict(state: string, district: string): string[] {
   const districtData = EXTENDED_PIN_DATABASE.filter(d => 
     normalizeString(d.state) === normalizeString(state) &&
     normalizeString(d.district) === normalizeString(district) &&
-    d.taluk
+    d.mandal
   );
-  return [...new Set(districtData.map(d => d.taluk!))].sort();
+  return [...new Set(districtData.map(d => d.mandal!))].sort();
 }
 
-// Get all areas/villages for a district from EXTENDED database
-export function getAreasForDistrict(state: string, district: string): string[] {
+// Get all villages for a district from EXTENDED database
+export function getVillagesForDistrict(state: string, district: string): string[] {
   const districtData = EXTENDED_PIN_DATABASE.filter(d => 
     normalizeString(d.state) === normalizeString(state) &&
     normalizeString(d.district) === normalizeString(district)
   );
-  return [...new Set(districtData.map(d => d.area))].sort();
+  return [...new Set(districtData.map(d => d.village))].sort();
 }
 
-// Get areas/villages for a specific taluk
-export function getAreasForTaluk(state: string, district: string, taluk: string): string[] {
-  const talukData = EXTENDED_PIN_DATABASE.filter(d => 
+// Get villages for a specific mandal
+export function getVillagesForMandal(state: string, district: string, mandal: string): string[] {
+  const mandalData = EXTENDED_PIN_DATABASE.filter(d => 
     normalizeString(d.state) === normalizeString(state) &&
     normalizeString(d.district) === normalizeString(district) &&
-    d.taluk && normalizeString(d.taluk) === normalizeString(taluk)
+    d.mandal && normalizeString(d.mandal) === normalizeString(mandal)
   );
-  return [...new Set(talukData.map(d => d.area))].sort();
+  return [...new Set(mandalData.map(d => d.village))].sort();
 }
 
 // Search villages with autocomplete - matches village === input AND district === selectedDistrict AND state === selectedState
@@ -615,7 +615,7 @@ export function searchVillagesAutocomplete(
   input: string,
   state: string,
   district: string,
-  taluk?: string,
+  mandal?: string,
   limit: number = 20
 ): ExtendedPinCodeData[] {
   if (input.length < 3) return [];
@@ -627,36 +627,36 @@ export function searchVillagesAutocomplete(
     if (normalizeString(d.state) !== normalizeString(state)) return false;
     if (normalizeString(d.district) !== normalizeString(district)) return false;
     
-    // If taluk is selected, must match taluk
-    if (taluk && d.taluk && normalizeString(d.taluk) !== normalizeString(taluk)) return false;
+    // If mandal is selected, must match mandal
+    if (mandal && d.mandal && normalizeString(d.mandal) !== normalizeString(mandal)) return false;
     
     // Village name must match input (exact, startsWith, or includes)
-    const normalizedVillage = normalizeString(d.area);
+    const normalizedVillage = normalizeString(d.village);
     return normalizedVillage === normalizedInput || 
            normalizedVillage.startsWith(normalizedInput) ||
            normalizedVillage.includes(normalizedInput);
   })
   .sort((a, b) => {
     // Prioritize exact matches, then startsWith, then includes
-    const aExact = normalizeString(a.area) === normalizedInput;
-    const bExact = normalizeString(b.area) === normalizedInput;
+    const aExact = normalizeString(a.village) === normalizedInput;
+    const bExact = normalizeString(b.village) === normalizedInput;
     if (aExact && !bExact) return -1;
     if (!aExact && bExact) return 1;
     
-    const aStarts = normalizeString(a.area).startsWith(normalizedInput);
-    const bStarts = normalizeString(b.area).startsWith(normalizedInput);
+    const aStarts = normalizeString(a.village).startsWith(normalizedInput);
+    const bStarts = normalizeString(b.village).startsWith(normalizedInput);
     if (aStarts && !bStarts) return -1;
     if (!aStarts && bStarts) return 1;
     
-    return a.area.localeCompare(b.area);
+    return a.village.localeCompare(b.village);
   })
   .slice(0, limit);
 }
 
 // Format display string: Village, Mandal, District, State – Pincode
 export function formatPinCodeDisplay(data: ExtendedPinCodeData): string {
-  const parts = [data.area];
-  if (data.taluk) parts.push(data.taluk);
+  const parts = [data.village];
+  if (data.mandal) parts.push(data.mandal);
   parts.push(data.district, data.state);
   return `${parts.join(', ')} – ${data.pincode}`;
 }

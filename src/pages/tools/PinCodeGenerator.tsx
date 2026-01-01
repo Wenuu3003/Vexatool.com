@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,9 +45,9 @@ import {
   PIN_FACTS,
   type ExtendedPinCodeData 
 } from "@/data/indianPinCodesExtended";
-import { 
-  advancedSearchPinCodes, 
-  lookupByPincode, 
+import {
+  advancedSearchPinCodes,
+  lookupByPincode,
   getUniqueStates,
   getDistrictsForState,
   getMandalsForDistrict,
@@ -58,8 +58,9 @@ import {
   formatPinCodeDisplay,
   formatPinCodeDisplayShort,
   cleanUserInput,
-  type SearchResult 
+  type SearchResult,
 } from "@/lib/pinCodeSearch";
+import { searchIndiaPost, lookupIndiaPostPincode } from "@/lib/indiaPost";
 import {
   Command,
   CommandEmpty,
@@ -116,6 +117,12 @@ const PinCodeGenerator = () => {
   // Statistics
   const [totalSearches, setTotalSearches] = useState<number>(0);
 
+  // Debounce/cancel helpers for live postal lookups
+  const finderReqIdRef = useRef(0);
+  const finderTimerRef = useRef<number | null>(null);
+  const villageReqIdRef = useRef(0);
+  const villageTimerRef = useRef<number | null>(null);
+
   // Get dropdown data from EXTENDED database
   const states = getUniqueStates();
   const districts = selectedState ? getDistrictsForState(selectedState) : [];
@@ -129,25 +136,50 @@ const PinCodeGenerator = () => {
     setVillageInput(value);
     setSelectedVillageData(null);
     setVillageSuggestions([]);
-    
+
+    if (villageTimerRef.current) {
+      window.clearTimeout(villageTimerRef.current);
+      villageTimerRef.current = null;
+    }
+
     if (value.length >= 2) {
       // Clean the input
       const cleanedValue = cleanUserInput(value);
-      
-      // Search with optional filters - works even without state/district selection
-      const results = searchVillagesAutocomplete(
-        cleanedValue, 
-        selectedState || undefined, 
-        selectedDistrict || undefined, 
+
+      // Instant local results (fast)
+      const localResults = searchVillagesAutocomplete(
+        cleanedValue,
+        selectedState || undefined,
+        selectedDistrict || undefined,
         selectedTaluk || undefined
       );
-      setVillageResults(results);
-      setVillagePopoverOpen(results.length > 0);
-      
-      // If no exact results, get closest suggestions
-      if (results.length === 0 && cleanedValue.length >= 2) {
+
+      setVillageResults(localResults);
+      setVillagePopoverOpen(localResults.length > 0);
+
+      // Local suggestions if nothing found
+      if (localResults.length === 0 && cleanedValue.length >= 2) {
         const suggestions = getClosestVillageSuggestions(cleanedValue, 5);
         setVillageSuggestions(suggestions);
+      }
+
+      // Live lookup (accurate) - only when query is meaningful
+      if (cleanedValue.length >= 3) {
+        const reqId = ++villageReqIdRef.current;
+        villageTimerRef.current = window.setTimeout(async () => {
+          try {
+            const liveResults = await searchIndiaPost(cleanedValue);
+            if (villageReqIdRef.current !== reqId) return;
+
+            if (liveResults.length > 0) {
+              setVillageResults(liveResults);
+              setVillagePopoverOpen(true);
+              setVillageSuggestions([]);
+            }
+          } catch {
+            // Keep local results if live lookup fails
+          }
+        }, 350);
       }
     } else {
       setVillageResults([]);
@@ -246,36 +278,81 @@ const PinCodeGenerator = () => {
   };
 
   // Reverse lookup
-  const handleReverseLookup = () => {
+  const handleReverseLookup = async () => {
     if (lookupPin.length !== 6 || !/^\d+$/.test(lookupPin)) {
       setLookupError("Please enter a valid 6-digit PIN code");
       setLookupResult(null);
       return;
     }
-    
-    const result = lookupByPincode(lookupPin);
-    if (result) {
-      setLookupResult(result);
+
+    // 1) Fast local lookup
+    const local = lookupByPincode(lookupPin);
+    if (local) {
+      setLookupResult(local);
       setLookupError("");
       saveToHistory(lookupPin);
       toast.success("PIN code found!");
-    } else {
+      return;
+    }
+
+    // 2) Accurate live lookup
+    try {
+      const live = await lookupIndiaPostPincode(lookupPin);
+      if (live) {
+        setLookupResult(live);
+        setLookupError("");
+        saveToHistory(lookupPin);
+        toast.success("PIN code found!");
+        return;
+      }
+
       setLookupResult(null);
-      setLookupError("PIN code not found in database. Try another PIN.");
+      setLookupError("PIN code not found. Please check and try again.");
+    } catch {
+      setLookupResult(null);
+      setLookupError("Lookup failed. Please try again.");
     }
   };
 
-  // Search with advanced matching - require 3 chars minimum
+  // Search (live postal results) - require 3 chars minimum
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    if (query.length >= 3) {
-      const { results, message } = advancedSearchPinCodes(query, { limit: 50, includeNearby: true });
-      setSearchResults(results);
-      setSearchMessage(message || "");
-    } else {
-      setSearchResults([]);
-      setSearchMessage("");
+
+    if (finderTimerRef.current) {
+      window.clearTimeout(finderTimerRef.current);
+      finderTimerRef.current = null;
     }
+
+    const trimmed = query.trim();
+    if (trimmed.length >= 3) {
+      const reqId = ++finderReqIdRef.current;
+
+      finderTimerRef.current = window.setTimeout(async () => {
+        try {
+          const liveResults = await searchIndiaPost(trimmed);
+          if (finderReqIdRef.current !== reqId) return;
+
+          const results: SearchResult[] = liveResults.map((data, idx) => ({
+            data,
+            score: Math.max(1, 100 - idx),
+            matchType: "exact",
+            matchedField: /^\d{6}$/.test(trimmed) ? "pincode" : "post_office",
+          }));
+
+          setSearchResults(results);
+          setSearchMessage("");
+        } catch {
+          if (finderReqIdRef.current !== reqId) return;
+          setSearchResults([]);
+          setSearchMessage("Search failed. Please try again.");
+        }
+      }, 300);
+
+      return;
+    }
+
+    setSearchResults([]);
+    setSearchMessage("");
   };
 
   // Copy to clipboard
@@ -739,7 +816,7 @@ const PinCodeGenerator = () => {
               {searchQuery.length >= 3 && searchResults.length === 0 && (
                 <p className="text-center text-destructive py-8 flex items-center justify-center gap-2">
                   <AlertCircle className="w-5 h-5" />
-                  No exact village match found for "{searchQuery}"
+                  No results found for "{searchQuery}"
                 </p>
               )}
 

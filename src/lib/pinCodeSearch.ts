@@ -610,34 +610,44 @@ export function getVillagesForMandal(state: string, district: string, mandal: st
   return [...new Set(mandalData.map(d => d.village))].sort();
 }
 
-// Search villages with autocomplete - matches village === input AND district === selectedDistrict AND state === selectedState
+// Search villages with autocomplete - works globally or within state/district filters
 export function searchVillagesAutocomplete(
   input: string,
-  state: string,
-  district: string,
+  state?: string,
+  district?: string,
   mandal?: string,
   limit: number = 20
 ): ExtendedPinCodeData[] {
-  if (input.length < 3) return [];
+  if (input.length < 2) return [];
   
   const normalizedInput = normalizeString(input);
   
   return EXTENDED_PIN_DATABASE.filter(d => {
-    // Must match state and district
-    if (normalizeString(d.state) !== normalizeString(state)) return false;
-    if (normalizeString(d.district) !== normalizeString(district)) return false;
+    // If state is provided, must match state
+    if (state && normalizeString(d.state) !== normalizeString(state)) return false;
+    
+    // If district is provided, must match district
+    if (district && normalizeString(d.district) !== normalizeString(district)) return false;
     
     // If mandal is selected, must match mandal
     if (mandal && d.mandal && normalizeString(d.mandal) !== normalizeString(mandal)) return false;
     
-    // Village name must match input (exact, startsWith, or includes)
+    // Match against village, post_office, mandal, or district
     const normalizedVillage = normalizeString(d.village);
+    const normalizedPO = normalizeString(d.post_office);
+    const normalizedMandal = d.mandal ? normalizeString(d.mandal) : '';
+    const normalizedDistrict = normalizeString(d.district);
+    
     return normalizedVillage === normalizedInput || 
            normalizedVillage.startsWith(normalizedInput) ||
-           normalizedVillage.includes(normalizedInput);
+           normalizedVillage.includes(normalizedInput) ||
+           normalizedPO.startsWith(normalizedInput) ||
+           normalizedPO.includes(normalizedInput) ||
+           normalizedMandal.startsWith(normalizedInput) ||
+           normalizedDistrict.startsWith(normalizedInput);
   })
   .sort((a, b) => {
-    // Prioritize exact matches, then startsWith, then includes
+    // Prioritize exact village matches, then startsWith, then includes
     const aExact = normalizeString(a.village) === normalizedInput;
     const bExact = normalizeString(b.village) === normalizedInput;
     if (aExact && !bExact) return -1;

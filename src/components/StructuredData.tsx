@@ -18,7 +18,7 @@ interface StructuredDataProps {
 }
 
 export const StructuredData = ({ type, data }: StructuredDataProps) => {
-  const baseUrl = "https://mypdfs.lovable.app";
+  const baseUrl = "https://mypdfs.in";
   
   const generateSchema = () => {
     if (type === "WebApplication") {

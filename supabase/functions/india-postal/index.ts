@@ -100,15 +100,29 @@ serve(async (req) => {
       : `https://api.postalpincode.in/postoffice/${encodeURIComponent(query)}`;
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    const timeout = setTimeout(() => controller.abort(), 15000);
 
-    const upstreamRes = await fetch(upstreamUrl, {
-      method: "GET",
-      signal: controller.signal,
-      headers: {
-        "Accept": "application/json",
-      },
-    }).finally(() => clearTimeout(timeout));
+    let upstreamRes: Response;
+    try {
+      upstreamRes = await fetch(upstreamUrl, {
+        method: "GET",
+        signal: controller.signal,
+        headers: {
+          "Accept": "application/json",
+          "User-Agent": "MyPDFs-PinCode-Tool/1.0",
+        },
+      });
+    } catch (fetchError) {
+      clearTimeout(timeout);
+      const errMsg = fetchError instanceof Error ? fetchError.message : "Fetch failed";
+      console.error("Upstream fetch error:", errMsg);
+      return new Response(JSON.stringify({ results: [], message: "India Post service temporarily unavailable. Please try again." }), {
+        status: 503,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!upstreamRes.ok) {
       return new Response(JSON.stringify({ results: [], message: "Postal service error. Please try again." }), {

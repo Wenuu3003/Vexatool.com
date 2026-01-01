@@ -120,12 +120,18 @@ const PinCodeGenerator = () => {
     ? (selectedTaluk ? getVillagesForMandal(selectedState, selectedDistrict, selectedTaluk) : getVillagesForDistrict(selectedState, selectedDistrict))
     : [];
   
-  // Handle village input change for autocomplete
+  // Handle village input change for autocomplete - works globally or with filters
   const handleVillageInputChange = (value: string) => {
     setVillageInput(value);
     setSelectedVillageData(null);
-    if (value.length >= 3 && selectedState && selectedDistrict) {
-      const results = searchVillagesAutocomplete(value, selectedState, selectedDistrict, selectedTaluk);
+    if (value.length >= 2) {
+      // Search with optional filters - works even without state/district selection
+      const results = searchVillagesAutocomplete(
+        value, 
+        selectedState || undefined, 
+        selectedDistrict || undefined, 
+        selectedTaluk || undefined
+      );
       setVillageResults(results);
       setVillagePopoverOpen(results.length > 0);
     } else {
@@ -457,57 +463,58 @@ const PinCodeGenerator = () => {
                     </div>
                   )}
 
-                  {selectedDistrict && (
-                    <div>
-                      <Label>Village / Area (Type to search)</Label>
-                      <Popover open={villagePopoverOpen} onOpenChange={setVillagePopoverOpen}>
-                        <PopoverTrigger asChild>
-                          <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                              placeholder="Type village name (min 3 chars)..."
-                              value={villageInput}
-                              onChange={(e) => handleVillageInputChange(e.target.value)}
-                              className="pl-10"
-                            />
-                          </div>
-                        </PopoverTrigger>
-                        {villageResults.length > 0 && (
-                          <PopoverContent className="w-[400px] p-0 bg-background z-50" align="start">
-                            <Command>
-                              <CommandList>
-                                <CommandGroup heading="Matching Villages">
-                                  {villageResults.map((data, idx) => (
-                                    <CommandItem
-                                      key={`${data.pincode}-${idx}`}
-                                      value={data.village}
-                                      onSelect={() => handleVillageSelect(data)}
-                                      className="cursor-pointer"
-                                    >
-                                      <MapPin className="w-4 h-4 mr-2 text-pink-500" />
-                                      <div className="flex flex-col">
-                                        <span className="font-medium">{formatPinCodeDisplay(data)}</span>
-                                        <span className="text-xs text-muted-foreground">{data.post_office}</span>
-                                      </div>
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
-                              </CommandList>
-                            </Command>
-                          </PopoverContent>
-                        )}
-                      </Popover>
-                      {villageInput.length > 0 && villageInput.length < 3 && (
-                        <p className="text-xs text-muted-foreground mt-1">Type at least 3 characters to search</p>
+                  {/* Village Search - Always visible, works with or without filters */}
+                  <div>
+                    <Label>Village / City / Area (Type to search)</Label>
+                    <Popover open={villagePopoverOpen} onOpenChange={setVillagePopoverOpen}>
+                      <PopoverTrigger asChild>
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            placeholder="Type village or city name (min 2 chars)..."
+                            value={villageInput}
+                            onChange={(e) => handleVillageInputChange(e.target.value)}
+                            className="pl-10"
+                          />
+                        </div>
+                      </PopoverTrigger>
+                      {villageResults.length > 0 && (
+                        <PopoverContent className="w-[400px] p-0 bg-background z-50" align="start">
+                          <Command>
+                            <CommandList>
+                              <CommandGroup heading={`Matching Results (${villageResults.length})`}>
+                                {villageResults.map((data, idx) => (
+                                  <CommandItem
+                                    key={`${data.pincode}-${idx}`}
+                                    value={data.village}
+                                    onSelect={() => handleVillageSelect(data)}
+                                    className="cursor-pointer"
+                                  >
+                                    <MapPin className="w-4 h-4 mr-2 text-pink-500" />
+                                    <div className="flex flex-col">
+                                      <span className="font-medium">{data.village} - {data.pincode}</span>
+                                      <span className="text-xs text-muted-foreground">
+                                        {data.mandal && `${data.mandal}, `}{data.district}, {data.state}
+                                      </span>
+                                    </div>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
                       )}
-                      {villageInput.length >= 3 && villageResults.length === 0 && !selectedVillageData && (
-                        <p className="text-xs text-destructive mt-1 flex items-center gap-1">
-                          <AlertCircle className="w-3 h-3" />
-                          No exact village match found
-                        </p>
-                      )}
-                    </div>
-                  )}
+                    </Popover>
+                    {villageInput.length > 0 && villageInput.length < 2 && (
+                      <p className="text-xs text-muted-foreground mt-1">Type at least 2 characters to search</p>
+                    )}
+                    {villageInput.length >= 2 && villageResults.length === 0 && !selectedVillageData && (
+                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        No match found. Try different spelling or use the Finder tab for advanced search.
+                      </p>
+                    )}
+                  </div>
                   
                   {/* Selected Village Display */}
                   {selectedVillageData && (

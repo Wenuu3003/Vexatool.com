@@ -201,7 +201,7 @@ export const EXTENDED_PIN_DATABASE: ExtendedPinCodeData[] = [
   { pincode: "522236", state: "Andhra Pradesh", district: "Guntur", taluk: "Tsunduru", area: "Tsunduru", postOffice: "Tsunduru BO", officeType: "BO" },
   { pincode: "522237", state: "Andhra Pradesh", district: "Guntur", taluk: "Amruthaluru", area: "Amruthaluru", postOffice: "Amruthaluru BO", officeType: "BO" },
   { pincode: "522238", state: "Andhra Pradesh", district: "Guntur", taluk: "Ponnur", area: "Ponnur", postOffice: "Ponnur SO", officeType: "SO" },
-  { pincode: "522239", state: "Andhra Pradesh", district: "Guntur", taluk: "Repalle", area: "Repalle", postOffice: "Repalle SO", officeType: "SO" },
+  { pincode: "522265", state: "Andhra Pradesh", district: "Guntur", taluk: "Repalle", area: "Repalle", postOffice: "Repalle SO", officeType: "SO" },
   { pincode: "522240", state: "Andhra Pradesh", district: "Guntur", taluk: "Nizampatnam", area: "Nizampatnam", postOffice: "Nizampatnam SO", officeType: "SO" },
   { pincode: "522241", state: "Andhra Pradesh", district: "Guntur", taluk: "Nagaram", area: "Nagaram", postOffice: "Nagaram BO", officeType: "BO" },
   { pincode: "522242", state: "Andhra Pradesh", district: "Guntur", taluk: "Pittalavanipalem", area: "Pittalavanipalem", postOffice: "Pittalavanipalem BO", officeType: "BO" },

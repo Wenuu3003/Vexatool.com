@@ -308,12 +308,12 @@ const PinCodeGenerator = () => {
                 <div className="space-y-4">
                   <div>
                     <Label>State (Optional)</Label>
-                    <Select value={selectedState} onValueChange={(v) => { setSelectedState(v); setSelectedDistrict(""); setSelectedArea(""); }}>
+                    <Select value={selectedState || "any"} onValueChange={(v) => { setSelectedState(v === "any" ? "" : v); setSelectedDistrict(""); setSelectedArea(""); }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select state..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Any State</SelectItem>
+                        <SelectItem value="any">Any State</SelectItem>
                         {states.map(state => (
                           <SelectItem key={state} value={state}>{state}</SelectItem>
                         ))}
@@ -324,12 +324,12 @@ const PinCodeGenerator = () => {
                   {selectedState && (
                     <div>
                       <Label>District (Optional)</Label>
-                      <Select value={selectedDistrict} onValueChange={(v) => { setSelectedDistrict(v); setSelectedArea(""); }}>
+                      <Select value={selectedDistrict || "any"} onValueChange={(v) => { setSelectedDistrict(v === "any" ? "" : v); setSelectedArea(""); }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select district..." />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Any District</SelectItem>
+                          <SelectItem value="any">Any District</SelectItem>
                           {districts.map(district => (
                             <SelectItem key={district} value={district}>{district}</SelectItem>
                           ))}
@@ -341,12 +341,12 @@ const PinCodeGenerator = () => {
                   {selectedDistrict && (
                     <div>
                       <Label>Area (Optional)</Label>
-                      <Select value={selectedArea} onValueChange={setSelectedArea}>
+                      <Select value={selectedArea || "any"} onValueChange={(v) => setSelectedArea(v === "any" ? "" : v)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select area..." />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">Any Area</SelectItem>
+                          <SelectItem value="any">Any Area</SelectItem>
                           {areas.map(area => (
                             <SelectItem key={area} value={area}>{area}</SelectItem>
                           ))}

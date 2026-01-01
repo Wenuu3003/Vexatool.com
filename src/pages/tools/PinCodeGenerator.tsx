@@ -28,6 +28,7 @@ import {
   Search,
   Shuffle,
   History,
+  Info,
   Trash2,
   Share2,
   Lightbulb,

@@ -133,7 +133,7 @@ export const Header = () => {
 
         {/* Desktop Mega Menu */}
         {megaMenuOpen && (
-          <div className="hidden md:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-lg animate-fade-in">
+          <div className="hidden md:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-lg animate-fade-in z-50">
             <div className="container mx-auto">
               <MegaMenu onNavigate={() => setMegaMenuOpen(false)} />
             </div>
@@ -168,8 +168,9 @@ export const Header = () => {
       {/* Overlay for mega menu */}
       {megaMenuOpen && (
         <div
-          className="fixed inset-0 top-16 bg-black/20 z-40 hidden md:block"
+          className="fixed inset-0 top-16 bg-black/20 z-40 hidden md:block pointer-events-auto"
           onClick={() => setMegaMenuOpen(false)}
+          aria-hidden="true"
         />
       )}
     </header>

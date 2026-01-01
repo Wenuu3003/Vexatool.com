@@ -677,19 +677,17 @@ export function searchVillagesAutocomplete(
     // If mandal is selected, must match mandal
     if (mandal && d.mandal && normalizeString(d.mandal) !== normalizeString(mandal)) return false;
     
-    // Match against village, post_office, mandal, or district
+    // Match against village or post_office only (avoid district/mandal noise)
     const normalizedVillage = normalizeString(d.village);
     const normalizedPO = normalizeString(d.post_office);
-    const normalizedMandal = d.mandal ? normalizeString(d.mandal) : '';
-    const normalizedDistrict = normalizeString(d.district);
-    
-    return normalizedVillage === normalizedInput || 
-           normalizedVillage.startsWith(normalizedInput) ||
-           normalizedVillage.includes(normalizedInput) ||
-           normalizedPO.startsWith(normalizedInput) ||
-           normalizedPO.includes(normalizedInput) ||
-           normalizedMandal.startsWith(normalizedInput) ||
-           normalizedDistrict.startsWith(normalizedInput);
+
+    return (
+      normalizedVillage === normalizedInput ||
+      normalizedVillage.startsWith(normalizedInput) ||
+      normalizedVillage.includes(normalizedInput) ||
+      normalizedPO.startsWith(normalizedInput) ||
+      normalizedPO.includes(normalizedInput)
+    );
   })
   .sort((a, b) => {
     // Prioritize exact village matches, then startsWith, then includes

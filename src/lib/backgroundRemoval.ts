@@ -45,13 +45,14 @@ export const removeBackground = async (
 ): Promise<RemovalResult> => {
   try {
     console.log("Starting background removal process...");
-    onProgress?.(20);
+    onProgress?.(10);
 
-    const segmenter = await pipeline("image-segmentation", "Xenova/segformer-b0-finetuned-ade-512-512", {
+    // Use RMBG-1.4 model which is specifically designed for background removal
+    const segmenter = await pipeline("image-segmentation", "briaai/RMBG-1.4", {
       device: "webgpu",
     });
 
-    onProgress?.(60);
+    onProgress?.(40);
 
     // Convert HTMLImageElement to canvas
     const canvas = document.createElement("canvas");
@@ -64,13 +65,13 @@ export const removeBackground = async (
     console.log(`Image ${wasResized ? "was" : "was not"} resized. Final dimensions: ${canvas.width}x${canvas.height}`);
 
     // Get image data as base64
-    const imageData = canvas.toDataURL("image/jpeg", 0.8);
+    const imageData = canvas.toDataURL("image/png");
     console.log("Image converted to base64");
 
     onProgress?.(50);
 
-    // Process the image with the segmentation model
-    console.log("Processing with segmentation model...");
+    // Process the image with the RMBG segmentation model
+    console.log("Processing with RMBG background removal model...");
     const result = await segmenter(imageData);
 
     onProgress?.(80);
@@ -81,11 +82,12 @@ export const removeBackground = async (
       throw new Error("Invalid segmentation result");
     }
 
-    // Store the mask data for later editing
+    // RMBG-1.4 returns a foreground mask where values near 1 = subject (keep), 0 = background (remove)
+    // We store this mask directly - no inversion needed for RMBG model
     const maskData = new Float32Array(result[0].mask.data);
 
     // Create the result blob
-    const blob = await applyMaskToImage(canvas, maskData);
+    const blob = await applyMaskToImage(canvas, maskData, true); // true = RMBG model (foreground mask)
 
     onProgress?.(100);
 
@@ -103,9 +105,11 @@ export const removeBackground = async (
 };
 
 // Apply a mask to an image and return a blob
+// isForegroundMask: true for RMBG model (1 = keep subject), false for inverted mask
 export const applyMaskToImage = async (
   canvas: HTMLCanvasElement,
-  maskData: Float32Array
+  maskData: Float32Array,
+  isForegroundMask: boolean = true
 ): Promise<Blob> => {
   const outputCanvas = document.createElement("canvas");
   outputCanvas.width = canvas.width;
@@ -121,10 +125,13 @@ export const applyMaskToImage = async (
   const outputImageData = outputCtx.getImageData(0, 0, outputCanvas.width, outputCanvas.height);
   const data = outputImageData.data;
 
-  // Apply inverted mask to alpha channel
+  // Apply mask to alpha channel
   for (let i = 0; i < maskData.length; i++) {
-    // Invert the mask value (1 - value) to keep the subject instead of the background
-    const alpha = Math.round((1 - maskData[i]) * 255);
+    // For RMBG model: mask value 1 = foreground (keep), 0 = background (remove)
+    // For other models: invert the mask
+    const alpha = isForegroundMask 
+      ? Math.round(maskData[i] * 255) 
+      : Math.round((1 - maskData[i]) * 255);
     data[i * 4 + 3] = alpha;
   }
 
@@ -164,7 +171,8 @@ export const applyEditedMask = async (
 
   ctx.drawImage(originalImage, 0, 0, width, height);
 
-  return applyMaskToImage(canvas, maskData);
+  // Use foreground mask (RMBG format)
+  return applyMaskToImage(canvas, maskData, true);
 };
 
 export const loadImage = (file: File): Promise<HTMLImageElement> => {

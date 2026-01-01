@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -36,6 +37,8 @@ import {
   FileText,
   Package,
   AlertCircle,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
@@ -113,6 +116,9 @@ const PinCodeGenerator = () => {
   
   // Random fact
   const [randomFact, setRandomFact] = useState<string>("");
+
+  // Live/Offline mode toggle
+  const [isLiveMode, setIsLiveMode] = useState<boolean>(true);
   
   // Statistics
   const [totalSearches, setTotalSearches] = useState<number>(0);
@@ -163,8 +169,8 @@ const PinCodeGenerator = () => {
         setVillageSuggestions(suggestions);
       }
 
-      // Live lookup (accurate) - only when query is meaningful
-      if (cleanedValue.length >= 3) {
+      // Live lookup (accurate) - only when in live mode and query is meaningful
+      if (isLiveMode && cleanedValue.length >= 3) {
         const reqId = ++villageReqIdRef.current;
         villageTimerRef.current = window.setTimeout(async () => {
           try {
@@ -295,26 +301,31 @@ const PinCodeGenerator = () => {
       return;
     }
 
-    // 2) Accurate live lookup
-    try {
-      const live = await lookupIndiaPostPincode(lookupPin);
-      if (live) {
-        setLookupResult(live);
-        setLookupError("");
-        saveToHistory(lookupPin);
-        toast.success("PIN code found!");
-        return;
-      }
+    // 2) Accurate live lookup (only in live mode)
+    if (isLiveMode) {
+      try {
+        const live = await lookupIndiaPostPincode(lookupPin);
+        if (live) {
+          setLookupResult(live);
+          setLookupError("");
+          saveToHistory(lookupPin);
+          toast.success("PIN code found!");
+          return;
+        }
 
+        setLookupResult(null);
+        setLookupError("PIN code not found. Please check and try again.");
+      } catch {
+        setLookupResult(null);
+        setLookupError("Lookup failed. Please try again.");
+      }
+    } else {
       setLookupResult(null);
-      setLookupError("PIN code not found. Please check and try again.");
-    } catch {
-      setLookupResult(null);
-      setLookupError("Lookup failed. Please try again.");
+      setLookupError("PIN code not found in local database.");
     }
   };
 
-  // Search (live postal results) - require 3 chars minimum
+  // Search - live or offline based on mode
   const handleSearch = (query: string) => {
     setSearchQuery(query);
 
@@ -325,29 +336,36 @@ const PinCodeGenerator = () => {
 
     const trimmed = query.trim();
     if (trimmed.length >= 3) {
-      const reqId = ++finderReqIdRef.current;
+      if (isLiveMode) {
+        // Live mode: use India Post API
+        const reqId = ++finderReqIdRef.current;
 
-      finderTimerRef.current = window.setTimeout(async () => {
-        try {
-          const liveResults = await searchIndiaPost(trimmed);
-          if (finderReqIdRef.current !== reqId) return;
+        finderTimerRef.current = window.setTimeout(async () => {
+          try {
+            const liveResults = await searchIndiaPost(trimmed);
+            if (finderReqIdRef.current !== reqId) return;
 
-          const results: SearchResult[] = liveResults.map((data, idx) => ({
-            data,
-            score: Math.max(1, 100 - idx),
-            matchType: "exact",
-            matchedField: /^\d{6}$/.test(trimmed) ? "pincode" : "post_office",
-          }));
+            const results: SearchResult[] = liveResults.map((data, idx) => ({
+              data,
+              score: Math.max(1, 100 - idx),
+              matchType: "exact",
+              matchedField: /^\d{6}$/.test(trimmed) ? "pincode" : "post_office",
+            }));
 
-          setSearchResults(results);
-          setSearchMessage("");
-        } catch {
-          if (finderReqIdRef.current !== reqId) return;
-          setSearchResults([]);
-          setSearchMessage("Search failed. Please try again.");
-        }
-      }, 300);
-
+            setSearchResults(results);
+            setSearchMessage("");
+          } catch {
+            if (finderReqIdRef.current !== reqId) return;
+            setSearchResults([]);
+            setSearchMessage("Search failed. Please try again.");
+          }
+        }, 300);
+      } else {
+        // Offline mode: use local database
+        const searchResult = advancedSearchPinCodes(trimmed, { limit: 50 });
+        setSearchResults(searchResult.results);
+        setSearchMessage(searchResult.results.length === 0 ? (searchResult.message || "No results found in local database.") : "");
+      }
       return;
     }
 
@@ -446,16 +464,34 @@ const PinCodeGenerator = () => {
         colorClass="bg-gradient-to-r from-pink-500 to-purple-600"
         category="UtilitiesApplication"
       >
-        {/* Stats Bar */}
+        {/* Stats Bar & Mode Toggle */}
         <div className="mb-6 flex flex-wrap gap-4 items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Package className="w-4 h-4" />
             <span>Total Searches: <strong className="text-foreground">{totalSearches.toLocaleString()}</strong></span>
           </div>
-          <Badge variant="outline" className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 border-pink-500/30">
-            <Lightbulb className="w-3 h-3 mr-1" />
-            India Focused
-          </Badge>
+          
+          {/* Live/Offline Toggle */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 border">
+              <WifiOff className={`w-4 h-4 ${!isLiveMode ? 'text-orange-500' : 'text-muted-foreground'}`} />
+              <span className={`text-xs font-medium ${!isLiveMode ? 'text-foreground' : 'text-muted-foreground'}`}>Offline</span>
+              <Switch
+                checked={isLiveMode}
+                onCheckedChange={(checked) => {
+                  setIsLiveMode(checked);
+                  toast.success(checked ? "Live mode: Accurate results from India Post" : "Offline mode: Fast local results");
+                }}
+                className="data-[state=checked]:bg-green-500"
+              />
+              <span className={`text-xs font-medium ${isLiveMode ? 'text-foreground' : 'text-muted-foreground'}`}>Live</span>
+              <Wifi className={`w-4 h-4 ${isLiveMode ? 'text-green-500' : 'text-muted-foreground'}`} />
+            </div>
+            <Badge variant="outline" className="bg-gradient-to-r from-pink-500/10 to-purple-500/10 border-pink-500/30">
+              <Lightbulb className="w-3 h-3 mr-1" />
+              India Focused
+            </Badge>
+          </div>
         </div>
 
         <Tabs defaultValue="generate" className="w-full">

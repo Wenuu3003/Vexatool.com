@@ -1,11 +1,9 @@
-// PIN Code data interface
+// PIN Code data interface - India standard format
 export interface ExtendedPinCodeData {
-  pincode: string;
   state: string;
   district: string;
-  taluk?: string; // Mandal / Taluka / Tehsil
-  area: string;
-  postOffice: string;
-  officeType: 'BO' | 'SO' | 'HO' | 'GPO'; // Branch Office, Sub Office, Head Office, General Post Office
-  region?: string;
+  mandal: string; // Mandal / Taluka / Tehsil / Block
+  village: string;
+  post_office: string;
+  pincode: string;
 }

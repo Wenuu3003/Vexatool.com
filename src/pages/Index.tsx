@@ -55,8 +55,8 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Mypdfs - Free Online PDF Tools, QR Code Generator & Scanner | 30+ Tools</title>
-        <meta name="description" content="Free online PDF editor with 30+ tools. Merge, split, compress, convert PDFs instantly. QR code generator with custom logos. AI chat assistant. Calculator, currency converter, SEO analyzer. 100% free, no registration." />
+        <title>Mypdfs - Free Online PDF Tools & QR Code Generator</title>
+        <meta name="description" content="Free online PDF editor with 30+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI chat, calculator, SEO analyzer. 100% free." />
         <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF to Word, Word to PDF, PDF to Excel, JPG to PDF, PNG to PDF, QR code generator, QR code scanner, currency converter, SEO tool, free online tools, AI chat, file compressor" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="author" content="Mypdfs" />

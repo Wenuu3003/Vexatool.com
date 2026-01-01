@@ -1,17 +1,8 @@
-// Comprehensive India Post PIN Code Database with Villages, Localities, Mandals
-export interface ExtendedPinCodeData {
-  pincode: string;
-  state: string;
-  district: string;
-  taluk?: string; // Mandal / Taluka / Tehsil
-  area: string;
-  postOffice: string;
-  officeType: 'BO' | 'SO' | 'HO' | 'GPO'; // Branch Office, Sub Office, Head Office, General Post Office
-  region?: string;
-}
+// Re-export from modular pincodes directory
+export { ExtendedPinCodeData, EXTENDED_PIN_DATABASE } from './pincodes/index';
 
-// Comprehensive PIN Database covering major cities, towns, taluks, and villages across India
-export const EXTENDED_PIN_DATABASE: ExtendedPinCodeData[] = [
+// Legacy export for backward compatibility
+export * from './pincodes/index';
   // =================== ANDHRA PRADESH ===================
   // Visakhapatnam District
   { pincode: "530001", state: "Andhra Pradesh", district: "Visakhapatnam", area: "Visakhapatnam", postOffice: "Visakhapatnam GPO", officeType: "GPO" },

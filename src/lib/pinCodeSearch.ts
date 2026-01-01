@@ -610,6 +610,15 @@ export function getVillagesForMandal(state: string, district: string, mandal: st
   return [...new Set(mandalData.map(d => d.village))].sort();
 }
 
+// Clean and normalize user input - handles commas, multiple spaces, etc.
+export function cleanUserInput(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/,/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 // Search villages with autocomplete - works globally or within state/district filters
 export function searchVillagesAutocomplete(
   input: string,
@@ -620,7 +629,8 @@ export function searchVillagesAutocomplete(
 ): ExtendedPinCodeData[] {
   if (input.length < 2) return [];
   
-  const normalizedInput = normalizeString(input);
+  const cleanedInput = cleanUserInput(input);
+  const normalizedInput = normalizeString(cleanedInput);
   
   return EXTENDED_PIN_DATABASE.filter(d => {
     // If state is provided, must match state
@@ -661,6 +671,69 @@ export function searchVillagesAutocomplete(
     return a.village.localeCompare(b.village);
   })
   .slice(0, limit);
+}
+
+// Get closest village suggestions when no exact match found (fuzzy matching)
+export function getClosestVillageSuggestions(
+  input: string,
+  limit: number = 5
+): ExtendedPinCodeData[] {
+  if (input.length < 2) return [];
+  
+  buildIndexes();
+  
+  const cleanedInput = cleanUserInput(input);
+  const normalizedInput = normalizeString(cleanedInput);
+  
+  const suggestions: { data: ExtendedPinCodeData; distance: number }[] = [];
+  const seenPincodes = new Set<string>();
+  
+  // First try phonetic variations
+  const phoneticVariations = generatePhoneticVariations(cleanedInput);
+  
+  for (const variation of phoneticVariations) {
+    if (villageIndex.has(variation)) {
+      for (const data of villageIndex.get(variation)!) {
+        if (!seenPincodes.has(data.pincode)) {
+          suggestions.push({ data, distance: 0 });
+          seenPincodes.add(data.pincode);
+        }
+      }
+    }
+  }
+  
+  // Then try fuzzy matching with Levenshtein distance
+  if (suggestions.length < limit) {
+    for (const [key, dataList] of villageIndex.entries()) {
+      if (seenPincodes.size >= limit * 2) break;
+      
+      const distance = levenshteinDistance(normalizedInput, key);
+      // Allow more tolerance for longer inputs
+      const threshold = Math.max(3, Math.floor(normalizedInput.length / 2));
+      
+      if (distance <= threshold && distance > 0) {
+        for (const data of dataList) {
+          if (!seenPincodes.has(data.pincode)) {
+            suggestions.push({ data, distance });
+            seenPincodes.add(data.pincode);
+          }
+        }
+      }
+    }
+  }
+  
+  // Sort by distance (closest first)
+  suggestions.sort((a, b) => a.distance - b.distance);
+  
+  return suggestions.slice(0, limit).map(s => s.data);
+}
+
+// Format display string short: Village – Mandal – District – Pincode
+export function formatPinCodeDisplayShort(data: ExtendedPinCodeData): string {
+  const parts = [data.village];
+  if (data.mandal) parts.push(data.mandal);
+  parts.push(data.district);
+  return `${parts.join(' – ')} – ${data.pincode}`;
 }
 
 // Format display string: Village, Mandal, District, State – Pincode

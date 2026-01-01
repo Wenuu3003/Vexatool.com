@@ -54,7 +54,10 @@ import {
   getVillagesForMandal,
   getVillagesForDistrict,
   searchVillagesAutocomplete,
+  getClosestVillageSuggestions,
   formatPinCodeDisplay,
+  formatPinCodeDisplayShort,
+  cleanUserInput,
   type SearchResult 
 } from "@/lib/pinCodeSearch";
 import {
@@ -84,6 +87,7 @@ const PinCodeGenerator = () => {
   // Village autocomplete state
   const [villageInput, setVillageInput] = useState<string>("");
   const [villageResults, setVillageResults] = useState<ExtendedPinCodeData[]>([]);
+  const [villageSuggestions, setVillageSuggestions] = useState<ExtendedPinCodeData[]>([]);
   const [selectedVillageData, setSelectedVillageData] = useState<ExtendedPinCodeData | null>(null);
   const [villagePopoverOpen, setVillagePopoverOpen] = useState(false);
   
@@ -124,16 +128,27 @@ const PinCodeGenerator = () => {
   const handleVillageInputChange = (value: string) => {
     setVillageInput(value);
     setSelectedVillageData(null);
+    setVillageSuggestions([]);
+    
     if (value.length >= 2) {
+      // Clean the input
+      const cleanedValue = cleanUserInput(value);
+      
       // Search with optional filters - works even without state/district selection
       const results = searchVillagesAutocomplete(
-        value, 
+        cleanedValue, 
         selectedState || undefined, 
         selectedDistrict || undefined, 
         selectedTaluk || undefined
       );
       setVillageResults(results);
       setVillagePopoverOpen(results.length > 0);
+      
+      // If no exact results, get closest suggestions
+      if (results.length === 0 && cleanedValue.length >= 2) {
+        const suggestions = getClosestVillageSuggestions(cleanedValue, 5);
+        setVillageSuggestions(suggestions);
+      }
     } else {
       setVillageResults([]);
       setVillagePopoverOpen(false);
@@ -146,6 +161,7 @@ const PinCodeGenerator = () => {
     setVillageInput(data.village);
     setSelectedArea(data.village);
     setVillagePopoverOpen(false);
+    setVillageSuggestions([]);
     setGeneratedPin(data.pincode);
     saveToHistory(data.pincode);
     toast.success(`Found: ${formatPinCodeDisplay(data)}`);
@@ -405,6 +421,7 @@ const PinCodeGenerator = () => {
                       setSelectedArea(""); 
                       setVillageInput("");
                       setSelectedVillageData(null);
+                      setVillageSuggestions([]);
                     }}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select state..." />
@@ -427,6 +444,7 @@ const PinCodeGenerator = () => {
                         setSelectedArea(""); 
                         setVillageInput("");
                         setSelectedVillageData(null);
+                        setVillageSuggestions([]);
                       }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select district..." />
@@ -449,6 +467,7 @@ const PinCodeGenerator = () => {
                         setSelectedArea("");
                         setVillageInput("");
                         setSelectedVillageData(null);
+                        setVillageSuggestions([]);
                       }}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select mandal/taluk..." />
@@ -509,10 +528,31 @@ const PinCodeGenerator = () => {
                       <p className="text-xs text-muted-foreground mt-1">Type at least 2 characters to search</p>
                     )}
                     {villageInput.length >= 2 && villageResults.length === 0 && !selectedVillageData && (
-                      <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" />
-                        No match found. Try different spelling or use the Finder tab for advanced search.
-                      </p>
+                      <div className="mt-2 p-3 bg-amber-500/10 rounded-lg border border-amber-500/30">
+                        <p className="text-sm text-amber-700 dark:text-amber-400 flex items-center gap-1 mb-2">
+                          <AlertCircle className="w-4 h-4" />
+                          No exact match found.
+                        </p>
+                        {villageSuggestions.length > 0 ? (
+                          <div className="space-y-1">
+                            <p className="text-xs font-medium text-muted-foreground">Did you mean:</p>
+                            {villageSuggestions.map((data, idx) => (
+                              <button
+                                key={`${data.pincode}-${idx}`}
+                                onClick={() => handleVillageSelect(data)}
+                                className="w-full text-left px-2 py-1.5 text-sm rounded hover:bg-amber-500/20 transition-colors flex items-center gap-2"
+                              >
+                                <Check className="w-3 h-3 text-green-500" />
+                                <span className="font-medium">{formatPinCodeDisplayShort(data)}</span>
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-muted-foreground">
+                            Try different spelling or use the Finder tab for advanced search.
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
                   

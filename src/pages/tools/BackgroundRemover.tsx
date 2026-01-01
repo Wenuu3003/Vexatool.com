@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Helmet } from "react-helmet";
-import { Eraser, Upload, Download, Loader2, ImageIcon } from "lucide-react";
+import { Eraser, Upload, Download, Loader2, ImageIcon, Edit2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -12,7 +12,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { removeBackground, loadImage, convertBlobToFormat } from "@/lib/backgroundRemoval";
+import { 
+  removeBackground, 
+  loadImage, 
+  convertBlobToFormat, 
+  applyEditedMask,
+  type RemovalResult 
+} from "@/lib/backgroundRemoval";
+import { MaskEditor } from "@/components/MaskEditor";
 
 type OutputFormat = "png" | "jpeg" | "webp";
 
@@ -26,6 +33,11 @@ const BackgroundRemover = () => {
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("png");
   const [isDragging, setIsDragging] = useState(false);
 
+  // Mask editing state
+  const [isEditing, setIsEditing] = useState(false);
+  const [removalResult, setRemovalResult] = useState<RemovalResult | null>(null);
+  const [currentMaskData, setCurrentMaskData] = useState<Float32Array | null>(null);
+
   const handleFileSelect = useCallback((selectedFile: File) => {
     if (!selectedFile.type.startsWith("image/")) {
       toast.error("Please select an image file");
@@ -37,6 +49,9 @@ const BackgroundRemover = () => {
     setResultBlob(null);
     setResultUrl(null);
     setProgress(0);
+    setIsEditing(false);
+    setRemovalResult(null);
+    setCurrentMaskData(null);
   }, []);
 
   const handleDrop = useCallback(
@@ -71,15 +86,54 @@ const BackgroundRemover = () => {
       const img = await loadImage(file);
       setProgress(5);
 
-      const blob = await removeBackground(img, setProgress);
-      setResultBlob(blob);
-      setResultUrl(URL.createObjectURL(blob));
+      const result = await removeBackground(img, setProgress);
+      setRemovalResult(result);
+      setCurrentMaskData(new Float32Array(result.maskData));
+      setResultBlob(result.blob);
+      setResultUrl(URL.createObjectURL(result.blob));
       toast.success("Background removed successfully!");
     } catch (error) {
       console.error("Error:", error);
       toast.error("Failed to remove background. Please try again.");
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleStartEditing = () => {
+    if (!removalResult) return;
+    setIsEditing(true);
+  };
+
+  const handleMaskUpdate = (newMaskData: Float32Array) => {
+    setCurrentMaskData(newMaskData);
+  };
+
+  const handleApplyEdits = async () => {
+    if (!removalResult || !currentMaskData) return;
+
+    try {
+      const newBlob = await applyEditedMask(
+        removalResult.originalImage,
+        currentMaskData,
+        removalResult.width,
+        removalResult.height
+      );
+      setResultBlob(newBlob);
+      setResultUrl(URL.createObjectURL(newBlob));
+      setIsEditing(false);
+      toast.success("Edits applied successfully!");
+    } catch (error) {
+      console.error("Error applying edits:", error);
+      toast.error("Failed to apply edits");
+    }
+  };
+
+  const handleCancelEditing = () => {
+    setIsEditing(false);
+    // Reset to original mask
+    if (removalResult) {
+      setCurrentMaskData(new Float32Array(removalResult.maskData));
     }
   };
 
@@ -131,7 +185,7 @@ const BackgroundRemover = () => {
         colorClass="bg-gradient-to-br from-purple-500 to-pink-500"
         category="ImageApplication"
       >
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-5xl mx-auto space-y-6">
           {/* Upload Area */}
           {!file && (
             <div
@@ -173,8 +227,21 @@ const BackgroundRemover = () => {
             </div>
           )}
 
+          {/* Mask Editor Mode */}
+          {file && isEditing && removalResult && currentMaskData && (
+            <MaskEditor
+              originalImage={removalResult.originalImage}
+              maskData={currentMaskData}
+              width={removalResult.width}
+              height={removalResult.height}
+              onMaskUpdate={handleMaskUpdate}
+              onApply={handleApplyEdits}
+              onCancel={handleCancelEditing}
+            />
+          )}
+
           {/* Preview and Result */}
-          {file && (
+          {file && !isEditing && (
             <div className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Original Image */}
@@ -253,6 +320,17 @@ const BackgroundRemover = () => {
                   </Button>
                 ) : (
                   <>
+                    {/* Edit button */}
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={handleStartEditing}
+                      className="gap-2"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                      Edit Mask
+                    </Button>
+
                     <Select
                       value={outputFormat}
                       onValueChange={(v) => setOutputFormat(v as OutputFormat)}
@@ -282,6 +360,9 @@ const BackgroundRemover = () => {
                     setResultBlob(null);
                     setResultUrl(null);
                     setProgress(0);
+                    setIsEditing(false);
+                    setRemovalResult(null);
+                    setCurrentMaskData(null);
                   }}
                 >
                   Upload New Image
@@ -291,28 +372,34 @@ const BackgroundRemover = () => {
           )}
 
           {/* Info Section */}
-          <div className="bg-muted/30 rounded-xl p-6 space-y-4">
-            <h2 className="text-lg font-semibold text-foreground">
-              How It Works
-            </h2>
-            <ul className="space-y-2 text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold">1.</span>
-                Upload any image (JPG, PNG, or WebP)
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold">2.</span>
-                Our AI automatically detects and removes the background
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary font-bold">3.</span>
-                Download your image with transparent background in PNG, JPG, or WebP
-              </li>
-            </ul>
-            <p className="text-sm text-muted-foreground">
-              All processing happens in your browser. Your images are never uploaded to any server.
-            </p>
-          </div>
+          {!isEditing && (
+            <div className="bg-muted/30 rounded-xl p-6 space-y-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                How It Works
+              </h2>
+              <ul className="space-y-2 text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">1.</span>
+                  Upload any image (JPG, PNG, or WebP)
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">2.</span>
+                  Our AI automatically detects and removes the background
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">3.</span>
+                  Use the <strong>Edit Mask</strong> button to manually refine edges
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">4.</span>
+                  Download your image with transparent background in PNG, JPG, or WebP
+                </li>
+              </ul>
+              <p className="text-sm text-muted-foreground">
+                All processing happens in your browser. Your images are never uploaded to any server.
+              </p>
+            </div>
+          )}
         </div>
       </ToolLayout>
     </>

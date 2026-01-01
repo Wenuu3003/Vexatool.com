@@ -104,8 +104,9 @@ export const MaskEditor = ({
     const maskImageData = maskCtx.createImageData(width, height);
 
     for (let i = 0; i < currentMask.current.length; i++) {
+      // RMBG format: mask value 1 = foreground (show), 0 = background (hide)
       const maskValue = currentMask.current[i];
-      const alpha = Math.round((1 - maskValue) * 255);
+      const alpha = Math.round(maskValue * 255);
 
       // Show original image with transparency based on mask
       maskImageData.data[i * 4] = imageData.data[i * 4];
@@ -184,7 +185,9 @@ export const MaskEditor = ({
   const drawBrush = useCallback(
     (x: number, y: number, prevX?: number, prevY?: number) => {
       const radius = brushSize / 2;
-      const value = activeTool === "erase" ? 1 : 0; // 1 = background (transparent), 0 = foreground (visible)
+      // RMBG format: 1 = foreground (keep), 0 = background (remove)
+      // Erase tool removes from foreground (sets to 0), Restore adds to foreground (sets to 1)
+      const value = activeTool === "erase" ? 0 : 1;
 
       // If we have a previous point, interpolate
       if (prevX !== undefined && prevY !== undefined) {
@@ -220,6 +223,7 @@ export const MaskEditor = ({
           const idx = y * width + x;
           // Soft brush edge
           const strength = 1 - (dist / radius) * 0.3;
+          // RMBG format: value 1 = restore (add to foreground), value 0 = erase (remove from foreground)
           if (value === 1) {
             currentMask.current[idx] = Math.min(1, currentMask.current[idx] + strength * 0.5);
           } else {

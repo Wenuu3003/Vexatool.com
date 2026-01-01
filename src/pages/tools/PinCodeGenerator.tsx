@@ -46,10 +46,10 @@ import {
   generateRandomPinCode,
   generateBulkPinCodes,
   lookupPinCode,
-  searchPinCodes,
   PIN_FACTS,
   type PinCodeData,
 } from "@/data/indianPinCodes";
+import { advancedSearchPinCodes, lookupByPincode, type SearchResult } from "@/lib/pinCodeSearch";
 
 const PinCodeGenerator = () => {
   const canonicalUrl = useCanonicalUrl();
@@ -72,7 +72,8 @@ const PinCodeGenerator = () => {
   
   // State for search
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<PinCodeData[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchMessage, setSearchMessage] = useState<string>("");
   
   // State for history
   const [pinHistory, setPinHistory] = useState<string[]>([]);
@@ -158,14 +159,16 @@ const PinCodeGenerator = () => {
     }
   };
 
-  // Search
+  // Search with advanced matching
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     if (query.length >= 2) {
-      const results = searchPinCodes(query);
+      const { results, message } = advancedSearchPinCodes(query, { limit: 50, includeNearby: true });
       setSearchResults(results);
+      setSearchMessage(message || "");
     } else {
       setSearchResults([]);
+      setSearchMessage("");
     }
   };
 

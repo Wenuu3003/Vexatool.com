@@ -32,7 +32,7 @@ const PHONETIC_MAP: Record<string, string[]> = {
   'palli': ['pally', 'palle'],
   'puram': ['pura'],
   'guda': ['kuda', 'goda'],
-  'peta': ['padu'],
+  'peta': ['padu', 'pet'],
   'wada': ['vada', 'wadi'],
   'gaon': ['goan', 'gaav'],
   'pet': ['peth'],
@@ -45,6 +45,7 @@ let localityIndex: Map<string, ExtendedPinCodeData[]>;
 let districtIndex: Map<string, ExtendedPinCodeData[]>;
 let talukIndex: Map<string, ExtendedPinCodeData[]>;
 let pincodeIndex: Map<string, ExtendedPinCodeData>;
+let stateIndex: Map<string, ExtendedPinCodeData[]>;
 
 function buildIndexes() {
   if (villageIndex) return; // Already built
@@ -54,6 +55,7 @@ function buildIndexes() {
   districtIndex = new Map();
   talukIndex = new Map();
   pincodeIndex = new Map();
+  stateIndex = new Map();
   
   for (const entry of EXTENDED_PIN_DATABASE) {
     // Index by pincode
@@ -88,6 +90,13 @@ function buildIndexes() {
       }
       talukIndex.get(talukKey)!.push(entry);
     }
+    
+    // Index by state
+    const stateKey = normalizeString(entry.state);
+    if (!stateIndex.has(stateKey)) {
+      stateIndex.set(stateKey, []);
+    }
+    stateIndex.get(stateKey)!.push(entry);
   }
 }
 
@@ -158,7 +167,48 @@ function generatePhoneticVariations(query: string): string[] {
   return Array.from(variations);
 }
 
-// Main search function with multi-level matching
+// Parse multi-part query like "Sullurpeta, Tirupati district, Andhra Pradesh"
+function parseMultiPartQuery(query: string): { location: string; district: string | null; state: string | null } {
+  // Split by comma
+  const parts = query.split(',').map(p => p.trim().toLowerCase());
+  
+  let location = '';
+  let district: string | null = null;
+  let state: string | null = null;
+  
+  for (const part of parts) {
+    // Check if part contains "district"
+    if (part.includes('district')) {
+      district = normalizeString(part.replace(/district/gi, '').trim());
+    }
+    // Check for state names
+    else if (
+      part.includes('andhra') || part.includes('telangana') || part.includes('tamil') ||
+      part.includes('karnataka') || part.includes('kerala') || part.includes('maharashtra') ||
+      part.includes('delhi') || part.includes('gujarat') || part.includes('rajasthan') ||
+      part.includes('punjab') || part.includes('haryana') || part.includes('bihar') ||
+      part.includes('west bengal') || part.includes('odisha') || part.includes('assam') ||
+      part.includes('madhya pradesh') || part.includes('uttar pradesh') ||
+      part.includes('ap') || part.includes('ts') || part.includes('tn') ||
+      part.includes('ka') || part.includes('kl') || part.includes('mh')
+    ) {
+      state = normalizeString(part);
+    }
+    // Otherwise it's a location
+    else if (!location) {
+      location = part;
+    }
+  }
+  
+  // If only one part and no comma, use the entire query as location
+  if (!location && parts.length === 1) {
+    location = parts[0];
+  }
+  
+  return { location, district, state };
+}
+
+// Main search function with multi-level matching - NO WRONG FALLBACKS
 export function advancedSearchPinCodes(
   query: string,
   options: {
@@ -171,13 +221,27 @@ export function advancedSearchPinCodes(
   
   buildIndexes();
   
-  const normalizedQuery = normalizeString(query);
+  // Parse multi-part query
+  const { location, district: queryDistrict, state: queryState } = parseMultiPartQuery(query);
+  const normalizedQuery = normalizeString(location || query);
+  
   const results: SearchResult[] = [];
   const seenPincodes = new Set<string>();
   
+  // Helper to check if entry matches district/state filters
+  const matchesFilters = (entry: ExtendedPinCodeData): boolean => {
+    if (queryDistrict && !normalizeString(entry.district).includes(queryDistrict)) {
+      return false;
+    }
+    if (queryState && !normalizeString(entry.state).includes(queryState)) {
+      return false;
+    }
+    return true;
+  };
+  
   // If query is a pincode (6 digits)
-  if (/^\d{6}$/.test(query)) {
-    const exactMatch = pincodeIndex.get(query);
+  if (/^\d{6}$/.test(query.trim())) {
+    const exactMatch = pincodeIndex.get(query.trim());
     if (exactMatch) {
       results.push({
         data: exactMatch,
@@ -185,12 +249,12 @@ export function advancedSearchPinCodes(
         matchType: 'exact',
         matchedField: 'pincode'
       });
-      seenPincodes.add(query);
+      seenPincodes.add(query.trim());
     }
     
-    // Find nearby pincodes
+    // Find nearby pincodes (same prefix)
     if (includeNearby) {
-      const prefix = query.substring(0, 3);
+      const prefix = query.trim().substring(0, 3);
       for (const [pincode, data] of pincodeIndex.entries()) {
         if (pincode.startsWith(prefix) && !seenPincodes.has(pincode)) {
           results.push({
@@ -213,7 +277,7 @@ export function advancedSearchPinCodes(
   // Priority 1: Exact village/area match
   if (villageIndex.has(normalizedQuery)) {
     for (const data of villageIndex.get(normalizedQuery)!) {
-      if (!seenPincodes.has(data.pincode)) {
+      if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
         results.push({
           data,
           score: 100,
@@ -228,7 +292,7 @@ export function advancedSearchPinCodes(
   // Priority 2: Exact locality/post office match
   if (localityIndex.has(normalizedQuery)) {
     for (const data of localityIndex.get(normalizedQuery)!) {
-      if (!seenPincodes.has(data.pincode)) {
+      if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
         results.push({
           data,
           score: 95,
@@ -243,7 +307,7 @@ export function advancedSearchPinCodes(
   // Priority 3: Exact taluk/mandal match
   if (talukIndex.has(normalizedQuery)) {
     for (const data of talukIndex.get(normalizedQuery)!) {
-      if (!seenPincodes.has(data.pincode)) {
+      if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
         results.push({
           data,
           score: 90,
@@ -258,7 +322,7 @@ export function advancedSearchPinCodes(
   // Priority 4: Exact district match
   if (districtIndex.has(normalizedQuery)) {
     for (const data of districtIndex.get(normalizedQuery)!) {
-      if (!seenPincodes.has(data.pincode)) {
+      if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
         results.push({
           data,
           score: 85,
@@ -274,7 +338,7 @@ export function advancedSearchPinCodes(
   for (const [key, dataList] of villageIndex.entries()) {
     if (key.startsWith(normalizedQuery) && key !== normalizedQuery) {
       for (const data of dataList) {
-        if (!seenPincodes.has(data.pincode)) {
+        if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
           results.push({
             data,
             score: 80,
@@ -290,7 +354,7 @@ export function advancedSearchPinCodes(
   for (const [key, dataList] of talukIndex.entries()) {
     if (key.startsWith(normalizedQuery) && key !== normalizedQuery) {
       for (const data of dataList) {
-        if (!seenPincodes.has(data.pincode)) {
+        if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
           results.push({
             data,
             score: 75,
@@ -307,7 +371,7 @@ export function advancedSearchPinCodes(
   for (const [key, dataList] of villageIndex.entries()) {
     if (key.includes(normalizedQuery) && !key.startsWith(normalizedQuery)) {
       for (const data of dataList) {
-        if (!seenPincodes.has(data.pincode)) {
+        if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
           results.push({
             data,
             score: 70,
@@ -322,7 +386,7 @@ export function advancedSearchPinCodes(
   
   // Priority 7: Phonetic matching
   if (results.length < limit) {
-    const phoneticVariations = generatePhoneticVariations(query);
+    const phoneticVariations = generatePhoneticVariations(location || query);
     
     for (const variation of phoneticVariations) {
       if (variation === normalizedQuery) continue;
@@ -330,7 +394,7 @@ export function advancedSearchPinCodes(
       // Check village index
       if (villageIndex.has(variation)) {
         for (const data of villageIndex.get(variation)!) {
-          if (!seenPincodes.has(data.pincode)) {
+          if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
             results.push({
               data,
               score: 65,
@@ -345,7 +409,7 @@ export function advancedSearchPinCodes(
       // Check taluk index
       if (talukIndex.has(variation)) {
         for (const data of talukIndex.get(variation)!) {
-          if (!seenPincodes.has(data.pincode)) {
+          if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
             results.push({
               data,
               score: 60,
@@ -367,7 +431,7 @@ export function advancedSearchPinCodes(
       const distance = levenshteinDistance(normalizedQuery, key);
       if (distance <= fuzzyThreshold && distance > 0) {
         for (const data of dataList) {
-          if (!seenPincodes.has(data.pincode)) {
+          if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
             results.push({
               data,
               score: Math.max(40, 60 - distance * 10),
@@ -386,7 +450,7 @@ export function advancedSearchPinCodes(
       const distance = levenshteinDistance(normalizedQuery, key);
       if (distance <= fuzzyThreshold && distance > 0) {
         for (const data of dataList) {
-          if (!seenPincodes.has(data.pincode)) {
+          if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
             results.push({
               data,
               score: Math.max(35, 55 - distance * 10),
@@ -425,55 +489,57 @@ export function advancedSearchPinCodes(
           matchType: 'includes' as const,
           matchedField: 'nearby'
         }));
-        message = "Showing exact match and nearby areas";
+        message = `Found "${topResult.data.area}" - Showing nearby areas in ${topResult.data.district}`;
       }
-    } else if (results.length === 0 || (results.length > 0 && results[0].score < 80)) {
+    } else if (results[0].score < 80) {
       message = "Showing similar matches. Try a more specific search.";
     }
   }
   
-  // If no results found, provide fallback message
+  // IMPORTANT: If no results found, DO NOT fall back to random cities
+  // Instead return empty with helpful message
   if (results.length === 0) {
-    // Try to find by first few characters in any field
-    const fallbackResults: SearchResult[] = [];
-    
-    for (const entry of EXTENDED_PIN_DATABASE) {
-      const searchFields = [
-        entry.area,
-        entry.postOffice,
-        entry.district,
-        entry.taluk || '',
-        entry.state
-      ].map(f => normalizeString(f));
+    // Only search within the specific district/state if provided
+    if (queryDistrict || queryState) {
+      const filteredResults: SearchResult[] = [];
       
-      for (const field of searchFields) {
-        if (field.includes(normalizedQuery.substring(0, 3))) {
-          if (!seenPincodes.has(entry.pincode)) {
-            fallbackResults.push({
-              data: entry,
-              score: 20,
-              matchType: 'includes',
-              matchedField: 'partial'
-            });
-            seenPincodes.add(entry.pincode);
-            break;
+      for (const entry of EXTENDED_PIN_DATABASE) {
+        if (matchesFilters(entry) && !seenPincodes.has(entry.pincode)) {
+          // Check if any field contains part of the query
+          const searchFields = [
+            normalizeString(entry.area),
+            normalizeString(entry.postOffice),
+            normalizeString(entry.taluk || ''),
+          ];
+          
+          for (const field of searchFields) {
+            if (field.includes(normalizedQuery.substring(0, 3)) || normalizedQuery.includes(field.substring(0, 3))) {
+              filteredResults.push({
+                data: entry,
+                score: 30,
+                matchType: 'includes',
+                matchedField: 'partial'
+              });
+              seenPincodes.add(entry.pincode);
+              break;
+            }
           }
         }
+        
+        if (filteredResults.length >= 10) break;
       }
       
-      if (fallbackResults.length >= 10) break;
-    }
-    
-    if (fallbackResults.length > 0) {
-      return {
-        results: fallbackResults,
-        message: "No exact match found. Showing partial matches."
-      };
+      if (filteredResults.length > 0) {
+        return {
+          results: filteredResults,
+          message: `No exact match for "${location || query}". Showing other areas in the same region.`
+        };
+      }
     }
     
     return {
       results: [],
-      message: "No results found. Please check the spelling or try a different search term."
+      message: `No results found for "${query}". Please check the spelling or try a different search term. The location may not be in our database yet.`
     };
   }
   
@@ -502,12 +568,12 @@ export function getByTaluk(taluk: string): ExtendedPinCodeData[] {
   return talukIndex.get(normalizeString(taluk)) || [];
 }
 
-// Get unique states
+// Get unique states from EXTENDED database
 export function getUniqueStates(): string[] {
   return [...new Set(EXTENDED_PIN_DATABASE.map(d => d.state))].sort();
 }
 
-// Get districts for a state
+// Get districts for a state from EXTENDED database
 export function getDistrictsForState(state: string): string[] {
   const stateData = EXTENDED_PIN_DATABASE.filter(d => 
     normalizeString(d.state) === normalizeString(state)
@@ -515,7 +581,7 @@ export function getDistrictsForState(state: string): string[] {
   return [...new Set(stateData.map(d => d.district))].sort();
 }
 
-// Get taluks for a district
+// Get taluks for a district from EXTENDED database
 export function getTaluksForDistrict(state: string, district: string): string[] {
   const districtData = EXTENDED_PIN_DATABASE.filter(d => 
     normalizeString(d.state) === normalizeString(state) &&
@@ -523,4 +589,13 @@ export function getTaluksForDistrict(state: string, district: string): string[] 
     d.taluk
   );
   return [...new Set(districtData.map(d => d.taluk!))].sort();
+}
+
+// Get all areas/villages for a district from EXTENDED database
+export function getAreasForDistrict(state: string, district: string): string[] {
+  const districtData = EXTENDED_PIN_DATABASE.filter(d => 
+    normalizeString(d.state) === normalizeString(state) &&
+    normalizeString(d.district) === normalizeString(district)
+  );
+  return [...new Set(districtData.map(d => d.area))].sort();
 }

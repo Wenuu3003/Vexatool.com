@@ -28,28 +28,30 @@ import {
   Search,
   Shuffle,
   History,
-  Info,
   Trash2,
   Share2,
   Lightbulb,
   Check,
   FileText,
   Package,
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
-import {
-  getStates,
-  getDistricts,
-  getAreas,
-  generateRandomPinCode,
-  generateBulkPinCodes,
-  lookupPinCode,
+import { 
+  EXTENDED_PIN_DATABASE, 
   PIN_FACTS,
-  type PinCodeData,
-} from "@/data/indianPinCodes";
-import { advancedSearchPinCodes, lookupByPincode, type SearchResult } from "@/lib/pinCodeSearch";
+  type ExtendedPinCodeData 
+} from "@/data/indianPinCodesExtended";
+import { 
+  advancedSearchPinCodes, 
+  lookupByPincode, 
+  getUniqueStates,
+  getDistrictsForState,
+  getAreasForDistrict,
+  type SearchResult 
+} from "@/lib/pinCodeSearch";
 
 const PinCodeGenerator = () => {
   const canonicalUrl = useCanonicalUrl();
@@ -67,7 +69,7 @@ const PinCodeGenerator = () => {
   
   // State for reverse lookup
   const [lookupPin, setLookupPin] = useState<string>("");
-  const [lookupResult, setLookupResult] = useState<PinCodeData | null>(null);
+  const [lookupResult, setLookupResult] = useState<ExtendedPinCodeData | null>(null);
   const [lookupError, setLookupError] = useState<string>("");
   
   // State for search
@@ -84,6 +86,11 @@ const PinCodeGenerator = () => {
   
   // Statistics
   const [totalSearches, setTotalSearches] = useState<number>(0);
+
+  // Get dropdown data from EXTENDED database
+  const states = getUniqueStates();
+  const districts = selectedState ? getDistrictsForState(selectedState) : [];
+  const areas = selectedState && selectedDistrict ? getAreasForDistrict(selectedState, selectedDistrict) : [];
 
   // Load history and stats from localStorage
   useEffect(() => {
@@ -123,20 +130,44 @@ const PinCodeGenerator = () => {
     localStorage.setItem("pincode-stats", JSON.stringify({ searches: newSearches }));
   };
 
-  // Generate random PIN
+  // Generate random PIN from EXTENDED database
   const handleGenerateRandom = () => {
-    const pin = generateRandomPinCode(selectedState || undefined);
-    setGeneratedPin(pin);
-    saveToHistory(pin);
+    let filtered = EXTENDED_PIN_DATABASE;
+    if (selectedState) {
+      filtered = filtered.filter(d => d.state === selectedState);
+    }
+    if (selectedDistrict) {
+      filtered = filtered.filter(d => d.district === selectedDistrict);
+    }
+    if (selectedArea) {
+      filtered = filtered.filter(d => d.area === selectedArea);
+    }
+    if (filtered.length === 0) filtered = EXTENDED_PIN_DATABASE;
+    const randomEntry = filtered[Math.floor(Math.random() * filtered.length)];
+    setGeneratedPin(randomEntry.pincode);
+    saveToHistory(randomEntry.pincode);
     toast.success("PIN code generated!");
   };
 
-  // Generate bulk PINs
+  // Generate bulk PINs from EXTENDED database
   const handleBulkGenerate = () => {
-    const pins = generateBulkPinCodes(bulkCount, selectedState || undefined);
+    let filtered = EXTENDED_PIN_DATABASE;
+    if (selectedState) {
+      filtered = filtered.filter(d => d.state === selectedState);
+    }
+    const generated = new Set<string>();
+    const pins: string[] = [];
+    const maxAttempts = Math.min(bulkCount, filtered.length);
+    while (pins.length < maxAttempts && pins.length < bulkCount) {
+      const randomEntry = filtered[Math.floor(Math.random() * filtered.length)];
+      if (!generated.has(randomEntry.pincode)) {
+        generated.add(randomEntry.pincode);
+        pins.push(randomEntry.pincode);
+      }
+    }
     setBulkPins(pins);
     pins.forEach(pin => saveToHistory(pin));
-    toast.success(`${bulkCount} PIN codes generated!`);
+    toast.success(`${pins.length} PIN codes generated!`);
   };
 
   // Reverse lookup
@@ -147,7 +178,7 @@ const PinCodeGenerator = () => {
       return;
     }
     
-    const result = lookupPinCode(lookupPin);
+    const result = lookupByPincode(lookupPin);
     if (result) {
       setLookupResult(result);
       setLookupError("");
@@ -224,9 +255,6 @@ const PinCodeGenerator = () => {
     toast.success("History cleared!");
   };
 
-  const states = getStates();
-  const districts = selectedState ? getDistricts(selectedState) : [];
-  const areas = selectedState && selectedDistrict ? getAreas(selectedState, selectedDistrict) : [];
 
   return (
     <>

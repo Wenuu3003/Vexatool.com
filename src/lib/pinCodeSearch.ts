@@ -599,3 +599,64 @@ export function getAreasForDistrict(state: string, district: string): string[] {
   );
   return [...new Set(districtData.map(d => d.area))].sort();
 }
+
+// Get areas/villages for a specific taluk
+export function getAreasForTaluk(state: string, district: string, taluk: string): string[] {
+  const talukData = EXTENDED_PIN_DATABASE.filter(d => 
+    normalizeString(d.state) === normalizeString(state) &&
+    normalizeString(d.district) === normalizeString(district) &&
+    d.taluk && normalizeString(d.taluk) === normalizeString(taluk)
+  );
+  return [...new Set(talukData.map(d => d.area))].sort();
+}
+
+// Search villages with autocomplete - matches village === input AND district === selectedDistrict AND state === selectedState
+export function searchVillagesAutocomplete(
+  input: string,
+  state: string,
+  district: string,
+  taluk?: string,
+  limit: number = 20
+): ExtendedPinCodeData[] {
+  if (input.length < 3) return [];
+  
+  const normalizedInput = normalizeString(input);
+  
+  return EXTENDED_PIN_DATABASE.filter(d => {
+    // Must match state and district
+    if (normalizeString(d.state) !== normalizeString(state)) return false;
+    if (normalizeString(d.district) !== normalizeString(district)) return false;
+    
+    // If taluk is selected, must match taluk
+    if (taluk && d.taluk && normalizeString(d.taluk) !== normalizeString(taluk)) return false;
+    
+    // Village name must match input (exact, startsWith, or includes)
+    const normalizedVillage = normalizeString(d.area);
+    return normalizedVillage === normalizedInput || 
+           normalizedVillage.startsWith(normalizedInput) ||
+           normalizedVillage.includes(normalizedInput);
+  })
+  .sort((a, b) => {
+    // Prioritize exact matches, then startsWith, then includes
+    const aExact = normalizeString(a.area) === normalizedInput;
+    const bExact = normalizeString(b.area) === normalizedInput;
+    if (aExact && !bExact) return -1;
+    if (!aExact && bExact) return 1;
+    
+    const aStarts = normalizeString(a.area).startsWith(normalizedInput);
+    const bStarts = normalizeString(b.area).startsWith(normalizedInput);
+    if (aStarts && !bStarts) return -1;
+    if (!aStarts && bStarts) return 1;
+    
+    return a.area.localeCompare(b.area);
+  })
+  .slice(0, limit);
+}
+
+// Format display string: Village, Mandal, District, State – Pincode
+export function formatPinCodeDisplay(data: ExtendedPinCodeData): string {
+  const parts = [data.area];
+  if (data.taluk) parts.push(data.taluk);
+  parts.push(data.district, data.state);
+  return `${parts.join(', ')} – ${data.pincode}`;
+}

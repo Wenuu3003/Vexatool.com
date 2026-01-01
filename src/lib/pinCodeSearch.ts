@@ -367,22 +367,39 @@ export function advancedSearchPinCodes(
     }
   }
   
-  // Priority 6: Includes matching
-  for (const [key, dataList] of villageIndex.entries()) {
-    if (key.includes(normalizedQuery) && !key.startsWith(normalizedQuery)) {
-      for (const data of dataList) {
-        if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
-          results.push({
-            data,
-            score: 70,
-            matchType: 'includes',
-            matchedField: 'village'
-          });
-          seenPincodes.add(data.pincode);
-        }
+// Priority 6: Includes matching - query must be contained in the key
+for (const [key, dataList] of villageIndex.entries()) {
+  if (key.includes(normalizedQuery) && !key.startsWith(normalizedQuery)) {
+    for (const data of dataList) {
+      if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
+        results.push({
+          data,
+          score: 70,
+          matchType: 'includes',
+          matchedField: 'village'
+        });
+        seenPincodes.add(data.pincode);
       }
     }
   }
+}
+
+// Also check post office names for includes
+for (const [key, dataList] of localityIndex.entries()) {
+  if (key.includes(normalizedQuery) && !key.startsWith(normalizedQuery)) {
+    for (const data of dataList) {
+      if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
+        results.push({
+          data,
+          score: 65,
+          matchType: 'includes',
+          matchedField: 'locality'
+        });
+        seenPincodes.add(data.pincode);
+      }
+    }
+  }
+}
   
   // Priority 7: Phonetic matching
   if (results.length < limit) {
@@ -423,46 +440,64 @@ export function advancedSearchPinCodes(
     }
   }
   
-  // Priority 8: Fuzzy matching (Levenshtein distance)
-  if (results.length < limit && normalizedQuery.length >= 3) {
-    for (const [key, dataList] of villageIndex.entries()) {
-      if (seenPincodes.size >= limit) break;
-      
-      const distance = levenshteinDistance(normalizedQuery, key);
-      if (distance <= fuzzyThreshold && distance > 0) {
-        for (const data of dataList) {
-          if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
-            results.push({
-              data,
-              score: Math.max(40, 60 - distance * 10),
-              matchType: 'fuzzy',
-              matchedField: 'village'
-            });
-            seenPincodes.add(data.pincode);
-          }
-        }
-      }
-    }
+// Priority 8: Fuzzy matching (Levenshtein distance) - STRICT MODE
+// Only use fuzzy matching if we have fewer than 5 results AND query length is sufficient
+// Fuzzy match must also have the query as a substring OR share significant prefix
+if (results.length < 5 && normalizedQuery.length >= 4) {
+  // Calculate a dynamic threshold: stricter for short queries
+  const dynamicThreshold = Math.min(fuzzyThreshold, Math.floor(normalizedQuery.length / 3));
+  
+  for (const [key, dataList] of villageIndex.entries()) {
+    if (seenPincodes.size >= limit) break;
     
-    for (const [key, dataList] of mandalIndex.entries()) {
-      if (seenPincodes.size >= limit) break;
-      
-      const distance = levenshteinDistance(normalizedQuery, key);
-      if (distance <= fuzzyThreshold && distance > 0) {
-        for (const data of dataList) {
-          if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
-            results.push({
-              data,
-              score: Math.max(35, 55 - distance * 10),
-              matchType: 'fuzzy',
-              matchedField: 'mandal'
-            });
-            seenPincodes.add(data.pincode);
-          }
+    // Only consider fuzzy matches if:
+    // 1. The key starts with at least first 2 chars of query, OR
+    // 2. The query starts with at least first 2 chars of key
+    const sharePrefix = key.startsWith(normalizedQuery.substring(0, 2)) || 
+                        normalizedQuery.startsWith(key.substring(0, 2));
+    
+    if (!sharePrefix) continue;
+    
+    const distance = levenshteinDistance(normalizedQuery, key);
+    if (distance <= dynamicThreshold && distance > 0) {
+      for (const data of dataList) {
+        if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
+          results.push({
+            data,
+            score: Math.max(40, 60 - distance * 15),
+            matchType: 'fuzzy',
+            matchedField: 'village'
+          });
+          seenPincodes.add(data.pincode);
         }
       }
     }
   }
+  
+  for (const [key, dataList] of mandalIndex.entries()) {
+    if (seenPincodes.size >= limit) break;
+    
+    const sharePrefix = key.startsWith(normalizedQuery.substring(0, 2)) || 
+                        normalizedQuery.startsWith(key.substring(0, 2));
+    
+    if (!sharePrefix) continue;
+    
+    const distance = levenshteinDistance(normalizedQuery, key);
+    if (distance <= dynamicThreshold && distance > 0) {
+      for (const data of dataList) {
+        if (!seenPincodes.has(data.pincode) && matchesFilters(data)) {
+          results.push({
+            data,
+            score: Math.max(35, 55 - distance * 15),
+            matchType: 'fuzzy',
+            matchedField: 'mandal'
+          });
+          seenPincodes.add(data.pincode);
+        }
+      }
+    }
+  }
+}
   
   // Sort by score
   results.sort((a, b) => b.score - a.score);
@@ -702,25 +737,32 @@ export function getClosestVillageSuggestions(
     }
   }
   
-  // Then try fuzzy matching with Levenshtein distance
-  if (suggestions.length < limit) {
-    for (const [key, dataList] of villageIndex.entries()) {
-      if (seenPincodes.size >= limit * 2) break;
-      
-      const distance = levenshteinDistance(normalizedInput, key);
-      // Allow more tolerance for longer inputs
-      const threshold = Math.max(3, Math.floor(normalizedInput.length / 2));
-      
-      if (distance <= threshold && distance > 0) {
-        for (const data of dataList) {
-          if (!seenPincodes.has(data.pincode)) {
-            suggestions.push({ data, distance });
-            seenPincodes.add(data.pincode);
-          }
+// Then try fuzzy matching with Levenshtein distance - with prefix check
+if (suggestions.length < limit) {
+  for (const [key, dataList] of villageIndex.entries()) {
+    if (seenPincodes.size >= limit * 2) break;
+    
+    // Must share at least 2 character prefix for fuzzy matching
+    const sharePrefix = key.startsWith(normalizedInput.substring(0, 2)) || 
+                        normalizedInput.startsWith(key.substring(0, 2)) ||
+                        key.includes(normalizedInput.substring(0, 3));
+    
+    if (!sharePrefix) continue;
+    
+    const distance = levenshteinDistance(normalizedInput, key);
+    // Stricter threshold for suggestions
+    const threshold = Math.min(2, Math.floor(normalizedInput.length / 3));
+    
+    if (distance <= threshold && distance > 0) {
+      for (const data of dataList) {
+        if (!seenPincodes.has(data.pincode)) {
+          suggestions.push({ data, distance });
+          seenPincodes.add(data.pincode);
         }
       }
     }
   }
+}
   
   // Sort by distance (closest first)
   suggestions.sort((a, b) => a.distance - b.distance);

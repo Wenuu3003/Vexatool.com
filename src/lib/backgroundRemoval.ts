@@ -31,10 +31,18 @@ function resizeImageIfNeeded(canvas: HTMLCanvasElement, ctx: CanvasRenderingCont
   return false;
 }
 
+export interface RemovalResult {
+  blob: Blob;
+  maskData: Float32Array;
+  width: number;
+  height: number;
+  originalImage: HTMLImageElement;
+}
+
 export const removeBackground = async (
   imageElement: HTMLImageElement,
   onProgress?: (progress: number) => void,
-): Promise<Blob> => {
+): Promise<RemovalResult> => {
   try {
     console.log("Starting background removal process...");
     onProgress?.(20);
@@ -73,52 +81,90 @@ export const removeBackground = async (
       throw new Error("Invalid segmentation result");
     }
 
-    // Create a new canvas for the masked image
-    const outputCanvas = document.createElement("canvas");
-    outputCanvas.width = canvas.width;
-    outputCanvas.height = canvas.height;
-    const outputCtx = outputCanvas.getContext("2d");
+    // Store the mask data for later editing
+    const maskData = new Float32Array(result[0].mask.data);
 
-    if (!outputCtx) throw new Error("Could not get output canvas context");
-
-    // Draw original image
-    outputCtx.drawImage(canvas, 0, 0);
-
-    // Apply the mask
-    const outputImageData = outputCtx.getImageData(0, 0, outputCanvas.width, outputCanvas.height);
-    const data = outputImageData.data;
-
-    // Apply inverted mask to alpha channel
-    for (let i = 0; i < result[0].mask.data.length; i++) {
-      // Invert the mask value (1 - value) to keep the subject instead of the background
-      const alpha = Math.round((1 - result[0].mask.data[i]) * 255);
-      data[i * 4 + 3] = alpha;
-    }
-
-    outputCtx.putImageData(outputImageData, 0, 0);
-    console.log("Mask applied successfully");
+    // Create the result blob
+    const blob = await applyMaskToImage(canvas, maskData);
 
     onProgress?.(100);
 
-    // Convert canvas to blob
-    return new Promise((resolve, reject) => {
-      outputCanvas.toBlob(
-        (blob) => {
-          if (blob) {
-            console.log("Successfully created final blob");
-            resolve(blob);
-          } else {
-            reject(new Error("Failed to create blob"));
-          }
-        },
-        "image/png",
-        1.0,
-      );
-    });
+    return {
+      blob,
+      maskData,
+      width: canvas.width,
+      height: canvas.height,
+      originalImage: imageElement,
+    };
   } catch (error) {
     console.error("Error removing background:", error);
     throw error;
   }
+};
+
+// Apply a mask to an image and return a blob
+export const applyMaskToImage = async (
+  canvas: HTMLCanvasElement,
+  maskData: Float32Array
+): Promise<Blob> => {
+  const outputCanvas = document.createElement("canvas");
+  outputCanvas.width = canvas.width;
+  outputCanvas.height = canvas.height;
+  const outputCtx = outputCanvas.getContext("2d");
+
+  if (!outputCtx) throw new Error("Could not get output canvas context");
+
+  // Draw original image
+  outputCtx.drawImage(canvas, 0, 0);
+
+  // Apply the mask
+  const outputImageData = outputCtx.getImageData(0, 0, outputCanvas.width, outputCanvas.height);
+  const data = outputImageData.data;
+
+  // Apply inverted mask to alpha channel
+  for (let i = 0; i < maskData.length; i++) {
+    // Invert the mask value (1 - value) to keep the subject instead of the background
+    const alpha = Math.round((1 - maskData[i]) * 255);
+    data[i * 4 + 3] = alpha;
+  }
+
+  outputCtx.putImageData(outputImageData, 0, 0);
+  console.log("Mask applied successfully");
+
+  // Convert canvas to blob
+  return new Promise((resolve, reject) => {
+    outputCanvas.toBlob(
+      (blob) => {
+        if (blob) {
+          console.log("Successfully created final blob");
+          resolve(blob);
+        } else {
+          reject(new Error("Failed to create blob"));
+        }
+      },
+      "image/png",
+      1.0,
+    );
+  });
+};
+
+// Apply mask from editor and generate new blob
+export const applyEditedMask = async (
+  originalImage: HTMLImageElement,
+  maskData: Float32Array,
+  width: number,
+  height: number
+): Promise<Blob> => {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) throw new Error("Could not get canvas context");
+
+  ctx.drawImage(originalImage, 0, 0, width, height);
+
+  return applyMaskToImage(canvas, maskData);
 };
 
 export const loadImage = (file: File): Promise<HTMLImageElement> => {

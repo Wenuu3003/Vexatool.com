@@ -67,15 +67,30 @@ export const removeBackground = async (
     // Use cached segmenter or create new one
     if (!cachedSegmenter) {
       console.log("Loading segmentation model...");
+      onProgress?.(10);
+      
       const hasWebGPU = await isWebGPUAvailable();
       console.log(`WebGPU available: ${hasWebGPU}`);
       
-      // Use RMBG-1.4 model which is specifically designed for background removal
-      // Fall back to WASM if WebGPU is not available
+      // Use Xenova/modnet - a much faster and lighter model (~25MB vs ~170MB for RMBG)
+      // It's specifically optimized for portrait/human background removal
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      cachedSegmenter = await pipeline("image-segmentation", "briaai/RMBG-1.4", {
-        device: hasWebGPU ? "webgpu" : "wasm",
-      }) as any;
+      cachedSegmenter = await pipeline(
+        "image-segmentation",
+        "Xenova/modnet",
+        {
+          device: hasWebGPU ? "webgpu" : "wasm",
+          // Progress callback for model download
+          progress_callback: (progress: { progress?: number; status?: string }) => {
+            if (progress.progress !== undefined) {
+              // Map download progress to 10-35%
+              const downloadProgress = 10 + Math.round(progress.progress * 0.25);
+              onProgress?.(downloadProgress);
+            }
+          },
+        }
+      ) as any;
+      console.log("Model loaded successfully");
     }
 
     onProgress?.(40);
@@ -96,8 +111,8 @@ export const removeBackground = async (
 
     onProgress?.(50);
 
-    // Process the image with the RMBG segmentation model
-    console.log("Processing with RMBG background removal model...");
+    // Process the image with the segmentation model
+    console.log("Processing with background removal model...");
     const result = await cachedSegmenter(imageData);
 
     onProgress?.(80);
@@ -108,12 +123,11 @@ export const removeBackground = async (
       throw new Error("Invalid segmentation result");
     }
 
-    // RMBG-1.4 returns a foreground mask where values near 1 = subject (keep), 0 = background (remove)
-    // We store this mask directly - no inversion needed for RMBG model
+    // ModNet returns a foreground mask where values near 1 = subject (keep), 0 = background (remove)
     const maskData = new Float32Array(result[0].mask.data);
 
-    // Create the result blob
-    const blob = await applyMaskToImage(canvas, maskData, true); // true = RMBG model (foreground mask)
+    // Create the result blob - ModNet uses foreground mask like RMBG
+    const blob = await applyMaskToImage(canvas, maskData, true);
 
     onProgress?.(100);
 

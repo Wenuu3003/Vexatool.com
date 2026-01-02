@@ -43,8 +43,19 @@ export interface RemovalResult {
   originalImage: HTMLImageElement;
 }
 
-// Check if WebGPU is available
+// Check if device is mobile
+function isMobileDevice(): boolean {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Check if WebGPU is available and stable (skip on mobile due to instability)
 async function isWebGPUAvailable(): Promise<boolean> {
+  // Force WASM on mobile devices - WebGPU is unstable on mobile browsers
+  if (isMobileDevice()) {
+    console.log("Mobile device detected, using WASM for stability");
+    return false;
+  }
+  
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const nav = navigator as any;

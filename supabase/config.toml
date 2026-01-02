@@ -1,7 +1,7 @@
 project_id = "mrjefpimgfzzjwoidocf"
 
 [functions.ai-chat]
-verify_jwt = false
+verify_jwt = true
 
 [functions.perplexity-search]
-verify_jwt = false
+verify_jwt = true

@@ -6,6 +6,10 @@ env.useBrowserCache = true;
 
 const MAX_IMAGE_DIMENSION = 1024;
 
+// Cache the segmenter to avoid reloading the model
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let cachedSegmenter: any = null;
+
 function resizeImageIfNeeded(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, image: HTMLImageElement) {
   let width = image.naturalWidth;
   let height = image.naturalHeight;
@@ -39,18 +43,40 @@ export interface RemovalResult {
   originalImage: HTMLImageElement;
 }
 
+// Check if WebGPU is available
+async function isWebGPUAvailable(): Promise<boolean> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nav = navigator as any;
+    if (!nav.gpu) return false;
+    const adapter = await nav.gpu.requestAdapter();
+    return adapter !== null;
+  } catch {
+    return false;
+  }
+}
+
 export const removeBackground = async (
   imageElement: HTMLImageElement,
   onProgress?: (progress: number) => void,
 ): Promise<RemovalResult> => {
   try {
     console.log("Starting background removal process...");
-    onProgress?.(10);
+    onProgress?.(5);
 
-    // Use RMBG-1.4 model which is specifically designed for background removal
-    const segmenter = await pipeline("image-segmentation", "briaai/RMBG-1.4", {
-      device: "webgpu",
-    });
+    // Use cached segmenter or create new one
+    if (!cachedSegmenter) {
+      console.log("Loading segmentation model...");
+      const hasWebGPU = await isWebGPUAvailable();
+      console.log(`WebGPU available: ${hasWebGPU}`);
+      
+      // Use RMBG-1.4 model which is specifically designed for background removal
+      // Fall back to WASM if WebGPU is not available
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cachedSegmenter = await pipeline("image-segmentation", "briaai/RMBG-1.4", {
+        device: hasWebGPU ? "webgpu" : "wasm",
+      }) as any;
+    }
 
     onProgress?.(40);
 
@@ -72,7 +98,7 @@ export const removeBackground = async (
 
     // Process the image with the RMBG segmentation model
     console.log("Processing with RMBG background removal model...");
-    const result = await segmenter(imageData);
+    const result = await cachedSegmenter(imageData);
 
     onProgress?.(80);
 
@@ -100,6 +126,8 @@ export const removeBackground = async (
     };
   } catch (error) {
     console.error("Error removing background:", error);
+    // Clear cache on error so it can retry
+    cachedSegmenter = null;
     throw error;
   }
 };

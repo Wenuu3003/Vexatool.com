@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const WordToPDF = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -240,6 +241,44 @@ const WordToPDF = () => {
             </div>
           </div>
         )}
+
+        <ToolSEOContent
+          toolName="Word to PDF"
+          whatIs="Word to PDF conversion transforms Microsoft Word documents (.doc, .docx) and text files (.txt) into universally accessible PDF format. PDFs preserve your document's formatting across all devices and platforms, making them ideal for sharing, printing, and archiving. Our free online converter processes your Word documents directly in your browser, extracting text content and creating a properly formatted PDF document."
+          howToUse={[
+            "Click the upload area or drag and drop your Word document (.doc, .docx) or text file (.txt).",
+            "Preview the file information displayed after selection.",
+            "Click 'Convert to PDF' to begin the conversion process.",
+            "Your converted PDF will download automatically when ready."
+          ]}
+          features={[
+            "Convert Word documents (.doc, .docx) and text files to PDF.",
+            "Automatic text wrapping and pagination for long documents.",
+            "Preserves text content from your original document.",
+            "Fast browser-based processing with no uploads to external servers.",
+            "Creates standard PDF files compatible with all PDF readers.",
+            "Free to use with no registration required."
+          ]}
+          safetyNote="Your Word documents are processed entirely within your browser using secure client-side technology. No files are uploaded to external servers, ensuring your documents remain completely private. The original file stays on your device while you receive a new PDF copy."
+          faqs={[
+            {
+              question: "Will my Word document formatting be preserved?",
+              answer: "Text content is fully preserved. Basic formatting like paragraphs and line breaks are maintained. Complex formatting like tables, images, and advanced styling may require desktop software for perfect reproduction."
+            },
+            {
+              question: "What Word file formats are supported?",
+              answer: "This tool supports .doc, .docx, and .txt files. For best results with complex documents, ensure your file is saved in a standard Word format."
+            },
+            {
+              question: "Is there a file size limit?",
+              answer: "Browser-based processing can handle most standard documents. Very large files (over 50MB) may take longer to process. There is no strict file size limit."
+            },
+            {
+              question: "Can I convert multiple Word files at once?",
+              answer: "Currently, files are converted one at a time. For multiple documents, convert each file separately and merge them using our Merge PDF tool if needed."
+            }
+          ]}
+        />
       </ToolLayout>
     </>
   );

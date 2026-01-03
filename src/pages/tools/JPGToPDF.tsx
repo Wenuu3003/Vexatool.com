@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const JPGToPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -165,6 +166,44 @@ const JPGToPDF = () => {
             </div>
           </div>
         )}
+
+        <ToolSEOContent
+          toolName="JPG to PDF"
+          whatIs="JPG to PDF conversion combines one or more JPEG images into a single PDF document. This is perfect for creating photo albums, digitizing scanned documents, preparing image portfolios, or consolidating multiple images into one easy-to-share file. Our free online converter processes your JPG images directly in your browser and creates a professional PDF with each image on its own page."
+          howToUse={[
+            "Click the upload area to select JPG/JPEG images from your device.",
+            "Add multiple images if you want them combined into one PDF.",
+            "Review the selected images and remove any you don't need.",
+            "Click 'Convert to PDF' to create your document and download it."
+          ]}
+          features={[
+            "Convert single or multiple JPG images to PDF.",
+            "Each image is placed on its own page in the PDF.",
+            "Maintains original image quality during conversion.",
+            "Fast browser-based processing with no external uploads.",
+            "Preview and remove images before conversion.",
+            "Free to use with no registration required."
+          ]}
+          safetyNote="Your images are processed entirely within your browser. No files are uploaded to external servers, ensuring your photos and documents remain completely private. The original images stay unchanged on your device."
+          faqs={[
+            {
+              question: "How many images can I convert to PDF at once?",
+              answer: "You can convert multiple JPG images in a single operation. Each image will appear on its own page in the resulting PDF. For very large batches, consider converting in groups for optimal performance."
+            },
+            {
+              question: "Will the image quality be reduced during conversion?",
+              answer: "No, your images are embedded in the PDF at their original quality. The conversion process preserves the full resolution of your JPG files."
+            },
+            {
+              question: "Can I change the order of images in the PDF?",
+              answer: "Images are added to the PDF in the order you select them. To reorder, remove images and re-add them in your preferred sequence before converting."
+            },
+            {
+              question: "What if my image is larger than a standard page?",
+              answer: "Images are automatically scaled to fit standard PDF pages while maintaining their aspect ratio. Very large or panoramic images will be sized to fit within page boundaries."
+            }
+          ]}
+        />
       </ToolLayout>
     </>
   );

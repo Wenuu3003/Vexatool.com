@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PDFToJPG = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -208,6 +209,44 @@ const PDFToJPG = () => {
             </div>
           </div>
         )}
+
+        <ToolSEOContent
+          toolName="PDF to JPG"
+          whatIs="PDF to JPG conversion transforms PDF document pages into high-quality JPEG image files. This is useful when you need to share individual pages as images, include PDF content in presentations, post document pages on social media, or work with software that only accepts image formats. Our free online converter processes each page of your PDF and creates a separate JPG image, maintaining clarity and readability throughout the conversion process."
+          howToUse={[
+            "Click the upload area or drag and drop your PDF file.",
+            "Wait for the tool to process all pages in your document.",
+            "Click 'Convert to JPG' to generate images from each page.",
+            "Download individual page images or all images at once."
+          ]}
+          features={[
+            "Convert all PDF pages to high-quality JPG images.",
+            "Individual download options for each page.",
+            "Bulk download all converted images at once.",
+            "Fast browser-based processing for quick results.",
+            "Maintains original page quality and readability.",
+            "No registration or software installation required."
+          ]}
+          safetyNote="Your PDF files are processed entirely in your browser. No documents are uploaded to external servers, ensuring your content remains private and secure. Converted images are available only in your browser session and are not stored anywhere."
+          faqs={[
+            {
+              question: "What resolution are the converted JPG images?",
+              answer: "Images are converted at a resolution optimized for screen viewing and sharing. The quality is sufficient for most digital uses including presentations and web publishing."
+            },
+            {
+              question: "Can I convert specific pages instead of the entire PDF?",
+              answer: "Currently, all pages are converted. You can download only the specific page images you need after conversion."
+            },
+            {
+              question: "Is there a page limit for PDF to JPG conversion?",
+              answer: "There is no strict page limit, but very large documents may take longer to process. For optimal performance, documents under 50 pages work best."
+            },
+            {
+              question: "Why choose JPG over PNG for PDF conversion?",
+              answer: "JPG files are smaller, making them ideal for sharing and web use. For documents with transparency or those requiring lossless quality, PNG may be preferable."
+            }
+          ]}
+        />
       </ToolLayout>
     </>
   );

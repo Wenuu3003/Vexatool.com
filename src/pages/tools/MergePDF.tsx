@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const MergePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -105,6 +106,44 @@ const MergePDF = () => {
           </Button>
         </div>
       )}
+
+      <ToolSEOContent
+        toolName="Merge PDF"
+        whatIs="PDF merging is the process of combining multiple PDF documents into a single unified file. This is essential for organizing related documents, creating comprehensive reports, or consolidating paperwork for easier sharing and management. Our free online PDF merger allows you to combine unlimited PDF files quickly and securely, maintaining the original quality and formatting of each document. The merged output preserves all pages, bookmarks, and interactive elements from the source files."
+        howToUse={[
+          "Click the upload area or drag and drop multiple PDF files you want to merge.",
+          "Arrange the files in your preferred order by reordering them if needed.",
+          "Click the 'Merge & Download' button to combine all selected PDFs.",
+          "Your merged PDF will download automatically as a single document."
+        ]}
+        features={[
+          "Combine up to 20 PDF files in a single operation.",
+          "Maintains original quality, formatting, and page layouts.",
+          "Preserves bookmarks, hyperlinks, and interactive form fields.",
+          "Fast browser-based processing without external uploads.",
+          "No file size limits for individual documents.",
+          "Free to use with no registration required."
+        ]}
+        safetyNote="All PDF processing occurs directly in your browser using secure client-side technology. Your documents are never uploaded to external servers, ensuring complete privacy and data security. Once merging is complete, files are immediately available for download without being stored anywhere."
+        faqs={[
+          {
+            question: "How many PDF files can I merge at once?",
+            answer: "You can merge up to 20 PDF files in a single operation. For larger batches, you can merge files in groups and then combine the resulting PDFs."
+          },
+          {
+            question: "Will the merged PDF maintain the original formatting?",
+            answer: "Yes, our merger preserves all original formatting, fonts, images, and layouts from each source PDF. The final document looks exactly like the originals combined."
+          },
+          {
+            question: "Can I change the order of pages in the merged PDF?",
+            answer: "You can arrange the order of files before merging. For more detailed page organization, use our Organize PDF tool after merging."
+          },
+          {
+            question: "Is there a maximum file size for merging?",
+            answer: "There is no strict limit, but browser memory constraints may affect very large files. For best results, we recommend individual files under 50MB each."
+          }
+        ]}
+      />
       </ToolLayout>
     </>
   );

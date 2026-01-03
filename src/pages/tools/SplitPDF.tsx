@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const SplitPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -175,6 +176,44 @@ const SplitPDF = () => {
           </div>
         </div>
       )}
+
+      <ToolSEOContent
+        toolName="Split PDF"
+        whatIs="PDF splitting allows you to extract specific pages or divide a large PDF document into smaller, more manageable files. This is particularly useful when you only need certain pages from a document, want to share specific sections with different recipients, or need to reduce file sizes for easier handling. Our free online PDF splitter gives you complete control over which pages to extract, supporting both single pages and custom page ranges."
+        howToUse={[
+          "Upload your PDF file by clicking the upload area or dragging and dropping.",
+          "Enter the page range you want to extract (e.g., '1-3, 5, 7-10' or leave empty for all pages).",
+          "Click 'Split & Download' to extract the specified pages.",
+          "Your new PDF containing only the selected pages will download automatically."
+        ]}
+        features={[
+          "Extract single pages or custom page ranges from any PDF.",
+          "Support for complex page selections like '1-3, 5, 8-12'.",
+          "Maintains original quality and formatting of extracted pages.",
+          "Fast processing directly in your browser.",
+          "No file size limits for splitting operations.",
+          "Free to use without registration."
+        ]}
+        safetyNote="Your PDF files are processed entirely within your web browser. No documents are uploaded to external servers, ensuring your sensitive information remains private and secure. The original file is never modified; you receive a new PDF with only your selected pages."
+        faqs={[
+          {
+            question: "How do I specify which pages to extract?",
+            answer: "Enter page numbers separated by commas, or use dashes for ranges. For example: '1-3, 5, 7-10' extracts pages 1, 2, 3, 5, 7, 8, 9, and 10."
+          },
+          {
+            question: "Can I split a PDF into multiple separate files?",
+            answer: "This tool extracts selected pages into one file. To create multiple separate files, run the split operation multiple times with different page ranges."
+          },
+          {
+            question: "Will splitting affect the quality of my PDF?",
+            answer: "No, the split operation preserves the exact original quality of your pages. Images, text, and formatting remain unchanged."
+          },
+          {
+            question: "Is there a limit on PDF file size?",
+            answer: "There is no strict file size limit, but very large files may take longer to process. For optimal performance, files under 100MB work best."
+          }
+        ]}
+      />
       </ToolLayout>
     </>
   );

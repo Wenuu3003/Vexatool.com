@@ -8,6 +8,7 @@ import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const CompressPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -254,6 +255,44 @@ const CompressPDF = () => {
             </div>
           )}
         </div>
+
+        <ToolSEOContent
+          toolName="Compress PDF"
+          whatIs="PDF compression is the process of reducing the file size of a PDF document while maintaining its visual quality and readability. Large PDF files can be difficult to share via email, slow to upload to websites, and consume excessive storage space. Our free online PDF compressor uses advanced optimization algorithms to shrink your PDF files significantly, making them easier to share, store, and manage. Whether you need to compress a single document or batch process multiple files, this tool provides fast and efficient compression directly in your browser."
+          howToUse={[
+            "Upload your PDF file by clicking the upload area or dragging and dropping your document.",
+            "Adjust the compression level slider to balance between file size reduction and quality retention.",
+            "Click the 'Compress & Download' button to process your file.",
+            "Your compressed PDF will be downloaded automatically, ready to share or store."
+          ]}
+          features={[
+            "Reduce PDF file sizes by up to 90% depending on content and compression settings.",
+            "Adjustable compression levels to balance quality and file size based on your needs.",
+            "Fast browser-based processing with no file uploads to external servers.",
+            "Preserves text, images, and formatting while optimizing file structure.",
+            "Works with scanned documents, image-heavy PDFs, and text-based files.",
+            "No registration required and completely free to use."
+          ]}
+          safetyNote="Your PDF files are processed entirely within your browser using secure client-side technology. No files are uploaded to external servers, ensuring your documents remain private and secure. Once compression is complete, your original file remains unchanged on your device while you receive an optimized copy."
+          faqs={[
+            {
+              question: "How much can I reduce my PDF file size?",
+              answer: "The compression ratio depends on the PDF content. Files with many high-resolution images can be reduced by 70-90%, while text-heavy documents may see 20-50% reduction. Use the compression slider to find the optimal balance."
+            },
+            {
+              question: "Will compression affect the quality of my PDF?",
+              answer: "Our smart compression algorithm prioritizes quality retention. At higher quality settings, visual differences are imperceptible. Lower compression settings may slightly reduce image quality but significantly decrease file size."
+            },
+            {
+              question: "Is there a file size limit for compression?",
+              answer: "Browser-based processing can handle files up to several hundred megabytes. For best performance, we recommend files under 100MB. Larger files may take longer to process."
+            },
+            {
+              question: "Can I compress password-protected PDFs?",
+              answer: "Password-protected PDFs with encryption cannot be compressed without first removing the protection. If you know the password, use our Unlock PDF tool first, then compress the file."
+            }
+          ]}
+        />
       </ToolLayout>
     </>
   );

@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PDFToExcel = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -110,6 +111,44 @@ const PDFToExcel = () => {
             <strong>Tip:</strong> If your PDF contains scanned images of tables, you'll need a tool with OCR capabilities.
           </p>
         </div>
+
+        <ToolSEOContent
+          toolName="PDF to Excel"
+          whatIs="PDF to Excel conversion extracts tabular data from PDF documents and converts it into editable spreadsheet format. This is essential for working with financial reports, invoices, data tables, and any PDF containing structured information you need to analyze or modify in Excel. While browser-based extraction has limitations with complex layouts, this tool provides guidance on the best methods for accurate table extraction and points you to reliable solutions for your specific needs."
+          howToUse={[
+            "Upload your PDF file containing tables or data you want to extract.",
+            "Review the file information displayed after upload.",
+            "Click 'Get Conversion Tips' for guidance on the best conversion method.",
+            "Follow the recommended approach based on your PDF's complexity."
+          ]}
+          features={[
+            "Upload and analyze PDF files containing tabular data.",
+            "Provides expert guidance on optimal conversion methods.",
+            "Links to reliable specialized conversion tools.",
+            "Supports scanned PDFs with OCR recommendations.",
+            "Free analysis with no registration required.",
+            "Works with complex multi-page documents."
+          ]}
+          safetyNote="Your uploaded PDF files are processed locally in your browser for analysis. When following external tool recommendations, review each service's privacy policy. For highly sensitive documents, consider desktop software options that process files offline."
+          faqs={[
+            {
+              question: "Why can't I directly convert PDF to Excel here?",
+              answer: "Accurate table extraction from PDFs requires sophisticated OCR and layout analysis. We recommend specialized tools that handle complex formatting, merged cells, and scanned documents reliably."
+            },
+            {
+              question: "What if my PDF contains scanned images of tables?",
+              answer: "Scanned PDFs require OCR (Optical Character Recognition) technology. Tools like Adobe Acrobat or online services with OCR capabilities can recognize and extract text from images."
+            },
+            {
+              question: "Which tool is best for PDF to Excel conversion?",
+              answer: "Adobe Acrobat provides the most accurate results for complex layouts. For free options, Tabula works well for simple tables, while online services like SmallPDF or ILovePDF handle most common use cases."
+            },
+            {
+              question: "Can I convert multiple PDFs to Excel at once?",
+              answer: "Batch conversion is available in Adobe Acrobat and some online services. Upload multiple files or use their batch processing features for efficiency."
+            }
+          ]}
+        />
       </div>
       </ToolLayout>
     </>

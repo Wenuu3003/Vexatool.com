@@ -53,6 +53,10 @@ const PPTToPDF = lazy(() => import("./pages/tools/PPTToPDF"));
 const ExcelToPDF = lazy(() => import("./pages/tools/ExcelToPDF"));
 const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
 
+// Blog Pages - lazy loaded
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+
 // Utility Tools - lazy loaded
 const QRCodeGenerator = lazy(() => import("./pages/tools/QRCodeGenerator"));
 const QRCodeScanner = lazy(() => import("./pages/tools/QRCodeScanner"));
@@ -107,6 +111,9 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
+              {/* Blog */}
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               {/* Utility Tools */}
               <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
               <Route path="/qr-code-generator" element={<QRCodeGenerator />} />

@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface CompressedImage {
   original: File;
@@ -324,6 +325,44 @@ const CompressImage = () => {
             </div>
           )}
         </div>
+
+        <ToolSEOContent
+          toolName="Compress Images"
+          whatIs="Image compression reduces the file size of your photos and graphics while preserving visual quality. Large image files slow down websites, fill up storage quickly, and are difficult to share via email or messaging apps. Our free online image compressor supports JPG, PNG, and WebP formats, allowing you to reduce file sizes by up to 90% with minimal visible quality loss. Whether you are optimizing images for web use, social media, or storage, this tool provides fast and efficient compression."
+          howToUse={[
+            "Click the upload area or drag and drop your images (JPG, PNG, or WebP).",
+            "Adjust the quality slider to set your preferred compression level.",
+            "Click 'Compress' to process your images.",
+            "Download individual images or all compressed files at once."
+          ]}
+          features={[
+            "Support for JPG, PNG, and WebP image formats.",
+            "Adjustable quality settings from 10% to 100%.",
+            "Batch processing for multiple images simultaneously.",
+            "Real-time preview of compression results.",
+            "Shows file size reduction percentage for each image.",
+            "Fast browser-based processing with no external uploads."
+          ]}
+          safetyNote="All image processing occurs directly in your browser. Your photos are never uploaded to external servers, ensuring complete privacy and security. Compressed images are available only in your current session and are not stored anywhere."
+          faqs={[
+            {
+              question: "What quality setting should I use?",
+              answer: "For web use, 60-80% quality provides excellent results with significant file size reduction. For print or high-quality displays, use 80-90%. Lower settings produce smaller files but may show visible compression artifacts."
+            },
+            {
+              question: "Which image format compresses best?",
+              answer: "WebP typically provides the smallest file sizes with good quality. JPG is excellent for photographs, while PNG is best when you need transparency or lossless quality."
+            },
+            {
+              question: "Will compression affect my image dimensions?",
+              answer: "No, compression only reduces file size while maintaining your image's original width and height. To resize images, use our Image Resizer tool."
+            },
+            {
+              question: "Is there a limit on how many images I can compress?",
+              answer: "You can compress multiple images in one session. For best performance, we recommend processing batches of 10-20 images at a time."
+            }
+          ]}
+        />
       </ToolLayout>
     </>
   );

@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import QRCode from "qrcode";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface BatchQRItem {
   url: string;
@@ -687,6 +688,44 @@ const QRCodeGenerator = () => {
         </div>
 
         <canvas ref={canvasRef} className="hidden" />
+
+        <ToolSEOContent
+          toolName="QR Code Generator"
+          whatIs="QR (Quick Response) codes are two-dimensional barcodes that can store various types of information including URLs, text, contact details, and more. Our free QR code generator creates custom codes instantly that can be scanned by any smartphone camera. Perfect for business cards, marketing materials, product packaging, event tickets, and digital sharing, QR codes bridge the gap between physical and digital content seamlessly."
+          howToUse={[
+            "Enter your URL, text, or content in the appropriate tab.",
+            "Customize colors and add a logo if desired using the options panel.",
+            "Preview your QR code in real-time as you make changes.",
+            "Download your QR code in PNG or SVG format for use anywhere."
+          ]}
+          features={[
+            "Generate QR codes from URLs, text, images, or Google Drive links.",
+            "Batch generation for multiple URLs at once.",
+            "Customizable colors for foreground and background.",
+            "Add your logo to the center of the QR code.",
+            "Adjustable size and logo dimensions.",
+            "Download in PNG or SVG format for any use case."
+          ]}
+          safetyNote="All QR code generation happens directly in your browser. The content you encode is not sent to any external servers. Your URLs, text, and data remain completely private throughout the generation process."
+          faqs={[
+            {
+              question: "What can I encode in a QR code?",
+              answer: "You can encode URLs, plain text, email addresses, phone numbers, WiFi credentials, and more. Most commonly, QR codes link to websites, but they can contain any text up to about 2,000 characters."
+            },
+            {
+              question: "Should I use PNG or SVG format?",
+              answer: "PNG is best for digital use like websites and social media. SVG is scalable and ideal for print materials where you need the QR code at various sizes without quality loss."
+            },
+            {
+              question: "Will adding a logo affect scanning?",
+              answer: "QR codes have error correction that allows them to scan even with logos. Keep logos at 30% or smaller of the QR code size for reliable scanning. Always test your code after adding a logo."
+            },
+            {
+              question: "How small can I print my QR code?",
+              answer: "For reliable scanning, QR codes should be at least 2cm x 2cm (0.8 inches) for close-range scanning. For billboards or signs viewed from a distance, scale up proportionally."
+            }
+          ]}
+        />
       </div>
       </ToolLayout>
     </>

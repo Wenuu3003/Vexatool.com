@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowRightLeft, RefreshCw, Coins } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const currencies = [
   { code: "USD", name: "US Dollar", symbol: "$" },
@@ -200,6 +201,44 @@ const CurrencyConverter = () => {
             * Rates are approximate and for reference only
           </p>
         </div>
+
+        <ToolSEOContent
+          toolName="Currency Converter"
+          whatIs="A currency converter helps you quickly calculate the value of one currency in terms of another. Whether you are traveling abroad, making international purchases, or managing foreign investments, knowing the current exchange rate is essential. Our free currency converter supports major world currencies including USD, EUR, GBP, JPY, INR, and more, providing instant conversions with approximate exchange rates for your reference."
+          howToUse={[
+            "Enter the amount you want to convert.",
+            "Select the source currency (From).",
+            "Select the target currency (To).",
+            "Click 'Convert' to see the converted amount."
+          ]}
+          features={[
+            "Support for 10 major world currencies.",
+            "Quick swap button to reverse conversion direction.",
+            "Shows current exchange rate for your reference.",
+            "Clean, easy-to-use interface.",
+            "Instant calculations with no delays.",
+            "Free to use with no registration required."
+          ]}
+          safetyNote="All conversions are calculated locally in your browser. No personal or financial data is transmitted or stored. Exchange rates shown are approximate and for reference purposes only."
+          faqs={[
+            {
+              question: "Are these exchange rates live?",
+              answer: "The rates shown are approximate reference rates and may not reflect current market conditions. For financial transactions, please check with your bank or a financial service provider for current rates."
+            },
+            {
+              question: "Why do exchange rates change?",
+              answer: "Currency values fluctuate based on economic factors, interest rates, inflation, political stability, and market supply and demand. Rates can change multiple times per day."
+            },
+            {
+              question: "Should I use this for financial decisions?",
+              answer: "This tool provides estimates for planning and reference. For actual transactions involving significant amounts, always verify current rates with your bank or exchange service."
+            },
+            {
+              question: "What currencies are supported?",
+              answer: "We support major currencies including US Dollar (USD), Euro (EUR), British Pound (GBP), Japanese Yen (JPY), Indian Rupee (INR), Australian Dollar (AUD), Canadian Dollar (CAD), Swiss Franc (CHF), Chinese Yuan (CNY), and Singapore Dollar (SGD)."
+            }
+          ]}
+        />
       </div>
       </ToolLayout>
     </>

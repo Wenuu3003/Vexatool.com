@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Banknote, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface EMIResult {
   emi: number;
@@ -231,6 +232,44 @@ export default function EMICalculator() {
             )}
           </div>
         )}
+
+        <ToolSEOContent
+          toolName="EMI Calculator"
+          whatIs="An EMI (Equated Monthly Installment) calculator helps you determine the fixed monthly payment amount for a loan based on the principal amount, interest rate, and loan tenure. This tool is essential for planning home loans, car loans, personal loans, and other financed purchases. Our calculator provides instant EMI calculations along with a complete breakdown of principal versus interest and a detailed month-by-month amortization schedule."
+          howToUse={[
+            "Enter the total loan amount (principal) you plan to borrow.",
+            "Input the annual interest rate offered by your lender.",
+            "Specify the loan tenure in years or months.",
+            "Click 'Calculate EMI' to see your monthly payment and payment breakdown."
+          ]}
+          features={[
+            "Instant EMI calculation with accurate results.",
+            "Visual breakdown showing principal vs interest ratio.",
+            "Complete amortization schedule showing monthly payments.",
+            "Support for tenure in both years and months.",
+            "Works for home loans, car loans, personal loans, and more.",
+            "No registration required and completely free to use."
+          ]}
+          safetyNote="All calculations are performed locally in your browser with no data stored or transmitted. The results are estimates based on the information you provide and may vary from actual loan terms offered by lenders."
+          faqs={[
+            {
+              question: "How is EMI calculated?",
+              answer: "EMI is calculated using the formula: EMI = P × r × (1 + r)^n / ((1 + r)^n - 1), where P is the principal, r is the monthly interest rate, and n is the number of monthly installments."
+            },
+            {
+              question: "Does EMI include processing fees?",
+              answer: "No, this calculator shows the EMI based on the loan principal and interest only. Processing fees, insurance, and other charges are typically separate and should be factored into your total cost."
+            },
+            {
+              question: "Can I reduce my EMI amount?",
+              answer: "You can reduce EMI by extending the loan tenure (which increases total interest paid) or by making a larger down payment to reduce the principal amount."
+            },
+            {
+              question: "What is an amortization schedule?",
+              answer: "An amortization schedule shows the breakdown of each monthly payment into principal and interest components, along with the remaining balance after each payment."
+            }
+          ]}
+        />
       </div>
     </ToolLayout>
   );

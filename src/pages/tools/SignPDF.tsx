@@ -10,6 +10,7 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const SignPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -177,6 +178,33 @@ const SignPDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Sign PDF",
+    whatIs: "Sign PDF is a free online tool that allows you to add your signature to PDF documents easily. You can either draw your signature using your mouse, touchpad, or touchscreen, or type your name to create a styled signature. This is perfect for signing contracts, agreements, forms, and other documents without printing or scanning.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "Choose between 'Draw Signature' or 'Type Signature' mode.",
+      "For drawing: Use your mouse or finger to draw your signature on the canvas.",
+      "For typing: Enter your name in the text field to create a styled signature.",
+      "Click 'Download Signed PDF' to add the signature and download."
+    ],
+    features: [
+      "Draw signatures with mouse, touchpad, or touchscreen",
+      "Type-to-signature with elegant italic styling",
+      "Touch-friendly for mobile and tablet devices",
+      "Clear and redraw functionality",
+      "Signature placed on the last page of the PDF",
+      "High-quality signature rendering"
+    ],
+    safetyNote: "Your PDF files and signatures are processed entirely in your browser. No documents or signature data are uploaded to any server, ensuring complete privacy for your sensitive documents. Your signature remains exclusively on your device.",
+    faqs: [
+      { question: "Where will my signature appear on the PDF?", answer: "The signature is automatically placed in the bottom-right corner of the last page of your PDF, which is the standard location for signatures on most documents." },
+      { question: "Can I sign multiple pages?", answer: "Currently, the signature is added to the last page only. For signing multiple pages, you would need to process each section separately or use the tool multiple times." },
+      { question: "Is this a legally binding digital signature?", answer: "This tool adds a visual signature to your PDF. For legally binding digital signatures with cryptographic verification, specialized e-signature services may be required depending on your jurisdiction." },
+      { question: "Can I save my signature for future use?", answer: "Currently, signatures are created fresh each time. Your drawn or typed signature is not stored between sessions for your privacy." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -288,6 +316,7 @@ const SignPDF = () => {
         
         <AdPlaceholder className="h-20" />
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calculator as CalcIcon, Divide, X, Minus, Plus, Equal, Percent } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const Calculator = () => {
   const [display, setDisplay] = useState("0");
@@ -131,6 +132,33 @@ const Calculator = () => {
 
   const buttonClass = "h-14 text-lg font-semibold transition-all hover:scale-105";
 
+  const seoContent = {
+    toolName: "Calculator",
+    whatIs: "Calculator is a free online tool that provides a clean, easy-to-use interface for performing mathematical calculations. Whether you need to do simple arithmetic like addition, subtraction, multiplication, and division, or calculate percentages and toggle between positive and negative numbers, this calculator handles it all. It also keeps a history of your recent calculations for easy reference.",
+    howToUse: [
+      "Enter numbers using the on-screen buttons or your keyboard.",
+      "Select an operation (+, -, ×, ÷) to perform.",
+      "Press the equals button (=) to see the result.",
+      "Use AC to clear all or CE to clear just the current entry.",
+      "Use % for percentage calculations and +/- to toggle between positive and negative."
+    ],
+    features: [
+      "Basic arithmetic: addition, subtraction, multiplication, division",
+      "Percentage calculations",
+      "Positive/negative toggle",
+      "Calculation history with last 10 operations",
+      "Clear all (AC) and clear entry (CE) functions",
+      "Clean, responsive design that works on all devices"
+    ],
+    safetyNote: "This calculator runs entirely in your browser with no data sent to any server. Your calculations are performed locally and the history is stored only in your current session, ensuring complete privacy.",
+    faqs: [
+      { question: "What's the difference between AC and CE?", answer: "AC (All Clear) resets the entire calculator, clearing the display, any stored values, and pending operations. CE (Clear Entry) only clears the current number being entered, leaving any previous calculations intact." },
+      { question: "How do I calculate percentages?", answer: "Enter a number and press the % button to convert it to a percentage (divide by 100). For example, entering 50 and pressing % gives you 0.5." },
+      { question: "Does the calculator save my history?", answer: "The calculator keeps a history of your last 10 calculations during your current session. This history is cleared when you close or refresh the page." },
+      { question: "Can I use keyboard input?", answer: "Currently, the calculator is optimized for on-screen button input. Keyboard support may be added in future updates." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -213,6 +241,7 @@ const Calculator = () => {
           </div>
         )}
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

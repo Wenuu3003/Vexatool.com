@@ -8,6 +8,7 @@ import { PDFDocument } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const RepairPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -77,6 +78,33 @@ const RepairPDF = () => {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const seoContent = {
+    toolName: "Repair PDF",
+    whatIs: "Repair PDF is a free online tool designed to fix corrupted or damaged PDF files. If your PDF won't open, displays errors, or has structural issues, this tool attempts to recover the content by rebuilding the document with a fresh structure. It can help recover data from PDFs that have been corrupted during transfer, storage, or due to software issues.",
+    howToUse: [
+      "Upload your corrupted or damaged PDF file.",
+      "Review the repair process information.",
+      "Click 'Repair & Download PDF' to start the recovery.",
+      "If successful, your repaired PDF will download automatically.",
+      "If the PDF is too damaged, you'll receive a notification."
+    ],
+    features: [
+      "Automatic recovery of corrupted PDF structures",
+      "Rebuilds documents with fresh, clean structure",
+      "Preserves as much content as possible",
+      "Clear success/failure status indicators",
+      "Works with various types of PDF corruption",
+      "No file size limits for repair attempts"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server during the repair process. Your documents remain private, and both the original and repaired versions are handled locally on your device.",
+    faqs: [
+      { question: "What types of PDF corruption can be repaired?", answer: "The tool can fix structural corruption, damaged headers, cross-reference table issues, and some types of content stream problems. Severely damaged files or those with encrypted corruption may not be recoverable." },
+      { question: "Will I lose any content during repair?", answer: "The tool attempts to preserve all content, but severely damaged sections may not be recoverable. The repair creates a new document structure while keeping as much original content as possible." },
+      { question: "Why did my repair fail?", answer: "If the PDF is too corrupted, the underlying data may be unrecoverable. This can happen with severely damaged files, incomplete downloads, or corrupted storage media." },
+      { question: "Can I repair password-protected PDFs?", answer: "The tool attempts to repair encrypted PDFs, but the password protection settings may affect the repair process. For best results, unlock the PDF first if possible." }
+    ]
   };
 
   return (
@@ -150,6 +178,7 @@ const RepairPDF = () => {
         
         <AdPlaceholder className="h-20" />
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

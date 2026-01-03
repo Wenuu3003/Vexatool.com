@@ -9,6 +9,7 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface TextAnnotation {
   id: string;
@@ -127,6 +128,34 @@ const EditPDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Edit PDF",
+    whatIs: "Edit PDF is a free online tool that allows you to add text annotations to your PDF documents. Whether you need to add notes, comments, labels, or any other text to your PDF files, this tool makes it simple without requiring any software installation. You can add multiple text annotations with customizable font sizes and positions.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "Enter the text you want to add in the text input field.",
+      "Adjust the font size using the number input (8-72 points).",
+      "Click the plus button to add the annotation to your list.",
+      "Add multiple annotations as needed.",
+      "Click 'Download Edited PDF' to save your changes."
+    ],
+    features: [
+      "Add text annotations to any PDF",
+      "Customizable font size (8-72 points)",
+      "Add multiple annotations in one session",
+      "Preview annotations before downloading",
+      "Remove annotations before processing",
+      "Maintains original PDF formatting and quality"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring your documents remain completely private. The tool uses the trusted pdf-lib library for reliable PDF editing.",
+    faqs: [
+      { question: "Can I add images to my PDF?", answer: "Currently, this tool focuses on adding text annotations. For adding images, you may need to use a more comprehensive PDF editor." },
+      { question: "Where will my text annotations appear?", answer: "Text annotations are added to the first page of your PDF at a default position. Future updates may include the ability to choose specific pages and positions." },
+      { question: "Can I edit existing text in the PDF?", answer: "This tool adds new text on top of existing content. Editing the original text in a PDF requires advanced PDF editing capabilities that modify the underlying document structure." },
+      { question: "What fonts are available for text annotations?", answer: "The tool uses Helvetica, a clean and widely compatible font, for all text annotations to ensure your PDF displays correctly on any device." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -218,6 +247,7 @@ const EditPDF = () => {
         
         <AdPlaceholder className="h-20" />
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

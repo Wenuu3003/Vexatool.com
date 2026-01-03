@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ProtectPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -69,6 +70,33 @@ const ProtectPDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Protect PDF",
+    whatIs: "Protect PDF is a free online tool that helps you add password protection to your PDF documents. Password-protecting your PDFs ensures that only authorized individuals can open and view the content. This is essential for sensitive documents like financial reports, legal documents, personal records, and confidential business materials.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "Enter a strong password that you want to use for protection.",
+      "Click 'Protect & Download' to process your PDF.",
+      "Share the protected PDF file securely.",
+      "Remember to share the password separately and securely with authorized recipients."
+    ],
+    features: [
+      "Add password protection to any PDF",
+      "Strong encryption to secure your documents",
+      "Works with all PDF file sizes",
+      "Simple one-click protection process",
+      "No registration required",
+      "Instant download of protected file"
+    ],
+    safetyNote: "Your PDF files and passwords are processed with security in mind. We recommend using strong, unique passwords for your protected documents. Always share passwords through a separate secure channel, never in the same email or message as the protected file.",
+    faqs: [
+      { question: "What makes a strong password?", answer: "A strong password should be at least 12 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters. Avoid using easily guessable information like birthdays or common words." },
+      { question: "Can I remove the password later?", answer: "Yes, you can use our Unlock PDF tool to remove password protection from PDFs, provided you know the current password." },
+      { question: "Will protected PDFs work on all devices?", answer: "Yes, password-protected PDFs are standard and can be opened on any device with a PDF reader. Recipients will be prompted to enter the password before viewing." },
+      { question: "Is the encryption secure?", answer: "PDF password protection uses industry-standard encryption. For highly sensitive documents, consider additional security measures like encrypted email or secure file sharing services." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -124,6 +152,7 @@ const ProtectPDF = () => {
           </div>
         </div>
       )}
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

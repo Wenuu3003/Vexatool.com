@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PDFDocument, degrees } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const RotatePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -64,6 +65,32 @@ const RotatePDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Rotate PDF",
+    whatIs: "Rotate PDF is a free online tool that allows you to rotate all pages in a PDF document by 90, 180, or 270 degrees. This is useful when you have scanned documents that appear upside-down or sideways, or when you need to adjust the orientation of pages for better viewing or printing. The tool processes your PDF quickly and maintains the original quality of your document.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "Select the rotation angle: 90°, 180°, or 270° clockwise.",
+      "Click 'Rotate & Download' to process the PDF.",
+      "Your rotated PDF will automatically download."
+    ],
+    features: [
+      "Rotate all pages 90°, 180°, or 270° clockwise",
+      "Maintains original PDF quality and formatting",
+      "Fast processing with instant download",
+      "Works with any PDF file size",
+      "No registration or login required",
+      "Complete client-side processing for privacy"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser using client-side JavaScript. No files are uploaded to any server, ensuring your documents remain private and secure. The tool uses the trusted pdf-lib library for reliable PDF manipulation.",
+    faqs: [
+      { question: "Can I rotate only specific pages?", answer: "Currently, this tool rotates all pages in the PDF by the same angle. For rotating individual pages, you would need to split the PDF first, rotate specific pages, then merge them back together." },
+      { question: "Will rotating affect my PDF quality?", answer: "No, rotating a PDF does not affect its quality. The content, text, and images remain exactly as they were, just oriented differently." },
+      { question: "What's the difference between 90° and 270° rotation?", answer: "90° rotates clockwise (right), while 270° rotates counter-clockwise (left). 180° flips the page upside-down." },
+      { question: "Can I rotate password-protected PDFs?", answer: "Password-protected PDFs need to be unlocked first before rotation. Use our Unlock PDF tool to remove the protection, then rotate the document." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -117,6 +144,7 @@ const RotatePDF = () => {
           </div>
         </div>
       )}
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

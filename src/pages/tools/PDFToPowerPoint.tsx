@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PDFToPowerPoint = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -98,6 +99,33 @@ const PDFToPowerPoint = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "PDF to PowerPoint Converter",
+    whatIs: "PDF to PowerPoint Converter is a free online tool that helps you convert PDF documents into presentation slides. The tool extracts each PDF page as a separate file that can be imported into Microsoft PowerPoint or Google Slides. This is useful when you need to present PDF content, create slideshows from document pages, or integrate PDF visuals into your presentations.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "View the page count to see how many slides will be created.",
+      "Click 'Extract as Slides' to process the PDF.",
+      "Download the extracted slide files.",
+      "Import the files into PowerPoint using Insert → Object or Insert → Pictures."
+    ],
+    features: [
+      "Extract PDF pages as individual slide files",
+      "Works with any number of PDF pages",
+      "Maintains original page quality",
+      "Compatible with PowerPoint and Google Slides",
+      "Step-by-step import instructions included",
+      "Links to advanced conversion tools provided"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser. No documents are uploaded to any server, ensuring complete privacy. The extraction happens locally on your device, and only you have access to the resulting slide files.",
+    faqs: [
+      { question: "Will the slides be editable in PowerPoint?", answer: "The extracted slides are PDF/image format. For fully editable PowerPoint slides with text and formatting, consider using Adobe Acrobat or specialized online converters like SmallPDF or ILovePDF." },
+      { question: "How do I import the slides into PowerPoint?", answer: "In PowerPoint, go to Insert → Object → Create from File and select the extracted PDF. Alternatively, use Insert → Pictures if you've converted them to images first." },
+      { question: "Can I convert to Google Slides?", answer: "Yes! Upload the extracted files to Google Drive, then insert them into a Google Slides presentation using Insert → Image or by copying from the PDF viewer." },
+      { question: "Why not convert directly to PPTX format?", answer: "Direct PDF to PPTX conversion requires complex text extraction and formatting matching that works best with specialized desktop or cloud software. This tool provides a quick solution for visual content." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -168,6 +196,7 @@ const PDFToPowerPoint = () => {
           </ul>
         </div>
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

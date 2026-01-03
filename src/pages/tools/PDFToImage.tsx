@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PDFToImage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -126,6 +127,33 @@ const PDFToImage = () => {
     images.forEach((img, i) => downloadImage(img, i));
   };
 
+  const seoContent = {
+    toolName: "PDF to Image Converter",
+    whatIs: "PDF to Image Converter is a free online tool that transforms PDF document pages into image files. You can choose between PNG format for lossless quality and transparency support, or JPG format for smaller file sizes. This is perfect for sharing document pages on social media, including them in presentations, or extracting visual content from PDFs.",
+    howToUse: [
+      "Select your preferred output format (PNG or JPG).",
+      "Click the upload area to select your PDF file.",
+      "Click the convert button to start processing.",
+      "View the converted images in the preview gallery.",
+      "Download individual pages or all images at once."
+    ],
+    features: [
+      "Choice of PNG or JPG output format",
+      "High-quality image conversion",
+      "Batch download all pages at once",
+      "Preview images before downloading",
+      "Maintains page dimensions and content",
+      "Secure client-side processing"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser. No documents are uploaded to any server, ensuring complete privacy. The conversion happens locally on your device, and only you have access to the resulting images.",
+    faqs: [
+      { question: "Should I choose PNG or JPG?", answer: "Choose PNG for documents with text, graphics, or when you need transparency. Choose JPG for photographs or when you need smaller file sizes. PNG is lossless while JPG uses compression." },
+      { question: "What quality are the output images?", answer: "Images are generated at high resolution for excellent quality. JPG images use 90% quality to balance file size and visual fidelity." },
+      { question: "Can I convert a specific page only?", answer: "All pages are converted during processing. After conversion, you can download only the specific pages you need from the preview gallery." },
+      { question: "Is there a page limit?", answer: "There's no hard limit, but very large PDFs may take longer to process. The tool handles most standard documents efficiently." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -239,6 +267,7 @@ const PDFToImage = () => {
             </div>
           )}
         </div>
+        <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

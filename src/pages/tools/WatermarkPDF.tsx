@@ -10,6 +10,7 @@ import { Slider } from "@/components/ui/slider";
 import { PDFDocument, rgb } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const WatermarkPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -89,6 +90,33 @@ const WatermarkPDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Watermark PDF",
+    whatIs: "Watermark PDF is a free online tool that allows you to add text watermarks to your PDF documents. Watermarks are useful for branding, protecting intellectual property, marking documents as confidential, or indicating document status like 'DRAFT' or 'APPROVED'. The tool lets you customize the watermark text and opacity to achieve the perfect look for your documents.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "Enter your desired watermark text (e.g., 'CONFIDENTIAL', 'DRAFT', your company name).",
+      "Adjust the opacity slider to control watermark visibility (10%-100%).",
+      "Click 'Add Watermark & Download' to process your PDF.",
+      "Your watermarked PDF will download automatically."
+    ],
+    features: [
+      "Custom text watermarks with any text you choose",
+      "Adjustable opacity from subtle to prominent",
+      "Diagonal watermark placement across each page",
+      "Applies to all pages automatically",
+      "Maintains original PDF quality",
+      "Secure client-side processing"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring complete privacy. Your documents remain confidential, and only you have access to the watermarked output.",
+    faqs: [
+      { question: "Where does the watermark appear on each page?", answer: "The watermark is placed diagonally across the center of each page, which is the standard position for document watermarks. This ensures visibility while maintaining readability." },
+      { question: "Can I add image watermarks?", answer: "Currently, this tool supports text-only watermarks. For image or logo watermarks, additional tools or PDF editors may be required." },
+      { question: "Will the watermark affect text readability?", answer: "You can adjust the opacity to balance visibility and readability. Lower opacity (20-40%) works well for documents that need to remain easily readable, while higher opacity provides stronger protection." },
+      { question: "Can I remove watermarks later?", answer: "Watermarks added with this tool are embedded into the PDF. To get the original document, you would need to keep a copy of the unwatermarked file before processing." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -151,6 +179,7 @@ const WatermarkPDF = () => {
           </div>
         </div>
       )}
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

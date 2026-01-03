@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PNGToPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -88,6 +89,33 @@ const PNGToPDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "PNG to PDF Converter",
+    whatIs: "PNG to PDF Converter is a free online tool that transforms your PNG images into PDF documents. PNG files are excellent for images with transparency and high-quality graphics, and converting them to PDF makes them easier to share, print, and archive. You can convert multiple PNG files at once, combining them into a single, professional PDF document.",
+    howToUse: [
+      "Click the upload area to select your PNG images.",
+      "Select multiple PNG files to combine into one PDF.",
+      "Preview your selected images and remove any if needed.",
+      "Click 'Convert to PDF' to create your document.",
+      "Your PDF will download automatically with all images included."
+    ],
+    features: [
+      "Convert multiple PNG files to a single PDF",
+      "Preserves PNG transparency in the PDF",
+      "Maintains original image quality",
+      "Automatic page sizing to fit each image",
+      "No file count limits",
+      "Fast client-side processing"
+    ],
+    safetyNote: "All image processing happens directly in your browser. Your PNG files are never uploaded to any server, ensuring complete privacy. The conversion is performed locally on your device, and only you have access to the resulting PDF.",
+    faqs: [
+      { question: "Will transparency be preserved?", answer: "Yes! PNG files with transparent backgrounds maintain their transparency when converted to PDF, which is useful for logos and graphics." },
+      { question: "What order will the images appear in the PDF?", answer: "Images appear in the order you selected them. You can remove and re-add files to change the order before conversion." },
+      { question: "Is there a limit to how many PNGs I can convert?", answer: "There's no hard limit, but very large batches of high-resolution images may take longer to process and could be limited by your device's memory." },
+      { question: "Can I convert other image formats?", answer: "This tool is specifically for PNG files. For other formats like JPG or WebP, use our Image to PDF tool which supports multiple formats." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -168,6 +196,7 @@ const PNGToPDF = () => {
             </div>
           </div>
         )}
+        <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

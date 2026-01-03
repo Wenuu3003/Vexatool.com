@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import DOMPurify from "dompurify";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const HTMLToPDF = () => {
   const [html, setHtml] = useState("");
@@ -87,6 +88,33 @@ const HTMLToPDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "HTML to PDF Converter",
+    whatIs: "HTML to PDF Converter is a free online tool that transforms HTML code into PDF documents. Whether you're a developer wanting to convert web content to PDF, or you have HTML templates that need to be shared as documents, this tool provides instant conversion with a live preview. It sanitizes your HTML for security while preserving the structure and formatting of your content.",
+    howToUse: [
+      "Enter or paste your HTML code in the text area.",
+      "View the live preview of your HTML content below.",
+      "Click 'Convert to PDF' to generate the PDF.",
+      "In the print dialog that appears, select 'Save as PDF'.",
+      "Choose your save location and filename."
+    ],
+    features: [
+      "Live preview of HTML content",
+      "Secure HTML sanitization to prevent XSS attacks",
+      "Supports common HTML elements (headings, paragraphs, lists, tables)",
+      "Inline CSS styling support",
+      "Uses browser's native print-to-PDF for high quality",
+      "No file uploads required"
+    ],
+    safetyNote: "Your HTML code is processed entirely in your browser and is sanitized using DOMPurify to remove any potentially harmful scripts or elements. No data is sent to any server, ensuring complete privacy and security for your content.",
+    faqs: [
+      { question: "Why does it open a print dialog?", answer: "The tool uses your browser's native print functionality to create PDFs, which ensures the highest quality output. Simply select 'Save as PDF' as the destination in the print dialog." },
+      { question: "What HTML elements are supported?", answer: "Common elements like headings (h1-h6), paragraphs, divs, spans, lists, tables, links, images, and semantic HTML5 elements are supported. JavaScript is not executed for security." },
+      { question: "Can I include CSS styles?", answer: "Yes! You can include inline CSS styles using the 'style' attribute on elements. The styles will be preserved in the PDF output." },
+      { question: "Why are some elements removed?", answer: "For security, the tool sanitizes HTML to prevent cross-site scripting (XSS) attacks. Script tags, event handlers, and potentially dangerous elements are removed while keeping your content structure intact." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -151,6 +179,7 @@ const HTMLToPDF = () => {
           </div>
         )}
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

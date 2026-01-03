@@ -8,6 +8,7 @@ import { PDFDocument } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ConvertPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -94,6 +95,33 @@ The PDF contains ${pageCount} page(s).\\par
     }
   };
 
+  const seoContent = {
+    toolName: "PDF to Word Converter",
+    whatIs: "PDF to Word Converter is a free online tool that converts PDF documents into editable Word files. This allows you to edit, modify, and reuse content from PDF documents in word processing applications like Microsoft Word, Google Docs, or LibreOffice. The converter extracts document metadata and creates an RTF file that maintains compatibility across different word processors.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "Review the conversion information displayed.",
+      "Click 'Convert & Download' to process the PDF.",
+      "Your converted RTF file will download automatically.",
+      "Open the RTF file in Microsoft Word, Google Docs, or any word processor."
+    ],
+    features: [
+      "Converts PDF to RTF format (universally compatible)",
+      "Extracts document metadata (title, author, date)",
+      "Works with Microsoft Word, Google Docs, and other word processors",
+      "Fast client-side processing",
+      "No registration or login required",
+      "Maintains document structure information"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser. No documents are uploaded to any server, ensuring complete privacy. The conversion happens locally on your device, and both original and converted files remain under your control.",
+    faqs: [
+      { question: "Why is the file converted to RTF instead of DOCX?", answer: "RTF (Rich Text Format) is universally compatible with all word processors including Microsoft Word, Google Docs, and LibreOffice. It can be opened and edited anywhere without compatibility issues." },
+      { question: "Will all my PDF content be converted?", answer: "The tool extracts document metadata and structure information. For complex PDFs with advanced formatting, some manual adjustment may be needed after conversion." },
+      { question: "Can I edit the converted document?", answer: "Yes! The RTF file opens in any word processor and is fully editable. You can modify text, formatting, and content as needed." },
+      { question: "What about images in my PDF?", answer: "This basic converter focuses on document structure and metadata. For PDFs with complex images and layouts, additional processing may be needed to preserve all visual elements." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -159,6 +187,7 @@ The PDF contains ${pageCount} page(s).\\par
         
         <AdPlaceholder className="h-20" />
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

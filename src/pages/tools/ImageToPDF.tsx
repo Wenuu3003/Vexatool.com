@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ImageToPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -106,6 +107,33 @@ const ImageToPDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Image to PDF Converter",
+    whatIs: "Image to PDF Converter is a free online tool that transforms your images into PDF documents. Whether you have JPG photos, PNG graphics, WebP images, or other formats, this tool combines them into a single, professional PDF file. It's perfect for creating photo albums, document scans, portfolios, or any collection of images that needs to be shared or archived as a PDF.",
+    howToUse: [
+      "Click the upload area to select your image files.",
+      "Choose multiple images of any supported format (JPG, PNG, WebP, GIF, etc.).",
+      "Preview your selected images and remove any if needed.",
+      "Click 'Convert to PDF' to create your document.",
+      "Your PDF will download automatically with all images included."
+    ],
+    features: [
+      "Support for all major image formats (JPG, PNG, WebP, GIF, and more)",
+      "Combine multiple images into one PDF",
+      "Automatic format conversion for unsupported types",
+      "Maintains original image quality and proportions",
+      "No file count or size limits",
+      "Secure client-side processing"
+    ],
+    safetyNote: "All image processing happens directly in your browser. Your files are never uploaded to any server, ensuring complete privacy for your personal photos and documents. The conversion is performed locally, and only you have access to the resulting PDF.",
+    faqs: [
+      { question: "What image formats are supported?", answer: "The tool supports JPG/JPEG, PNG, WebP, GIF, and most other common image formats. Unsupported formats are automatically converted to PNG before being added to the PDF." },
+      { question: "What order will the images appear?", answer: "Images appear in the order you selected them. You can remove images and re-add them to change the order before conversion." },
+      { question: "Will image quality be reduced?", answer: "No, images are embedded in the PDF at their original quality. JPG and PNG files are directly embedded, while other formats are converted to PNG to preserve quality." },
+      { question: "Can I add images from different folders?", answer: "Yes! You can add images in multiple batches. Each time you select files, they're added to your existing selection." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -183,6 +211,7 @@ const ImageToPDF = () => {
           </div>
         </div>
       )}
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

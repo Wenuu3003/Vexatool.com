@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PPTToPDF = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -79,6 +80,33 @@ const PPTToPDF = () => {
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+  };
+
+  const seoContent = {
+    toolName: "PowerPoint to PDF Converter",
+    whatIs: "PowerPoint to PDF Converter provides guidance on converting your PPT and PPTX presentations to PDF format. For the best results with preserved formatting, animations references, and slide layouts, we recommend using Microsoft PowerPoint's built-in export feature or Google Slides. This page provides step-by-step instructions and links to reliable online conversion services.",
+    howToUse: [
+      "Select your PowerPoint file (.ppt or .pptx).",
+      "Follow the conversion guide for your preferred method.",
+      "For PowerPoint: File → Save As → Choose PDF format.",
+      "For Google Slides: File → Download → PDF Document.",
+      "For online tools: Use the recommended services listed below."
+    ],
+    features: [
+      "Detailed conversion instructions for multiple methods",
+      "Microsoft PowerPoint conversion guide",
+      "Google Slides free alternative guide",
+      "Links to trusted online converters",
+      "Tips for preserving formatting",
+      "Supports .ppt and .pptx files"
+    ],
+    safetyNote: "When using Microsoft PowerPoint or Google Slides for conversion, your files are processed by those trusted applications. For online converters, we recommend reputable services that process files securely and delete them after conversion. Always check the privacy policy of any online service you use.",
+    faqs: [
+      { question: "Which method gives the best results?", answer: "Microsoft PowerPoint provides the best conversion quality as it's the native application. Google Slides is an excellent free alternative that handles most presentations well." },
+      { question: "Will my animations be preserved?", answer: "PDF is a static format, so animations won't play. However, each slide state can be captured. For animation notes, consider exporting multiple slides per animation step." },
+      { question: "Can I convert presentations with videos?", answer: "Videos cannot be embedded in PDFs. The video frames visible on slides will appear as static images. Consider exporting the video separately if needed." },
+      { question: "What about fonts and special formatting?", answer: "PowerPoint's native export embeds fonts and preserves formatting best. Online converters may substitute unavailable fonts, so check your output carefully." }
+    ]
   };
 
   return (
@@ -192,6 +220,7 @@ const PPTToPDF = () => {
           </ul>
         </div>
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

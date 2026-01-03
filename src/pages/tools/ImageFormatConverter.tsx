@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { RefreshCw, Upload, Download, Loader2, X, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface ImageFile {
   file: File;
@@ -149,14 +151,48 @@ export default function ImageFormatConverter() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const seoContent = {
+    toolName: "Image Format Converter",
+    whatIs: "Image Format Converter is a free online tool that allows you to convert images between different file formats such as PNG, JPG, and WebP. Whether you need to reduce file size by converting to WebP, ensure compatibility by converting to JPG, or preserve transparency by converting to PNG, this tool handles it all. It supports batch conversion, allowing you to process multiple images at once, saving you valuable time and effort.",
+    howToUse: [
+      "Click the upload area or drag and drop your image files (JPG, PNG, or WebP supported).",
+      "Select the target format you want to convert to from the dropdown menu.",
+      "Adjust the quality slider if needed (for JPG and WebP formats).",
+      "Click the 'Convert' button to process your images.",
+      "Download individual converted images or use 'Download All' for batch downloads."
+    ],
+    features: [
+      "Batch conversion - convert multiple images at once",
+      "Support for PNG, JPG, and WebP formats",
+      "Adjustable quality settings for optimal file size",
+      "Instant preview of converted images",
+      "No file size limits for reasonable uploads",
+      "100% client-side processing - your files never leave your browser"
+    ],
+    safetyNote: "Your images are processed entirely in your browser using client-side technology. No files are uploaded to any server, ensuring complete privacy and security. Your original images remain unchanged, and converted files are created locally on your device.",
+    faqs: [
+      { question: "Which image format should I choose?", answer: "Choose JPG for photographs and images without transparency, PNG for images requiring transparency or lossless quality, and WebP for the best balance of quality and file size for web use." },
+      { question: "Why does quality matter for image conversion?", answer: "Higher quality means better image appearance but larger file sizes. For web use, 80-85% quality usually provides an excellent balance. PNG uses lossless compression so quality doesn't apply." },
+      { question: "Can I convert multiple images at once?", answer: "Yes! You can select multiple images and convert them all simultaneously. Each image will be converted to your chosen format and can be downloaded individually or all at once." },
+      { question: "Will converting images reduce their quality?", answer: "Converting to JPG or WebP may reduce quality slightly due to compression. Converting to PNG preserves full quality. The quality slider allows you to control the balance between file size and image quality." }
+    ]
+  };
+
   return (
-    <ToolLayout
-      title="Image Format Converter"
-      description="Convert images between PNG, JPG, and WebP formats. Batch convert multiple images at once."
-      icon={RefreshCw}
-      colorClass="bg-gradient-to-br from-orange-500 to-amber-600"
-      category="Image Tools"
-    >
+    <>
+      <Helmet>
+        <title>Image Format Converter - Convert PNG, JPG, WebP Free Online | MyPDFs</title>
+        <meta name="description" content="Free online image format converter. Convert images between PNG, JPG, and WebP formats. Batch convert multiple images with adjustable quality settings." />
+        <meta name="keywords" content="image converter, PNG to JPG, JPG to WebP, WebP to PNG, convert image format, free image converter" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/image-converter" />
+      </Helmet>
+      <ToolLayout
+        title="Image Format Converter"
+        description="Convert images between PNG, JPG, and WebP formats. Batch convert multiple images at once."
+        icon={RefreshCw}
+        colorClass="bg-gradient-to-br from-orange-500 to-amber-600"
+        category="Image Tools"
+      >
       <div className="space-y-6">
         <input
           ref={fileInputRef}
@@ -293,6 +329,8 @@ export default function ImageFormatConverter() {
           </>
         )}
       </div>
+      <ToolSEOContent {...seoContent} />
     </ToolLayout>
+    </>
   );
 }

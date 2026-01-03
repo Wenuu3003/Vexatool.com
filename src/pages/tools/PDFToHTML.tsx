@@ -6,6 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
 import DOMPurify from "dompurify";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 // Escape HTML special characters to prevent XSS
 const escapeHtml = (text: string): string => {
@@ -200,6 +201,33 @@ const PDFToHTML = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "PDF to HTML Converter",
+    whatIs: "PDF to HTML Converter is a free online tool that transforms PDF documents into HTML web pages. This allows you to display PDF content on websites, integrate document information into web applications, or convert document structures for web publishing. The tool extracts document metadata and creates a styled, responsive HTML page.",
+    howToUse: [
+      "Click the upload area to select your PDF file.",
+      "Click 'Convert to HTML' to start the conversion.",
+      "Preview the generated HTML in the built-in viewer.",
+      "Your HTML file will download automatically.",
+      "Open the HTML file in any web browser to view."
+    ],
+    features: [
+      "Extracts document metadata (title, author, dates)",
+      "Creates responsive, styled HTML output",
+      "Built-in preview of converted content",
+      "Secure XSS-safe HTML generation",
+      "Clean, semantic HTML structure",
+      "Works with any standard PDF"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser. No documents are uploaded to any server. The tool uses DOMPurify to sanitize output and prevent security vulnerabilities, ensuring the generated HTML is safe to use.",
+    faqs: [
+      { question: "Will all PDF content be converted?", answer: "The tool extracts document metadata and page structure. Complex layouts, images, and embedded content require advanced conversion that may need specialized software." },
+      { question: "Can I edit the generated HTML?", answer: "Yes! The HTML file is standard markup that can be edited with any text editor or web development tool. You can customize styles, add content, and integrate it into your website." },
+      { question: "Will the HTML look exactly like my PDF?", answer: "The tool creates a structured representation of your PDF. For pixel-perfect reproduction, specialized PDF rendering or screenshot-based approaches may be needed." },
+      { question: "Is the generated HTML mobile-friendly?", answer: "Yes, the output includes responsive CSS that adapts to different screen sizes, making it suitable for viewing on desktops, tablets, and mobile devices." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -285,6 +313,7 @@ const PDFToHTML = () => {
             </div>
           </div>
         )}
+        <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

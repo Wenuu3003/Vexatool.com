@@ -4,6 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const WordToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -116,6 +117,33 @@ const WordToExcel = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Word to Excel Converter",
+    whatIs: "Word to Excel Converter is a free online tool that transforms Word documents and text files into Excel-compatible CSV format. This is useful when you have tabular data in Word documents that you need to analyze or process in a spreadsheet application. The tool intelligently detects column separators (tabs, multiple spaces) to properly structure your data in rows and columns.",
+    howToUse: [
+      "Click the upload area to select your Word document (.doc, .docx) or text file (.txt).",
+      "Review the selected file details.",
+      "Click 'Convert to Excel (CSV)' to start the conversion.",
+      "Your CSV file will download automatically.",
+      "Open the CSV file in Microsoft Excel, Google Sheets, or any spreadsheet application."
+    ],
+    features: [
+      "Converts .doc, .docx, and .txt files to CSV",
+      "Automatic detection of columns (tabs, spaces)",
+      "UTF-8 encoding for international characters",
+      "Compatible with Excel, Google Sheets, and LibreOffice",
+      "Client-side processing for privacy",
+      "No registration required"
+    ],
+    safetyNote: "Your Word documents are processed entirely in your browser. No files are uploaded to any server, ensuring complete privacy. The conversion happens locally on your device, and both original and converted files remain under your control.",
+    faqs: [
+      { question: "How does the converter detect columns?", answer: "The tool looks for tab characters and multiple consecutive spaces to separate columns. For best results, use tabs or consistent spacing to separate data in your Word document." },
+      { question: "Why CSV instead of XLS format?", answer: "CSV is universally compatible with all spreadsheet applications including Excel, Google Sheets, and LibreOffice. It ensures your converted file can be opened and processed anywhere." },
+      { question: "Will tables in my Word document be converted?", answer: "The tool extracts text content and attempts to preserve structure. For complex tables with merged cells or special formatting, some manual adjustment in the spreadsheet may be needed." },
+      { question: "Can I convert documents with images?", answer: "The converter focuses on text content. Images in Word documents are not transferred to the CSV output, which is a text-based format." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -187,6 +215,7 @@ const WordToExcel = () => {
             </div>
           </div>
         )}
+        <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

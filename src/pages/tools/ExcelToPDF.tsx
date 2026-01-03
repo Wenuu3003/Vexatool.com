@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ExcelToPDF = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -43,6 +44,34 @@ const ExcelToPDF = () => {
     });
 
     setIsProcessing(false);
+  };
+
+  const seoContent = {
+    toolName: "Excel to PDF Converter",
+    whatIs: "Excel to PDF Converter provides guidance and tools to convert your Excel spreadsheets (.xls, .xlsx, .csv) to PDF format. For the best conversion quality with preserved formatting, formulas results, and cell styles, we recommend using Microsoft Excel's built-in 'Save as PDF' feature or Google Sheets' 'Download as PDF' option. This ensures all your data, charts, and formatting are perfectly preserved.",
+    howToUse: [
+      "Select your Excel file (.xls, .xlsx, or .csv).",
+      "Review the conversion tips provided.",
+      "For Microsoft Excel: Go to File → Save As → Select PDF format.",
+      "For Google Sheets: Go to File → Download → PDF Document.",
+      "Choose which sheets to include and adjust page settings.",
+      "Save your PDF file."
+    ],
+    features: [
+      "Guidance for converting with Microsoft Excel",
+      "Instructions for Google Sheets conversion",
+      "Tips for preserving formatting",
+      "Support for .xls, .xlsx, and .csv files",
+      "Recommendations for optimal PDF output",
+      "Links to additional conversion resources"
+    ],
+    safetyNote: "When using Microsoft Excel or Google Sheets for conversion, your files are processed by those trusted applications. For online converters, always use reputable services that respect your privacy and delete files after conversion.",
+    faqs: [
+      { question: "Why use Excel or Google Sheets instead of an online converter?", answer: "Excel and Google Sheets preserve all formatting, formulas, charts, and cell styles perfectly. Online converters may lose some formatting or have limitations with complex spreadsheets." },
+      { question: "Can I convert multiple sheets to one PDF?", answer: "Yes! Both Excel and Google Sheets allow you to select multiple sheets or the entire workbook to convert to a single PDF document." },
+      { question: "How do I fit my spreadsheet on one page?", answer: "In Excel's Save as PDF dialog, use the 'Fit Sheet on One Page' option under Page Setup. In Google Sheets, adjust the scale percentage in the PDF export settings." },
+      { question: "What about charts and images in my spreadsheet?", answer: "Charts, images, and all visual elements are preserved when converting through Excel or Google Sheets. They will appear exactly as they do in your spreadsheet." }
+    ]
   };
 
   return (
@@ -124,6 +153,7 @@ const ExcelToPDF = () => {
           </p>
         </div>
       </div>
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const OrganizePDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -92,6 +93,33 @@ const OrganizePDF = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Organize PDF",
+    whatIs: "Organize PDF is a free online tool that allows you to reorder pages within your PDF documents using a simple drag-and-drop interface. Whether you need to rearrange pages that were scanned out of order, reorganize a report, or customize the page sequence of a presentation, this tool makes it quick and easy without requiring any software installation.",
+    howToUse: [
+      "Upload your PDF file by clicking the upload area or dragging and dropping.",
+      "View the page tiles showing the current order of your PDF pages.",
+      "Drag and drop the page tiles to rearrange them in your desired order.",
+      "Click 'Save & Download' to create your reorganized PDF.",
+      "Your new PDF will download with pages in the new order."
+    ],
+    features: [
+      "Intuitive drag-and-drop interface",
+      "Visual page representation for easy organization",
+      "Works with PDFs of any size",
+      "Maintains original page quality",
+      "No page limit restrictions",
+      "Instant processing and download"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server during the reorganization process, ensuring complete privacy for your documents.",
+    faqs: [
+      { question: "Can I delete pages while organizing?", answer: "This tool focuses on reordering pages. To delete specific pages, use our Split PDF tool to extract only the pages you need, then merge them if necessary." },
+      { question: "Will reorganizing affect my PDF quality?", answer: "No, reorganizing only changes the page order. All content, formatting, and quality remain exactly the same as the original document." },
+      { question: "How do I move a page to a specific position?", answer: "Simply drag the page tile and drop it in the desired position. The other pages will automatically shift to accommodate the moved page." },
+      { question: "Can I undo my changes?", answer: "The original PDF remains unchanged until you download. Simply refresh the page or re-upload your file to start over with the original page order." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -158,6 +186,7 @@ const OrganizePDF = () => {
           </div>
         </div>
       )}
+      <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

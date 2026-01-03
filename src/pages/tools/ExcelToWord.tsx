@@ -4,6 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ExcelToWord = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -155,6 +156,33 @@ const ExcelToWord = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "Excel to Word Converter",
+    whatIs: "Excel to Word Converter is a free online tool that transforms Excel spreadsheets and CSV files into Word-compatible documents. This is useful when you need to include tabular data in reports, presentations, or documents. The converter processes your spreadsheet data and creates an RTF file that opens in Microsoft Word, Google Docs, and other word processors while maintaining your table structure.",
+    howToUse: [
+      "Click the upload area to select your Excel file (.xls, .xlsx, or .csv).",
+      "Review the selected file details shown below the upload area.",
+      "Click 'Convert to Word (RTF)' to start the conversion.",
+      "Your converted RTF file will download automatically.",
+      "Open the file in Microsoft Word or any word processor."
+    ],
+    features: [
+      "Converts .xls, .xlsx, and .csv files",
+      "Creates RTF tables compatible with all word processors",
+      "Preserves row and column structure",
+      "Handles quoted fields and special characters in CSV",
+      "Fast client-side processing",
+      "No file size limits for standard spreadsheets"
+    ],
+    safetyNote: "Your Excel files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring complete privacy for your spreadsheet data. Both original and converted files remain on your device.",
+    faqs: [
+      { question: "Will my table formatting be preserved?", answer: "The converter creates a basic table structure in RTF format. While the data and layout are preserved, you may need to adjust styling (colors, fonts, borders) in your word processor after conversion." },
+      { question: "Can I convert files with multiple sheets?", answer: "For .xlsx files with multiple sheets, the tool extracts text content. For best results with multi-sheet workbooks, save each sheet as a separate CSV file." },
+      { question: "Why RTF instead of DOCX?", answer: "RTF is universally compatible with all word processors including Microsoft Word, Google Docs, LibreOffice, and others. It ensures your converted file can be opened anywhere." },
+      { question: "What about formulas in my Excel file?", answer: "The converter exports the visible values, not the underlying formulas. If you need to preserve formulas, keep your original Excel file." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -226,6 +254,7 @@ const ExcelToWord = () => {
             </div>
           </div>
         )}
+        <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

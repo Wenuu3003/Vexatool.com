@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PDFToPNG = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -108,6 +109,33 @@ const PDFToPNG = () => {
     images.forEach((img, i) => downloadImage(img, i));
   };
 
+  const seoContent = {
+    toolName: "PDF to PNG Converter",
+    whatIs: "PDF to PNG Converter is a free online tool that transforms each page of your PDF document into high-quality PNG images. PNG format is ideal when you need images with transparent backgrounds or lossless quality. This is useful for extracting pages for presentations, social media, web use, or any situation where you need individual page images.",
+    howToUse: [
+      "Click the upload area to select your PDF file.",
+      "Click 'Convert to PNG' to start the conversion.",
+      "View the converted images in the preview gallery.",
+      "Download individual pages or use 'Download All' for batch download.",
+      "Each page becomes a separate PNG file."
+    ],
+    features: [
+      "Convert all PDF pages to PNG images",
+      "High-quality output with transparency support",
+      "Individual page download or batch download",
+      "Preview images before downloading",
+      "Maintains page proportions and content",
+      "Fast client-side processing"
+    ],
+    safetyNote: "Your PDF files are processed entirely in your browser. No files are uploaded to any server, ensuring complete privacy for your documents. The conversion happens locally on your device, and only you have access to the resulting PNG images.",
+    faqs: [
+      { question: "Why choose PNG over JPG?", answer: "PNG supports transparency and uses lossless compression, making it ideal for documents with graphics, logos, or text that needs to stay crisp. Choose JPG if you need smaller file sizes for photographs." },
+      { question: "What resolution are the output images?", answer: "Images are generated at 2x scale for high quality, with a maximum dimension of 1200x1600 pixels to balance quality and file size." },
+      { question: "Can I convert specific pages only?", answer: "Currently, all pages are converted. After conversion, you can download only the specific pages you need from the preview gallery." },
+      { question: "Will the text remain sharp?", answer: "Yes, the PNG format preserves text clarity with lossless compression, making it excellent for documents that will be viewed on screen or printed." }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -208,6 +236,7 @@ const PDFToPNG = () => {
             </div>
           </div>
         )}
+        <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

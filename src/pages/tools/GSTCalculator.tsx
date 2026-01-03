@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Receipt, Calculator, ArrowRightLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const gstRates = [
   { value: "0", label: "0% (Exempted)" },
@@ -220,6 +221,44 @@ export default function GSTCalculator() {
             </div>
           </div>
         )}
+
+        <ToolSEOContent
+          toolName="GST Calculator"
+          whatIs="GST (Goods and Services Tax) is a comprehensive indirect tax levied on the supply of goods and services in India. Our GST calculator helps you quickly compute the tax amount and final price for any transaction. Whether you need to add GST to a base price or extract GST from an inclusive amount, this tool provides accurate calculations with complete CGST, SGST, and IGST breakdowns based on whether the transaction is intra-state or inter-state."
+          howToUse={[
+            "Enter the amount you want to calculate GST for.",
+            "Select the applicable GST rate (0%, 5%, 12%, 18%, or 28%).",
+            "Choose whether the amount is GST exclusive (add GST) or inclusive (extract GST).",
+            "Check 'Inter-State Supply' for IGST or leave unchecked for CGST+SGST."
+          ]}
+          features={[
+            "Support for all standard GST rates in India.",
+            "Calculate both GST exclusive and inclusive amounts.",
+            "Complete breakdown of CGST, SGST, and IGST components.",
+            "Handles intra-state and inter-state transactions.",
+            "Instant results with detailed tax summary.",
+            "Free to use with no registration required."
+          ]}
+          safetyNote="All calculations are performed locally in your browser. No transaction data is stored or transmitted. This calculator provides estimates for reference purposes. For official invoicing and compliance, please consult with a tax professional."
+          faqs={[
+            {
+              question: "What is the difference between CGST, SGST, and IGST?",
+              answer: "CGST (Central GST) and SGST (State GST) apply to intra-state transactions and are split equally. IGST (Integrated GST) applies to inter-state transactions and is collected by the central government."
+            },
+            {
+              question: "Which GST rate applies to my product?",
+              answer: "GST rates vary by product category: 0% for essentials, 5% for basic necessities, 12% for standard goods, 18% for most services, and 28% for luxury items. Check the official HSN/SAC codes for specific classifications."
+            },
+            {
+              question: "How do I calculate GST for multiple items?",
+              answer: "Calculate each item separately based on its applicable GST rate, then sum the totals. Different products may have different GST rates even in the same invoice."
+            },
+            {
+              question: "Is GST applicable on all goods and services?",
+              answer: "Most goods and services attract GST, but some essential items like fresh vegetables, healthcare services, and educational services are exempt or have 0% GST."
+            }
+          ]}
+        />
       </div>
     </ToolLayout>
   );

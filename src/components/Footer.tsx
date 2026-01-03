@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { Link } from "react-router-dom";
 import { FileText, Mail, Send, Facebook, Twitter, ShieldCheck } from "lucide-react";
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {
@@ -12,9 +13,26 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
   ];
 
   const footerLinks = {
-    "PDF Tools": ["Merge PDF", "Split PDF", "Compress PDF", "PDF to Word", "PDF to PowerPoint", "PDF to Excel"],
-    "Convert to PDF": ["Word to PDF", "PowerPoint to PDF", "Excel to PDF", "JPG to PDF", "HTML to PDF"],
-    Company: ["About Us", "Pricing", "Blog", "Contact", "Privacy Policy", "Terms & Conditions"],
+    "PDF Tools": [
+      { name: "Merge PDF", path: "/merge-pdf" },
+      { name: "Split PDF", path: "/split-pdf" },
+      { name: "Compress PDF", path: "/compress-pdf" },
+      { name: "PDF to Word", path: "/pdf-to-word" },
+      { name: "PDF to PowerPoint", path: "/pdf-to-powerpoint" },
+      { name: "PDF to Excel", path: "/pdf-to-excel" },
+    ],
+    "Convert to PDF": [
+      { name: "Word to PDF", path: "/word-to-pdf" },
+      { name: "PPT to PDF", path: "/ppt-to-pdf" },
+      { name: "Excel to PDF", path: "/excel-to-pdf" },
+      { name: "JPG to PDF", path: "/jpg-to-pdf" },
+      { name: "HTML to PDF", path: "/html-to-pdf" },
+    ],
+    Company: [
+      { name: "Blog", path: "/blog" },
+      { name: "Privacy Policy", path: "/privacy-policy" },
+      { name: "Terms & Conditions", path: "/terms-and-conditions" },
+    ],
   };
 
   return (
@@ -23,19 +41,16 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div>
-            <a href="/" className="flex items-center gap-2 mb-4" aria-label="Mypdfs Home">
+            <Link to="/" className="flex items-center gap-2 mb-4" aria-label="Mypdfs Home">
               <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
                 <FileText className="w-5 h-5 text-primary-foreground" aria-hidden="true" />
               </div>
               <span className="text-xl font-bold text-foreground">
                 <span className="text-primary">My</span>pdfs
               </span>
-            </a>
+            </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Mypdfs free online tools,pdf tools online,merge pdf online split pdf online,compress pdf online edit pdf
-              free,pdf converter,image tools online,image converter,ai tools online free ai tools,resume builder
-              online,qr code generator,online calculators,unit converter online currency converter,file compression
-              online,word to pdf,pdf to word,jpg to pdf,png to pdf,all in one online tools
+              Free online PDF tools, image converters, AI tools, calculators, and more. Edit, compress, merge, and convert your documents securely in your browser.
             </p>
           </div>
 
@@ -45,14 +60,14 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               <h4 className="font-semibold text-foreground mb-4">{category}</h4>
               <ul className="space-y-2">
                 {links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
+                  <li key={link.name}>
+                    <Link
+                      to={link.path}
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                      aria-label={`Go to ${link}`}
+                      aria-label={`Go to ${link.name}`}
                     >
-                      {link}
-                    </a>
+                      {link.name}
+                    </Link>
                   </li>
                 ))}
               </ul>

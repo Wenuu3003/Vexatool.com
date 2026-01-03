@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 export default function AgeCalculator() {
   const [birthDate, setBirthDate] = useState("");
@@ -162,6 +163,44 @@ export default function AgeCalculator() {
             </div>
           </div>
         )}
+
+        <ToolSEOContent
+          toolName="Age Calculator"
+          whatIs="An age calculator determines your exact age in years, months, and days from your date of birth to any specified date. Beyond simple age calculation, our tool provides comprehensive statistics including your total age in months, weeks, and days, plus a countdown to your next birthday. This is useful for official documents, milestone celebrations, astrological purposes, or simply satisfying your curiosity about the exact time you have been alive."
+          howToUse={[
+            "Enter your date of birth in the first field.",
+            "Optionally, change the 'Calculate Age On' date (defaults to today).",
+            "Click 'Calculate Age' to see your results.",
+            "View your exact age and additional statistics."
+          ]}
+          features={[
+            "Calculate exact age in years, months, and days.",
+            "View total age in months, weeks, and days.",
+            "See countdown to your next birthday.",
+            "Calculate age on any specific date, past or future.",
+            "Accurate calculations accounting for leap years.",
+            "Instant results with no registration required."
+          ]}
+          safetyNote="All calculations are performed locally in your browser. Your date of birth and personal information are not stored or transmitted to any server, ensuring complete privacy."
+          faqs={[
+            {
+              question: "How accurate is the age calculation?",
+              answer: "Our calculator accounts for leap years and varying month lengths, providing exact results down to the day. The calculation is based on the Gregorian calendar used worldwide."
+            },
+            {
+              question: "Can I calculate age for a past date?",
+              answer: "Yes, you can set any date in the 'Calculate Age On' field to see what your age was on that specific date, useful for historical records or documents."
+            },
+            {
+              question: "Why might my age differ from other calculators?",
+              answer: "Some calculators round months differently or handle partial months/days in various ways. Our calculator provides the most precise breakdown available."
+            },
+            {
+              question: "Does this work for very old dates?",
+              answer: "Yes, the calculator handles dates going back many centuries. However, calendar reforms and historical changes may affect accuracy for dates before the widespread adoption of the Gregorian calendar."
+            }
+          ]}
+        />
       </div>
     </ToolLayout>
   );

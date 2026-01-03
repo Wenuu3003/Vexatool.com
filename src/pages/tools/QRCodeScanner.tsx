@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import jsQR from "jsqr";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const QRCodeScanner = () => {
   const [scannedResult, setScannedResult] = useState<string | null>(null);
@@ -363,6 +364,44 @@ const QRCodeScanner = () => {
               <li>• Make sure the entire QR code is visible</li>
             </ul>
           </div>
+
+          <ToolSEOContent
+            toolName="QR Code Scanner"
+            whatIs="A QR code scanner reads and decodes the information stored in QR (Quick Response) codes. Our free online scanner can read QR codes from uploaded images or directly through your device's camera. Whether you need to decode a QR code from a screenshot, extract a URL from printed materials, or scan codes in real-time, this tool provides instant results with one-click copy and open functionality."
+            howToUse={[
+              "Choose your scanning method: upload an image or use your camera.",
+              "For images, click 'Upload Image' and select a file containing a QR code.",
+              "For camera scanning, click 'Use Camera' and point at the QR code.",
+              "Once decoded, copy the content or open links directly from the results."
+            ]}
+            features={[
+              "Scan QR codes from uploaded images or screenshots.",
+              "Real-time camera scanning with live preview.",
+              "Automatic contrast enhancement for better detection.",
+              "One-click copy to clipboard functionality.",
+              "Direct link opening for URL-based QR codes.",
+              "Works on desktop and mobile devices."
+            ]}
+            safetyNote="All QR code scanning happens locally in your browser. Your images and camera feed are processed on your device and never sent to external servers. Decoded content is displayed only to you and is not logged or stored anywhere."
+            faqs={[
+              {
+                question: "Why isn't my QR code being detected?",
+                answer: "Ensure the QR code is clear, well-lit, and fully visible. Blurry or partially obscured codes may not scan. Try adjusting the angle or distance, or upload a clearer image."
+              },
+              {
+                question: "What types of QR codes can this scanner read?",
+                answer: "This scanner reads standard QR codes containing URLs, text, contact information, WiFi credentials, and other encoded data. It supports most common QR code formats."
+              },
+              {
+                question: "Is camera scanning safe?",
+                answer: "Yes, camera access is used only for QR code scanning. The video feed is processed locally and never transmitted. You can revoke camera permissions anytime through your browser settings."
+              },
+              {
+                question: "Can I scan QR codes from screenshots?",
+                answer: "Absolutely. Upload any image containing a QR code, including screenshots, photos, or downloaded images. The scanner will detect and decode the QR code automatically."
+              }
+            ]}
+          />
         </div>
       </ToolLayout>
     </>

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRightLeft, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 const categories = {
   length: {
@@ -339,6 +340,44 @@ export default function UnitConverter() {
             ))}
           </div>
         </div>
+
+        <ToolSEOContent
+          toolName="Unit Converter"
+          whatIs="A unit converter is an essential tool for converting measurements between different units within the same category. Whether you need to convert kilometers to miles, kilograms to pounds, Celsius to Fahrenheit, or any other measurement, our comprehensive unit converter handles it all. With support for length, weight, temperature, area, volume, speed, time, and data storage conversions, this tool is perfect for students, professionals, travelers, and anyone working with different measurement systems."
+          howToUse={[
+            "Select the measurement category (Length, Weight, Temperature, etc.).",
+            "Choose the unit you want to convert from.",
+            "Choose the unit you want to convert to.",
+            "Enter a value, and see the converted result instantly."
+          ]}
+          features={[
+            "Support for 8 measurement categories with dozens of units.",
+            "Real-time conversion as you type.",
+            "Bidirectional conversion - edit either field.",
+            "Quick swap button to reverse conversion direction.",
+            "Accurate calculations including temperature conversions.",
+            "Works offline with no registration required."
+          ]}
+          safetyNote="All conversions are calculated locally in your browser with no data transmitted to external servers. Conversion factors are based on internationally recognized standards for accuracy."
+          faqs={[
+            {
+              question: "How accurate are the conversions?",
+              answer: "Our conversions use standard internationally recognized conversion factors. Results are displayed with appropriate precision for practical use. For scientific applications requiring extreme precision, verify with specialized tools."
+            },
+            {
+              question: "Why does temperature conversion work differently?",
+              answer: "Unlike other units that use simple multiplication, temperature scales have different zero points. Celsius, Fahrenheit, and Kelvin require specific formulas rather than conversion factors."
+            },
+            {
+              question: "Can I convert between different categories?",
+              answer: "No, conversions only work within the same category. You cannot convert length to weight, for example, as they measure different physical quantities."
+            },
+            {
+              question: "What data storage units are supported?",
+              answer: "We support bytes (B), kilobytes (KB), megabytes (MB), gigabytes (GB), and terabytes (TB) using binary (1024-based) calculations standard in computing."
+            }
+          ]}
+        />
       </div>
     </ToolLayout>
   );

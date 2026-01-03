@@ -20,6 +20,7 @@ import {
   type RemovalResult 
 } from "@/lib/backgroundRemoval";
 import { MaskEditor } from "@/components/MaskEditor";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 type OutputFormat = "png" | "jpeg" | "webp";
 
@@ -400,6 +401,44 @@ const BackgroundRemover = () => {
               </p>
             </div>
           )}
+
+          <ToolSEOContent
+            toolName="Background Remover"
+            whatIs="AI-powered background removal automatically detects and removes the background from any image, leaving you with a clean transparent or solid-colored result. This technology is essential for product photography, profile pictures, marketing materials, and creative projects. Our free online tool uses advanced machine learning to accurately separate subjects from backgrounds, providing professional results without expensive software or manual editing skills."
+            howToUse={[
+              "Upload your image by clicking the upload area or dragging and dropping.",
+              "Click 'Remove Background' to let the AI process your image.",
+              "Use the 'Edit Mask' feature to refine edges if needed.",
+              "Choose your output format (PNG, JPG, or WebP) and download."
+            ]}
+            features={[
+              "AI-powered automatic subject detection and background removal.",
+              "Manual mask editing for precise edge refinement.",
+              "Multiple output formats: PNG (transparent), JPG, and WebP.",
+              "Works with photos, product images, and portraits.",
+              "Real-time processing progress indicator.",
+              "All processing happens locally in your browser for privacy."
+            ]}
+            safetyNote="Your images are processed entirely within your browser using on-device AI technology. No photos are uploaded to external servers, ensuring your images remain completely private. This browser-based approach also means faster processing without waiting for server responses."
+            faqs={[
+              {
+                question: "What types of images work best?",
+                answer: "Images with clear subject-background contrast work best. Well-lit photos with distinct edges produce the cleanest results. Complex backgrounds or images where subject and background colors are similar may require manual mask editing."
+              },
+              {
+                question: "Can I edit the result if the AI misses some areas?",
+                answer: "Yes, use the 'Edit Mask' button after initial processing. You can paint to add or remove areas from the selection, giving you complete control over the final result."
+              },
+              {
+                question: "Which output format should I choose?",
+                answer: "PNG is best for transparent backgrounds. JPG is smaller and suitable when you don't need transparency. WebP offers a good balance of quality and file size for web use."
+              },
+              {
+                question: "Why is processing taking a while?",
+                answer: "The AI model runs in your browser, which requires loading the model on first use. Subsequent images process faster. Processing time also depends on image size and your device's capabilities."
+              }
+            ]}
+          />
         </div>
       </ToolLayout>
     </>

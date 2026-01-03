@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Activity, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 export default function BMICalculator() {
   const [unit, setUnit] = useState<"metric" | "imperial">("metric");
@@ -232,6 +233,44 @@ export default function BMICalculator() {
             </p>
           </div>
         )}
+
+        <ToolSEOContent
+          toolName="BMI Calculator"
+          whatIs="Body Mass Index (BMI) is a simple calculation used to assess whether your weight falls within a healthy range for your height. While BMI is not a direct measure of body fat, it serves as a useful screening tool to identify potential weight-related health issues. Our free BMI calculator supports both metric and imperial measurements, providing instant results along with your healthy weight range and personalized health recommendations."
+          howToUse={[
+            "Select your preferred unit system (Metric or Imperial).",
+            "Enter your weight in kilograms or pounds.",
+            "Enter your height in centimeters or feet and inches.",
+            "Click 'Calculate BMI' to see your results and health category."
+          ]}
+          features={[
+            "Support for both metric (kg/cm) and imperial (lbs/ft-in) measurements.",
+            "Visual BMI scale showing your position relative to health categories.",
+            "Calculated healthy weight range based on your height.",
+            "Personalized health advice based on your BMI category.",
+            "Detailed breakdown of underweight, normal, overweight, and obese categories.",
+            "Instant results with no registration required."
+          ]}
+          safetyNote="BMI is a general screening tool and may not accurately reflect the health status of athletes, elderly individuals, or those with high muscle mass. For personalized health advice, please consult a healthcare professional. All calculations are performed locally in your browser with no data stored or transmitted."
+          faqs={[
+            {
+              question: "What is a healthy BMI range?",
+              answer: "A BMI between 18.5 and 24.9 is generally considered healthy for most adults. However, this range may vary based on age, gender, ethnicity, and muscle mass."
+            },
+            {
+              question: "Is BMI accurate for athletes?",
+              answer: "BMI may overestimate body fat in athletes and individuals with high muscle mass, as muscle weighs more than fat. Athletes should consider additional measurements like body fat percentage."
+            },
+            {
+              question: "How often should I check my BMI?",
+              answer: "For general health monitoring, checking your BMI monthly or quarterly is sufficient. If you're actively working on weight management, weekly checks can help track progress."
+            },
+            {
+              question: "Does BMI apply to children?",
+              answer: "Children and teens use age-and-gender-specific BMI percentiles rather than adult BMI categories. This calculator is designed for adults aged 20 and older."
+            }
+          ]}
+        />
       </div>
     </ToolLayout>
   );

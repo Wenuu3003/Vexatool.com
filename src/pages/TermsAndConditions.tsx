@@ -10,12 +10,15 @@ const TermsAndConditions = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Terms & Conditions | MyPDFs</title>
-        <meta name="description" content="Read the Terms & Conditions of MyPDFs. Understand your rights and responsibilities when using our free online PDF tools and services." />
+        <meta
+          name="description"
+          content="Read the Terms & Conditions of MyPDFs. Understand your rights and responsibilities when using our free online PDF tools and services."
+        />
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
-      
+
       <Header />
-      
+
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-4xl font-bold text-foreground mb-8">Terms & Conditions</h1>
         <p className="text-muted-foreground mb-8">Last updated: January 2026</p>
@@ -25,10 +28,12 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Acceptance of Terms</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Welcome to MyPDFs. By accessing or using our website and services, you agree to be bound by these Terms & Conditions. If you do not agree with any part of these terms, you should not use our website or services.
+              Welcome to MyPDFs. By accessing or using our website and services, you agree to be bound by these Terms &
+              Conditions. If you do not agree with any part of these terms, you should not use our website or services.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              These terms apply to all visitors, users, and others who access or use MyPDFs. Please read them carefully before using our tools and services.
+              These terms apply to all visitors, users, and others who access or use MyPDFs. Please read them carefully
+              before using our tools and services.
             </p>
           </section>
 
@@ -54,9 +59,7 @@ const TermsAndConditions = () => {
           {/* Use of Website and Tools */}
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Use of Website and Tools</h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              By using MyPDFs, you agree to:
-            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">By using MyPDFs, you agree to:</p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
               <li>Use our services only for lawful purposes</li>
               <li>Not upload malicious files, viruses, or harmful content</li>
@@ -70,9 +73,7 @@ const TermsAndConditions = () => {
           {/* User Responsibilities */}
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">User Responsibilities</h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              As a user of MyPDFs, you are responsible for:
-            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">As a user of MyPDFs, you are responsible for:</p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
               <li>Ensuring you have the right to upload and process any files you submit</li>
               <li>Maintaining the confidentiality of your account credentials if you create an account</li>
@@ -86,11 +87,10 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">File Ownership and Rights</h2>
             <p className="text-muted-foreground leading-relaxed">
-              You retain full ownership and rights to all files you upload to MyPDFs. We do not claim any ownership, copyright, or intellectual property rights over your files.
+              You retain full ownership and rights to all files you upload to MyPDFs. We do not claim any ownership,
+              copyright, or intellectual property rights over your files.
             </p>
-            <p className="text-muted-foreground leading-relaxed mt-4">
-              By uploading files, you confirm that:
-            </p>
+            <p className="text-muted-foreground leading-relaxed mt-4">By uploading files, you confirm that:</p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground mt-4">
               <li>You own the files or have proper authorization to use them</li>
               <li>The files do not infringe on any third-party rights</li>
@@ -103,10 +103,12 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Intellectual Property</h2>
             <p className="text-muted-foreground leading-relaxed">
-              The MyPDFs website, including its design, logo, content, features, and functionality, is owned by MyPDFs and is protected by copyright, trademark, and other intellectual property laws.
+              The MyPDFs website, including its design, logo, content, features, and functionality, is owned by MyPDFs
+              and is protected by copyright, trademark, and other intellectual property laws.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              You may not copy, modify, distribute, or create derivative works from any part of our website without our express written permission.
+              You may not copy, modify, distribute, or create derivative works from any part of our website without our
+              express written permission.
             </p>
           </section>
 
@@ -129,7 +131,8 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Disclaimer of Warranties</h2>
             <p className="text-muted-foreground leading-relaxed">
-              MyPDFs provides its services without any express or implied warranties. We disclaim all warranties including, but not limited to:
+              MyPDFs provides its services without any express or implied warranties. We disclaim all warranties
+              including, but not limited to:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground mt-4">
               <li>Warranties of merchantability or fitness for a particular purpose</li>
@@ -146,7 +149,8 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Limitation of Liability</h2>
             <p className="text-muted-foreground leading-relaxed">
-              To the maximum extent permitted by law, MyPDFs and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from:
+              To the maximum extent permitted by law, MyPDFs and its operators shall not be liable for any indirect,
+              incidental, special, consequential, or punitive damages arising from:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground mt-4">
               <li>Your use or inability to use our services</li>
@@ -164,16 +168,16 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Third-Party Links</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Our website may contain links to third-party websites or services. These links are provided for your convenience and do not signify our endorsement. We are not responsible for the content, privacy practices, or terms of any third-party websites.
+              Our website may contain links to third-party websites or services. These links are provided for your
+              convenience and do not signify our endorsement. We are not responsible for the content, privacy practices,
+              or terms of any third-party websites.
             </p>
           </section>
 
           {/* User Accounts */}
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">User Accounts</h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              If you create an account on MyPDFs:
-            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">If you create an account on MyPDFs:</p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
               <li>You must provide accurate and complete information</li>
               <li>You are responsible for maintaining the security of your account</li>
@@ -186,7 +190,9 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Indemnification</h2>
             <p className="text-muted-foreground leading-relaxed">
-              You agree to indemnify, defend, and hold harmless MyPDFs and its operators from any claims, damages, losses, liabilities, and expenses arising from your use of our services, your violation of these terms, or your infringement of any third-party rights.
+              You agree to indemnify, defend, and hold harmless MyPDFs and its operators from any claims, damages,
+              losses, liabilities, and expenses arising from your use of our services, your violation of these terms, or
+              your infringement of any third-party rights.
             </p>
           </section>
 
@@ -194,7 +200,9 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Changes to Terms</h2>
             <p className="text-muted-foreground leading-relaxed">
-              We reserve the right to modify these Terms & Conditions at any time. Changes will be effective immediately upon posting on this page with an updated "Last updated" date. Your continued use of our services after any changes constitutes acceptance of the new terms.
+              We reserve the right to modify these Terms & Conditions at any time. Changes will be effective immediately
+              upon posting on this page with an updated "Last updated" date. Your continued use of our services after
+              any changes constitutes acceptance of the new terms.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
               We encourage you to review these terms periodically to stay informed about our policies.
@@ -205,7 +213,9 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Governing Law</h2>
             <p className="text-muted-foreground leading-relaxed">
-              These Terms & Conditions shall be governed by and construed in accordance with the laws of India. Any disputes arising from these terms or your use of our services shall be subject to the exclusive jurisdiction of the courts located in India.
+              These Terms & Conditions shall be governed by and construed in accordance with the laws of India. Any
+              disputes arising from these terms or your use of our services shall be subject to the exclusive
+              jurisdiction of the courts located in India.
             </p>
           </section>
 
@@ -213,7 +223,9 @@ const TermsAndConditions = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Severability</h2>
             <p className="text-muted-foreground leading-relaxed">
-              If any provision of these Terms & Conditions is found to be invalid or unenforceable, the remaining provisions shall continue in full force and effect. The invalid provision shall be modified to the minimum extent necessary to make it valid and enforceable.
+              If any provision of these Terms & Conditions is found to be invalid or unenforceable, the remaining
+              provisions shall continue in full force and effect. The invalid provision shall be modified to the minimum
+              extent necessary to make it valid and enforceable.
             </p>
           </section>
 
@@ -224,16 +236,21 @@ const TermsAndConditions = () => {
               If you have any questions or concerns about these Terms & Conditions, please contact us:
             </p>
             <ul className="list-none mt-4 space-y-2 text-muted-foreground">
-              <li><strong>Email:</strong> mypdfs3003@gmail.com</li>
-              <li><strong>Website:</strong> mypdfs.lovable.app</li>
+              <li>
+                <strong>Email:</strong> welovepdf3003@gmail.com
+              </li>
+              <li>
+                <strong>Website:</strong> mypdfs.in
+              </li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              We appreciate your trust in MyPDFs and are committed to providing you with reliable, free online tools for all your document needs.
+              We appreciate your trust in MyPDFs and are committed to providing you with reliable, free online tools for
+              all your document needs.
             </p>
           </section>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

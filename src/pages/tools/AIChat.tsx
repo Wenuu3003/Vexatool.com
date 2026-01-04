@@ -7,6 +7,8 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface Message {
   role: "user" | "assistant";
@@ -140,9 +142,90 @@ const AIChat = () => {
     }
   };
 
+  const seoContent = {
+    toolName: "AI Chat Assistant",
+    whatIs: "AI Chat Assistant is an intelligent conversational AI that can answer your questions, provide explanations, offer suggestions, and help with a wide range of topics. Powered by advanced language models, it understands context and provides helpful, accurate responses in a natural conversational format. Whether you need help with writing, coding, research, or general knowledge questions, this AI assistant is here to help 24/7.",
+    howToUse: [
+      "Log in to your account to access the AI Chat feature.",
+      "Type your question or message in the input field at the bottom.",
+      "Press Enter or click the Send button to submit your message.",
+      "The AI will respond with helpful information or ask clarifying questions.",
+      "Continue the conversation to get more detailed answers or explore topics further."
+    ],
+    features: [
+      "Natural language understanding for conversational interactions.",
+      "Context-aware responses that remember the conversation flow.",
+      "Quick suggested prompts to get started easily.",
+      "Support for a wide range of topics and questions.",
+      "Fast response times for efficient communication.",
+      "Secure and private conversations."
+    ],
+    safetyNote: "Your conversations are processed securely. While we strive for accuracy, AI responses should be verified for critical decisions. Never share sensitive personal information like passwords or financial details in chat conversations.",
+    faqs: [
+      {
+        question: "Is there a limit to how many messages I can send?",
+        answer: "Yes, there's a reasonable limit to ensure fair usage. Most users find the limits sufficient for normal use. The conversation also has a maximum message count after which you should start a new chat."
+      },
+      {
+        question: "Why do I need to log in to use AI Chat?",
+        answer: "Login is required to prevent abuse, ensure fair usage, and provide a personalized experience. It also helps us maintain the quality and availability of the service for all users."
+      },
+      {
+        question: "How accurate are the AI responses?",
+        answer: "The AI provides helpful and generally accurate responses, but it can make mistakes. Always verify important information from authoritative sources, especially for medical, legal, or financial matters."
+      },
+      {
+        question: "Can I use AI Chat for any topic?",
+        answer: "The AI can help with most general topics including writing, research, coding, explanations, and creative tasks. However, it has guidelines that prevent harmful or inappropriate content generation."
+      }
+    ]
+  };
+
   // Show login prompt if not authenticated
   if (!authLoading && !user) {
     return (
+      <>
+        <Helmet>
+          <title>AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs</title>
+          <meta name="description" content="Free AI chat assistant for instant answers to your questions. Get help with writing, research, explanations, and more. Powered by advanced AI technology." />
+          <meta name="keywords" content="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help" />
+          <link rel="canonical" href="https://mypdfs.lovable.app/ai-chat" />
+        </Helmet>
+        <ToolLayout
+          title="AI Chat Assistant"
+          description="Ask any question and get instant AI-powered answers"
+          icon={MessageCircle}
+          colorClass="bg-gradient-to-r from-blue-500 to-purple-500"
+        >
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-card border rounded-xl overflow-hidden flex flex-col items-center justify-center h-[400px] p-8 text-center">
+              <LogIn className="w-16 h-16 mb-4 text-muted-foreground opacity-50" />
+              <h3 className="font-medium text-xl mb-2">Login Required</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                Please log in to use the AI Chat feature. This helps us provide you with a personalized experience and prevent abuse.
+              </p>
+              <Link to="/auth">
+                <Button size="lg" className="gap-2">
+                  <LogIn className="w-4 h-4" />
+                  Login to Chat
+                </Button>
+              </Link>
+            </div>
+            <ToolSEOContent {...seoContent} />
+          </div>
+        </ToolLayout>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs</title>
+        <meta name="description" content="Free AI chat assistant for instant answers to your questions. Get help with writing, research, explanations, and more. Powered by advanced AI technology." />
+        <meta name="keywords" content="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/ai-chat" />
+      </Helmet>
       <ToolLayout
         title="AI Chat Assistant"
         description="Ask any question and get instant AI-powered answers"
@@ -150,126 +233,102 @@ const AIChat = () => {
         colorClass="bg-gradient-to-r from-blue-500 to-purple-500"
       >
         <div className="max-w-3xl mx-auto">
-          <div className="bg-card border rounded-xl overflow-hidden flex flex-col items-center justify-center h-[400px] p-8 text-center">
-            <LogIn className="w-16 h-16 mb-4 text-muted-foreground opacity-50" />
-            <h3 className="font-medium text-xl mb-2">Login Required</h3>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              Please log in to use the AI Chat feature. This helps us provide you with a personalized experience and prevent abuse.
-            </p>
-            <Link to="/auth">
-              <Button size="lg" className="gap-2">
-                <LogIn className="w-4 h-4" />
-                Login to Chat
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </ToolLayout>
-    );
-  }
-
-  return (
-    <ToolLayout
-      title="AI Chat Assistant"
-      description="Ask any question and get instant AI-powered answers"
-      icon={MessageCircle}
-      colorClass="bg-gradient-to-r from-blue-500 to-purple-500"
-    >
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-card border rounded-xl overflow-hidden flex flex-col h-[600px]">
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.length === 0 && (
-              <div className="text-center py-12 text-muted-foreground">
-                <Bot className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                <h3 className="font-medium text-lg mb-2">Welcome to AI Chat!</h3>
-                <p className="text-sm">Ask me anything - I&apos;m here to help with questions about any topic.</p>
-                <div className="mt-6 flex flex-wrap justify-center gap-2">
-                  {["How to merge PDF files?", "What is SEO?", "Explain QR codes"].map((suggestion) => (
-                    <Button
-                      key={suggestion}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setInput(suggestion);
-                        inputRef.current?.focus();
-                      }}
-                    >
-                      {suggestion}
-                    </Button>
-                  ))}
+          <div className="bg-card border rounded-xl overflow-hidden flex flex-col h-[600px]">
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {messages.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Bot className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                  <h3 className="font-medium text-lg mb-2">Welcome to AI Chat!</h3>
+                  <p className="text-sm">Ask me anything - I&apos;m here to help with questions about any topic.</p>
+                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    {["How to merge PDF files?", "What is SEO?", "Explain QR codes"].map((suggestion) => (
+                      <Button
+                        key={suggestion}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setInput(suggestion);
+                          inputRef.current?.focus();
+                        }}
+                      >
+                        {suggestion}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                {message.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  {message.role === "assistant" && (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Bot className="w-4 h-4 text-primary" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[80%] rounded-2xl px-4 py-3 ${
+                      message.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted"
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  </div>
+                  {message.role === "user" && (
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-primary-foreground" />
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {isLoading && (
+                <div className="flex gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                     <Bot className="w-4 h-4 text-primary" />
                   </div>
-                )}
-                <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  }`}
-                >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                </div>
-                {message.role === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
-                    <User className="w-4 h-4 text-primary-foreground" />
+                  <div className="bg-muted rounded-2xl px-4 py-3">
+                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                   </div>
-                )}
-              </div>
-            ))}
-
-            {isLoading && (
-              <div className="flex gap-3 justify-start">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-primary" />
                 </div>
-                <div className="bg-muted rounded-2xl px-4 py-3">
-                  <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
-                </div>
-              </div>
-            )}
+              )}
 
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input Area */}
-          <div className="border-t p-4 bg-background">
-            <div className="flex gap-2">
-              <Input
-                ref={inputRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Type your question..."
-                disabled={isLoading}
-                className="flex-1"
-              />
-              <Button
-                onClick={sendMessage}
-                disabled={!input.trim() || isLoading}
-                size="icon"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
+              <div ref={messagesEndRef} />
             </div>
-            <p className="text-xs text-muted-foreground mt-2 text-center">
-              AI responses are generated. Verify important information.
-            </p>
+
+            {/* Input Area */}
+            <div className="border-t p-4 bg-background">
+              <div className="flex gap-2">
+                <Input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type your question..."
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={sendMessage}
+                  disabled={!input.trim() || isLoading}
+                  size="icon"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2 text-center">
+                AI responses are generated. Verify important information.
+              </p>
+            </div>
           </div>
+          <ToolSEOContent {...seoContent} />
         </div>
-      </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 };
 

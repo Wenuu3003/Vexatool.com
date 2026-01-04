@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Globe, Youtube, CheckCircle, XCircle, AlertCircle, Loader2, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface SEOResult {
   category: string;
@@ -164,6 +165,45 @@ const SEOTool = () => {
     return "bg-red-500";
   };
 
+  const seoContent = {
+    toolName: "SEO Analyzer",
+    whatIs: "SEO Analyzer is a comprehensive tool that evaluates your website or YouTube video for search engine optimization factors. It analyzes key SEO elements like title tags, meta descriptions, headings, images, mobile-friendliness, page speed, and links, providing actionable recommendations to improve your search rankings. Whether you're a website owner, digital marketer, or content creator, this tool helps you identify SEO issues and opportunities.",
+    howToUse: [
+      "Select the analysis type: Website SEO or YouTube SEO.",
+      "Enter your website URL or YouTube video URL.",
+      "Click 'Analyze' to start the SEO evaluation.",
+      "Review your overall SEO score and individual category scores.",
+      "Follow the recommendations to improve each SEO factor."
+    ],
+    features: [
+      "Comprehensive SEO analysis for websites and YouTube videos.",
+      "Overall SEO score with category breakdowns.",
+      "Issue identification with severity indicators.",
+      "Actionable recommendations for each SEO factor.",
+      "Title tag, meta description, and heading analysis.",
+      "Image optimization, mobile-friendliness, and page speed checks."
+    ],
+    safetyNote: "The analysis is performed by evaluating common SEO best practices. While the recommendations are based on industry standards, SEO is complex and results may vary. Always consider your specific context and audience when implementing changes.",
+    faqs: [
+      {
+        question: "What is a good SEO score?",
+        answer: "Scores above 80% indicate well-optimized content. Scores between 60-80% show room for improvement, while scores below 60% suggest significant optimization is needed. Focus on fixing issues in low-scoring categories first."
+      },
+      {
+        question: "How often should I check my SEO?",
+        answer: "Check your SEO after making significant changes to your website or content. Regular monthly checks help catch issues early. For competitive niches, more frequent monitoring may be beneficial."
+      },
+      {
+        question: "Why is mobile-friendliness important for SEO?",
+        answer: "Google uses mobile-first indexing, meaning it primarily uses the mobile version of your site for ranking. A mobile-friendly site provides better user experience and can significantly impact your search rankings."
+      },
+      {
+        question: "Do YouTube tags still affect rankings?",
+        answer: "While YouTube tags have less impact than titles and descriptions, they still help YouTube understand your content and can improve discoverability for related searches and misspellings."
+      }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -316,6 +356,8 @@ const SEOTool = () => {
             </div>
           </>
         )}
+
+        <ToolSEOContent {...seoContent} />
       </div>
       </ToolLayout>
     </>

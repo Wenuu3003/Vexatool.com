@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface Experience {
   company: string;
@@ -189,14 +191,62 @@ export default function AIResumeBuilder() {
     showImage,
   };
 
+  const seoContent = {
+    toolName: "AI Resume Builder",
+    whatIs: "AI Resume Builder is a professional tool that helps you create polished, ATS-friendly resumes with multiple templates and customization options. It provides a live preview as you build your resume, supports profile photos, multiple template designs, and font choices. Download your completed resume as PDF or Word document, ready to submit to employers. Perfect for job seekers, career changers, and anyone who wants to create a standout resume without design skills.",
+    howToUse: [
+      "Fill in your personal information: name, email, phone, and location.",
+      "Add your professional summary, skills, work experience, and education.",
+      "Optionally upload a profile photo and adjust image settings.",
+      "Choose your preferred template and font from the Design tab.",
+      "Preview your resume in real-time and make adjustments.",
+      "Download as PDF or Word document when you're satisfied."
+    ],
+    features: [
+      "Multiple professional resume templates: Modern, Classic, Minimal, Creative.",
+      "Live preview that updates as you type.",
+      "Profile photo support with position and shape options.",
+      "Multiple font choices for personalization.",
+      "A4 and US Letter page size options.",
+      "Export to PDF or Word (.docx) formats.",
+      "ATS-friendly formatting for applicant tracking systems."
+    ],
+    safetyNote: "All resume data is processed locally in your browser. Your personal information is never stored on our servers. The resume you create stays completely private until you choose to download and share it.",
+    faqs: [
+      {
+        question: "What is ATS-friendly formatting?",
+        answer: "ATS (Applicant Tracking System) is software used by employers to scan resumes. ATS-friendly formatting uses clear headings, standard sections, and readable fonts that these systems can parse correctly, increasing your chances of passing initial screening."
+      },
+      {
+        question: "Should I include a photo on my resume?",
+        answer: "This depends on your location and industry. In the US, photos are typically not recommended due to potential bias concerns. In Europe and some other regions, photos are more common. The tool gives you the option to include or exclude photos based on your preference."
+      },
+      {
+        question: "Which format should I download: PDF or Word?",
+        answer: "PDF is best for preserving formatting exactly as designed. Word (.docx) is useful if you need to make quick edits or if an employer specifically requests it. We recommend having both versions ready."
+      },
+      {
+        question: "Can I edit my resume after downloading?",
+        answer: "The Word format can be edited in Microsoft Word or Google Docs. For PDF, you would need to use this tool again or a PDF editor. We recommend saving your information to easily recreate or update your resume."
+      }
+    ]
+  };
+
   return (
-    <ToolLayout
-      title="AI Resume Builder"
-      description="Create professional, ATS-friendly resumes with multiple templates. Download as PDF or Word document."
-      icon={FileUser}
-      colorClass="bg-gradient-to-br from-emerald-500 to-teal-500"
-      category="AI Tools"
-    >
+    <>
+      <Helmet>
+        <title>AI Resume Builder Free Online - Create Professional Resumes | MyPDFs</title>
+        <meta name="description" content="Free AI resume builder with professional templates. Create ATS-friendly resumes with live preview. Download as PDF or Word. No signup required." />
+        <meta name="keywords" content="resume builder, CV maker, professional resume, ATS resume, free resume, resume templates, PDF resume" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/ai-resume-builder" />
+      </Helmet>
+      <ToolLayout
+        title="AI Resume Builder"
+        description="Create professional, ATS-friendly resumes with multiple templates. Download as PDF or Word document."
+        icon={FileUser}
+        colorClass="bg-gradient-to-br from-emerald-500 to-teal-500"
+        category="AI Tools"
+      >
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Left: Form */}
         <div className="space-y-6">
@@ -485,6 +535,8 @@ export default function AIResumeBuilder() {
           </div>
         </div>
       </div>
-    </ToolLayout>
+        <ToolSEOContent {...seoContent} />
+      </ToolLayout>
+    </>
   );
 }

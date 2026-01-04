@@ -9,6 +9,7 @@ import { Search, Loader2, ExternalLink, Sparkles, LogIn } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface SearchResult {
   answer: string;
@@ -94,16 +95,57 @@ const AISearch = () => {
     "Explain climate change solutions",
   ];
 
+  const seoContent = {
+    toolName: "AI Web Search",
+    whatIs: "AI Web Search is an intelligent search tool that provides comprehensive answers to your questions with cited sources. Unlike traditional search engines that just give you links, this AI-powered search understands your question and synthesizes information from multiple sources to provide a direct, well-organized answer. Each response includes citations so you can verify information and explore topics further.",
+    howToUse: [
+      "Log in to your account to access AI Web Search.",
+      "Enter your question or search query in the search box.",
+      "Press Enter or click the Search button.",
+      "Read the AI-generated answer that synthesizes information from multiple sources.",
+      "Click on citations to explore the original sources for more details."
+    ],
+    features: [
+      "AI-powered answers that synthesize information from multiple sources.",
+      "Cited sources for transparency and verification.",
+      "Real-time web search for up-to-date information.",
+      "Natural language understanding for complex questions.",
+      "Clean, organized response format.",
+      "Suggested queries to help you get started."
+    ],
+    safetyNote: "AI Web Search provides synthesized answers from web sources. While sources are cited for verification, always double-check important information from official or primary sources. The AI aims for accuracy but may occasionally make mistakes.",
+    faqs: [
+      {
+        question: "How is this different from regular search engines?",
+        answer: "Traditional search engines provide a list of links. AI Web Search actually reads and synthesizes content from multiple sources to provide a direct answer to your question, saving you time and giving you comprehensive information in one place."
+      },
+      {
+        question: "Why are citations important?",
+        answer: "Citations let you verify the information and explore topics in depth. They also provide transparency about where the AI got its information, helping you assess the reliability of the answer."
+      },
+      {
+        question: "Can I search for anything?",
+        answer: "You can search for factual information, explanations, how-to guides, and general knowledge questions. The AI is designed to provide helpful, accurate information while avoiding harmful or inappropriate content."
+      },
+      {
+        question: "Why do I need to log in?",
+        answer: "Login helps us manage usage, prevent abuse, and provide a better experience. It also allows us to maintain the quality and availability of the service for all users."
+      }
+    ]
+  };
+
   // Show login prompt if not authenticated
   if (!loading && !user) {
     return (
       <>
         <Helmet>
-          <title>AI Web Search - Real-time Search with Sources | Mypdfs</title>
+          <title>AI Web Search Free Online - Real-time Search with Sources | MyPDFs</title>
           <meta
             name="description"
             content="Search the web with AI-powered answers and cited sources. Get accurate, real-time information with Perplexity-powered search."
           />
+          <meta name="keywords" content="AI search, web search, Perplexity, cited sources, real-time search, AI answers" />
+          <link rel="canonical" href="https://mypdfs.lovable.app/ai-search" />
         </Helmet>
         
         <ToolLayout
@@ -140,6 +182,7 @@ const AISearch = () => {
                 </div>
               </CardContent>
             </Card>
+            <ToolSEOContent {...seoContent} />
           </div>
         </ToolLayout>
       </>
@@ -149,12 +192,12 @@ const AISearch = () => {
   return (
     <>
       <Helmet>
-        <title>AI Web Search - Real-time Search with Sources | Mypdfs</title>
+        <title>AI Web Search Free Online - Real-time Search with Sources | MyPDFs</title>
         <meta
           name="description"
           content="Search the web with AI-powered answers and cited sources. Get accurate, real-time information with Perplexity-powered search."
         />
-        <meta name="keywords" content="AI search, web search, Perplexity, cited sources, real-time search" />
+        <meta name="keywords" content="AI search, web search, Perplexity, cited sources, real-time search, AI answers" />
         <link rel="canonical" href="https://mypdfs.lovable.app/ai-search" />
       </Helmet>
       
@@ -300,6 +343,8 @@ const AISearch = () => {
               </div>
             </div>
           )}
+
+          <ToolSEOContent {...seoContent} />
         </div>
       </ToolLayout>
     </>

@@ -10,12 +10,15 @@ const PrivacyPolicy = () => {
     <div className="min-h-screen bg-background">
       <Helmet>
         <title>Privacy Policy | MyPDFs</title>
-        <meta name="description" content="Read the Privacy Policy of MyPDFs. Learn how we handle your data, protect your privacy, and manage uploaded files securely." />
+        <meta
+          name="description"
+          content="Read the Privacy Policy of MyPDFs. Learn how we handle your data, protect your privacy, and manage uploaded files securely."
+        />
         <link rel="canonical" href={canonicalUrl} />
       </Helmet>
-      
+
       <Header />
-      
+
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
         <p className="text-muted-foreground mb-8">Last updated: January 2026</p>
@@ -25,10 +28,15 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Introduction</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Welcome to MyPDFs. We are committed to protecting your privacy and ensuring the security of any information you share with us. This Privacy Policy explains how we collect, use, and safeguard your data when you use our website and online tools. By using MyPDFs, you agree to the terms outlined in this policy.
+              Welcome to MyPDFs. We are committed to protecting your privacy and ensuring the security of any
+              information you share with us. This Privacy Policy explains how we collect, use, and safeguard your data
+              when you use our website and online tools. By using MyPDFs, you agree to the terms outlined in this
+              policy.
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              MyPDFs provides free online tools for PDF manipulation, image conversion, document editing, calculators, and other utilities. Our goal is to offer convenient, secure, and user-friendly services without compromising your privacy.
+              MyPDFs provides free online tools for PDF manipulation, image conversion, document editing, calculators,
+              and other utilities. Our goal is to offer convenient, secure, and user-friendly services without
+              compromising your privacy.
             </p>
           </section>
 
@@ -39,10 +47,22 @@ const PrivacyPolicy = () => {
               We collect minimal information necessary to provide and improve our services:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li><strong>Usage Data:</strong> We may collect anonymous information about how you interact with our website, including pages visited, tools used, and time spent on the site.</li>
-              <li><strong>Uploaded Files:</strong> When you use our tools, you may upload files such as PDFs, images, or documents. These files are processed temporarily to provide the requested service.</li>
-              <li><strong>Device Information:</strong> We may collect basic device information such as browser type, operating system, and screen resolution to optimize your experience.</li>
-              <li><strong>Account Information:</strong> If you create an account, we collect your email address and any profile information you choose to provide.</li>
+              <li>
+                <strong>Usage Data:</strong> We may collect anonymous information about how you interact with our
+                website, including pages visited, tools used, and time spent on the site.
+              </li>
+              <li>
+                <strong>Uploaded Files:</strong> When you use our tools, you may upload files such as PDFs, images, or
+                documents. These files are processed temporarily to provide the requested service.
+              </li>
+              <li>
+                <strong>Device Information:</strong> We may collect basic device information such as browser type,
+                operating system, and screen resolution to optimize your experience.
+              </li>
+              <li>
+                <strong>Account Information:</strong> If you create an account, we collect your email address and any
+                profile information you choose to provide.
+              </li>
             </ul>
           </section>
 
@@ -69,10 +89,22 @@ const PrivacyPolicy = () => {
               Your file security is our priority. Here is how we handle your uploaded files:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground mt-4">
-              <li><strong>Temporary Processing:</strong> Files are processed in your browser or on secure servers only for the duration needed to complete the requested task.</li>
-              <li><strong>Automatic Deletion:</strong> Uploaded files are automatically deleted from our servers after processing. We do not store your files permanently.</li>
-              <li><strong>No File Sharing:</strong> We do not share, sell, or distribute your uploaded files to any third parties.</li>
-              <li><strong>Client-Side Processing:</strong> Many of our tools process files directly in your browser, meaning your files never leave your device.</li>
+              <li>
+                <strong>Temporary Processing:</strong> Files are processed in your browser or on secure servers only for
+                the duration needed to complete the requested task.
+              </li>
+              <li>
+                <strong>Automatic Deletion:</strong> Uploaded files are automatically deleted from our servers after
+                processing. We do not store your files permanently.
+              </li>
+              <li>
+                <strong>No File Sharing:</strong> We do not share, sell, or distribute your uploaded files to any third
+                parties.
+              </li>
+              <li>
+                <strong>Client-Side Processing:</strong> Many of our tools process files directly in your browser,
+                meaning your files never leave your device.
+              </li>
             </ul>
           </section>
 
@@ -83,30 +115,49 @@ const PrivacyPolicy = () => {
               We use cookies and similar technologies to enhance your experience:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li><strong>Essential Cookies:</strong> Required for basic website functionality and security.</li>
-              <li><strong>Analytics Cookies:</strong> We may use Google Analytics to understand how visitors interact with our website. This helps us improve our services.</li>
-              <li><strong>Preference Cookies:</strong> Used to remember your settings and preferences, such as dark mode or language selection.</li>
-              <li><strong>Advertising Cookies:</strong> We may display advertisements through Google AdSense. These cookies help show relevant ads based on your interests.</li>
+              <li>
+                <strong>Essential Cookies:</strong> Required for basic website functionality and security.
+              </li>
+              <li>
+                <strong>Analytics Cookies:</strong> We may use Google Analytics to understand how visitors interact with
+                our website. This helps us improve our services.
+              </li>
+              <li>
+                <strong>Preference Cookies:</strong> Used to remember your settings and preferences, such as dark mode
+                or language selection.
+              </li>
+              <li>
+                <strong>Advertising Cookies:</strong> We may display advertisements through Google AdSense. These
+                cookies help show relevant ads based on your interests.
+              </li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              You can manage cookie preferences through your browser settings. Disabling certain cookies may affect website functionality.
+              You can manage cookie preferences through your browser settings. Disabling certain cookies may affect
+              website functionality.
             </p>
           </section>
 
           {/* Third-Party Services */}
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Third-Party Services</h2>
-            <p className="text-muted-foreground leading-relaxed mb-4">
-              We may use the following third-party services:
-            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">We may use the following third-party services:</p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li><strong>Google Analytics:</strong> For website traffic analysis and usage statistics.</li>
-              <li><strong>Google AdSense:</strong> For displaying advertisements on our website.</li>
-              <li><strong>Hosting Providers:</strong> To host and deliver our website and services securely.</li>
-              <li><strong>Authentication Services:</strong> For secure user account management.</li>
+              <li>
+                <strong>Google Analytics:</strong> For website traffic analysis and usage statistics.
+              </li>
+              <li>
+                <strong>Google AdSense:</strong> For displaying advertisements on our website.
+              </li>
+              <li>
+                <strong>Hosting Providers:</strong> To host and deliver our website and services securely.
+              </li>
+              <li>
+                <strong>Authentication Services:</strong> For secure user account management.
+              </li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              These third-party services have their own privacy policies. We encourage you to review them for more information about their data practices.
+              These third-party services have their own privacy policies. We encourage you to review them for more
+              information about their data practices.
             </p>
           </section>
 
@@ -123,7 +174,8 @@ const PrivacyPolicy = () => {
               <li>Secure server infrastructure with industry-standard protections</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              While we strive to protect your data, no method of transmission over the internet is completely secure. We cannot guarantee absolute security but take all reasonable precautions.
+              While we strive to protect your data, no method of transmission over the internet is completely secure. We
+              cannot guarantee absolute security but take all reasonable precautions.
             </p>
           </section>
 
@@ -131,7 +183,9 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Children's Information</h2>
             <p className="text-muted-foreground leading-relaxed">
-              MyPDFs is not intended for children under 13 years of age. We do not knowingly collect personal information from children. If you believe we have inadvertently collected information from a child, please contact us immediately, and we will take steps to delete such information.
+              MyPDFs is not intended for children under 13 years of age. We do not knowingly collect personal
+              information from children. If you believe we have inadvertently collected information from a child, please
+              contact us immediately, and we will take steps to delete such information.
             </p>
           </section>
 
@@ -139,7 +193,8 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">User Consent</h2>
             <p className="text-muted-foreground leading-relaxed">
-              By using MyPDFs, you consent to the collection and use of information as described in this Privacy Policy. If you do not agree with our practices, please do not use our website or services.
+              By using MyPDFs, you consent to the collection and use of information as described in this Privacy Policy.
+              If you do not agree with our practices, please do not use our website or services.
             </p>
           </section>
 
@@ -162,7 +217,9 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Changes to This Privacy Policy</h2>
             <p className="text-muted-foreground leading-relaxed">
-              We may update this Privacy Policy from time to time to reflect changes in our practices or legal requirements. We will notify you of significant changes by posting the updated policy on this page with a new "Last updated" date. We encourage you to review this page periodically.
+              We may update this Privacy Policy from time to time to reflect changes in our practices or legal
+              requirements. We will notify you of significant changes by posting the updated policy on this page with a
+              new "Last updated" date. We encourage you to review this page periodically.
             </p>
           </section>
 
@@ -170,19 +227,25 @@ const PrivacyPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Contact Us</h2>
             <p className="text-muted-foreground leading-relaxed">
-              If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:
+              If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices,
+              please contact us:
             </p>
             <ul className="list-none mt-4 space-y-2 text-muted-foreground">
-              <li><strong>Email:</strong> mypdfs3003@gmail.com</li>
-              <li><strong>Website:</strong> mypdfs.lovable.app</li>
+              <li>
+                <strong>Email:</strong> welovepdfs3003@gmail.com
+              </li>
+              <li>
+                <strong>Website:</strong> mypdfs.in
+              </li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              We will respond to your inquiries as soon as possible and within the timeframes required by applicable law.
+              We will respond to your inquiries as soon as possible and within the timeframes required by applicable
+              law.
             </p>
           </section>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

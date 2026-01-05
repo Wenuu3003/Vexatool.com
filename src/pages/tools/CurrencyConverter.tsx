@@ -36,14 +36,50 @@ const CurrencyConverter = () => {
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [ratesLoading, setRatesLoading] = useState(true);
 
+  // Validate exchange rate API response
+  const validateExchangeRates = (data: unknown): Record<string, number> | null => {
+    if (!data || typeof data !== 'object') return null;
+    
+    const dataObj = data as Record<string, unknown>;
+    if (!dataObj.rates || typeof dataObj.rates !== 'object') return null;
+    
+    const rates = dataObj.rates as Record<string, unknown>;
+    const validatedRates: Record<string, number> = {};
+    
+    for (const [key, value] of Object.entries(rates)) {
+      // Only accept valid currency codes (3 uppercase letters) and positive numbers
+      if (
+        typeof key === 'string' && 
+        /^[A-Z]{3}$/.test(key) && 
+        typeof value === 'number' && 
+        value > 0 && 
+        value < 1000000 // Reasonable upper bound for exchange rates
+      ) {
+        validatedRates[key] = value;
+      }
+    }
+    
+    // Ensure we have at least USD rate
+    if (!validatedRates.USD) return null;
+    
+    return validatedRates;
+  };
+
   // Fetch live exchange rates from free API
   const fetchExchangeRates = useCallback(async () => {
     setRatesLoading(true);
     try {
       const response = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
       if (!response.ok) throw new Error("Failed to fetch rates");
+      
       const data = await response.json();
-      setExchangeRates(data.rates);
+      const validatedRates = validateExchangeRates(data);
+      
+      if (!validatedRates) {
+        throw new Error("Invalid API response structure");
+      }
+      
+      setExchangeRates(validatedRates);
       setLastUpdated(new Date().toLocaleString());
       toast.success("Exchange rates updated");
     } catch (error) {

@@ -15,10 +15,31 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
   {
+    slug: "convert-pdf-to-word-free-guide",
+    title: "Convert PDF to Word Free: Ultimate Guide for 2026",
+    excerpt: "Learn how to convert PDF to Word documents for free. Step-by-step instructions for accurate PDF to DOCX conversion while preserving formatting and layout.",
+    date: "2026-01-05",
+    readTime: "7 min read",
+  },
+  {
+    slug: "digital-signature-guide",
+    title: "How to Add Digital Signatures to PDF: Complete Guide",
+    excerpt: "Master digital signatures for PDFs. Learn how to electronically sign documents, verify authenticity, and ensure legal compliance with this comprehensive guide.",
+    date: "2026-01-05",
+    readTime: "8 min read",
+  },
+  {
+    slug: "pdf-accessibility-guide",
+    title: "PDF Accessibility Guide: Making Documents Inclusive",
+    excerpt: "Create accessible PDFs for all users. Learn about screen reader compatibility, alt text, heading structure, and WCAG compliance for inclusive document design.",
+    date: "2026-01-05",
+    readTime: "9 min read",
+  },
+  {
     slug: "how-to-merge-pdfs-complete-guide",
     title: "How to Merge PDFs: Complete Guide to Combining PDF Files",
     excerpt: "Learn how to combine multiple PDF files into one document easily. Step-by-step guide with tips for merging PDFs online without losing quality.",
-    date: "2026-01-05",
+    date: "2026-01-04",
     readTime: "6 min read",
   },
   {
@@ -32,21 +53,21 @@ const blogPosts: BlogPost[] = [
     slug: "pdf-security-guide",
     title: "PDF Security Guide: How to Protect Your Documents",
     excerpt: "Complete guide to PDF security. Learn how to password protect, encrypt, and secure your PDF documents from unauthorized access and modifications.",
-    date: "2026-01-04",
+    date: "2026-01-03",
     readTime: "8 min read",
   },
   {
     slug: "compress-pdf-without-losing-quality",
     title: "How to Compress PDF Without Losing Quality (Free & Online)",
     excerpt: "Learn the best techniques to reduce PDF file size while maintaining document quality. Discover free online methods and expert tips for efficient PDF compression.",
-    date: "2026-01-03",
+    date: "2026-01-02",
     readTime: "5 min read",
   },
   {
     slug: "best-free-pdf-tools-online-2026",
     title: "Best Free PDF Tools Online in 2026",
     excerpt: "Discover the top free PDF tools available online in 2026. From compression to conversion, explore the best options for managing your PDF documents efficiently.",
-    date: "2026-01-02",
+    date: "2026-01-01",
     readTime: "6 min read",
   },
 ];
@@ -55,10 +76,18 @@ const Blog = () => {
   return (
     <>
       <Helmet>
-        <title>Blog - PDF Tips, Guides & Tutorials | MyPDFs</title>
-        <meta name="description" content="Explore helpful guides, tips, and tutorials about PDF management, compression, conversion, and more. Learn how to work with PDFs efficiently." />
-        <meta name="keywords" content="PDF blog, PDF tips, PDF guides, PDF tutorials, document management, PDF tools" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/blog" />
+        <title>PDF Blog - Expert Tips, Tutorials & Guides | MyPDFs</title>
+        <meta name="description" content="Expert PDF guides and tutorials. Learn to compress, merge, convert, protect, and edit PDFs. Free tips for better document management in 2026." />
+        <meta name="keywords" content="PDF blog, PDF tips, PDF guides, PDF tutorials, compress PDF, merge PDF, PDF to Word, document management, PDF tools, free PDF" />
+        <link rel="canonical" href="https://mypdfs.in/blog" />
+        <meta property="og:title" content="PDF Blog - Expert Tips & Tutorials | MyPDFs" />
+        <meta property="og:description" content="Expert PDF guides and tutorials. Learn to compress, merge, convert, protect, and edit PDFs for free." />
+        <meta property="og:url" content="https://mypdfs.in/blog" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="PDF Blog - Expert Tips & Tutorials | MyPDFs" />
+        <meta name="twitter:description" content="Expert PDF guides and tutorials. Learn to compress, merge, convert, protect, and edit PDFs for free." />
+        <meta name="robots" content="index, follow" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

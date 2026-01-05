@@ -29,6 +29,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       { name: "HTML to PDF", path: "/html-to-pdf" },
     ],
     Company: [
+      { name: "About Us", path: "/about-us" },
       { name: "Blog", path: "/blog" },
       { name: "Privacy Policy", path: "/privacy-policy" },
       { name: "Terms & Conditions", path: "/terms-and-conditions" },

@@ -15,6 +15,27 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
   {
+    slug: "how-to-merge-pdfs-complete-guide",
+    title: "How to Merge PDFs: Complete Guide to Combining PDF Files",
+    excerpt: "Learn how to combine multiple PDF files into one document easily. Step-by-step guide with tips for merging PDFs online without losing quality.",
+    date: "2026-01-05",
+    readTime: "6 min read",
+  },
+  {
+    slug: "best-image-compression-tips",
+    title: "Best Image Compression Tips: Reduce File Size Without Losing Quality",
+    excerpt: "Master image compression with expert tips. Learn the best techniques to reduce image file sizes while maintaining visual quality for web and print.",
+    date: "2026-01-04",
+    readTime: "7 min read",
+  },
+  {
+    slug: "pdf-security-guide",
+    title: "PDF Security Guide: How to Protect Your Documents",
+    excerpt: "Complete guide to PDF security. Learn how to password protect, encrypt, and secure your PDF documents from unauthorized access and modifications.",
+    date: "2026-01-04",
+    readTime: "8 min read",
+  },
+  {
     slug: "compress-pdf-without-losing-quality",
     title: "How to Compress PDF Without Losing Quality (Free & Online)",
     excerpt: "Learn the best techniques to reduce PDF file size while maintaining document quality. Discover free online methods and expert tips for efficient PDF compression.",

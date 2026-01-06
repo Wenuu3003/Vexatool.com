@@ -15,6 +15,13 @@ interface BlogPost {
 
 const blogPosts: BlogPost[] = [
   {
+    slug: "what-whatsapp-chat-reveals-about-relationship",
+    title: "What Your WhatsApp Chat Reveals About Your Relationship",
+    excerpt: "Discover hidden patterns in your WhatsApp conversations! Learn what texting habits, response times, and emoji usage say about your relationship dynamics and connection.",
+    date: "2026-01-06",
+    readTime: "8 min read",
+  },
+  {
     slug: "convert-pdf-to-word-free-guide",
     title: "Convert PDF to Word Free: Ultimate Guide for 2026",
     excerpt: "Learn how to convert PDF to Word documents for free. Step-by-step instructions for accurate PDF to DOCX conversion while preserving formatting and layout.",

@@ -8,6 +8,7 @@ export interface RouteConfig {
 
 // Blog post slugs for sitemap
 export const blogPosts = [
+  'what-whatsapp-chat-reveals-about-relationship',
   'convert-pdf-to-word-free-guide',
   'digital-signature-guide',
   'pdf-accessibility-guide',
@@ -52,6 +53,7 @@ export const routes: RouteConfig[] = [
   { path: '/ai-resume-builder', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
   { path: '/hashtag-generator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
   { path: '/youtube-generator', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
+  { path: '/whatsapp-analyzer', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },
   { path: '/word-counter', priority: 0.8, changefreq: 'weekly', includeInSitemap: true },
   
   // Calculator Tools

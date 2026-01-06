@@ -6,11 +6,35 @@ export interface RouteConfig {
   includeInSitemap: boolean;
 }
 
+// Blog post slugs for sitemap
+export const blogPosts = [
+  'convert-pdf-to-word-free-guide',
+  'digital-signature-guide',
+  'pdf-accessibility-guide',
+  'how-to-merge-pdfs-complete-guide',
+  'best-image-compression-tips',
+  'pdf-security-guide',
+  'compress-pdf-without-losing-quality',
+  'best-free-pdf-tools-online-2026',
+];
+
 export const routes: RouteConfig[] = [
   // Main pages
   { path: '/', priority: 1.0, changefreq: 'daily', includeInSitemap: true },
+  { path: '/blog', priority: 0.9, changefreq: 'daily', includeInSitemap: true },
+  { path: '/about-us', priority: 0.7, changefreq: 'monthly', includeInSitemap: true },
+  { path: '/privacy-policy', priority: 0.5, changefreq: 'monthly', includeInSitemap: true },
+  { path: '/terms-and-conditions', priority: 0.5, changefreq: 'monthly', includeInSitemap: true },
   { path: '/auth', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
   { path: '/account', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
+  
+  // Blog posts
+  ...blogPosts.map(slug => ({
+    path: `/blog/${slug}`,
+    priority: 0.8,
+    changefreq: 'weekly' as const,
+    includeInSitemap: true,
+  })),
   
   // Utility Tools - High priority
   { path: '/qr-code-scanner', priority: 0.9, changefreq: 'weekly', includeInSitemap: true },

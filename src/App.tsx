@@ -78,6 +78,7 @@ const AIGrammarTool = lazy(() => import("./pages/tools/AIGrammarTool"));
 const AIResumeBuilder = lazy(() => import("./pages/tools/AIResumeBuilder"));
 const HashtagGenerator = lazy(() => import("./pages/tools/HashtagGenerator"));
 const YouTubeGenerator = lazy(() => import("./pages/tools/YouTubeGenerator"));
+const WhatsAppAnalyzer = lazy(() => import("./pages/tools/WhatsAppAnalyzer"));
 
 // Image Tools - additional
 const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
@@ -138,6 +139,7 @@ const App = () => (
               <Route path="/ai-resume-builder" element={<AIResumeBuilder />} />
               <Route path="/hashtag-generator" element={<HashtagGenerator />} />
               <Route path="/youtube-generator" element={<YouTubeGenerator />} />
+              <Route path="/whatsapp-analyzer" element={<WhatsAppAnalyzer />} />
               {/* Calculator Tools */}
               <Route path="/age-calculator" element={<AgeCalculator />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />

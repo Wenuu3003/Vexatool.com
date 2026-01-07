@@ -39,6 +39,7 @@ import {
   Scale,
   AlignLeft,
   MapPin,
+  MessageCircle,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
@@ -78,6 +79,13 @@ const tools = [
     icon: Youtube,
     colorClass: "bg-gradient-to-br from-red-500 to-red-600",
     href: "/youtube-generator",
+  },
+  {
+    title: "WhatsApp Chat Analyzer",
+    description: "Analyze WhatsApp chats for love, friendship & fun insights. Viral-worthy results!",
+    icon: MessageCircle,
+    colorClass: "bg-gradient-to-br from-green-500 to-emerald-600",
+    href: "/whatsapp-analyzer",
   },
   // Image Tools
   {

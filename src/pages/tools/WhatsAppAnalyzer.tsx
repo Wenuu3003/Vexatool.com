@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2, Home, Briefcase, Drama, Languages } from "lucide-react";
+import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2, Home, Briefcase, Drama, Languages, Download, Image } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import DOMPurify from "dompurify";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import html2canvas from "html2canvas";
 
 type AnalysisMode = 'love' | 'friendship' | 'roast' | 'family' | 'work' | 'drama';
 type Language = 'english' | 'telugu' | 'hindi' | 'telugu-english' | 'hindi-english';
@@ -48,6 +49,8 @@ const WhatsAppAnalyzer = () => {
   const [language, setLanguage] = useState<Language>("telugu-english");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const shareCardRef = useRef<HTMLDivElement>(null);
 
   const sanitizeInput = (text: string): string => {
     return DOMPurify.sanitize(text, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
@@ -119,6 +122,32 @@ const WhatsAppAnalyzer = () => {
     } else {
       await navigator.clipboard.writeText(shareText);
       toast.success("Copied to clipboard! Share it now 📤");
+    }
+  };
+
+  const handleDownloadCard = async () => {
+    if (!shareCardRef.current || !result) return;
+    
+    setIsDownloading(true);
+    try {
+      const canvas = await html2canvas(shareCardRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+      
+      const link = document.createElement('a');
+      link.download = `whatsapp-analysis-${result.personA}-${result.personB}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      
+      toast.success("Image downloaded! Share it on social media 📸");
+    } catch (error) {
+      console.error("Download error:", error);
+      toast.error("Failed to download image. Try again!");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -289,33 +318,93 @@ Example format:
         ) : (
           /* Results Display */
           <div className="space-y-6">
-            {/* Main Verdict Card - Screenshot Friendly */}
-            <Card className="p-6 bg-gradient-to-br from-primary/10 via-background to-secondary/10 border-2 border-primary/20">
+            {/* Shareable Image Card */}
+            <div 
+              ref={shareCardRef}
+              className="p-6 rounded-2xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-600 text-white shadow-2xl"
+            >
               <div className="text-center space-y-4">
-                <Badge variant="secondary" className="text-sm px-4 py-1">
-                  {getModeIcon(result.analysis.mode)}
-                  <span className="ml-2 capitalize">{result.analysis.mode} Analysis</span>
-                </Badge>
+                {/* Header */}
+                <div className="flex items-center justify-center gap-2 text-white/90">
+                  <MessageCircle className="w-5 h-5" />
+                  <span className="text-sm font-medium">WhatsApp Chat Analysis</span>
+                </div>
                 
-                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  {result.analysis.overallVibes}
+                {/* Mode Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/20 rounded-full text-sm font-medium">
+                  {getModeIcon(result.analysis.mode)}
+                  <span className="capitalize">{result.analysis.mode} Mode</span>
+                </div>
+                
+                {/* Main Vibes */}
+                <h2 className="text-3xl md:text-4xl font-bold drop-shadow-lg">
+                  {result.analysis.overallVibes} ✨
                 </h2>
                 
-                <p className="text-xl md:text-2xl font-medium text-foreground">
+                {/* Verdict */}
+                <p className="text-lg md:text-xl font-medium px-4 drop-shadow">
                   {result.analysis.verdict}
                 </p>
                 
-                <div className="pt-4 flex justify-center gap-4">
-                  <Button onClick={handleShare} variant="outline" className="gap-2">
-                    <Share2 className="w-4 h-4" />
-                    Share Result 📤
-                  </Button>
-                  <Button onClick={() => setResult(null)} variant="secondary">
-                    Analyze Another 🔄
-                  </Button>
+                {/* Stats Row */}
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div className="bg-white/15 rounded-xl p-3">
+                    <div className="text-2xl font-bold">{result.personA}</div>
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      <span className="text-lg">❤️</span>
+                      <span className="text-xl font-bold">{result.analysis.personAInterest}%</span>
+                    </div>
+                    <div className="text-xs text-white/80 mt-1">{result.analysis.personAEmotionalTone}</div>
+                  </div>
+                  <div className="bg-white/15 rounded-xl p-3">
+                    <div className="text-2xl font-bold">{result.personB}</div>
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      <span className="text-lg">❤️</span>
+                      <span className="text-xl font-bold">{result.analysis.personBInterest}%</span>
+                    </div>
+                    <div className="text-xs text-white/80 mt-1">{result.analysis.personBEmotionalTone}</div>
+                  </div>
+                </div>
+
+                {/* Fun Fact */}
+                <div className="bg-white/10 rounded-lg p-3 text-sm">
+                  🎲 {result.analysis.funFact}
+                </div>
+                
+                {/* Watermark */}
+                <div className="pt-2 text-white/60 text-xs">
+                  mypdfs.in/whatsapp-analyzer 🔥
                 </div>
               </div>
-            </Card>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button 
+                onClick={handleDownloadCard} 
+                disabled={isDownloading}
+                className="gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              >
+                {isDownloading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Downloading...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4" />
+                    Download Image 📸
+                  </>
+                )}
+              </Button>
+              <Button onClick={handleShare} variant="outline" className="gap-2">
+                <Share2 className="w-4 h-4" />
+                Share Text 📤
+              </Button>
+              <Button onClick={() => setResult(null)} variant="secondary">
+                Analyze Another 🔄
+              </Button>
+            </div>
 
             {/* Person Cards */}
             <div className="grid md:grid-cols-2 gap-4">

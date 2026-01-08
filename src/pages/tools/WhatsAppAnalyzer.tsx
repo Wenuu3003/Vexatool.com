@@ -7,13 +7,15 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2, Home, Briefcase, Drama, Languages } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import DOMPurify from "dompurify";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
-type AnalysisMode = 'love' | 'friendship' | 'roast';
+type AnalysisMode = 'love' | 'friendship' | 'roast' | 'family' | 'work' | 'drama';
+type Language = 'english' | 'telugu' | 'hindi' | 'telugu-english' | 'hindi-english';
 
 interface AnalysisResult {
   personA: string;
@@ -43,11 +45,20 @@ interface AnalysisResult {
 const WhatsAppAnalyzer = () => {
   const [chatText, setChatText] = useState("");
   const [mode, setMode] = useState<AnalysisMode>("love");
+  const [language, setLanguage] = useState<Language>("telugu-english");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
   const sanitizeInput = (text: string): string => {
     return DOMPurify.sanitize(text, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+  };
+
+  const languageLabels: Record<Language, string> = {
+    'english': 'English',
+    'telugu': 'తెలుగు (Telugu)',
+    'hindi': 'हिंदी (Hindi)',
+    'telugu-english': 'Telugu + English Mix',
+    'hindi-english': 'Hindi + English Mix'
   };
 
   const handleAnalyze = async () => {
@@ -68,7 +79,7 @@ const WhatsAppAnalyzer = () => {
       const sanitizedChat = sanitizeInput(chatText);
       
       const { data, error } = await supabase.functions.invoke('whatsapp-analyzer', {
-        body: { chatText: sanitizedChat, mode }
+        body: { chatText: sanitizedChat, mode, language }
       });
 
       if (error) {
@@ -116,7 +127,22 @@ const WhatsAppAnalyzer = () => {
       case 'love': return <Heart className="w-4 h-4" />;
       case 'friendship': return <Users className="w-4 h-4" />;
       case 'roast': return <Flame className="w-4 h-4" />;
+      case 'family': return <Home className="w-4 h-4" />;
+      case 'work': return <Briefcase className="w-4 h-4" />;
+      case 'drama': return <Drama className="w-4 h-4" />;
     }
+  };
+
+  const getModeLabel = (m: AnalysisMode): string => {
+    const labels: Record<AnalysisMode, string> = {
+      love: 'Love 💕',
+      friendship: 'Friendship 🤝',
+      roast: 'Roast 🔥',
+      family: 'Family 👨‍👩‍👧‍👦',
+      work: 'Work 💼',
+      drama: 'Drama 🎭'
+    };
+    return labels[m];
   };
 
   const getInterestColor = (interest: number) => {
@@ -175,18 +201,50 @@ const WhatsAppAnalyzer = () => {
             <div className="space-y-3">
               <label className="text-sm font-medium text-foreground">Select Analysis Mode 🎯</label>
               <Tabs value={mode} onValueChange={(v) => setMode(v as AnalysisMode)} className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="love" className="gap-2">
-                    <Heart className="w-4 h-4" /> Love 💕
+                <TabsList className="grid w-full grid-cols-3 h-auto">
+                  <TabsTrigger value="love" className="gap-1 text-xs sm:text-sm py-2">
+                    <Heart className="w-3 h-3 sm:w-4 sm:h-4" /> Love 💕
                   </TabsTrigger>
-                  <TabsTrigger value="friendship" className="gap-2">
-                    <Users className="w-4 h-4" /> Friendship 🤝
+                  <TabsTrigger value="friendship" className="gap-1 text-xs sm:text-sm py-2">
+                    <Users className="w-3 h-3 sm:w-4 sm:h-4" /> Friend 🤝
                   </TabsTrigger>
-                  <TabsTrigger value="roast" className="gap-2">
-                    <Flame className="w-4 h-4" /> Roast 🔥
+                  <TabsTrigger value="roast" className="gap-1 text-xs sm:text-sm py-2">
+                    <Flame className="w-3 h-3 sm:w-4 sm:h-4" /> Roast 🔥
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
+              <Tabs value={mode} onValueChange={(v) => setMode(v as AnalysisMode)} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 h-auto">
+                  <TabsTrigger value="family" className="gap-1 text-xs sm:text-sm py-2">
+                    <Home className="w-3 h-3 sm:w-4 sm:h-4" /> Family 👨‍👩‍👧‍👦
+                  </TabsTrigger>
+                  <TabsTrigger value="work" className="gap-1 text-xs sm:text-sm py-2">
+                    <Briefcase className="w-3 h-3 sm:w-4 sm:h-4" /> Work 💼
+                  </TabsTrigger>
+                  <TabsTrigger value="drama" className="gap-1 text-xs sm:text-sm py-2">
+                    <Drama className="w-3 h-3 sm:w-4 sm:h-4" /> Drama 🎭
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+            {/* Language Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                <Languages className="w-4 h-4" /> Result Language 🌐
+              </label>
+              <Select value={language} onValueChange={(v) => setLanguage(v as Language)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="telugu-english">🇮🇳 Telugu + English Mix</SelectItem>
+                  <SelectItem value="hindi-english">🇮🇳 Hindi + English Mix</SelectItem>
+                  <SelectItem value="telugu">🇮🇳 తెలుగు (Pure Telugu)</SelectItem>
+                  <SelectItem value="hindi">🇮🇳 हिंदी (Pure Hindi)</SelectItem>
+                  <SelectItem value="english">🇬🇧 English Only</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Chat Input */}
@@ -363,21 +421,23 @@ Example format:
 
         <ToolSEOContent
           toolName="AI WhatsApp Chat Truth Analyzer"
-          whatIs="The AI WhatsApp Chat Truth Analyzer is a fun, viral tool that analyzes your WhatsApp conversations using artificial intelligence. Simply paste your exported chat, choose an analysis mode (Love, Friendship, or Roast), and discover entertaining insights about your conversation patterns, interest levels, emotional tones, and hidden intents. Perfect for entertainment and sharing with friends!"
+          whatIs="The AI WhatsApp Chat Truth Analyzer is a fun, viral tool that analyzes your WhatsApp conversations using artificial intelligence. Choose from 6 analysis modes (Love, Friendship, Roast, Family, Work, Drama) and get results in your preferred language - Telugu, Hindi, English, or mixed! Discover entertaining insights about conversation patterns, interest levels, emotional tones, and hidden intents. Perfect for entertainment and sharing with friends!"
           howToUse={[
             "Export your WhatsApp chat: Open WhatsApp → Select chat → More options → Export chat → Without media",
             "Paste the exported chat text into the input box above",
-            "Choose your analysis mode: Love Analysis, Friendship Analysis, or Fun Roast Mode",
+            "Choose your analysis mode: Love, Friendship, Roast, Family, Work, or Drama",
+            "Select your preferred result language: Telugu, Hindi, English, or mixed options",
             "Click 'Reveal The Truth!' to get your AI-powered analysis",
             "Share your fun results with friends on social media!"
           ]}
           features={[
-            "Three analysis modes: Love, Friendship, and Fun Roast",
+            "Six analysis modes: Love, Friendship, Roast, Family, Work, and Drama",
+            "Multi-language support: Telugu, Hindi, English, and mixed languages",
+            "తెలుగు మరియు हिंदी లో ఫలితాలు పొందండి (Results in Telugu & Hindi)",
             "AI-powered interest level detection for both participants",
             "Emotional tone analysis with hidden intent detection",
             "Who texts first and reply speed analysis",
             "Screenshot-friendly result cards for easy sharing",
-            "Telugu + English mixed fun verdicts",
             "100% private - chats are never stored",
             "Mobile-optimized viral-style UI"
           ]}
@@ -392,12 +452,16 @@ Example format:
               answer: "This tool is designed for ENTERTAINMENT ONLY! The results are AI-generated fun insights and should not be taken as actual relationship advice or psychological analysis."
             },
             {
-              question: "How do I export my WhatsApp chat?",
-              answer: "Open WhatsApp → Go to the chat you want to analyze → Tap the three dots menu → Export chat → Choose 'Without media' → Copy or share the text file content."
+              question: "What languages are supported?",
+              answer: "Results can be in Pure Telugu (తెలుగు), Pure Hindi (हिंदी), English, Telugu-English mix, or Hindi-English mix. Perfect for Indian users!"
             },
             {
-              question: "What's the difference between the three modes?",
-              answer: "Love mode focuses on romantic signals, Friendship mode analyzes buddy dynamics, and Roast mode gives playful, funny observations about your chat patterns!"
+              question: "What's the difference between the six modes?",
+              answer: "Love mode focuses on romantic signals, Friendship analyzes buddy dynamics, Roast gives playful funny observations, Family mode highlights care patterns, Work mode analyzes professional dynamics, and Drama mode treats your chat like a TV soap opera!"
+            },
+            {
+              question: "How do I export my WhatsApp chat?",
+              answer: "Open WhatsApp → Go to the chat you want to analyze → Tap the three dots menu → Export chat → Choose 'Without media' → Copy or share the text file content."
             },
             {
               question: "Does it work with group chats?",

@@ -158,7 +158,7 @@ serve(async (req) => {
       );
     }
 
-    const { chatText, mode } = await req.json();
+    const { chatText, mode, language = 'telugu-english' } = await req.json();
     
     if (!chatText || typeof chatText !== 'string') {
       return new Response(
@@ -176,8 +176,10 @@ serve(async (req) => {
       );
     }
 
-    const validModes = ['love', 'friendship', 'roast'];
+    const validModes = ['love', 'friendship', 'roast', 'family', 'work', 'drama'];
+    const validLanguages = ['english', 'telugu', 'hindi', 'telugu-english', 'hindi-english'];
     const analysisMode = validModes.includes(mode) ? mode : 'love';
+    const responseLanguage = validLanguages.includes(language) ? language : 'telugu-english';
     
     // Parse the chat
     const { personA, personB, messages } = parseWhatsAppChat(sanitizedChat);
@@ -191,11 +193,23 @@ serve(async (req) => {
 
     const stats = calculateStats(messages, personA, personB);
     
-    // Build prompt for AI analysis
+    // Language instructions for AI
+    const languageInstructions: Record<string, string> = {
+      'english': 'Write all responses in ENGLISH only. Use casual, fun English expressions.',
+      'telugu': 'Write all responses in PURE TELUGU (తెలుగు) only. Use Telugu script (e.g., "చాలా బాగుంది!", "ఏంటి రా!", "సరదాగా ఉంది!"). No English words.',
+      'hindi': 'Write all responses in PURE HINDI (हिंदी) only. Use Devanagari script (e.g., "बहुत अच्छा!", "क्या बात है!", "मजेदार है!"). No English words.',
+      'telugu-english': 'Mix TELUGU and ENGLISH naturally. Use Telugu phrases like "Enti ra!", "Baaga untundi", "Chala bagundi", "Ade ga!", "Super ra!", "Antha ne", mixed with English. Write Telugu in English letters (Romanized Telugu).',
+      'hindi-english': 'Mix HINDI and ENGLISH naturally. Use Hindi phrases like "Kya baat hai!", "Bahut badhiya", "Mast hai!", "Sahi hai!", "Ekdum jhakaas", mixed with English. Write Hindi in English letters (Romanized Hindi).'
+    };
+
+    // Mode-specific prompts with language consideration
     const modePrompts: Record<string, string> = {
-      love: `You are a fun, slightly dramatic relationship analyzer. Analyze this chat between ${personA} and ${personB} as a LOVE/ROMANCE analysis. Be entertaining, use emojis, and give fun relationship insights. Mix Telugu and English phrases naturally (like "Enti ra!", "Baaga untundi", etc).`,
-      friendship: `You are a fun friendship analyzer. Analyze this chat between ${personA} and ${personB} as a FRIENDSHIP analysis. Be entertaining, use emojis, and highlight friendship dynamics. Mix Telugu and English phrases naturally.`,
-      roast: `You are a witty, fun roaster (NOT offensive or mean). Analyze this chat between ${personA} and ${personB} with playful roasts. Keep it light and funny, never hurtful. Mix Telugu and English phrases naturally for extra fun.`
+      love: `You are a fun, slightly dramatic relationship analyzer. Analyze this chat between ${personA} and ${personB} as a LOVE/ROMANCE analysis. Be entertaining, use emojis, and give fun relationship insights. Focus on romantic chemistry, flirting patterns, and love vibes.`,
+      friendship: `You are a fun friendship analyzer. Analyze this chat between ${personA} and ${personB} as a FRIENDSHIP analysis. Be entertaining, use emojis, and highlight friendship dynamics, inside jokes potential, and bestie energy.`,
+      roast: `You are a witty, fun roaster (NOT offensive or mean). Analyze this chat between ${personA} and ${personB} with playful roasts. Keep it light and funny, never hurtful or personal attacks.`,
+      family: `You are a warm family dynamics analyzer. Analyze this chat between ${personA} and ${personB} as a FAMILY analysis. Focus on care patterns, who worries more, typical Indian family dynamics (like asking about food, health, marriage questions). Be loving and wholesome with gentle humor.`,
+      work: `You are a professional (but fun) workplace analyzer. Analyze this chat between ${personA} and ${personB} as a WORK/OFFICE analysis. Highlight workplace dynamics like who's the boss energy, who's more professional, who uses more formal language, typical office chat patterns.`,
+      drama: `You are a dramatic, filmy analyzer like a TV show narrator. Analyze this chat between ${personA} and ${personB} with maximum DRAMA and suspense! Treat it like a soap opera plot. Find hidden meanings, plot twists, and dramatic moments. Be theatrical and over-the-top entertaining!`
     };
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -218,18 +232,20 @@ serve(async (req) => {
             role: "system",
             content: `${modePrompts[analysisMode]}
 
-IMPORTANT: This is for ENTERTAINMENT ONLY. Be fun and engaging, not scientific.
+LANGUAGE REQUIREMENT: ${languageInstructions[responseLanguage]}
+
+IMPORTANT: This is for ENTERTAINMENT ONLY. Be fun and engaging, not scientific. Make sure there are NO spelling mistakes in any language.
 
 Respond in this EXACT JSON format (no markdown, just JSON):
 {
   "personAInterest": <number 0-100>,
   "personBInterest": <number 0-100>,
-  "personAEmotionalTone": "<one word like 'Caring', 'Cold', 'Playful', 'Romantic', 'Casual'>",
-  "personBEmotionalTone": "<one word>",
+  "personAEmotionalTone": "<one word emotion>",
+  "personBEmotionalTone": "<one word emotion>",
   "personAHiddenIntent": "<fun, creative one-liner about their hidden intent>",
   "personBHiddenIntent": "<fun, creative one-liner>",
   "replySpeedVerdict": "<who replies faster and what it means, fun take>",
-  "overallVibes": "<fun 2-3 word vibe description like 'Cute Chaos', 'One-sided Crush', 'BFF Energy'>",
+  "overallVibes": "<fun 2-3 word vibe description>",
   "verdict": "<A catchy, screenshot-worthy verdict sentence in 10-15 words. Make it memorable and fun!>",
   "funFact": "<A quirky observation about their chat pattern>"
 }`
@@ -244,7 +260,7 @@ Respond in this EXACT JSON format (no markdown, just JSON):
 Sample messages:
 ${sampleMessages}
 
-Analyze this ${analysisMode === 'love' ? 'romantic' : analysisMode === 'friendship' ? 'friendship' : 'fun roast'} chat!`
+Analyze this ${analysisMode} mode chat! Remember to respond in ${responseLanguage} format.`
           }
         ],
       }),

@@ -5,3 +5,9 @@ verify_jwt = true
 
 [functions.perplexity-search]
 verify_jwt = true
+
+[functions.whatsapp-analyzer]
+verify_jwt = false
+
+[functions.india-postal]
+verify_jwt = false

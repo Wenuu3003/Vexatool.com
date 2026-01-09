@@ -68,12 +68,13 @@ const categories: Category[] = [
     tools: [
       { name: "AI Resume Builder", href: "/ai-resume-builder", icon: FileUser, badge: "popular" },
       { name: "AI Background Remover", href: "/background-remover", icon: ImageOff, badge: "popular" },
+      { name: "WhatsApp Analyzer", href: "/whatsapp-analyzer", icon: MessageSquare, badge: "new" },
       { name: "AI Text Generator", href: "/ai-text-generator", icon: Sparkles },
       { name: "AI Grammar Tool", href: "/ai-grammar-tool", icon: MessageSquare },
       { name: "AI Chat", href: "/ai-chat", icon: Bot },
       { name: "AI Search", href: "/ai-search", icon: Search },
       { name: "QR Code Generator", href: "/qr-code-generator", icon: QrCode },
-      { name: "Hashtag Generator", href: "/hashtag-generator", icon: Hash, badge: "new" },
+      { name: "Hashtag Generator", href: "/hashtag-generator", icon: Hash },
     ],
   },
   {
@@ -124,7 +125,8 @@ const categories: Category[] = [
     name: "Social Tools",
     icon: Share2,
     tools: [
-      { name: "PIN Code Generator", href: "/pincode-generator", icon: MapPin, badge: "new" },
+      { name: "WhatsApp Analyzer", href: "/whatsapp-analyzer", icon: MessageSquare, badge: "new" },
+      { name: "PIN Code Generator", href: "/pincode-generator", icon: MapPin },
       { name: "YouTube Generator", href: "/youtube-generator", icon: Youtube },
       { name: "Hashtag Generator", href: "/hashtag-generator", icon: Hash },
       { name: "QR Code Scanner", href: "/qr-code-scanner", icon: QrCode },

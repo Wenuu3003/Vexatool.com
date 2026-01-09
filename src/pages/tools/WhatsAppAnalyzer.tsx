@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2, Home, Briefcase, Drama, Languages, Download, Image } from "lucide-react";
+import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2, Home, Briefcase, Drama, Languages, Download, Image, Stars, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import DOMPurify from "dompurify";
@@ -17,6 +17,15 @@ import html2canvas from "html2canvas";
 
 type AnalysisMode = 'love' | 'friendship' | 'roast' | 'family' | 'work' | 'drama';
 type Language = 'english' | 'telugu' | 'hindi' | 'telugu-english' | 'hindi-english';
+
+interface CompatibilityScore {
+  percentage: number;
+  zodiacMatch: string;
+  elementAnalysis: string;
+  futurePredict: string;
+  loveLanguage: string;
+  communicationStyle: string;
+}
 
 interface AnalysisResult {
   personA: string;
@@ -40,6 +49,7 @@ interface AnalysisResult {
     verdict: string;
     funFact: string;
     mode: AnalysisMode;
+    compatibility?: CompatibilityScore;
   };
 }
 
@@ -366,6 +376,22 @@ Example format:
                   </div>
                 </div>
 
+                {/* Compatibility Score */}
+                {result.analysis.compatibility && (
+                  <div className="bg-white/20 rounded-xl p-4 mt-2">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Stars className="w-5 h-5" />
+                      <span className="font-bold text-lg">Compatibility Score</span>
+                    </div>
+                    <div className="text-5xl font-black drop-shadow-lg">
+                      {result.analysis.compatibility.percentage}%
+                    </div>
+                    <div className="text-sm mt-2 text-white/90">
+                      {result.analysis.compatibility.zodiacMatch}
+                    </div>
+                  </div>
+                )}
+
                 {/* Fun Fact */}
                 <div className="bg-white/10 rounded-lg p-3 text-sm">
                   🎲 {result.analysis.funFact}
@@ -500,6 +526,65 @@ Example format:
                 <p className="font-medium">{result.analysis.funFact}</p>
               </div>
             </Card>
+
+            {/* Compatibility Score Section */}
+            {result.analysis.compatibility && (
+              <Card className="p-5 space-y-4 bg-gradient-to-br from-pink-500/5 via-purple-500/5 to-indigo-500/5 border-pink-200/50 dark:border-pink-900/50">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500">
+                    <Stars className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-bold text-lg">💕 Couples Compatibility Score</h3>
+                </div>
+                
+                {/* Big Score */}
+                <div className="text-center py-4">
+                  <div className="text-6xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent">
+                    {result.analysis.compatibility.percentage}%
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">Compatibility Match</p>
+                </div>
+
+                {/* Zodiac Insights */}
+                <div className="grid gap-3">
+                  <div className="p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                      <Zap className="w-4 h-4" />
+                      Zodiac Match Analysis
+                    </div>
+                    <p className="font-medium">{result.analysis.compatibility.zodiacMatch}</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-xl">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                      ✨ Element Analysis
+                    </div>
+                    <p className="font-medium">{result.analysis.compatibility.elementAnalysis}</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-r from-pink-500/10 to-rose-500/10 rounded-xl">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                      💬 Communication Style
+                    </div>
+                    <p className="font-medium">{result.analysis.compatibility.communicationStyle}</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-r from-rose-500/10 to-orange-500/10 rounded-xl">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                      💝 Love Language
+                    </div>
+                    <p className="font-medium">{result.analysis.compatibility.loveLanguage}</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-r from-amber-500/10 to-yellow-500/10 rounded-xl">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                      🔮 Future Prediction
+                    </div>
+                    <p className="font-medium">{result.analysis.compatibility.futurePredict}</p>
+                  </div>
+                </div>
+              </Card>
+            )}
 
             {/* Disclaimer Reminder */}
             <p className="text-center text-sm text-muted-foreground">

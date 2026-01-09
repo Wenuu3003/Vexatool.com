@@ -212,6 +212,17 @@ serve(async (req) => {
       drama: `You are a dramatic, filmy analyzer like a TV show narrator. Analyze this chat between ${personA} and ${personB} with maximum DRAMA and suspense! Treat it like a soap opera plot. Find hidden meanings, plot twists, and dramatic moments. Be theatrical and over-the-top entertaining!`
     };
 
+    // Include compatibility score for love mode
+    const compatibilityPrompt = analysisMode === 'love' ? `,
+  "compatibility": {
+    "percentage": <number 50-99, fun compatibility score>,
+    "zodiacMatch": "<creative zodiac-style match description like 'Fire meets Water - explosive chemistry!' in the response language>",
+    "elementAnalysis": "<describe their elemental energy - earth, fire, water, air style analysis>",
+    "futurePredict": "<fun prediction about their future together, can be dramatic or sweet>",
+    "loveLanguage": "<what their love languages seem to be based on chat>",
+    "communicationStyle": "<how they communicate as a couple - direct, playful, mysterious etc>"
+  }` : '';
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -235,7 +246,7 @@ serve(async (req) => {
 LANGUAGE REQUIREMENT: ${languageInstructions[responseLanguage]}
 
 IMPORTANT: This is for ENTERTAINMENT ONLY. Be fun and engaging, not scientific. Make sure there are NO spelling mistakes in any language.
-
+${analysisMode === 'love' ? '\nCRITICAL: You MUST include the "compatibility" object in your response for love mode analysis! This is required!\n' : ''}
 Respond in this EXACT JSON format (no markdown, just JSON):
 {
   "personAInterest": <number 0-100>,
@@ -247,7 +258,7 @@ Respond in this EXACT JSON format (no markdown, just JSON):
   "replySpeedVerdict": "<who replies faster and what it means, fun take>",
   "overallVibes": "<fun 2-3 word vibe description>",
   "verdict": "<A catchy, screenshot-worthy verdict sentence in 10-15 words. Make it memorable and fun!>",
-  "funFact": "<A quirky observation about their chat pattern>"
+  "funFact": "<A quirky observation about their chat pattern>"${compatibilityPrompt}
 }`
           },
           {
@@ -260,7 +271,7 @@ Respond in this EXACT JSON format (no markdown, just JSON):
 Sample messages:
 ${sampleMessages}
 
-Analyze this ${analysisMode} mode chat! Remember to respond in ${responseLanguage} format.`
+Analyze this ${analysisMode} mode chat! Remember to respond in ${responseLanguage} format.${analysisMode === 'love' ? ' You MUST include the compatibility object with percentage, zodiacMatch, elementAnalysis, futurePredict, loveLanguage and communicationStyle fields!' : ''}`
           }
         ],
       }),

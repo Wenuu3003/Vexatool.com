@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -62,33 +61,6 @@ serve(async (req) => {
   }
 
   try {
-    // Authentication validation
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      console.error("Authentication required: No authorization header");
-      return new Response(
-        JSON.stringify({ error: "Authentication required. Please log in to use AI Chat." }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-    if (authError || !user) {
-      console.error("Authentication failed:", authError?.message || "No user found");
-      return new Response(
-        JSON.stringify({ error: "Authentication failed. Please log in again." }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    console.log("Authenticated user:", user.id);
-
     // Parse and validate request body
     let body: { messages?: unknown; systemPrompt?: string };
     try {
@@ -175,7 +147,7 @@ If asked about using tools on the website, guide them to the appropriate tool.`;
     const data = await response.json();
     const assistantResponse = data.choices?.[0]?.message?.content || "I couldn't generate a response.";
 
-    console.log("AI response generated successfully for user:", user.id);
+    console.log("AI response generated successfully");
 
     return new Response(
       JSON.stringify({ response: assistantResponse }),

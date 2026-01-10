@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { StructuredData } from "@/components/StructuredData";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner";
 import { SidebarAd, InArticleAd } from "@/components/SidebarAd";
 import { LucideIcon, ArrowLeft } from "lucide-react";
@@ -83,6 +84,9 @@ export const ToolLayout = ({
           
           <section className="py-6 md:py-12 bg-background">
             <div className="container mx-auto px-4">
+              {/* Breadcrumb Navigation */}
+              <Breadcrumb className="mb-4" />
+              
               <Link to="/">
                 <Button variant="ghost" className="mb-4 md:mb-6 gap-2 text-muted-foreground hover:text-foreground text-sm md:text-base">
                   <ArrowLeft className="w-4 h-4" />

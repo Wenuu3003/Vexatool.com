@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
-import { FileText, Mail, Send, Facebook, Twitter, ShieldCheck } from "lucide-react";
+import { FileText, Mail, Send, Facebook, Twitter, ShieldCheck, Lock, Zap, Globe } from "lucide-react";
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {
   const currentYear = new Date().getFullYear();
@@ -30,6 +30,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
     ],
     Company: [
       { name: "About Us", path: "/about-us" },
+      { name: "Contact Us", path: "/contact" },
       { name: "Blog", path: "/blog" },
       { name: "Privacy Policy", path: "/privacy-policy" },
       { name: "Terms & Conditions", path: "/terms-and-conditions" },
@@ -94,32 +95,51 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               </a>
             ))}
           </nav>
-          {/* ScamAdviser Trust Badge */}
-          <a
-            href="https://www.scamadviser.com/check-website/mypdfs.lovable.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mt-2"
-            aria-label="View our ScamAdviser verification"
-          >
-            <ShieldCheck className="w-4 h-4 text-green-500" aria-hidden="true" />
-            Verified on ScamAdviser
-          </a>
+          {/* Trust Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
+            <a
+              href="https://www.scamadviser.com/check-website/mypdfs.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors px-3 py-1.5 rounded-full bg-muted/50"
+              aria-label="View our ScamAdviser verification"
+            >
+              <ShieldCheck className="w-4 h-4 text-green-500" aria-hidden="true" />
+              Verified Safe
+            </a>
+            <span className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 rounded-full bg-muted/50">
+              <Lock className="w-4 h-4 text-primary" aria-hidden="true" />
+              256-bit SSL
+            </span>
+            <span className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 rounded-full bg-muted/50">
+              <Zap className="w-4 h-4 text-yellow-500" aria-hidden="true" />
+              100% Free
+            </span>
+            <span className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 rounded-full bg-muted/50">
+              <Globe className="w-4 h-4 text-blue-500" aria-hidden="true" />
+              Made in India
+            </span>
+          </div>
         </div>
 
         {/* Bottom - Copyright, Privacy, Terms */}
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground">© {currentYear} Mypdfs. All rights reserved.</p>
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted-foreground">© {currentYear} Mypdfs. All rights reserved.</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Your files never leave your browser. 100% secure & private processing.
+              </p>
+            </div>
             <nav className="flex items-center gap-6" aria-label="Legal links">
               <a href="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Privacy Policy
               </a>
-              <a
-                href="/terms-and-conditions"
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
+              <a href="/terms-and-conditions" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Terms & Conditions
+              </a>
+              <a href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Contact Us
               </a>
             </nav>
           </div>

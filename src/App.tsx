@@ -61,7 +61,7 @@ const BlogPost = lazy(() => import("./pages/BlogPost"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
-
+const Contact = lazy(() => import("./pages/Contact"));
 // Utility Tools - lazy loaded
 const QRCodeGenerator = lazy(() => import("./pages/tools/QRCodeGenerator"));
 const QRCodeScanner = lazy(() => import("./pages/tools/QRCodeScanner"));
@@ -124,6 +124,7 @@ const App = () => (
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
               <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
               {/* Utility Tools */}
               <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
               <Route path="/qr-code-generator" element={<QRCodeGenerator />} />

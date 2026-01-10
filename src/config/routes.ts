@@ -75,6 +75,16 @@ export const routes: RouteConfig[] = [
     keywords: 'terms and conditions, terms of service',
     category: 'Legal'
   },
+  { 
+    path: '/contact', 
+    priority: 0.7, 
+    changefreq: 'monthly', 
+    includeInSitemap: true,
+    title: 'Contact Us - Mypdfs | Support & Inquiries',
+    description: 'Contact Mypdfs for support, feedback, or business inquiries. Get help with PDF tools, AI features, calculators.',
+    keywords: 'contact mypdfs, support, help, feedback',
+    category: 'Website'
+  },
   { path: '/auth', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
   { path: '/account', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
   

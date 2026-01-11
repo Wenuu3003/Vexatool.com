@@ -18,15 +18,24 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       { name: "Split PDF", path: "/split-pdf" },
       { name: "Compress PDF", path: "/compress-pdf" },
       { name: "PDF to Word", path: "/pdf-to-word" },
-      { name: "PDF to PowerPoint", path: "/pdf-to-powerpoint" },
-      { name: "PDF to Excel", path: "/pdf-to-excel" },
+      { name: "Rotate PDF", path: "/rotate-pdf" },
+      { name: "Watermark PDF", path: "/watermark-pdf" },
     ],
     "Convert to PDF": [
       { name: "Word to PDF", path: "/word-to-pdf" },
       { name: "PPT to PDF", path: "/ppt-to-pdf" },
       { name: "Excel to PDF", path: "/excel-to-pdf" },
       { name: "JPG to PDF", path: "/jpg-to-pdf" },
-      { name: "HTML to PDF", path: "/html-to-pdf" },
+      { name: "PNG to PDF", path: "/png-to-pdf" },
+      { name: "Image to PDF", path: "/image-to-pdf" },
+    ],
+    "AI & Image Tools": [
+      { name: "AI Chat", path: "/ai-chat" },
+      { name: "AI Grammar Check", path: "/ai-grammar-tool" },
+      { name: "Background Remover", path: "/background-remover" },
+      { name: "Compress Image", path: "/compress-image" },
+      { name: "QR Code Generator", path: "/qr-code-generator" },
+      { name: "Image Resizer", path: "/image-resizer" },
     ],
     Company: [
       { name: "About Us", path: "/about-us" },
@@ -40,7 +49,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
   return (
     <footer ref={ref} className="bg-card border-t border-border pt-16 pb-8" role="contentinfo" aria-label="Site footer">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4" aria-label="Mypdfs Home">

@@ -1,5 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { RelatedTools } from "@/components/RelatedTools";
+import { SocialShare } from "@/components/SocialShare";
+import { BacklinkCTA } from "@/components/BacklinkCTA";
 import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
@@ -49,8 +51,13 @@ const ToolSEOContent = ({
         </script>
       </Helmet>
       
+      {/* Social Share Section */}
+      <div className="mt-8">
+        <SocialShare title={toolName} />
+      </div>
+      
       {/* Related Tools Section */}
-      <RelatedTools currentPath={location.pathname} className="mb-8" />
+      <RelatedTools currentPath={location.pathname} className="mb-8 mt-8" />
       
       <section className="mt-12 space-y-8 text-foreground">
         <div className="border-t pt-8">
@@ -102,6 +109,9 @@ const ToolSEOContent = ({
               ))}
             </Accordion>
           </div>
+
+          {/* Backlink CTA Section */}
+          <BacklinkCTA currentTool={toolName} />
         </div>
       </section>
     </>

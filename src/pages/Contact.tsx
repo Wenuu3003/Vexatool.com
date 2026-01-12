@@ -61,12 +61,67 @@ const Contact = () => {
     }
   ];
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is Mypdfs really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! All our 50+ tools are 100% free to use with no hidden charges, no premium tiers, and no registration required. We are supported by non-intrusive advertisements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my data safe with Mypdfs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely. Most file processing happens directly in your browser using client-side JavaScript, meaning your files never leave your device."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I use Mypdfs for commercial purposes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can use our tools for both personal and commercial purposes without any restrictions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I report a bug or suggest a feature?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use the contact form, email us at mypdfs3003@gmail.com, or reach out via our Telegram channel @mypdfs5."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What types of tools does Mypdfs offer?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Mypdfs offers 50+ free tools including PDF editing, image tools, AI-powered tools, calculators, and utilities like QR code generator and currency converter."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the typical response time for support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We typically respond to all inquiries within 24-48 hours during business days."
+        }
+      }
+    ]
+  };
+
   return (
     <>
       <Helmet>
         <title>Contact Us - Mypdfs | Get in Touch for Support</title>
         <meta name="description" content="Contact Mypdfs for support, feedback, or business inquiries. Reach us via email, Telegram, or Twitter. We typically respond within 24 hours." />
-        <meta name="keywords" content="contact mypdfs, mypdfs support, pdf tools support, contact us, help desk" />
+        <meta name="keywords" content="contact mypdfs, mypdfs support, pdf tools support, contact us, help desk, customer service" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
         
@@ -99,6 +154,9 @@ const Contact = () => {
               }
             }
           })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
         </script>
       </Helmet>
 
@@ -240,19 +298,27 @@ const Contact = () => {
               <div className="max-w-3xl mx-auto space-y-6">
                 <div className="p-6 bg-background rounded-lg border border-border">
                   <h3 className="font-semibold text-foreground mb-2">Is Mypdfs really free?</h3>
-                  <p className="text-muted-foreground">Yes! All our tools are 100% free to use. No hidden charges, no premium tiers. We're supported by non-intrusive ads.</p>
+                  <p className="text-muted-foreground">Yes! All our 50+ tools are 100% free to use with no hidden charges, no premium tiers, and no registration required. We are supported by non-intrusive advertisements that help us keep the service free for everyone.</p>
                 </div>
                 <div className="p-6 bg-background rounded-lg border border-border">
                   <h3 className="font-semibold text-foreground mb-2">Is my data safe with Mypdfs?</h3>
-                  <p className="text-muted-foreground">Absolutely. All file processing happens directly in your browser. We never upload or store your files on our servers.</p>
+                  <p className="text-muted-foreground">Absolutely. Most file processing happens directly in your browser using client-side JavaScript, meaning your files never leave your device. For tools requiring server processing, files are encrypted and automatically deleted immediately after processing.</p>
                 </div>
                 <div className="p-6 bg-background rounded-lg border border-border">
                   <h3 className="font-semibold text-foreground mb-2">Can I use Mypdfs for commercial purposes?</h3>
-                  <p className="text-muted-foreground">Yes, you can use our tools for personal and commercial purposes. There are no restrictions on usage.</p>
+                  <p className="text-muted-foreground">Yes, you can use our tools for both personal and commercial purposes without any restrictions. The processed files belong entirely to you with no watermarks or limitations.</p>
                 </div>
                 <div className="p-6 bg-background rounded-lg border border-border">
                   <h3 className="font-semibold text-foreground mb-2">How do I report a bug or suggest a feature?</h3>
-                  <p className="text-muted-foreground">Use the contact form above or email us directly. We love feedback and actively work on improving our tools.</p>
+                  <p className="text-muted-foreground">Use the contact form above, email us at mypdfs3003@gmail.com, or reach out via our Telegram channel @mypdfs5. We actively review all feedback and continuously improve our tools based on user suggestions.</p>
+                </div>
+                <div className="p-6 bg-background rounded-lg border border-border">
+                  <h3 className="font-semibold text-foreground mb-2">What types of tools does Mypdfs offer?</h3>
+                  <p className="text-muted-foreground">Mypdfs offers 50+ free tools including PDF editing (merge, split, compress, convert), image tools (compress, resize, background removal), AI-powered tools (chat, text generator, resume builder), calculators (EMI, GST, BMI, age), and utilities (QR code generator, currency converter, SEO analyzer).</p>
+                </div>
+                <div className="p-6 bg-background rounded-lg border border-border">
+                  <h3 className="font-semibold text-foreground mb-2">What is the typical response time for support?</h3>
+                  <p className="text-muted-foreground">We typically respond to all inquiries within 24-48 hours during business days. For urgent matters, please include "URGENT" in your subject line and we will prioritize your request.</p>
                 </div>
               </div>
             </div>

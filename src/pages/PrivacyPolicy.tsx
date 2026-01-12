@@ -6,15 +6,63 @@ import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
 const PrivacyPolicy = () => {
   const canonicalUrl = useCanonicalUrl();
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does MyPDFs store my uploaded files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, MyPDFs does not store your files. Most tools process files directly in your browser (client-side), and for server-processed files, they are automatically deleted immediately after processing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does MyPDFs use cookies?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, we use essential cookies for website functionality, analytics cookies (Google Analytics) to improve our services, and advertising cookies (Google AdSense) to show relevant ads. You can manage cookie preferences in your browser settings."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my personal information safe with MyPDFs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We collect minimal information and implement industry-standard security measures including HTTPS encryption. We never sell or share your personal data with third parties for marketing purposes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I request deletion of my data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you have the right to request access, correction, or deletion of your personal data. Contact us at welovepdfs3003@gmail.com for any data-related requests."
+        }
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Privacy Policy | MyPDFs</title>
+        <title>Privacy Policy | MyPDFs - Data Protection & Security</title>
         <meta
           name="description"
-          content="Read the Privacy Policy of MyPDFs. Learn how we handle your data, protect your privacy, and manage uploaded files securely."
+          content="Read the Privacy Policy of MyPDFs. Learn how we handle your data, protect your privacy, and manage uploaded files securely. We never store your files."
         />
+        <meta name="keywords" content="privacy policy, data protection, file security, mypdfs privacy, gdpr, data handling" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Privacy Policy - MyPDFs" />
+        <meta property="og:description" content="Learn how MyPDFs protects your privacy and handles your data securely." />
+        <meta property="og:url" content={canonicalUrl} />
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
       </Helmet>
 
       <Header />

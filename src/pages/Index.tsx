@@ -14,6 +14,10 @@ const ToolsGrid = lazy(() =>
   import("@/components/ToolsGrid").then((m) => ({ default: m.ToolsGrid }))
 );
 
+const HomepageFAQ = lazy(() =>
+  import("@/components/HomepageFAQ").then((m) => ({ default: m.HomepageFAQ }))
+);
+
 // Lazy load non-critical ads after initial render
 const LazyAds = () => {
   const [showAds, setShowAds] = useState(false);
@@ -55,9 +59,9 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Mypdfs - Free Online PDF Tools & QR Code Generator</title>
-        <meta name="description" content="Free online PDF editor with 30+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI chat, calculator, SEO analyzer. 100% free." />
-        <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF to Word, Word to PDF, PDF to Excel, JPG to PDF, PNG to PDF, QR code generator, QR code scanner, currency converter, SEO tool, free online tools, AI chat, file compressor" />
+        <title>Mypdfs - Free Online PDF Tools, Image Tools & AI Utilities | 50+ Tools</title>
+        <meta name="description" content="Free online PDF editor with 50+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI chat, resume builder, calculators. 100% free, no signup required." />
+        <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF to Word, Word to PDF, PDF to Excel, JPG to PDF, PNG to PDF, QR code generator, QR code scanner, currency converter, SEO tool, free online tools, AI chat, file compressor, image resizer, background remover, EMI calculator, GST calculator" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="author" content="Mypdfs" />
         <meta name="publisher" content="Mypdfs" />
@@ -65,8 +69,8 @@ const Index = () => {
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Mypdfs - Free Online PDF Tools & Utilities | 30+ Tools" />
-        <meta property="og:description" content="Free online PDF editor with 30+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI chat. Calculator, SEO analyzer. No registration required." />
+        <meta property="og:title" content="Mypdfs - Free Online PDF Tools & Utilities | 50+ Tools" />
+        <meta property="og:description" content="Free online PDF editor with 50+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI tools. Calculators. No registration required." />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:site_name" content="Mypdfs" />
         <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
@@ -79,7 +83,7 @@ const Index = () => {
         <meta name="twitter:site" content="@Mypdfs5" />
         <meta name="twitter:creator" content="@Mypdfs5" />
         <meta name="twitter:title" content="Mypdfs - Free Online PDF Tools & Utilities" />
-        <meta name="twitter:description" content="Free online PDF editor with 30+ tools. QR code generator & scanner, AI chat, currency converter, SEO analyzer. 100% free." />
+        <meta name="twitter:description" content="Free online PDF editor with 50+ tools. QR code generator, AI chat, calculators. 100% free." />
         <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
       </Helmet>
       
@@ -127,6 +131,13 @@ const Index = () => {
           >
             <ToolsGrid />
           </Suspense>
+          
+          {/* Homepage FAQ Section */}
+          {showDeferredContent && (
+            <Suspense fallback={null}>
+              <HomepageFAQ />
+            </Suspense>
+          )}
           
           {showDeferredContent && (
             <>

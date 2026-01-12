@@ -6,15 +6,63 @@ import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
 const TermsAndConditions = () => {
   const canonicalUrl = useCanonicalUrl();
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can I use MyPDFs tools for commercial purposes?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can use MyPDFs tools for both personal and commercial purposes. There are no restrictions on how you use the processed files."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to create an account to use MyPDFs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No, most tools on MyPDFs work without any registration. Creating an account is optional and provides additional features like file history."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens to my files after processing?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your files are processed and immediately available for download. We do not store your files on our servers. Most processing happens directly in your browser for maximum privacy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is there a limit on file size or number of files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "There may be practical limits based on your browser capabilities, but we do not impose artificial limits. Large files may take longer to process depending on your device."
+        }
+      }
+    ]
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Terms & Conditions | MyPDFs</title>
+        <title>Terms & Conditions | MyPDFs - Usage Guidelines</title>
         <meta
           name="description"
           content="Read the Terms & Conditions of MyPDFs. Understand your rights and responsibilities when using our free online PDF tools and services."
         />
+        <meta name="keywords" content="terms of service, terms and conditions, usage policy, mypdfs terms, legal terms" />
+        <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Terms & Conditions - MyPDFs" />
+        <meta property="og:description" content="Understand your rights when using MyPDFs free online tools." />
+        <meta property="og:url" content={canonicalUrl} />
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
       </Helmet>
 
       <Header />

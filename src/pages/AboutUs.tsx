@@ -2,8 +2,50 @@ import { Helmet } from "react-helmet";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { FileText, Shield, Zap, Users, Heart, Globe } from "lucide-react";
+import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
 
 const AboutUs = () => {
+  const canonicalUrl = useCanonicalUrl();
+  
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is MyPDFs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MyPDFs is a free online platform offering 50+ tools for PDF editing, image conversion, AI-powered assistance, and various utilities. All tools work directly in your browser for maximum privacy and security."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is MyPDFs really free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all tools on MyPDFs are 100% free with no hidden charges, no registration required, and no usage limits. We are supported by non-intrusive advertisements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are my files safe with MyPDFs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Absolutely! Most of our tools process files directly in your browser, meaning your files never leave your device. For tools that require server processing, files are automatically deleted after processing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Who created MyPDFs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "MyPDFs is built by a passionate team of developers based in India. We are committed to making document management accessible to everyone worldwide."
+        }
+      }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -13,7 +55,15 @@ const AboutUs = () => {
           content="Learn about MyPDFs, our mission to provide free, secure, and easy-to-use PDF tools for everyone. Discover our team and values." 
         />
         <meta name="keywords" content="about MyPDFs, PDF tools company, free PDF tools, document management, online tools" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/about-us" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="About Us - MyPDFs" />
+        <meta property="og:description" content="Learn about MyPDFs and our mission to provide free PDF tools." />
+        <meta property="og:url" content={canonicalUrl} />
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -187,6 +237,37 @@ const AboutUs = () => {
             </div>
           </section>
 
+          {/* FAQ Section */}
+          <section className="max-w-4xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold mb-8 text-center text-foreground">Frequently Asked Questions</h2>
+            <div className="space-y-6">
+              <div className="bg-card border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-2">What is MyPDFs?</h3>
+                <p className="text-muted-foreground">
+                  MyPDFs is a free online platform offering 50+ tools for PDF editing, image conversion, AI-powered assistance, and various utilities. All tools work directly in your browser for maximum privacy and security.
+                </p>
+              </div>
+              <div className="bg-card border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-2">Is MyPDFs really free to use?</h3>
+                <p className="text-muted-foreground">
+                  Yes, all tools on MyPDFs are 100% free with no hidden charges, no registration required, and no usage limits. We are supported by non-intrusive advertisements.
+                </p>
+              </div>
+              <div className="bg-card border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-2">Are my files safe with MyPDFs?</h3>
+                <p className="text-muted-foreground">
+                  Absolutely! Most of our tools process files directly in your browser, meaning your files never leave your device. For tools that require server processing, files are automatically deleted after processing.
+                </p>
+              </div>
+              <div className="bg-card border rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-2">Who created MyPDFs?</h3>
+                <p className="text-muted-foreground">
+                  MyPDFs is built by a passionate team of developers based in India. We are committed to making document management accessible to everyone worldwide.
+                </p>
+              </div>
+            </div>
+          </section>
+
           {/* Contact Section */}
           <section className="max-w-4xl mx-auto">
             <div className="bg-primary/5 border border-primary/20 rounded-2xl p-8 text-center">
@@ -196,10 +277,10 @@ const AboutUs = () => {
               </p>
               <p className="text-lg">
                 <a 
-                  href="mailto:support@mypdfs.app" 
+                  href="mailto:mypdfs3003@gmail.com" 
                   className="text-primary hover:underline font-medium"
                 >
-                  support@mypdfs.app
+                  mypdfs3003@gmail.com
                 </a>
               </p>
             </div>

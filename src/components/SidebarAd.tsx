@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, forwardRef } from 'react';
 import { hasAdConsent } from './CookieConsent';
 
 declare global {
@@ -12,7 +12,7 @@ interface SidebarAdProps {
   className?: string;
 }
 
-export const SidebarAd = ({ slot = "8307043387", className = "" }: SidebarAdProps) => {
+export const SidebarAd = forwardRef<HTMLDivElement, SidebarAdProps>(({ slot = "8307043387", className = "" }, ref) => {
   const [hasConsent, setHasConsent] = useState(false);
   const adInitialized = useRef(false);
 
@@ -54,7 +54,7 @@ export const SidebarAd = ({ slot = "8307043387", className = "" }: SidebarAdProp
   }
 
   return (
-    <div className={`hidden lg:block sticky top-24 ${className}`}>
+    <div ref={ref} className={`hidden lg:block sticky top-24 ${className}`}>
       <div className="bg-muted/30 rounded-lg p-2">
         <p className="text-[10px] text-muted-foreground text-center mb-1">Advertisement</p>
         <ins
@@ -67,9 +67,11 @@ export const SidebarAd = ({ slot = "8307043387", className = "" }: SidebarAdProp
       </div>
     </div>
   );
-};
+});
 
-export const InArticleAd = ({ slot = "8307043387", className = "" }: SidebarAdProps) => {
+SidebarAd.displayName = 'SidebarAd';
+
+export const InArticleAd = forwardRef<HTMLDivElement, SidebarAdProps>(({ slot = "8307043387", className = "" }, ref) => {
   const [hasConsent, setHasConsent] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const adInitialized = useRef(false);
@@ -117,7 +119,7 @@ export const InArticleAd = ({ slot = "8307043387", className = "" }: SidebarAdPr
   }
 
   return (
-    <div className={`my-6 flex justify-center ${className}`}>
+    <div ref={ref} className={`my-6 flex justify-center ${className}`}>
       <ins
         className="adsbygoogle"
         style={{ 
@@ -133,7 +135,9 @@ export const InArticleAd = ({ slot = "8307043387", className = "" }: SidebarAdPr
       />
     </div>
   );
-};
+});
+
+InArticleAd.displayName = 'InArticleAd';
 
 // Anchor/Sticky ad for mobile (shows at bottom of screen)
 export const MobileAnchorAd = ({ slot = "8307043387" }: { slot?: string }) => {

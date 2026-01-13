@@ -138,7 +138,7 @@ export default function HashtagGenerator() {
         <title>Hashtag Generator Free Online - Social Media Hashtags | MyPDFs</title>
         <meta name="description" content="Free AI hashtag generator for Instagram, TikTok, Twitter, LinkedIn, and YouTube. Generate trending and relevant hashtags to boost your social media reach." />
         <meta name="keywords" content="hashtag generator, Instagram hashtags, TikTok hashtags, Twitter hashtags, social media hashtags, free hashtag tool" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/hashtag-generator" />
+        <link rel="canonical" href="https://mypdfs.in/hashtag-generator" />
       </Helmet>
       <ToolLayout
         title="Hashtag Generator"

@@ -165,7 +165,7 @@ const Calculator = () => {
         <title>Online Calculator Free - Scientific Calculator | Mypdfs</title>
         <meta name="description" content="Free online calculator with history. Perform basic and advanced calculations. Easy to use scientific calculator." />
         <meta name="keywords" content="calculator, online calculator, free calculator, math calculator, scientific calculator" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/calculator" />
+        <link rel="canonical" href="https://mypdfs.in/calculator" />
       </Helmet>
       <ToolLayout
         title="Calculator"

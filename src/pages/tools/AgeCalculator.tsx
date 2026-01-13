@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 export default function AgeCalculator() {
@@ -79,13 +80,20 @@ export default function AgeCalculator() {
   };
 
   return (
-    <ToolLayout
-      title="Age Calculator"
-      description="Calculate your exact age in years, months, days, hours, and minutes. Find your next birthday countdown."
-      icon={Calendar}
-      colorClass="bg-gradient-to-br from-pink-400 to-rose-400"
-      category="Calculators"
-    >
+    <>
+      <Helmet>
+        <title>Age Calculator Free Online - Calculate Exact Age in Years, Months, Days | MyPDFs</title>
+        <meta name="description" content="Free online age calculator. Calculate your exact age in years, months, and days. Find your next birthday countdown and total days lived." />
+        <meta name="keywords" content="age calculator, calculate age, birthday calculator, age in days, age in months, exact age calculator" />
+        <link rel="canonical" href="https://mypdfs.in/age-calculator" />
+      </Helmet>
+      <ToolLayout
+        title="Age Calculator"
+        description="Calculate your exact age in years, months, days, hours, and minutes. Find your next birthday countdown."
+        icon={Calendar}
+        colorClass="bg-gradient-to-br from-pink-400 to-rose-400"
+        category="Calculators"
+      >
       <div className="space-y-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
@@ -202,6 +210,7 @@ export default function AgeCalculator() {
           ]}
         />
       </div>
-    </ToolLayout>
+      </ToolLayout>
+    </>
   );
 }

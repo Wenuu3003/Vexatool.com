@@ -124,7 +124,7 @@ Word Count Statistics:
         <title>Word Counter Free Online - Count Words, Characters & More | MyPDFs</title>
         <meta name="description" content="Free online word counter tool. Count words, characters, sentences, paragraphs. Get reading time and check social media character limits. Instant results." />
         <meta name="keywords" content="word counter, character counter, word count, text counter, free word counter, online word counter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/word-counter" />
+        <link rel="canonical" href="https://mypdfs.in/word-counter" />
       </Helmet>
       <ToolLayout
         title="Word Counter"

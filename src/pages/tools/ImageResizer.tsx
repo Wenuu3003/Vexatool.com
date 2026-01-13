@@ -202,7 +202,7 @@ export default function ImageResizer() {
         <title>Image Resizer - Resize Images for Social Media Free | MyPDFs</title>
         <meta name="description" content="Free online image resizer. Resize images for Instagram, Facebook, Twitter, LinkedIn, YouTube, and custom dimensions. Includes passport photo sizes." />
         <meta name="keywords" content="image resizer, resize image, Instagram image size, Facebook cover size, passport photo, resize picture online" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/image-resizer" />
+        <link rel="canonical" href="https://mypdfs.in/image-resizer" />
       </Helmet>
       <ToolLayout
         title="Image Resizer"

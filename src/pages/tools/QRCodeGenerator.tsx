@@ -353,7 +353,7 @@ const QRCodeGenerator = () => {
         <title>QR Code Generator Free Online - Create Custom QR Codes | Mypdfs</title>
         <meta name="description" content="Free QR code generator. Create custom QR codes with logos and colors. Generate QR codes for URLs, text, and images instantly." />
         <meta name="keywords" content="QR code generator, create QR code, free QR code, custom QR code, QR code with logo, QR maker" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/qr-code-generator" />
+        <link rel="canonical" href="https://mypdfs.in/qr-code-generator" />
       </Helmet>
       <ToolLayout
         title="QR Code Generator"

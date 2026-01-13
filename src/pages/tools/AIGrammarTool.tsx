@@ -151,7 +151,7 @@ export default function AIGrammarTool() {
         <title>AI Grammar Checker & Text Rewriter Free Online | MyPDFs</title>
         <meta name="description" content="Free AI grammar checker and text rewriter. Fix spelling, punctuation, and grammar errors. Paraphrase, simplify, or change tone of your writing instantly." />
         <meta name="keywords" content="grammar checker, AI grammar, text rewriter, paraphrase tool, fix grammar, spelling checker, free grammar tool" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/ai-grammar-tool" />
+        <link rel="canonical" href="https://mypdfs.in/ai-grammar-tool" />
       </Helmet>
       <ToolLayout
         title="AI Grammar & Rewrite Tool"

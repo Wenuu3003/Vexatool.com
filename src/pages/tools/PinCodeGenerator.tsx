@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet";
+import ToolSEOContent from "@/components/ToolSEOContent";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
 import { 
   EXTENDED_PIN_DATABASE, 
@@ -502,39 +503,7 @@ const PinCodeGenerator = () => {
           })}
         </script>
         
-        {/* Structured Data - FAQPage */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-              {
-                "@type": "Question",
-                "name": "What is a PIN code in India?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "PIN (Postal Index Number) is a 6-digit code used by India Post to identify delivery post offices. The first digit represents the region (1-9), second digit the sub-region, third the sorting district, and last 3 digits the specific post office."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "How many PIN codes are there in India?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "India has over 155,000 post offices with unique PIN codes across 28 states and 8 Union Territories. Each PIN code covers a specific delivery area."
-                }
-              },
-              {
-                "@type": "Question",
-                "name": "How to find PIN code of a village?",
-                "acceptedAnswer": {
-                  "@type": "Answer",
-                  "text": "Use our PIN code finder tool - simply type the village name and get instant results with accurate PIN codes from India Post database."
-                }
-              }
-            ]
-          })}
-        </script>
+        {/* FAQPage schema moved to ToolSEOContent component to avoid duplication */}
         
         {/* Structured Data - BreadcrumbList */}
         <script type="application/ld+json">
@@ -1113,8 +1082,56 @@ const PinCodeGenerator = () => {
           </TabsContent>
         </Tabs>
 
-        {/* SEO Content Section */}
-        <Card className="mt-8 p-6 bg-gradient-to-r from-pink-500/5 to-purple-500/5">
+        {/* SEO Content Section with FAQ Schema */}
+        <ToolSEOContent
+          toolName="India PIN Code Finder"
+          whatIs="India PIN Code Finder is a comprehensive tool to search, generate, and lookup Indian postal codes (PIN - Postal Index Number). With access to over 155,000 post offices across 28 states and 8 Union Territories, this tool helps you find accurate PIN codes for any village, city, or district in India. It features both live India Post API integration for real-time accuracy and offline mode for fast local results."
+          howToUse={[
+            "Use the Finder tab to search any village, city, district, or state name",
+            "Enter a 6-digit PIN code in the Lookup tab to find location details",
+            "Generate random PIN codes by selecting state and district in the Generate tab",
+            "Toggle between Live mode (accurate India Post data) and Offline mode (fast local search)",
+            "View your search history and copy or share PIN codes easily"
+          ]}
+          features={[
+            "Search 155,000+ Indian post offices with live India Post data",
+            "Reverse PIN code lookup to find village, district, and state details",
+            "Generate random valid PIN codes filtered by state and district",
+            "Bulk PIN code generation for multiple locations at once",
+            "Village autocomplete with smart suggestions",
+            "Offline mode for fast searches without internet",
+            "Export results as CSV/TXT and share via WhatsApp"
+          ]}
+          safetyNote="This tool uses publicly available India Post data. No personal information is collected or stored. Your search history is saved locally on your device only and can be cleared at any time."
+          faqs={[
+            {
+              question: "What is a PIN code in India?",
+              answer: "PIN (Postal Index Number) is a 6-digit code used by India Post to identify delivery post offices. The first digit represents the region (1-9), second digit the sub-region, third the sorting district, and last 3 digits the specific post office."
+            },
+            {
+              question: "How many PIN codes are there in India?",
+              answer: "India has over 155,000 post offices with unique PIN codes across 28 states and 8 Union Territories. Each PIN code covers a specific delivery area served by a particular post office."
+            },
+            {
+              question: "How to find PIN code of a village?",
+              answer: "Use our PIN code finder tool - simply type the village name in the search box and get instant results with accurate PIN codes from our database or live India Post data."
+            },
+            {
+              question: "What do the digits in a PIN code mean?",
+              answer: "Each digit has a specific meaning: 1st digit = postal region (1-9), 2nd digit = sub-region or postal circle, 3rd digit = sorting district, and last 3 digits = specific post office identifier."
+            },
+            {
+              question: "Which states start with PIN code 1?",
+              answer: "PIN codes starting with 1 cover Delhi, Haryana, Punjab, Himachal Pradesh, and Jammu & Kashmir. Each first digit represents a specific geographical region of India."
+            },
+            {
+              question: "Is the India Post data accurate?",
+              answer: "When using Live mode, data is fetched directly from India Post servers ensuring up-to-date accuracy. Offline mode uses a comprehensive local database that is periodically updated."
+            }
+          ]}
+        />
+
+        <Card className="mt-4 p-6 bg-gradient-to-r from-pink-500/5 to-purple-500/5">
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
             <Info className="w-5 h-5 text-pink-500" />
             Complete Guide to Indian PIN Codes

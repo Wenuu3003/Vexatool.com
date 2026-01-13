@@ -189,7 +189,7 @@ const AIChat = () => {
           <title>AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs</title>
           <meta name="description" content="Free AI chat assistant for instant answers to your questions. Get help with writing, research, explanations, and more. Powered by advanced AI technology." />
           <meta name="keywords" content="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help" />
-          <link rel="canonical" href="https://mypdfs.lovable.app/ai-chat" />
+          <link rel="canonical" href="https://mypdfs.in/ai-chat" />
         </Helmet>
         <ToolLayout
           title="AI Chat Assistant"
@@ -224,7 +224,7 @@ const AIChat = () => {
         <title>AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs</title>
         <meta name="description" content="Free AI chat assistant for instant answers to your questions. Get help with writing, research, explanations, and more. Powered by advanced AI technology." />
         <meta name="keywords" content="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/ai-chat" />
+        <link rel="canonical" href="https://mypdfs.in/ai-chat" />
       </Helmet>
       <ToolLayout
         title="AI Chat Assistant"

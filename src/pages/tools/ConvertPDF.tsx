@@ -128,7 +128,7 @@ The PDF contains ${pageCount} page(s).\\par
         <title>PDF to Word Converter Free Online - Convert PDF to DOC | Mypdfs</title>
         <meta name="description" content="Free PDF to Word converter. Convert PDF documents to editable Word files online. No registration, instant conversion." />
         <meta name="keywords" content="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-word" />
+        <link rel="canonical" href="https://mypdfs.in/pdf-to-word" />
       </Helmet>
       <ToolLayout
         title="PDF to Word"

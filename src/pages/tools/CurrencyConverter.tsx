@@ -149,7 +149,7 @@ const CurrencyConverter = () => {
         <title>Currency Converter Free Online - Exchange Rates | Mypdfs</title>
         <meta name="description" content="Free currency converter with real-time exchange rates. Convert between USD, EUR, GBP, and 15+ world currencies instantly." />
         <meta name="keywords" content="currency converter, exchange rate, money converter, forex, USD to EUR, free currency calculator" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/currency-converter" />
+        <link rel="canonical" href="https://mypdfs.in/currency-converter" />
       </Helmet>
       <ToolLayout
         title="Currency Converter"

@@ -7,6 +7,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { CookieConsent } from "./components/CookieConsent";
 import { AdSenseLoader } from "./components/AdSenseLoader";
+import { GoogleAnalyticsScript, useGoogleAnalytics } from "./components/GoogleAnalytics";
+
+// Analytics tracker component that uses the hook
+const AnalyticsTracker = () => {
+  useGoogleAnalytics();
+  return null;
+};
 
 // Eagerly load Index for fast initial render
 import Index from "./pages/Index";
@@ -111,6 +118,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <GoogleAnalyticsScript />
+          <AnalyticsTracker />
           <AdSenseLoader />
           <Suspense fallback={<PageLoader />}>
             <Routes>

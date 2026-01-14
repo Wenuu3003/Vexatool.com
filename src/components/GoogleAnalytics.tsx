@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // Google Analytics Measurement ID - replace with your actual ID
-const GA_MEASUREMENT_ID = 'G-637SSN6MXQ';
+const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
 
 declare global {
   interface Window {
@@ -78,12 +78,3 @@ export const trackToolUsage = (toolName: string, action: string) => {
     timestamp: new Date().toISOString(),
   });
 };
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-637SSN6MXQ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-637SSN6MXQ');
-</script>

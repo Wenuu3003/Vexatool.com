@@ -163,7 +163,13 @@ export default function Account() {
       // Log the delete action before deleting
       await logAuditEvent({ action_type: 'profile_delete' });
 
-      // Delete user files first
+      // Delete audit logs first (GDPR compliance - right to erasure)
+      await supabase
+        .from('audit_log')
+        .delete()
+        .eq('user_id', user.id);
+
+      // Delete user files
       await supabase
         .from('user_files')
         .delete()

@@ -31,8 +31,8 @@ function isRateLimited(ip: string): boolean {
 function sanitizeInput(text: string): string {
   if (!text || typeof text !== 'string') return '';
   
-  // Limit to 50000 characters (reasonable for chat analysis)
-  const limited = text.slice(0, 50000);
+  // Limit to 15000 characters (reasonable for chat analysis, prevents resource exhaustion)
+  const limited = text.slice(0, 15000);
   
   // Remove potential script tags and dangerous patterns
   return limited

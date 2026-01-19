@@ -17,20 +17,20 @@ interface AuditLogEntry {
 
 export async function logAuditEvent(entry: AuditLogEntry): Promise<void> {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { session } } = await supabase.auth.getSession();
     
-    if (!user) {
-      console.warn('Cannot log audit event: no authenticated user');
+    if (!session) {
+      console.warn('Cannot log audit event: no authenticated session');
       return;
     }
 
-    const { error } = await supabase
-      .from('audit_log')
-      .insert([{
-        user_id: user.id,
+    // Call edge function to log audit event securely
+    const { error } = await supabase.functions.invoke('audit-log', {
+      body: {
         action_type: entry.action_type,
         action_details: entry.action_details ?? null,
-      }]);
+      },
+    });
 
     if (error) {
       console.error('Failed to log audit event:', error.message);

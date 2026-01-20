@@ -81,6 +81,7 @@
     "vaul": "^0.9.9",
     "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.0.17",
+    "xlsx": "^0.18.5",
     "zod": "^3.25.76"
   },
   "devDependencies": {

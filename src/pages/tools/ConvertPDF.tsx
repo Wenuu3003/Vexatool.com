@@ -1,21 +1,81 @@
-import { useState } from "react";
-import { FileType2, Download, FileText } from "lucide-react";
+import { useState, useCallback } from "react";
+import { FileType2, Download, FileText, CheckCircle, Shield, Clock, Eye } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { Progress } from "@/components/ui/progress";
 import { PDFDocument } from "pdf-lib";
+import * as pdfjsLib from "pdfjs-dist";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
+// Set up PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs`;
+
 const ConvertPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [extractedText, setExtractedText] = useState<string>("");
+  const [pageCount, setPageCount] = useState(0);
   const { toast } = useToast();
   const { saveFileHistory } = useFileHistory();
+
+  const handleFilesChange = async (newFiles: File[]) => {
+    setFiles(newFiles);
+    setExtractedText("");
+    setProgress(0);
+    
+    if (newFiles.length > 0) {
+      try {
+        const arrayBuffer = await newFiles[0].arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        setPageCount(pdfDoc.getPageCount());
+      } catch {
+        setPageCount(0);
+      }
+    } else {
+      setPageCount(0);
+    }
+  };
+
+  const extractTextFromPDF = useCallback(async (file: File): Promise<string[]> => {
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const pageTexts: string[] = [];
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      setProgress((i / pdf.numPages) * 70);
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      
+      // Extract text preserving structure
+      let lastY = -1;
+      let pageText = '';
+      
+      for (const item of textContent.items as { str: string; transform: number[] }[]) {
+        const currentY = Math.round(item.transform[5]);
+        
+        // New line detection
+        if (lastY !== -1 && Math.abs(currentY - lastY) > 5) {
+          pageText += '\n';
+        } else if (pageText.length > 0 && !pageText.endsWith(' ') && !pageText.endsWith('\n')) {
+          pageText += ' ';
+        }
+        
+        pageText += item.str;
+        lastY = currentY;
+      }
+      
+      pageTexts.push(pageText.trim());
+    }
+    
+    return pageTexts;
+  }, []);
 
   const handleProcess = async () => {
     if (files.length === 0) {
@@ -28,65 +88,90 @@ const ConvertPDF = () => {
     }
 
     setIsProcessing(true);
+    setProgress(0);
 
     try {
-      const arrayBuffer = await files[0].arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
+      // Extract text from PDF
+      const pageTexts = await extractTextFromPDF(files[0]);
+      const fullText = pageTexts.join('\n\n---\n\n');
+      setExtractedText(fullText.substring(0, 500) + (fullText.length > 500 ? '...' : ''));
       
-      // Get PDF info
-      const pageCount = pdfDoc.getPageCount();
-      const title = pdfDoc.getTitle() || files[0].name.replace('.pdf', '');
-      const author = pdfDoc.getAuthor() || 'Unknown';
-      const creationDate = pdfDoc.getCreationDate();
-      
-      // Create a text document with PDF info
-      // Note: Full text extraction requires server-side processing
-      // This is a basic extraction showing document structure
-      let textContent = `Document: ${title}\n`;
-      textContent += `Author: ${author}\n`;
-      textContent += `Pages: ${pageCount}\n`;
-      textContent += `Created: ${creationDate ? creationDate.toLocaleDateString() : 'Unknown'}\n\n`;
-      textContent += `---\n\n`;
-      textContent += `Note: For full text extraction with formatting, advanced OCR processing would be required.\n\n`;
-      textContent += `This PDF contains ${pageCount} page(s).\n`;
+      setProgress(80);
 
-      // Create Word-like document (RTF format which Word can open)
-      const rtfContent = `{\\rtf1\\ansi\\deff0
-{\\fonttbl{\\f0 Arial;}}
-{\\colortbl;\\red0\\green0\\blue0;}
-\\paperw12240\\paperh15840\\margl1440\\margr1440\\margt1440\\margb1440
-\\pard\\qc\\b\\fs32 ${title}\\b0\\par
-\\pard\\par
-\\fs24 Author: ${author}\\par
-Pages: ${pageCount}\\par
-Created: ${creationDate ? creationDate.toLocaleDateString() : 'Unknown'}\\par
-\\par
----\\par
-\\par
-This document was converted from PDF.\\par
-The PDF contains ${pageCount} page(s).\\par
-}`;
+      // Create Word document using docx library
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: [
+            // Title
+            new Paragraph({
+              text: files[0].name.replace('.pdf', ''),
+              heading: HeadingLevel.TITLE,
+              spacing: { after: 400 },
+            }),
+            // Metadata
+            new Paragraph({
+              children: [
+                new TextRun({ text: `Converted from PDF • ${pageCount} page(s)`, italics: true, size: 20 }),
+              ],
+              spacing: { after: 400 },
+            }),
+            // Content from each page
+            ...pageTexts.flatMap((pageText, index) => {
+              const paragraphs: Paragraph[] = [];
+              
+              // Page separator (except for first page)
+              if (index > 0) {
+                paragraphs.push(
+                  new Paragraph({
+                    children: [new TextRun({ text: `— Page ${index + 1} —`, bold: true })],
+                    spacing: { before: 400, after: 200 },
+                  })
+                );
+              }
+              
+              // Split text into paragraphs
+              const textParagraphs = pageText.split('\n').filter(p => p.trim());
+              textParagraphs.forEach(text => {
+                paragraphs.push(
+                  new Paragraph({
+                    children: [new TextRun({ text: text.trim(), size: 24 })],
+                    spacing: { after: 120 },
+                  })
+                );
+              });
+              
+              return paragraphs;
+            }),
+          ],
+        }],
+      });
 
-      setExtractedText(textContent);
+      setProgress(90);
 
-      // Download as RTF (can be opened by Word)
-      const blob = new Blob([rtfContent], { type: "application/rtf" });
+      // Generate and download DOCX
+      const blob = await Packer.toBlob(doc);
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${files[0].name.replace('.pdf', '')}.rtf`;
+      link.download = `${files[0].name.replace('.pdf', '')}.docx`;
       link.click();
       URL.revokeObjectURL(url);
 
-      await saveFileHistory(files[0].name, "pdf", "convert");
+      setProgress(100);
+      
+      await saveFileHistory(files[0].name, "pdf", "pdf-to-word");
 
       toast({
-        title: "Success!",
-        description: "PDF converted to RTF format (opens in Word)",
+        title: "Conversion Complete!",
+        description: `Successfully converted ${pageCount} page(s) to Word document.`,
       });
     } catch (error) {
+      if (import.meta.env.DEV) {
+        console.error("Conversion error:", error);
+      }
       toast({
-        title: "Error",
+        title: "Conversion Error",
         description: "Failed to convert PDF. Please try again.",
         variant: "destructive",
       });
@@ -95,40 +180,13 @@ The PDF contains ${pageCount} page(s).\\par
     }
   };
 
-  const seoContent = {
-    toolName: "PDF to Word Converter",
-    whatIs: "PDF to Word Converter is a free online tool that converts PDF documents into editable Word files. This allows you to edit, modify, and reuse content from PDF documents in word processing applications like Microsoft Word, Google Docs, or LibreOffice. The converter extracts document metadata and creates an RTF file that maintains compatibility across different word processors.",
-    howToUse: [
-      "Upload your PDF file by clicking the upload area or dragging and dropping.",
-      "Review the conversion information displayed.",
-      "Click 'Convert & Download' to process the PDF.",
-      "Your converted RTF file will download automatically.",
-      "Open the RTF file in Microsoft Word, Google Docs, or any word processor."
-    ],
-    features: [
-      "Converts PDF to RTF format (universally compatible)",
-      "Extracts document metadata (title, author, date)",
-      "Works with Microsoft Word, Google Docs, and other word processors",
-      "Fast client-side processing",
-      "No registration or login required",
-      "Maintains document structure information"
-    ],
-    safetyNote: "Your PDF files are processed entirely in your browser. No documents are uploaded to any server, ensuring complete privacy. The conversion happens locally on your device, and both original and converted files remain under your control.",
-    faqs: [
-      { question: "Why is the file converted to RTF instead of DOCX?", answer: "RTF (Rich Text Format) is universally compatible with all word processors including Microsoft Word, Google Docs, and LibreOffice. It can be opened and edited anywhere without compatibility issues." },
-      { question: "Will all my PDF content be converted?", answer: "The tool extracts document metadata and structure information. For complex PDFs with advanced formatting, some manual adjustment may be needed after conversion." },
-      { question: "Can I edit the converted document?", answer: "Yes! The RTF file opens in any word processor and is fully editable. You can modify text, formatting, and content as needed." },
-      { question: "What about images in my PDF?", answer: "This basic converter focuses on document structure and metadata. For PDFs with complex images and layouts, additional processing may be needed to preserve all visual elements." }
-    ]
-  };
-
   return (
     <>
       <Helmet>
-        <title>PDF to Word Converter Free Online - Convert PDF to DOC | Mypdfs</title>
-        <meta name="description" content="Free PDF to Word converter. Convert PDF documents to editable Word files online. No registration, instant conversion." />
-        <meta name="keywords" content="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word" />
-        <link rel="canonical" href="https://mypdfs.in/pdf-to-word" />
+        <title>PDF to Word Converter Free Online - Convert PDF to DOCX | Mypdfs</title>
+        <meta name="description" content="Free PDF to Word converter. Convert PDF documents to editable DOCX files online. Full text extraction with formatting preserved. No registration required." />
+        <meta name="keywords" content="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word, extract text from PDF" />
+        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-word" />
       </Helmet>
       <ToolLayout
         title="PDF to Word"
@@ -136,58 +194,161 @@ The PDF contains ${pageCount} page(s).\\par
         icon={FileType2}
         colorClass="bg-tool-convert"
       >
-      <div className="space-y-6">
-        <AdPlaceholder className="h-20" />
-        
-        <FileUpload
-          files={files}
-          onFilesChange={(newFiles) => {
-            setFiles(newFiles);
-            setExtractedText("");
-          }}
-          colorClass="bg-tool-convert"
-          multiple={false}
-        />
-
-        {files.length > 0 && (
-          <div className="max-w-2xl mx-auto space-y-4">
-            <div className="bg-card p-4 rounded-lg border border-border">
-              <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                Conversion Info
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Your PDF will be converted to RTF format, which can be opened and edited in Microsoft Word, Google Docs, and other word processors.
-              </p>
-            </div>
-
-            {extractedText && (
-              <div className="bg-card p-4 rounded-lg border border-border">
-                <h4 className="font-medium text-foreground mb-2">Document Info:</h4>
-                <pre className="text-sm text-muted-foreground whitespace-pre-wrap">{extractedText}</pre>
-              </div>
-            )}
-
-            <Button
-              onClick={handleProcess}
-              disabled={isProcessing}
-              className="w-full bg-tool-convert hover:bg-tool-convert/90"
-            >
-              {isProcessing ? (
-                "Converting..."
-              ) : (
-                <>
-                  <Download className="w-4 h-4 mr-2" />
-                  Convert & Download
-                </>
-              )}
-            </Button>
+        <div className="max-w-3xl mx-auto space-y-6">
+          {/* Introduction */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+            <h2 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
+              <FileType2 className="w-5 h-5 text-blue-600" />
+              Convert PDF to Editable Word Document
+            </h2>
+            <p className="text-muted-foreground">
+              Transform your PDF files into fully editable Word documents (.docx). Our converter extracts 
+              text from all pages while preserving paragraph structure, making it easy to edit, modify, 
+              and reuse content from your PDF files.
+            </p>
           </div>
-        )}
-        
-        <AdPlaceholder className="h-20" />
-      </div>
-      <ToolSEOContent {...seoContent} />
+
+          {/* Benefits */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: CheckCircle, text: "Full text extraction" },
+              { icon: FileText, text: "DOCX format" },
+              { icon: Shield, text: "Secure & private" },
+              { icon: Clock, text: "Fast conversion" },
+            ].map((benefit, index) => (
+              <div key={index} className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border">
+                <benefit.icon className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                <span className="text-sm text-foreground">{benefit.text}</span>
+              </div>
+            ))}
+          </div>
+          
+          <AdPlaceholder className="h-20" />
+          
+          <FileUpload
+            files={files}
+            onFilesChange={handleFilesChange}
+            colorClass="bg-tool-convert"
+            multiple={false}
+            accept=".pdf"
+          />
+
+          {files.length > 0 && (
+            <div className="space-y-4">
+              {/* File Info */}
+              <div className="bg-card p-4 rounded-lg border border-border">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-8 h-8 text-blue-600" />
+                  <div>
+                    <p className="font-medium text-foreground">{files[0].name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {pageCount} page(s) • {(files[0].size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Progress */}
+              {isProcessing && (
+                <div className="space-y-2">
+                  <Progress value={progress} className="h-2" />
+                  <p className="text-sm text-center text-muted-foreground">
+                    {progress < 70 ? "Extracting text..." : progress < 90 ? "Creating Word document..." : "Finalizing..."}
+                  </p>
+                </div>
+              )}
+
+              {/* Preview */}
+              {extractedText && !isProcessing && (
+                <div className="bg-card p-4 rounded-lg border border-border">
+                  <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    Text Preview
+                  </h4>
+                  <pre className="text-sm text-muted-foreground whitespace-pre-wrap max-h-40 overflow-auto">
+                    {extractedText}
+                  </pre>
+                </div>
+              )}
+
+              <Button
+                onClick={handleProcess}
+                disabled={isProcessing}
+                className="w-full bg-tool-convert hover:bg-tool-convert/90"
+                size="lg"
+              >
+                {isProcessing ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                    Converting...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 mr-2" />
+                    Convert to Word (.docx)
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+
+          {/* Security Note */}
+          <div className="bg-blue-50/50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+            <div className="flex items-start gap-3">
+              <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-foreground">Your Privacy is Protected</h4>
+                <p className="text-sm text-muted-foreground">
+                  All conversion happens locally in your browser. Your PDF files are never uploaded 
+                  to any server, ensuring complete privacy and security of your documents.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <AdPlaceholder className="h-20" />
+          
+          <ToolSEOContent
+            toolName="PDF to Word Converter"
+            whatIs="The PDF to Word Converter is a powerful online tool that transforms PDF documents into fully editable Microsoft Word files (.docx). Using advanced text extraction technology, this converter analyzes each page of your PDF, identifies text content and paragraph structure, and recreates it as a properly formatted Word document. Whether you need to edit a contract, modify a report, or reuse content from a PDF, this tool makes your PDF content accessible and editable in any word processor including Microsoft Word, Google Docs, and LibreOffice Writer."
+            howToUse={[
+              "Click the upload area or drag and drop your PDF file to begin.",
+              "Wait for the file to be analyzed - you'll see the page count displayed.",
+              "Click 'Convert to Word (.docx)' to start the conversion process.",
+              "Preview the extracted text to verify the conversion quality.",
+              "Download your DOCX file and open it in Microsoft Word or any compatible word processor."
+            ]}
+            features={[
+              "Full text extraction from all PDF pages with paragraph preservation",
+              "Creates genuine DOCX files compatible with Microsoft Word, Google Docs, and more",
+              "Multi-page PDF support with clear page separation in output",
+              "Real-time progress tracking during conversion",
+              "Text preview before download to verify extraction quality",
+              "Local browser processing - no server uploads for complete privacy",
+              "Maintains paragraph structure and text flow from the original PDF",
+              "Free to use with no registration or account required"
+            ]}
+            safetyNote="Your PDF files are processed entirely in your browser using secure client-side JavaScript technology. No documents are uploaded to external servers, ensuring the complete privacy and confidentiality of your files. The original PDF remains unchanged on your device, and both the source file and converted Word document stay under your full control."
+            faqs={[
+              { 
+                question: "Will all formatting from my PDF be preserved?", 
+                answer: "Text content and paragraph structure are preserved. Complex formatting like tables, images, and special layouts may require manual adjustment in the Word document. The converter focuses on extracting editable text accurately." 
+              },
+              { 
+                question: "Can I convert scanned PDFs to Word?", 
+                answer: "This tool works best with text-based PDFs where the text is selectable. Scanned PDFs (which are essentially images) require OCR technology. For scanned documents, consider using a dedicated OCR service first." 
+              },
+              { 
+                question: "What about images and graphics in my PDF?", 
+                answer: "Currently, the converter extracts text content only. Images, charts, and graphics are not transferred to the Word document. For PDFs with important visual elements, you may need to add them manually after conversion." 
+              },
+              { 
+                question: "Is there a page limit for conversion?", 
+                answer: "There's no strict page limit, but very large PDFs (100+ pages) may take longer to process. The conversion happens in your browser, so performance depends on your device's capabilities." 
+              }
+            ]}
+          />
+        </div>
       </ToolLayout>
     </>
   );

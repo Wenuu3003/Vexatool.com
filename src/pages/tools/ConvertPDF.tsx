@@ -13,8 +13,11 @@ import { AdPlaceholder } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
-// Set up PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs`;
+// Set up PDF.js worker using the installed package version
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
 
 const ConvertPDF = () => {
   const [files, setFiles] = useState<File[]>([]);

@@ -149,13 +149,21 @@ serve(async (req) => {
     const data = await response.json();
     console.log("Perplexity search successful for user:", user.id);
 
-    // Log audit event for successful AI search
+    // Log audit event via the secure audit-log Edge Function
     try {
-      await supabaseClient.from('audit_log').insert([{
-        user_id: user.id,
-        action_type: 'ai_search',
-        action_details: { query_length: trimmedQuery.length },
-      }]);
+      const auditUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/audit-log`;
+      await fetch(auditUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': authHeader,
+          'Content-Type': 'application/json',
+          'apikey': Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+        },
+        body: JSON.stringify({
+          action_type: 'ai_search',
+          action_details: { query_length: trimmedQuery.length }
+        })
+      });
     } catch (auditErr) {
       console.error("Failed to log audit event:", auditErr);
     }

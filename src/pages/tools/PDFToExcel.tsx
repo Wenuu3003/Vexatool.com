@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Table, Download, Upload, Info, FileSpreadsheet, Shield, CheckCircle, Clock, Trash2 } from "lucide-react";
+import { Table, Download, Upload, Info, FileSpreadsheet, Shield, CheckCircle, Clock, Trash2, Plus, X } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
@@ -21,56 +21,94 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
+interface BatchFile {
+  file: File;
+  pageCount: number;
+  status: 'pending' | 'processing' | 'done' | 'error';
+  progress: number;
+}
+
 const PDFToExcel = () => {
   const [files, setFiles] = useState<File[]>([]);
+  const [batchFiles, setBatchFiles] = useState<BatchFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [pageCount, setPageCount] = useState<number>(0);
   const [extractedData, setExtractedData] = useState<string[][]>([]);
   const [preserveFormatting, setPreserveFormatting] = useState(true);
   const [detectTables, setDetectTables] = useState(true);
+  const [batchMode, setBatchMode] = useState(false);
   const { saveFileHistory } = useFileHistory();
 
   const handleFilesChange = async (newFiles: File[]) => {
-    setFiles(newFiles);
-    setExtractedData([]);
-    setProgress(0);
-    if (newFiles.length > 0) {
-      try {
-        const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdfDoc = await PDFDocument.load(arrayBuffer);
-        setPageCount(pdfDoc.getPageCount());
-      } catch (error) {
-        if (import.meta.env.DEV) {
-          console.error("Error loading PDF:", error);
+    if (batchMode) {
+      // Batch mode - add multiple files
+      const newBatchFiles: BatchFile[] = [];
+      for (const file of newFiles) {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdfDoc = await PDFDocument.load(arrayBuffer);
+          newBatchFiles.push({
+            file,
+            pageCount: pdfDoc.getPageCount(),
+            status: 'pending',
+            progress: 0
+          });
+        } catch {
+          toast({
+            title: "Error loading file",
+            description: `Failed to load ${file.name}`,
+            variant: "destructive",
+          });
         }
+      }
+      setBatchFiles(prev => [...prev, ...newBatchFiles]);
+    } else {
+      // Single file mode
+      setFiles(newFiles);
+      setExtractedData([]);
+      setProgress(0);
+      if (newFiles.length > 0) {
+        try {
+          const arrayBuffer = await newFiles[0].arrayBuffer();
+          const pdfDoc = await PDFDocument.load(arrayBuffer);
+          setPageCount(pdfDoc.getPageCount());
+        } catch (error) {
+          if (import.meta.env.DEV) {
+            console.error("Error loading PDF:", error);
+          }
+          setPageCount(0);
+        }
+      } else {
         setPageCount(0);
       }
-    } else {
-      setPageCount(0);
     }
   };
 
-  const extractTextFromPDF = useCallback(async (file: File): Promise<string[][]> => {
+  const removeBatchFile = (index: number) => {
+    setBatchFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<string[][]> => {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const allData: string[][] = [];
     
     for (let i = 1; i <= pdf.numPages; i++) {
-      setProgress((i / pdf.numPages) * 80);
+      if (onProgress) onProgress((i / pdf.numPages) * 80);
+      else setProgress((i / pdf.numPages) * 80);
+      
       const page = await pdf.getPage(i);
       const textContent = await page.getTextContent();
       
-      // Extract text items with positions
       const items = textContent.items as { str: string; transform: number[] }[];
       
       if (detectTables) {
-        // Group text by Y position (rows)
         const rows: Map<number, { x: number; text: string }[]> = new Map();
         
         items.forEach((item) => {
           if (item.str.trim()) {
-            const y = Math.round(item.transform[5] / 5) * 5; // Round to nearest 5 for grouping
+            const y = Math.round(item.transform[5] / 5) * 5;
             const x = item.transform[4];
             
             if (!rows.has(y)) {
@@ -80,13 +118,10 @@ const PDFToExcel = () => {
           }
         });
         
-        // Sort rows by Y position (descending - PDF coordinates)
         const sortedRows = Array.from(rows.entries())
           .sort((a, b) => b[0] - a[0]);
         
-        // Convert to 2D array
         sortedRows.forEach(([, cells]) => {
-          // Sort cells by X position
           cells.sort((a, b) => a.x - b.x);
           const rowData = cells.map(c => c.text);
           if (rowData.length > 0) {
@@ -94,7 +129,6 @@ const PDFToExcel = () => {
           }
         });
       } else {
-        // Simple line-by-line extraction
         let currentLine = "";
         items.forEach((item) => {
           if (item.str.trim()) {
@@ -106,7 +140,6 @@ const PDFToExcel = () => {
         }
       }
       
-      // Add page separator
       if (i < pdf.numPages) {
         allData.push([`--- Page ${i + 1} ---`]);
       }
@@ -114,6 +147,37 @@ const PDFToExcel = () => {
     
     return allData;
   }, [detectTables]);
+
+  const createExcelFromData = useCallback((data: string[][], fileName: string) => {
+    const wb = XLSX.utils.book_new();
+    const maxCols = Math.max(...data.map(row => row.length), 1);
+    const normalizedData = data.map(row => {
+      const newRow = [...row];
+      while (newRow.length < maxCols) {
+        newRow.push("");
+      }
+      return newRow;
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(normalizedData);
+    
+    if (preserveFormatting) {
+      const colWidths: { wch: number }[] = [];
+      for (let i = 0; i < maxCols; i++) {
+        let maxWidth = 10;
+        normalizedData.forEach(row => {
+          if (row[i] && row[i].length > maxWidth) {
+            maxWidth = Math.min(row[i].length, 50);
+          }
+        });
+        colWidths.push({ wch: maxWidth });
+      }
+      ws['!cols'] = colWidths;
+    }
+    
+    XLSX.utils.book_append_sheet(wb, ws, "Extracted Data");
+    return XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  }, [preserveFormatting]);
 
   const handleConvert = async () => {
     if (files.length === 0) {
@@ -129,48 +193,13 @@ const PDFToExcel = () => {
     setProgress(0);
 
     try {
-      // Extract data from PDF
       const data = await extractTextFromPDF(files[0]);
       setExtractedData(data);
       setProgress(90);
 
-      // Create Excel workbook
-      const wb = XLSX.utils.book_new();
-      
-      // Normalize rows to have consistent column count
-      const maxCols = Math.max(...data.map(row => row.length), 1);
-      const normalizedData = data.map(row => {
-        const newRow = [...row];
-        while (newRow.length < maxCols) {
-          newRow.push("");
-        }
-        return newRow;
-      });
-      
-      const ws = XLSX.utils.aoa_to_sheet(normalizedData);
-      
-      // Set column widths
-      if (preserveFormatting) {
-        const colWidths: { wch: number }[] = [];
-        for (let i = 0; i < maxCols; i++) {
-          let maxWidth = 10;
-          normalizedData.forEach(row => {
-            if (row[i] && row[i].length > maxWidth) {
-              maxWidth = Math.min(row[i].length, 50);
-            }
-          });
-          colWidths.push({ wch: maxWidth });
-        }
-        ws['!cols'] = colWidths;
-      }
-      
-      XLSX.utils.book_append_sheet(wb, ws, "Extracted Data");
-      
-      // Generate Excel file
-      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const excelBuffer = createExcelFromData(data, files[0].name);
       const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       
-      // Download
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -179,7 +208,6 @@ const PDFToExcel = () => {
       URL.revokeObjectURL(url);
       
       setProgress(100);
-      
       await saveFileHistory(files[0].name, "pdf", "pdf-to-excel");
 
       toast({
@@ -201,8 +229,65 @@ const PDFToExcel = () => {
     }
   };
 
+  const handleBatchConvert = async () => {
+    if (batchFiles.length === 0) {
+      toast({
+        title: "No files selected",
+        description: "Please add PDF files to convert.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+    let successCount = 0;
+
+    for (let i = 0; i < batchFiles.length; i++) {
+      const bf = batchFiles[i];
+      setBatchFiles(prev => prev.map((f, idx) => 
+        idx === i ? { ...f, status: 'processing' } : f
+      ));
+
+      try {
+        const data = await extractTextFromPDF(bf.file, (p) => {
+          setBatchFiles(prev => prev.map((f, idx) => 
+            idx === i ? { ...f, progress: p } : f
+          ));
+        });
+
+        const excelBuffer = createExcelFromData(data, bf.file.name);
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = bf.file.name.replace('.pdf', '.xlsx');
+        link.click();
+        URL.revokeObjectURL(url);
+
+        setBatchFiles(prev => prev.map((f, idx) => 
+          idx === i ? { ...f, status: 'done', progress: 100 } : f
+        ));
+        
+        await saveFileHistory(bf.file.name, "pdf", "pdf-to-excel-batch");
+        successCount++;
+      } catch {
+        setBatchFiles(prev => prev.map((f, idx) => 
+          idx === i ? { ...f, status: 'error' } : f
+        ));
+      }
+    }
+
+    setIsProcessing(false);
+    toast({
+      title: "Batch Conversion Complete!",
+      description: `Successfully converted ${successCount} of ${batchFiles.length} files.`,
+    });
+  };
+
   const handleReset = () => {
     setFiles([]);
+    setBatchFiles([]);
     setExtractedData([]);
     setProgress(0);
     setPageCount(0);
@@ -211,9 +296,9 @@ const PDFToExcel = () => {
   return (
     <>
       <Helmet>
-        <title>PDF to Excel Converter Online – Secure & Accurate | Mypdfs</title>
-        <meta name="description" content="Convert PDF to Excel online. Extract tables, use OCR for scanned PDFs, and download clean Excel sheets securely. Free and easy PDF to Excel tool." />
-        <meta name="keywords" content="PDF to Excel, PDF to XLS, extract PDF tables, PDF to spreadsheet, free PDF to Excel, convert PDF tables" />
+        <title>PDF to Excel Converter Online – Batch Processing & Secure | Mypdfs</title>
+        <meta name="description" content="Convert PDF to Excel online with batch processing. Extract tables from multiple PDFs at once. Free and secure PDF to Excel tool." />
+        <meta name="keywords" content="PDF to Excel, PDF to XLS, batch PDF convert, extract PDF tables, PDF to spreadsheet, free PDF to Excel, convert PDF tables" />
         <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-excel" />
       </Helmet>
       <ToolLayout
@@ -231,17 +316,16 @@ const PDFToExcel = () => {
             </h2>
             <p className="text-muted-foreground">
               This PDF to Excel converter helps users extract tables and structured data from PDF documents 
-              and convert them into editable Excel spreadsheets. It is designed for students, professionals, 
-              accountants, and data analysts who need accurate and fast document conversion.
+              and convert them into editable Excel spreadsheets. Supports batch processing for multiple files.
             </p>
           </div>
 
           {/* Benefits Section */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: CheckCircle, text: "No registration required" },
-              { icon: Shield, text: "Secure file processing" },
-              { icon: Upload, text: "Works on desktop & mobile" },
+              { icon: CheckCircle, text: "Batch processing" },
+              { icon: Shield, text: "Secure processing" },
+              { icon: Upload, text: "Multiple files" },
               { icon: Clock, text: "Fast conversion" },
             ].map((benefit, index) => (
               <div key={index} className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border">
@@ -251,18 +335,72 @@ const PDFToExcel = () => {
             ))}
           </div>
 
+          {/* Mode Toggle */}
+          <div className="flex items-center justify-center gap-4 p-4 bg-muted/30 rounded-lg">
+            <Button 
+              variant={!batchMode ? "default" : "outline"}
+              onClick={() => { setBatchMode(false); handleReset(); }}
+            >
+              Single File
+            </Button>
+            <Button 
+              variant={batchMode ? "default" : "outline"}
+              onClick={() => { setBatchMode(true); handleReset(); }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Batch Processing
+            </Button>
+          </div>
+
           {/* File Upload */}
           <FileUpload
-            files={files}
+            files={batchMode ? [] : files}
             onFilesChange={handleFilesChange}
             colorClass="bg-green-500"
             accept=".pdf"
-            multiple={false}
+            multiple={batchMode}
           />
 
-          {files.length > 0 && (
+          {/* Batch Files List */}
+          {batchMode && batchFiles.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="font-semibold text-foreground">Files to Convert ({batchFiles.length})</h3>
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {batchFiles.map((bf, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-card rounded-lg border border-border">
+                    <Table className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate text-foreground">{bf.file.name}</p>
+                      <p className="text-xs text-muted-foreground">{bf.pageCount} pages</p>
+                      {bf.status === 'processing' && (
+                        <Progress value={bf.progress} className="h-1 mt-1" />
+                      )}
+                    </div>
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      bf.status === 'done' ? 'bg-green-100 text-green-700' :
+                      bf.status === 'error' ? 'bg-red-100 text-red-700' :
+                      bf.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {bf.status === 'done' ? 'Done' :
+                       bf.status === 'error' ? 'Error' :
+                       bf.status === 'processing' ? 'Converting...' :
+                       'Pending'}
+                    </span>
+                    {bf.status === 'pending' && (
+                      <Button variant="ghost" size="sm" onClick={() => removeBatchFile(index)}>
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Single File Mode */}
+          {!batchMode && files.length > 0 && (
             <div className="space-y-4">
-              {/* File Info */}
               <div className="bg-card p-4 rounded-lg border border-border">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -281,34 +419,6 @@ const PDFToExcel = () => {
                 </div>
               </div>
 
-              {/* Conversion Options */}
-              <div className="bg-card p-4 rounded-lg border border-border space-y-4">
-                <h3 className="font-semibold text-foreground">Conversion Options</h3>
-                <div className="flex flex-wrap gap-6">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="detectTables" 
-                      checked={detectTables}
-                      onCheckedChange={(checked) => setDetectTables(checked as boolean)}
-                    />
-                    <Label htmlFor="detectTables" className="text-sm">
-                      Detect table structure
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="preserveFormatting" 
-                      checked={preserveFormatting}
-                      onCheckedChange={(checked) => setPreserveFormatting(checked as boolean)}
-                    />
-                    <Label htmlFor="preserveFormatting" className="text-sm">
-                      Auto-fit column widths
-                    </Label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Progress Bar */}
               {isProcessing && (
                 <div className="space-y-2">
                   <Progress value={progress} className="h-2" />
@@ -318,7 +428,6 @@ const PDFToExcel = () => {
                 </div>
               )}
 
-              {/* Preview */}
               {extractedData.length > 0 && !isProcessing && (
                 <div className="bg-card p-4 rounded-lg border border-border">
                   <h3 className="font-semibold text-foreground mb-3">Preview (first 10 rows)</h3>
@@ -337,124 +446,96 @@ const PDFToExcel = () => {
                       </tbody>
                     </table>
                   </div>
-                  {extractedData.length > 10 && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      ... and {extractedData.length - 10} more rows
-                    </p>
-                  )}
                 </div>
               )}
+            </div>
+          )}
 
-              {/* Convert Button */}
-              <div className="text-center">
-                <Button
-                  size="lg"
-                  onClick={handleConvert}
-                  disabled={isProcessing}
-                  className="gap-2 bg-green-600 hover:bg-green-700"
-                >
-                  {isProcessing ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                      Converting...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-5 h-5" />
-                      Convert to Excel
-                    </>
-                  )}
-                </Button>
+          {/* Conversion Options */}
+          {((batchMode && batchFiles.length > 0) || (!batchMode && files.length > 0)) && (
+            <div className="bg-card p-4 rounded-lg border border-border space-y-4">
+              <h3 className="font-semibold text-foreground">Conversion Options</h3>
+              <div className="flex flex-wrap gap-6">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="detectTables" 
+                    checked={detectTables}
+                    onCheckedChange={(checked) => setDetectTables(checked as boolean)}
+                  />
+                  <Label htmlFor="detectTables" className="text-sm">
+                    Detect table structure
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="preserveFormatting" 
+                    checked={preserveFormatting}
+                    onCheckedChange={(checked) => setPreserveFormatting(checked as boolean)}
+                  />
+                  <Label htmlFor="preserveFormatting" className="text-sm">
+                    Auto-fit column widths
+                  </Label>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Usage Guide */}
-          <div className="bg-muted/30 rounded-lg p-6 space-y-4">
-            <h3 className="font-semibold text-foreground">How to Convert PDF to Excel</h3>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
-              <li>Upload your PDF file containing tables or structured data</li>
-              <li>Select conversion options (table detection, formatting)</li>
-              <li>Click "Convert to Excel" to start the conversion</li>
-              <li>Preview extracted data before downloading</li>
-              <li>Download your Excel file (.xlsx)</li>
-            </ol>
-          </div>
+          {/* Convert Button */}
+          {((batchMode && batchFiles.length > 0) || (!batchMode && files.length > 0)) && (
+            <div className="text-center">
+              <Button
+                size="lg"
+                onClick={batchMode ? handleBatchConvert : handleConvert}
+                disabled={isProcessing}
+                className="gap-2 bg-green-600 hover:bg-green-700"
+              >
+                {isProcessing ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                    Converting...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5" />
+                    {batchMode ? `Convert All (${batchFiles.length} files)` : "Convert to Excel"}
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
 
           {/* Trust & Privacy Section */}
           <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
             <Shield className="h-4 w-4 text-green-600" />
             <AlertDescription className="text-muted-foreground">
-              <strong className="text-foreground">Your Privacy Matters.</strong> We respect user privacy. 
-              All uploaded files are processed locally in your browser and automatically deleted after processing. 
-              We do not store or analyze your documents on any server.
+              <strong className="text-foreground">Your Privacy Matters.</strong> All files are processed 
+              locally in your browser. We do not store or analyze your documents.
             </AlertDescription>
           </Alert>
 
-          {/* Use Cases */}
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-card p-4 rounded-lg border border-border">
-              <h4 className="font-medium text-foreground mb-2">Ideal for:</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Financial reports and statements</li>
-                <li>• Invoices and receipts</li>
-                <li>• Data tables and statistics</li>
-                <li>• Academic research data</li>
-              </ul>
-            </div>
-            <div className="bg-card p-4 rounded-lg border border-border">
-              <h4 className="font-medium text-foreground mb-2">Supported:</h4>
-              <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Text-based PDF documents</li>
-                <li>• Multi-page PDFs</li>
-                <li>• Tables with multiple columns</li>
-                <li>• Various PDF formats</li>
-              </ul>
-            </div>
-          </div>
-
           <ToolSEOContent
             toolName="PDF to Excel Converter"
-            whatIs="The PDF to Excel Converter is a powerful online tool designed to extract tabular data from PDF documents and convert it into editable Excel spreadsheet format (.xlsx). This tool uses advanced text extraction algorithms to identify table structures, detect columns and rows, and preserve the data organization when transferring to Excel. Whether you're working with financial reports, invoices, data tables, or any PDF containing structured information, this converter helps you transform static PDF content into a dynamic, editable spreadsheet that you can analyze, modify, and integrate into your workflows. The conversion process happens entirely in your browser, ensuring your sensitive documents never leave your device."
+            whatIs="The PDF to Excel Converter is a powerful online tool designed to extract tabular data from PDF documents and convert it into editable Excel spreadsheet format (.xlsx). Now with batch processing support to convert multiple files at once."
             howToUse={[
-              "Click the upload area or drag and drop your PDF file containing tables or data you want to extract.",
-              "Select your conversion options: enable table detection for structured data, or auto-fit column widths for better formatting.",
-              "Click 'Convert to Excel' to begin the extraction and conversion process.",
-              "Preview the extracted data to verify the table structure was correctly identified.",
-              "Download your Excel file (.xlsx) which can be opened in Microsoft Excel, Google Sheets, or any spreadsheet application."
+              "Choose Single File or Batch Processing mode.",
+              "Upload your PDF file(s) containing tables or data.",
+              "Select conversion options (table detection, formatting).",
+              "Click Convert to start the conversion.",
+              "Download your Excel file(s) automatically."
             ]}
             features={[
-              "Automatic table structure detection that identifies rows and columns from PDF layout",
-              "Multi-page PDF support with seamless data extraction across all pages",
-              "Auto-fit column width option for properly formatted Excel output",
-              "Real-time progress tracking during conversion process",
-              "Data preview before download to verify extraction accuracy",
-              "Local browser processing ensures complete privacy - no server uploads",
-              "Compatible with Microsoft Excel, Google Sheets, LibreOffice, and other spreadsheet apps",
-              "Free to use with no registration or account required"
+              "Batch processing for multiple PDF files",
+              "Smart table detection algorithm",
+              "Auto-fit column widths",
+              "Multi-page PDF support",
+              "Progress tracking for each file",
+              "Secure client-side processing"
             ]}
-            safetyNote="Your PDF files are processed entirely in your browser using secure client-side JavaScript technology. No documents are uploaded to external servers, ensuring complete privacy and confidentiality of your data. The original PDF remains unchanged on your device, and both the source file and converted Excel spreadsheet stay under your complete control."
+            safetyNote="All files are processed entirely in your browser. No data is uploaded to any server, ensuring complete privacy and security."
             faqs={[
-              {
-                question: "Does this tool work with scanned PDFs?",
-                answer: "This tool works best with text-based PDFs where the text can be selected. For scanned PDFs (which are essentially images), OCR technology would be needed. For scanned documents, we recommend using dedicated OCR services before converting to Excel."
-              },
-              {
-                question: "Will the table formatting be preserved?",
-                answer: "The converter detects table structure by analyzing text positions and creates corresponding rows and columns in Excel. While the data organization is preserved, complex formatting like cell colors or merged cells may need manual adjustment in Excel."
-              },
-              {
-                question: "What is the maximum file size I can convert?",
-                answer: "Since processing happens in your browser, the limit depends on your device's memory. Most modern devices can handle PDFs up to 50MB. For very large files, consider splitting the PDF first."
-              },
-              {
-                question: "Can I convert multiple PDFs at once?",
-                answer: "Currently, files are converted one at a time for optimal accuracy. For multiple PDFs, convert each file separately. You can then combine the data in Excel if needed."
-              },
-              {
-                question: "Why might some data appear in wrong columns?",
-                answer: "Table detection works by grouping text based on position. PDFs with unusual layouts, merged cells, or inconsistent spacing may require manual adjustment after conversion. The preview feature helps you verify the extraction before downloading."
-              }
+              { question: "Can I convert multiple PDFs at once?", answer: "Yes! Use Batch Processing mode to add multiple PDF files and convert them all at once." },
+              { question: "Is there a file size limit?", answer: "Processing happens in your browser, so very large files may be slow. For best results, keep files under 50MB." },
+              { question: "Will my data be stored?", answer: "No. All processing happens locally in your browser. Your files never leave your device." }
             ]}
           />
         </div>

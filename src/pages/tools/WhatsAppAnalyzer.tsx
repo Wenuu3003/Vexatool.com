@@ -8,12 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2, Home, Briefcase, Drama, Languages, Download, Image, Stars, Zap } from "lucide-react";
+import { MessageCircle, Heart, Users, Flame, Sparkles, Share2, AlertCircle, Loader2, Home, Briefcase, Drama, Languages, Download, Stars, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import DOMPurify from "dompurify";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import html2canvas from "html2canvas";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 type AnalysisMode = 'love' | 'friendship' | 'roast' | 'family' | 'work' | 'drama';
 type Language = 'english' | 'telugu' | 'hindi' | 'telugu-english' | 'hindi-english';

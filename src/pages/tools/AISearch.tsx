@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 interface SearchResult {
   answer: string;
@@ -138,15 +138,11 @@ const AISearch = () => {
   if (!loading && !user) {
     return (
       <>
-        <Helmet>
-          <title>AI Web Search Free Online - Real-time Search with Sources | MyPDFs</title>
-          <meta
-            name="description"
-            content="Search the web with AI-powered answers and cited sources. Get accurate, real-time information with Perplexity-powered search."
-          />
-          <meta name="keywords" content="AI search, web search, Perplexity, cited sources, real-time search, AI answers" />
-          <link rel="canonical" href="https://mypdfs.lovable.app/ai-search" />
-        </Helmet>
+        <CanonicalHead
+          title="AI Web Search Free Online - Real-time Search with Sources | MyPDFs"
+          description="Search the web with AI-powered answers and cited sources. Get accurate, real-time information."
+          keywords="AI search, web search, cited sources, real-time search, AI answers"
+        />
         
         <ToolLayout
           title="AI Web Search"
@@ -191,15 +187,11 @@ const AISearch = () => {
 
   return (
     <>
-      <Helmet>
-        <title>AI Web Search Free Online - Real-time Search with Sources | MyPDFs</title>
-        <meta
-          name="description"
-          content="Search the web with AI-powered answers and cited sources. Get accurate, real-time information with Perplexity-powered search."
-        />
-        <meta name="keywords" content="AI search, web search, Perplexity, cited sources, real-time search, AI answers" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/ai-search" />
-      </Helmet>
+      <CanonicalHead
+        title="AI Web Search Free Online - Real-time Search with Sources | MyPDFs"
+        description="Search the web with AI-powered answers and cited sources. Get accurate, real-time information."
+        keywords="AI search, web search, cited sources, real-time search, AI answers"
+      />
       
       <ToolLayout
         title="AI Web Search"

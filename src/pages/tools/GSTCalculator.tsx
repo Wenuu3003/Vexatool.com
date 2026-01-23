@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Receipt, Calculator, ArrowRightLeft } from "lucide-react";
+import { Receipt, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 const gstRates = [
   { value: "0", label: "0% (Exempted)" },
@@ -86,6 +87,12 @@ export default function GSTCalculator() {
   };
 
   return (
+    <>
+      <CanonicalHead
+        title="GST Calculator Free Online - CGST SGST IGST Calculator India | MyPDFs"
+        description="Free GST calculator for India. Calculate CGST, SGST, IGST with all GST rates. Add or extract GST instantly."
+        keywords="GST calculator, CGST calculator, SGST calculator, IGST calculator, GST India, tax calculator"
+      />
     <ToolLayout
       title="GST Calculator"
       description="Calculate GST (Goods and Services Tax) with CGST, SGST, and IGST breakdowns for Indian taxation."
@@ -261,5 +268,6 @@ export default function GSTCalculator() {
         />
       </div>
     </ToolLayout>
+    </>
   );
 }

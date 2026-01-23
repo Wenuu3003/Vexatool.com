@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRightLeft, RefreshCw, Coins } from "lucide-react";
 import { toast } from "sonner";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 const currencies = [
   { code: "USD", name: "US Dollar", symbol: "$" },
@@ -145,12 +145,11 @@ const CurrencyConverter = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Currency Converter Free Online - Exchange Rates | Mypdfs</title>
-        <meta name="description" content="Free currency converter with real-time exchange rates. Convert between USD, EUR, GBP, and 15+ world currencies instantly." />
-        <meta name="keywords" content="currency converter, exchange rate, money converter, forex, USD to EUR, free currency calculator" />
-        <link rel="canonical" href="https://mypdfs.in/currency-converter" />
-      </Helmet>
+      <CanonicalHead
+        title="Currency Converter Free Online - Exchange Rates | Mypdfs"
+        description="Free currency converter with real-time exchange rates. Convert between USD, EUR, GBP, and 15+ world currencies."
+        keywords="currency converter, exchange rate, money converter, forex, USD to EUR, free currency calculator"
+      />
       <ToolLayout
         title="Currency Converter"
         description="Convert between world currencies with real-time exchange rates"

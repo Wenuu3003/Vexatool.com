@@ -28,6 +28,8 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /_functions/
+Disallow: /auth
+Disallow: /account
 
 # Sitemap location
 Sitemap: https://mypdfs.in/sitemap.xml

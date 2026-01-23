@@ -79,7 +79,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
               </div>
             )}
             <div className={cn("flex-1", data.imagePosition === "right" && data.showImage && data.profileImage ? "" : "")}>
-              <h1 className="text-2xl font-bold">{data.fullName || "Your Name"}</h1>
+              <p className="text-2xl font-bold">{data.fullName || "Your Name"}</p>
               <div className="flex flex-wrap gap-3 mt-2 text-sm opacity-90">
                 {data.email && <span>{data.email}</span>}
                 {data.phone && <span>• {data.phone}</span>}

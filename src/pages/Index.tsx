@@ -60,7 +60,7 @@ const Index = () => {
     <>
       <Helmet>
         <title>Mypdfs - Free Online PDF Tools, Image Tools & AI Utilities | 50+ Tools</title>
-        <meta name="description" content="Free online PDF editor with 50+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI chat, resume builder, calculators. 100% free, no signup required." />
+        <meta name="description" content="Free PDF editor with 50+ tools. Merge, split, compress PDFs. QR code generator, AI tools & calculators. 100% free, no signup." />
         <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF to Word, Word to PDF, PDF to Excel, JPG to PDF, PNG to PDF, QR code generator, QR code scanner, currency converter, SEO tool, free online tools, AI chat, file compressor, image resizer, background remover, EMI calculator, GST calculator" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="author" content="Mypdfs" />
@@ -70,7 +70,7 @@ const Index = () => {
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content="Mypdfs - Free Online PDF Tools & Utilities | 50+ Tools" />
-        <meta property="og:description" content="Free online PDF editor with 50+ tools. Merge, split, compress PDFs. QR code generator & scanner. AI tools. Calculators. No registration required." />
+        <meta property="og:description" content="Free PDF editor with 50+ tools. Merge, split, compress PDFs. QR generator, AI tools. No signup." />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:site_name" content="Mypdfs" />
         <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />

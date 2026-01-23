@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PDFDocument } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { Progress } from "@/components/ui/progress";
 
@@ -153,12 +153,11 @@ const PDFToPowerPoint = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PDF to PowerPoint Converter Free Online | Mypdfs</title>
-        <meta name="description" content="Free PDF to PowerPoint converter. Convert PDF documents to presentation slides instantly. No upload, 100% private browser processing." />
-        <meta name="keywords" content="PDF to PowerPoint, PDF to PPT, convert PDF to slides, PDF to presentation, free PDF to PPT" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-powerpoint" />
-      </Helmet>
+      <CanonicalHead 
+        title="PDF to PowerPoint Converter Free Online | Mypdfs"
+        description="Free PDF to PowerPoint converter. Convert PDF documents to presentation slides instantly. 100% private."
+        keywords="PDF to PowerPoint, PDF to PPT, convert PDF to slides, PDF to presentation, free PDF to PPT"
+      />
       <ToolLayout
         title="PDF to PowerPoint"
         description="Convert PDF documents to PowerPoint presentation slides"

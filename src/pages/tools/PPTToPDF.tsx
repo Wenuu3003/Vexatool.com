@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { Progress } from "@/components/ui/progress";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
@@ -410,12 +410,11 @@ const PPTToPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PowerPoint to PDF Converter Free Online | Mypdfs</title>
-        <meta name="description" content="Free PowerPoint to PDF converter. Convert PPT and PPTX presentations to PDF instantly in your browser. 100% private, no upload required." />
-        <meta name="keywords" content="PowerPoint to PDF, PPT to PDF, PPTX to PDF, convert presentation, free PPT converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/ppt-to-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="PowerPoint to PDF Converter Free Online | Mypdfs"
+        description="Free PowerPoint to PDF converter. Convert PPT and PPTX presentations to PDF instantly. 100% private."
+        keywords="PowerPoint to PDF, PPT to PDF, PPTX to PDF, convert presentation, free PPT converter"
+      />
       <ToolLayout
         title="PowerPoint to PDF"
         description="Convert PPT and PPTX files to PDF instantly"

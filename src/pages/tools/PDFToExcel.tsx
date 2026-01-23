@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import * as XLSX from "xlsx";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
 
@@ -295,12 +295,11 @@ const PDFToExcel = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PDF to Excel Converter Online – Batch Processing & Secure | Mypdfs</title>
-        <meta name="description" content="Convert PDF to Excel online with batch processing. Extract tables from multiple PDFs at once. Free and secure PDF to Excel tool." />
-        <meta name="keywords" content="PDF to Excel, PDF to XLS, batch PDF convert, extract PDF tables, PDF to spreadsheet, free PDF to Excel, convert PDF tables" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-excel" />
-      </Helmet>
+      <CanonicalHead 
+        title="PDF to Excel Converter Online – Batch Processing & Secure | Mypdfs"
+        description="Convert PDF to Excel online with batch processing. Extract tables from multiple PDFs at once. Free and secure."
+        keywords="PDF to Excel, PDF to XLS, batch PDF convert, extract PDF tables, PDF to spreadsheet"
+      />
       <ToolLayout
         title="PDF to Excel"
         description="Convert PDF tables and data to Excel spreadsheets"

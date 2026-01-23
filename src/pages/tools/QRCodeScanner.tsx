@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import jsQR from "jsqr";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const QRCodeScanner = () => {
@@ -256,12 +256,11 @@ const QRCodeScanner = () => {
 
   return (
     <>
-      <Helmet>
-        <title>QR Code Scanner Free Online - Scan QR from Image or Camera | Mypdfs</title>
-        <meta name="description" content="Free online QR code scanner. Scan QR codes from images or camera instantly. Fast and accurate QR code reading with one-click copy and open features." />
-        <meta name="keywords" content="QR code scanner, scan QR code, read QR code, QR reader, free QR scanner, camera QR scan, image QR scan, QR decoder" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/qr-code-scanner" />
-      </Helmet>
+      <CanonicalHead 
+        title="QR Code Scanner Free Online - Scan QR from Image or Camera | Mypdfs"
+        description="Free online QR code scanner. Scan QR codes from images or camera instantly. Fast and accurate reading."
+        keywords="QR code scanner, scan QR code, read QR code, QR reader, free QR scanner, camera QR scan"
+      />
       <ToolLayout
         title="QR Code Scanner"
         description="Scan QR codes from images or using your camera instantly"

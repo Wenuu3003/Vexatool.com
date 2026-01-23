@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -156,12 +156,11 @@ export default function YouTubeGenerator() {
 
   return (
     <>
-      <Helmet>
-        <title>YouTube Title & Description Generator Free Online | MyPDFs</title>
-        <meta name="description" content="Free AI YouTube title and description generator. Create SEO-optimized titles, descriptions, and tags to boost your video's visibility and ranking." />
-        <meta name="keywords" content="YouTube title generator, YouTube description generator, YouTube SEO, video SEO, YouTube tags, content creator tools" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/youtube-generator" />
-      </Helmet>
+      <CanonicalHead 
+        title="YouTube Title & Description Generator Free Online | MyPDFs"
+        description="Free AI YouTube title and description generator. Create SEO-optimized titles, descriptions, and tags."
+        keywords="YouTube title generator, YouTube description generator, YouTube SEO, video SEO, YouTube tags"
+      />
       <ToolLayout
         title="YouTube Title & Description Generator"
         description="Generate SEO-optimized YouTube titles, descriptions, and tags to boost your video's visibility and engagement."

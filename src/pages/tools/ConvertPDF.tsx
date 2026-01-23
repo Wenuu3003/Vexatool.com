@@ -10,7 +10,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 // Set up PDF.js worker using the installed package version
@@ -185,12 +185,11 @@ const ConvertPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PDF to Word Converter Free Online - Convert PDF to DOCX | Mypdfs</title>
-        <meta name="description" content="Free PDF to Word converter. Convert PDF documents to editable DOCX files online. Full text extraction with formatting preserved. No registration required." />
-        <meta name="keywords" content="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word, extract text from PDF" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-word" />
-      </Helmet>
+      <CanonicalHead 
+        title="PDF to Word Converter Free Online - Convert PDF to DOCX | Mypdfs"
+        description="Free PDF to Word converter. Convert PDF documents to editable DOCX files online. Full text extraction."
+        keywords="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word"
+      />
       <ToolLayout
         title="PDF to Word"
         description="Convert PDF documents to editable Word files"

@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { RefreshCw, Upload, Download, Loader2, X, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface ImageFile {
@@ -180,12 +180,11 @@ export default function ImageFormatConverter() {
 
   return (
     <>
-      <Helmet>
-        <title>Image Format Converter - Convert PNG, JPG, WebP Free Online | MyPDFs</title>
-        <meta name="description" content="Free online image format converter. Convert images between PNG, JPG, and WebP formats. Batch convert multiple images with adjustable quality settings." />
-        <meta name="keywords" content="image converter, PNG to JPG, JPG to WebP, WebP to PNG, convert image format, free image converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/image-converter" />
-      </Helmet>
+      <CanonicalHead 
+        title="Image Format Converter - Convert PNG, JPG, WebP Free Online | MyPDFs"
+        description="Free online image format converter. Convert images between PNG, JPG, and WebP formats. Batch convert."
+        keywords="image converter, PNG to JPG, JPG to WebP, WebP to PNG, convert image format"
+      />
       <ToolLayout
         title="Image Format Converter"
         description="Convert images between PNG, JPG, and WebP formats. Batch convert multiple images at once."

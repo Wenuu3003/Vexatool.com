@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent } from "@/components/ui/card";
@@ -205,12 +205,11 @@ const UnlockPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Unlock PDF Free Online - Remove PDF Password | Mypdfs</title>
-        <meta name="description" content="Free online PDF unlocker. Remove password protection from PDF files. Automatically detects protection type." />
-        <meta name="keywords" content="unlock PDF, remove PDF password, PDF unlocker, decrypt PDF, remove PDF protection" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/unlock-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Unlock PDF Free Online - Remove PDF Password | Mypdfs"
+        description="Free online PDF unlocker. Remove password protection from PDF files. Automatically detects protection type."
+        keywords="unlock PDF, remove PDF password, PDF unlocker, decrypt PDF, remove PDF protection"
+      />
       <ToolLayout
         title="Unlock PDF"
         description="Remove password protection from PDF documents"

@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ImageToPDF = () => {
@@ -136,12 +136,11 @@ const ImageToPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Image to PDF Converter Free Online - JPG PNG to PDF | Mypdfs</title>
-        <meta name="description" content="Free online image to PDF converter. Convert JPG, PNG, GIF, and other images to PDF. Combine multiple images into one PDF document." />
-        <meta name="keywords" content="image to PDF, JPG to PDF, PNG to PDF, convert images, photo to PDF, free image converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/image-to-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Image to PDF Converter Free Online - JPG PNG to PDF | Mypdfs"
+        description="Free online image to PDF converter. Convert JPG, PNG, GIF images to PDF. Combine multiple images."
+        keywords="image to PDF, JPG to PDF, PNG to PDF, convert images, photo to PDF, free image converter"
+      />
       <ToolLayout
         title="Image to PDF"
         description="Convert JPG, PNG, and other images to PDF"

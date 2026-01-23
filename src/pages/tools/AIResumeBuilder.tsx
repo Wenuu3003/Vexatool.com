@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -234,12 +234,11 @@ export default function AIResumeBuilder() {
 
   return (
     <>
-      <Helmet>
-        <title>AI Resume Builder Free Online - Create Professional Resumes | MyPDFs</title>
-        <meta name="description" content="Free AI resume builder with professional templates. Create ATS-friendly resumes with live preview. Download as PDF or Word. No signup required." />
-        <meta name="keywords" content="resume builder, CV maker, professional resume, ATS resume, free resume, resume templates, PDF resume" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/ai-resume-builder" />
-      </Helmet>
+      <CanonicalHead 
+        title="AI Resume Builder Free Online - Create Professional Resumes | MyPDFs"
+        description="Free AI resume builder with professional templates. Create ATS-friendly resumes with live preview."
+        keywords="resume builder, CV maker, professional resume, ATS resume, free resume, resume templates"
+      />
       <ToolLayout
         title="AI Resume Builder"
         description="Create professional, ATS-friendly resumes with multiple templates. Download as PDF or Word document."

@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const RepairPDF = () => {
@@ -109,12 +109,11 @@ const RepairPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Repair Corrupted PDF Free Online | Mypdfs</title>
-        <meta name="description" content="Free online PDF repair tool. Fix corrupted or damaged PDF files. Recover data from broken PDFs and restore documents." />
-        <meta name="keywords" content="repair PDF, fix corrupted PDF, recover PDF, damaged PDF, PDF repair tool, free PDF fix" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/repair-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Repair Corrupted PDF Free Online | Mypdfs"
+        description="Free online PDF repair tool. Fix corrupted or damaged PDF files. Recover data from broken PDFs."
+        keywords="repair PDF, fix corrupted PDF, recover PDF, damaged PDF, PDF repair tool, free PDF fix"
+      />
       <ToolLayout
         title="Repair PDF"
         description="Fix corrupted or damaged PDF files"

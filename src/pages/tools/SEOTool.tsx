@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Search, Globe, Youtube, CheckCircle, XCircle, AlertCircle, Loader2, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 interface SEOResult {
@@ -206,12 +206,11 @@ const SEOTool = () => {
 
   return (
     <>
-      <Helmet>
-        <title>SEO Analyzer Free Online - Website & YouTube SEO | Mypdfs</title>
-        <meta name="description" content="Free SEO analyzer for websites and YouTube videos. Get actionable recommendations to improve search rankings and visibility." />
-        <meta name="keywords" content="SEO analyzer, SEO checker, website SEO, YouTube SEO, free SEO tool, SEO audit" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/seo-tool" />
-      </Helmet>
+      <CanonicalHead 
+        title="SEO Analyzer Free Online - Website & YouTube SEO | Mypdfs"
+        description="Free SEO analyzer for websites and YouTube videos. Get actionable recommendations to improve rankings."
+        keywords="SEO analyzer, SEO checker, website SEO, YouTube SEO, free SEO tool, SEO audit"
+      />
       <ToolLayout
         title="SEO Analyzer"
         description="Analyze and optimize your website and YouTube videos for search engines"

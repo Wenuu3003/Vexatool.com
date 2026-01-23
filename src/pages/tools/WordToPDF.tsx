@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
 
@@ -277,12 +277,11 @@ const WordToPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Word to PDF Converter Free Online - DOC DOCX to PDF | Mypdfs</title>
-        <meta name="description" content="Free online Word to PDF converter. Convert DOC, DOCX, RTF and TXT files to PDF format instantly. No registration required, fast and secure conversion." />
-        <meta name="keywords" content="word to pdf, doc to pdf, docx to pdf, convert word, word converter, free word to pdf, rtf to pdf" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/word-to-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Word to PDF Converter Free Online - DOC DOCX to PDF | Mypdfs"
+        description="Free online Word to PDF converter. Convert DOC, DOCX, RTF and TXT files to PDF format instantly."
+        keywords="word to pdf, doc to pdf, docx to pdf, convert word, word converter, free word to pdf"
+      />
       <ToolLayout
         title="Word to PDF"
         description="Convert Word documents to PDF format"

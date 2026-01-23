@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -128,12 +128,11 @@ export default function AITextGenerator() {
 
   return (
     <>
-      <Helmet>
-        <title>AI Text Generator Free Online - Create Content Instantly | MyPDFs</title>
-        <meta name="description" content="Free AI text generator for blog posts, social media, emails, and more. Create high-quality content with customizable tones. Fast and easy content creation." />
-        <meta name="keywords" content="AI text generator, content generator, blog writer, AI writer, text creator, free AI content" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/ai-text-generator" />
-      </Helmet>
+      <CanonicalHead 
+        title="AI Text Generator Free Online - Create Content Instantly | MyPDFs"
+        description="Free AI text generator for blog posts, social media, emails. Create high-quality content with AI."
+        keywords="AI text generator, content generator, blog writer, AI writer, text creator"
+      />
       <ToolLayout
         title="AI Text Generator"
         description="Generate high-quality content with AI. Create blog posts, social media content, emails, and more."

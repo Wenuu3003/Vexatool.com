@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PDFToPNG = () => {
@@ -138,12 +138,11 @@ const PDFToPNG = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PDF to PNG Converter Free Online - Convert PDF to PNG | Mypdfs</title>
-        <meta name="description" content="Free online PDF to PNG converter. Convert PDF pages to transparent PNG images. High-quality conversion with alpha channel support." />
-        <meta name="keywords" content="pdf to png, convert pdf to png, extract pdf pages, transparent png, free pdf converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-png" />
-      </Helmet>
+      <CanonicalHead 
+        title="PDF to PNG Converter Free Online - Convert PDF to PNG | Mypdfs"
+        description="Free online PDF to PNG converter. Convert PDF pages to transparent PNG images. High-quality conversion."
+        keywords="pdf to png, convert pdf to png, extract pdf pages, transparent png, free pdf converter"
+      />
       <ToolLayout
         title="PDF to PNG"
         description="Convert PDF pages to PNG images"

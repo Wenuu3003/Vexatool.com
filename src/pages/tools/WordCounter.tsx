@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { FileText, Copy, RotateCcw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 export default function WordCounter() {
   const [text, setText] = useState("");
@@ -120,12 +120,11 @@ Word Count Statistics:
 
   return (
     <>
-      <Helmet>
-        <title>Word Counter Free Online - Count Words, Characters & More | MyPDFs</title>
-        <meta name="description" content="Free online word counter tool. Count words, characters, sentences, paragraphs. Get reading time and check social media character limits. Instant results." />
-        <meta name="keywords" content="word counter, character counter, word count, text counter, free word counter, online word counter" />
-        <link rel="canonical" href="https://mypdfs.in/word-counter" />
-      </Helmet>
+      <CanonicalHead
+        title="Word Counter Free Online - Count Words, Characters & More | MyPDFs"
+        description="Free online word counter tool. Count words, characters, sentences, paragraphs. Get reading time instantly."
+        keywords="word counter, character counter, word count, text counter, free word counter, online word counter"
+      />
       <ToolLayout
         title="Word Counter"
         description="Count words, characters, sentences, and paragraphs. Get reading time and writing statistics."

@@ -7,8 +7,8 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 interface Message {
   role: "user" | "assistant";
@@ -185,12 +185,11 @@ const AIChat = () => {
   if (!authLoading && !user) {
     return (
       <>
-        <Helmet>
-          <title>AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs</title>
-          <meta name="description" content="Free AI chat assistant for instant answers to your questions. Get help with writing, research, explanations, and more. Powered by advanced AI technology." />
-          <meta name="keywords" content="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help" />
-          <link rel="canonical" href="https://mypdfs.in/ai-chat" />
-        </Helmet>
+        <CanonicalHead
+          title="AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs"
+          description="Free AI chat assistant for instant answers to your questions. Get help with writing, research, and more."
+          keywords="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help"
+        />
         <ToolLayout
           title="AI Chat Assistant"
           description="Ask any question and get instant AI-powered answers"
@@ -220,12 +219,11 @@ const AIChat = () => {
 
   return (
     <>
-      <Helmet>
-        <title>AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs</title>
-        <meta name="description" content="Free AI chat assistant for instant answers to your questions. Get help with writing, research, explanations, and more. Powered by advanced AI technology." />
-        <meta name="keywords" content="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help" />
-        <link rel="canonical" href="https://mypdfs.in/ai-chat" />
-      </Helmet>
+      <CanonicalHead
+        title="AI Chat Assistant Free Online - Ask Questions & Get Answers | MyPDFs"
+        description="Free AI chat assistant for instant answers to your questions. Get help with writing, research, and more."
+        keywords="AI chat, chatbot, AI assistant, ask questions, free AI, chat online, AI help"
+      />
       <ToolLayout
         title="AI Chat Assistant"
         description="Ask any question and get instant AI-powered answers"

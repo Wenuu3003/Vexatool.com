@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowRightLeft, RefreshCw } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 const categories = {
   length: {
@@ -108,7 +108,6 @@ export default function UnitConverter() {
   const [toUnit, setToUnit] = useState("km");
   const [fromValue, setFromValue] = useState("1");
   const [toValue, setToValue] = useState("");
-  const { toast } = useToast();
 
   const currentCategory = categories[category];
 
@@ -210,6 +209,12 @@ export default function UnitConverter() {
   }, []);
 
   return (
+    <>
+      <CanonicalHead
+        title="Unit Converter Free Online - Length, Weight, Temperature | MyPDFs"
+        description="Free unit converter for length, weight, temperature, area, volume, speed, time and data. Convert between metric and imperial."
+        keywords="unit converter, length converter, weight converter, temperature converter, metric converter"
+      />
     <ToolLayout
       title="Unit Converter"
       description="Convert between different units of measurement including length, weight, temperature, area, volume, and more."
@@ -380,5 +385,6 @@ export default function UnitConverter() {
         />
       </div>
     </ToolLayout>
+    </>
   );
 }

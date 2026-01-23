@@ -9,8 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import QRCode from "qrcode";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 interface BatchQRItem {
   url: string;
@@ -349,12 +349,11 @@ const QRCodeGenerator = () => {
 
   return (
     <>
-      <Helmet>
-        <title>QR Code Generator Free Online - Create Custom QR Codes | Mypdfs</title>
-        <meta name="description" content="Free QR code generator. Create custom QR codes with logos and colors. Generate QR codes for URLs, text, and images instantly." />
-        <meta name="keywords" content="QR code generator, create QR code, free QR code, custom QR code, QR code with logo, QR maker" />
-        <link rel="canonical" href="https://mypdfs.in/qr-code-generator" />
-      </Helmet>
+      <CanonicalHead
+        title="QR Code Generator Free Online - Create Custom QR Codes | Mypdfs"
+        description="Free QR code generator. Create custom QR codes with logos and colors. Generate QR codes for URLs and text."
+        keywords="QR code generator, create QR code, free QR code, custom QR code, QR code with logo, QR maker"
+      />
       <ToolLayout
         title="QR Code Generator"
         description="Generate custom QR codes from text, images, or Google Drive links"

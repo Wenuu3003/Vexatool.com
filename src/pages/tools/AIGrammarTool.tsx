@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +8,7 @@ import { SpellCheck, Copy, ArrowRightLeft, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 const modes = [
   { value: "grammar", label: "Fix Grammar & Spelling" },
@@ -147,12 +147,11 @@ export default function AIGrammarTool() {
 
   return (
     <>
-      <Helmet>
-        <title>AI Grammar Checker & Text Rewriter Free Online | MyPDFs</title>
-        <meta name="description" content="Free AI grammar checker and text rewriter. Fix spelling, punctuation, and grammar errors. Paraphrase, simplify, or change tone of your writing instantly." />
-        <meta name="keywords" content="grammar checker, AI grammar, text rewriter, paraphrase tool, fix grammar, spelling checker, free grammar tool" />
-        <link rel="canonical" href="https://mypdfs.in/ai-grammar-tool" />
-      </Helmet>
+      <CanonicalHead
+        title="AI Grammar Checker & Text Rewriter Free Online | MyPDFs"
+        description="Free AI grammar checker and text rewriter. Fix spelling, punctuation, and grammar errors. Paraphrase instantly."
+        keywords="grammar checker, AI grammar, text rewriter, paraphrase tool, fix grammar, spelling checker"
+      />
       <ToolLayout
         title="AI Grammar & Rewrite Tool"
         description="Fix grammar, spelling, and punctuation errors. Rewrite, paraphrase, simplify, or enhance your text with AI."

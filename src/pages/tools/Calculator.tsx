@@ -3,8 +3,8 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Calculator as CalcIcon, Divide, X, Minus, Plus, Equal, Percent } from "lucide-react";
 import { toast } from "sonner";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 const Calculator = () => {
   const [display, setDisplay] = useState("0");
@@ -161,12 +161,11 @@ const Calculator = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Online Calculator Free - Scientific Calculator | Mypdfs</title>
-        <meta name="description" content="Free online calculator with history. Perform basic and advanced calculations. Easy to use scientific calculator." />
-        <meta name="keywords" content="calculator, online calculator, free calculator, math calculator, scientific calculator" />
-        <link rel="canonical" href="https://mypdfs.in/calculator" />
-      </Helmet>
+      <CanonicalHead
+        title="Online Calculator Free - Scientific Calculator | Mypdfs"
+        description="Free online calculator with history. Perform basic and advanced calculations. Easy to use scientific calculator."
+        keywords="calculator, online calculator, free calculator, math calculator, scientific calculator"
+      />
       <ToolLayout
         title="Calculator"
         description="A powerful calculator for all your mathematical needs"

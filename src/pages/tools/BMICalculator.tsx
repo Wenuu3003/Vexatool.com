@@ -6,8 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Activity, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 export default function BMICalculator() {
   const [unit, setUnit] = useState<"metric" | "imperial">("metric");
@@ -107,12 +107,11 @@ export default function BMICalculator() {
 
   return (
     <>
-      <Helmet>
-        <title>BMI Calculator Free Online - Body Mass Index Calculator | MyPDFs</title>
-        <meta name="description" content="Free BMI calculator. Calculate your Body Mass Index instantly. Check if you're underweight, normal, overweight or obese. Supports metric and imperial units." />
-        <meta name="keywords" content="BMI calculator, body mass index, weight calculator, health calculator, BMI chart, BMI check" />
-        <link rel="canonical" href="https://mypdfs.in/bmi-calculator" />
-      </Helmet>
+      <CanonicalHead
+        title="BMI Calculator Free Online - Body Mass Index Calculator | MyPDFs"
+        description="Free BMI calculator. Calculate your Body Mass Index instantly. Check if you're underweight, normal, overweight or obese."
+        keywords="BMI calculator, body mass index, weight calculator, health calculator, BMI chart, BMI check"
+      />
       <ToolLayout
         title="BMI Calculator"
         description="Calculate your Body Mass Index (BMI) and find out if you're in a healthy weight range."

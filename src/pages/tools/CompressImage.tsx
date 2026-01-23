@@ -7,8 +7,8 @@ import { compressImageFile } from "@/lib/imageCompression";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 interface CompressedImage {
   original: File;
@@ -173,16 +173,11 @@ const CompressImage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Compress Images Online Free - Reduce JPG, PNG, WebP Size | Mypdfs</title>
-        <meta name="description" content="Free online image compressor. Reduce JPG, PNG, and WebP file sizes up to 90% while maintaining quality. No upload limits, instant download." />
-        <meta name="keywords" content="image compressor, compress images, reduce image size, JPG compressor, PNG compressor, WebP compressor, image optimizer, free image compression" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/compress-image" />
-        <meta property="og:title" content="Compress Images Online Free - Reduce JPG, PNG, WebP Size" />
-        <meta property="og:description" content="Free online image compressor. Reduce file sizes up to 90% while maintaining quality." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://mypdfs.lovable.app/compress-image" />
-      </Helmet>
+      <CanonicalHead
+        title="Compress Images Online Free - Reduce JPG, PNG, WebP Size | Mypdfs"
+        description="Free online image compressor. Reduce JPG, PNG, and WebP file sizes up to 90% while maintaining quality."
+        keywords="image compressor, compress images, reduce image size, JPG compressor, PNG compressor, WebP compressor"
+      />
       
       <ToolLayout
         title="Compress Images"

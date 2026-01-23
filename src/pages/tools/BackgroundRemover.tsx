@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { Helmet } from "react-helmet";
 import { Eraser, Upload, Download, Loader2, ImageIcon, Edit2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
@@ -21,6 +20,7 @@ import {
 } from "@/lib/backgroundRemoval";
 import { MaskEditor } from "@/components/MaskEditor";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 type OutputFormat = "png" | "jpeg" | "webp";
 
@@ -167,17 +167,11 @@ const BackgroundRemover = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Remove Image Background Free Online | AI Background Remover</title>
-        <meta
-          name="description"
-          content="Remove background from any image instantly using AI. Free online tool to make transparent PNG, JPG, or WebP images. No signup required."
-        />
-        <meta
-          name="keywords"
-          content="remove background, background remover, transparent background, AI background removal, free background remover"
-        />
-      </Helmet>
+      <CanonicalHead
+        title="Remove Image Background Free Online | AI Background Remover"
+        description="Remove background from any image instantly using AI. Free online tool to make transparent PNG, JPG, or WebP images. No signup required."
+        keywords="remove background, background remover, transparent background, AI background removal, free background remover"
+      />
 
       <ToolLayout
         title="Background Remover"

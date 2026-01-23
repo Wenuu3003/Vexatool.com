@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Maximize, Upload, Download, Loader2, X, Image as ImageIcon } from "lucide-react";
+import { Maximize, Upload, Download, Loader2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 interface ImageFile {
   file: File;
@@ -198,12 +198,11 @@ export default function ImageResizer() {
 
   return (
     <>
-      <Helmet>
-        <title>Image Resizer - Resize Images for Social Media Free | MyPDFs</title>
-        <meta name="description" content="Free online image resizer. Resize images for Instagram, Facebook, Twitter, LinkedIn, YouTube, and custom dimensions. Includes passport photo sizes." />
-        <meta name="keywords" content="image resizer, resize image, Instagram image size, Facebook cover size, passport photo, resize picture online" />
-        <link rel="canonical" href="https://mypdfs.in/image-resizer" />
-      </Helmet>
+      <CanonicalHead
+        title="Image Resizer - Resize Images for Social Media Free | MyPDFs"
+        description="Free online image resizer. Resize images for Instagram, Facebook, Twitter, LinkedIn, YouTube, and custom sizes."
+        keywords="image resizer, resize image, Instagram image size, Facebook cover size, passport photo, resize picture"
+      />
       <ToolLayout
         title="Image Resizer"
         description="Resize images for social media, passports, and custom dimensions. Supports all major platforms."

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Banknote, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 interface EMIResult {
   emi: number;
@@ -89,6 +90,12 @@ export default function EMICalculator() {
   };
 
   return (
+    <>
+      <CanonicalHead
+        title="EMI Calculator Free Online - Loan EMI Calculator India | MyPDFs"
+        description="Free EMI calculator for home loans, car loans, personal loans. Calculate monthly EMI, total interest and amortization."
+        keywords="EMI calculator, loan calculator, home loan EMI, car loan EMI, personal loan EMI, interest calculator"
+      />
     <ToolLayout
       title="EMI Calculator"
       description="Calculate your Equated Monthly Installment (EMI) for home loans, car loans, and personal loans."
@@ -272,5 +279,6 @@ export default function EMICalculator() {
         />
       </div>
     </ToolLayout>
+    </>
   );
 }

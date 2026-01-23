@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import { Hash, Copy, RefreshCw, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 const platforms = [
   { value: "instagram", label: "Instagram" },
@@ -134,12 +134,11 @@ export default function HashtagGenerator() {
 
   return (
     <>
-      <Helmet>
-        <title>Hashtag Generator Free Online - Social Media Hashtags | MyPDFs</title>
-        <meta name="description" content="Free AI hashtag generator for Instagram, TikTok, Twitter, LinkedIn, and YouTube. Generate trending and relevant hashtags to boost your social media reach." />
-        <meta name="keywords" content="hashtag generator, Instagram hashtags, TikTok hashtags, Twitter hashtags, social media hashtags, free hashtag tool" />
-        <link rel="canonical" href="https://mypdfs.in/hashtag-generator" />
-      </Helmet>
+      <CanonicalHead
+        title="Hashtag Generator Free Online - Social Media Hashtags | MyPDFs"
+        description="Free AI hashtag generator for Instagram, TikTok, Twitter, LinkedIn, and YouTube. Generate trending hashtags."
+        keywords="hashtag generator, Instagram hashtags, TikTok hashtags, Twitter hashtags, social media hashtags"
+      />
       <ToolLayout
         title="Hashtag Generator"
         description="Generate trending and relevant hashtags for your social media posts. Boost your reach on Instagram, TikTok, Twitter, and more."

@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Calendar, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 export default function AgeCalculator() {
   const [birthDate, setBirthDate] = useState("");
@@ -81,12 +81,11 @@ export default function AgeCalculator() {
 
   return (
     <>
-      <Helmet>
-        <title>Age Calculator Free Online - Calculate Exact Age in Years, Months, Days | MyPDFs</title>
-        <meta name="description" content="Free online age calculator. Calculate your exact age in years, months, and days. Find your next birthday countdown and total days lived." />
-        <meta name="keywords" content="age calculator, calculate age, birthday calculator, age in days, age in months, exact age calculator" />
-        <link rel="canonical" href="https://mypdfs.in/age-calculator" />
-      </Helmet>
+      <CanonicalHead
+        title="Age Calculator Free Online - Calculate Exact Age in Years, Months, Days | MyPDFs"
+        description="Free online age calculator. Calculate your exact age in years, months, and days. Find your next birthday countdown and total days lived."
+        keywords="age calculator, calculate age, birthday calculator, age in days, age in months, exact age calculator"
+      />
       <ToolLayout
         title="Age Calculator"
         description="Calculate your exact age in years, months, days, hours, and minutes. Find your next birthday countdown."

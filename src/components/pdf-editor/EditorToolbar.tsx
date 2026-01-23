@@ -1,15 +1,19 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import {
   MousePointer2, Type, Square, Circle, Minus, MoveRight,
   Pencil, Highlighter, Underline, Image, Droplets, Hand,
-  Undo2, Redo2, ZoomIn, ZoomOut, Maximize, RotateCw,
-  Trash2, Copy, Lock, Unlock, Download, RotateCcw
+  Undo2, Redo2, ZoomIn, ZoomOut, Maximize, 
+  Trash2, Copy, Lock, Unlock, Download, RotateCcw,
+  Paintbrush, Eraser
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Tool, ZOOM_LEVELS } from './types';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
+import { Tool, ZOOM_LEVELS, BRUSH_SIZES, ERASER_SIZES, COLORS, BrushSettings, EraserSettings } from './types';
 
 interface EditorToolbarProps {
   activeTool: Tool;
@@ -32,6 +36,10 @@ interface EditorToolbarProps {
   onToggleLock: () => void;
   onDownload: () => void;
   isProcessing: boolean;
+  brushSettings: BrushSettings;
+  onBrushSettingsChange: (settings: BrushSettings) => void;
+  eraserSettings: EraserSettings;
+  onEraserSettingsChange: (settings: EraserSettings) => void;
 }
 
 const ToolButton = memo(({ 
@@ -74,7 +82,6 @@ export const EditorToolbar = memo(({
   onZoomIn,
   onZoomOut,
   onFitToWidth,
-  onFitToPage,
   canUndo,
   canRedo,
   onUndo,
@@ -87,7 +94,14 @@ export const EditorToolbar = memo(({
   onToggleLock,
   onDownload,
   isProcessing,
+  brushSettings,
+  onBrushSettingsChange,
+  eraserSettings,
+  onEraserSettingsChange,
 }: EditorToolbarProps) => {
+  const [showBrushPopover, setShowBrushPopover] = useState(false);
+  const [showEraserPopover, setShowEraserPopover] = useState(false);
+
   return (
     <div className="bg-card border-b border-border p-2 flex flex-wrap items-center gap-1 sticky top-0 z-20">
       {/* Selection Tools */}
@@ -114,6 +128,137 @@ export const EditorToolbar = memo(({
         <ToolButton icon={Pencil} tool="pen" activeTool={activeTool} onClick={onToolChange} tooltip="Pen (P)" />
         <ToolButton icon={Highlighter} tool="highlight" activeTool={activeTool} onClick={onToolChange} tooltip="Highlight" />
         <ToolButton icon={Underline} tool="underline" activeTool={activeTool} onClick={onToolChange} tooltip="Underline" />
+        
+        {/* Brush Tool with Popover */}
+        <Popover open={showBrushPopover} onOpenChange={setShowBrushPopover}>
+          <PopoverTrigger asChild>
+            <Button
+              variant={activeTool === 'brush' ? 'default' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => {
+                onToolChange('brush');
+                setShowBrushPopover(true);
+              }}
+            >
+              <Paintbrush className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64 p-4" side="bottom">
+            <div className="space-y-4">
+              <div className="font-semibold text-sm">Brush Settings</div>
+              
+              {/* Color Picker */}
+              <div className="space-y-2">
+                <Label className="text-xs">Color</Label>
+                <div className="flex flex-wrap gap-1">
+                  {COLORS.map((color) => (
+                    <button
+                      key={color}
+                      className={`w-6 h-6 rounded border-2 ${brushSettings.color === color ? 'border-primary' : 'border-transparent'}`}
+                      style={{ backgroundColor: color }}
+                      onClick={() => onBrushSettingsChange({ ...brushSettings, color })}
+                    />
+                  ))}
+                </div>
+                <input
+                  type="color"
+                  value={brushSettings.color}
+                  onChange={(e) => onBrushSettingsChange({ ...brushSettings, color: e.target.value })}
+                  className="w-full h-8 cursor-pointer"
+                />
+              </div>
+              
+              {/* Size Slider */}
+              <div className="space-y-2">
+                <Label className="text-xs">Size: {brushSettings.size}px</Label>
+                <Slider
+                  value={[brushSettings.size]}
+                  onValueChange={([size]) => onBrushSettingsChange({ ...brushSettings, size })}
+                  min={1}
+                  max={50}
+                  step={1}
+                  className="w-full"
+                />
+                <div className="flex gap-1">
+                  {BRUSH_SIZES.map((size) => (
+                    <Button
+                      key={size}
+                      variant={brushSettings.size === size ? 'default' : 'outline'}
+                      size="sm"
+                      className="h-6 px-2 text-xs"
+                      onClick={() => onBrushSettingsChange({ ...brushSettings, size })}
+                    >
+                      {size}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Opacity Slider */}
+              <div className="space-y-2">
+                <Label className="text-xs">Opacity: {Math.round(brushSettings.opacity * 100)}%</Label>
+                <Slider
+                  value={[brushSettings.opacity * 100]}
+                  onValueChange={([opacity]) => onBrushSettingsChange({ ...brushSettings, opacity: opacity / 100 })}
+                  min={10}
+                  max={100}
+                  step={5}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+        
+        {/* Eraser Tool with Popover */}
+        <Popover open={showEraserPopover} onOpenChange={setShowEraserPopover}>
+          <PopoverTrigger asChild>
+            <Button
+              variant={activeTool === 'eraser' ? 'default' : 'ghost'}
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => {
+                onToolChange('eraser');
+                setShowEraserPopover(true);
+              }}
+            >
+              <Eraser className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-56 p-4" side="bottom">
+            <div className="space-y-4">
+              <div className="font-semibold text-sm">Eraser Settings</div>
+              <p className="text-xs text-muted-foreground">Erases drawn strokes only</p>
+              
+              {/* Size Slider */}
+              <div className="space-y-2">
+                <Label className="text-xs">Size: {eraserSettings.size}px</Label>
+                <Slider
+                  value={[eraserSettings.size]}
+                  onValueChange={([size]) => onEraserSettingsChange({ size })}
+                  min={5}
+                  max={100}
+                  step={5}
+                  className="w-full"
+                />
+                <div className="flex gap-1 flex-wrap">
+                  {ERASER_SIZES.map((size) => (
+                    <Button
+                      key={size}
+                      variant={eraserSettings.size === size ? 'default' : 'outline'}
+                      size="sm"
+                      className="h-6 px-2 text-xs"
+                      onClick={() => onEraserSettingsChange({ size })}
+                    >
+                      {size}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
       
       <Separator orientation="vertical" className="h-6 mx-1" />

@@ -12,7 +12,9 @@ import {
   WatermarkElement,
   PageInfo, 
   Tool,
-  ZOOM_LEVELS 
+  ZOOM_LEVELS,
+  BrushSettings,
+  EraserSettings
 } from './types';
 import { EditorToolbar } from './EditorToolbar';
 import { EditorCanvas } from './EditorCanvas';
@@ -48,6 +50,16 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [isProcessing, setIsProcessing] = useState(false);
   const [showWatermarkDialog, setShowWatermarkDialog] = useState(false);
   const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
+  
+  // Brush and eraser settings
+  const [brushSettings, setBrushSettings] = useState<BrushSettings>({
+    color: '#000000',
+    size: 8,
+    opacity: 1,
+  });
+  const [eraserSettings, setEraserSettings] = useState<EraserSettings>({
+    size: 20,
+  });
   
   // History for undo/redo
   const { saveToHistory, undo, redo, canUndo, canRedo, resetHistory } = useEditorHistory(
@@ -598,6 +610,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         onToggleLock={handleToggleLock}
         onDownload={handleDownload}
         isProcessing={isProcessing}
+        brushSettings={brushSettings}
+        onBrushSettingsChange={setBrushSettings}
+        eraserSettings={eraserSettings}
+        onEraserSettingsChange={setEraserSettings}
       />
       
       {/* Main editor area */}
@@ -622,10 +638,13 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           selectedElement={selectedElement}
           activeTool={activeTool}
           zoom={zoom}
+          brushSettings={brushSettings}
+          eraserSettings={eraserSettings}
           onSelectElement={setSelectedElement}
           onAddElement={handleAddElement}
           onUpdateElement={handleUpdateElement}
           onElementsChange={setElements}
+          onZoomChange={setZoom}
         />
         
         {/* Properties panel */}

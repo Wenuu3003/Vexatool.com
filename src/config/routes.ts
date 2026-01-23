@@ -653,8 +653,8 @@ export const routes: RouteConfig[] = [
   },
 ];
 
-// Use the published domain for sitemap generation
-export const BASE_URL = 'https://mypdfs.lovable.app';
+// Use the custom domain for sitemap generation
+export const BASE_URL = 'https://mypdfs.in';
 
 // Tool update dates for accurate lastmod (format: YYYY-MM-DD)
 // Update these when significant changes are made to specific tools

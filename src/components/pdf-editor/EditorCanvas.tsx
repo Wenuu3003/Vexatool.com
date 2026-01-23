@@ -8,7 +8,9 @@ import {
   WatermarkElement,
   PageInfo, 
   Tool,
-  Point 
+  Point,
+  BrushSettings,
+  EraserSettings
 } from './types';
 
 interface EditorCanvasProps {
@@ -18,10 +20,13 @@ interface EditorCanvasProps {
   selectedElement: string | null;
   activeTool: Tool;
   zoom: number;
+  brushSettings: BrushSettings;
+  eraserSettings: EraserSettings;
   onSelectElement: (id: string | null) => void;
   onAddElement: (element: AnyElement) => void;
   onUpdateElement: (id: string, updates: Partial<AnyElement>) => void;
   onElementsChange: (elements: AnyElement[]) => void;
+  onZoomChange: (zoom: number) => void;
 }
 
 export const EditorCanvas = memo(({
@@ -31,15 +36,22 @@ export const EditorCanvas = memo(({
   selectedElement,
   activeTool,
   zoom,
+  brushSettings,
+  eraserSettings,
   onSelectElement,
   onAddElement,
   onUpdateElement,
   onElementsChange,
+  onZoomChange,
 }: EditorCanvasProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState<Point>({ x: 0, y: 0 });
+  const [scrollStart, setScrollStart] = useState<Point>({ x: 0, y: 0 });
   const [dragStart, setDragStart] = useState<Point>({ x: 0, y: 0 });
   const [elementStart, setElementStart] = useState<Point>({ x: 0, y: 0 });
   const [currentDrawing, setCurrentDrawing] = useState<Point[]>([]);
@@ -50,12 +62,75 @@ export const EditorCanvas = memo(({
   const currentPageData = pages[currentPage];
   const pageElements = elements.filter(el => el.page === currentPage || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all'));
   
+  // Mouse wheel zoom
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        const newZoom = Math.max(0.25, Math.min(3, zoom + delta));
+        onZoomChange(newZoom);
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    return () => container.removeEventListener('wheel', handleWheel);
+  }, [zoom, onZoomChange]);
+
+  // Touch pinch zoom
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    let initialDistance = 0;
+    let initialZoom = zoom;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDistance = Math.hypot(dx, dy);
+        initialZoom = zoom;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && initialDistance > 0) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const distance = Math.hypot(dx, dy);
+        const scale = distance / initialDistance;
+        const newZoom = Math.max(0.25, Math.min(3, initialZoom * scale));
+        onZoomChange(newZoom);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      initialDistance = 0;
+    };
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [zoom, onZoomChange]);
+
   const getMousePosition = useCallback((e: React.MouseEvent | React.TouchEvent): Point => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return { x: 0, y: 0 };
     
     let clientX: number, clientY: number;
     if ('touches' in e) {
+      if (e.touches.length === 0) return { x: 0, y: 0 };
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     } else {
@@ -69,8 +144,105 @@ export const EditorCanvas = memo(({
     };
   }, [zoom]);
 
+  // Pan tool handlers
+  const handlePanStart = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    let clientX: number, clientY: number;
+    if ('touches' in e) {
+      if (e.touches.length !== 1) return;
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    setPanStart({ x: clientX, y: clientY });
+    setScrollStart({ x: scrollContainer.scrollLeft, y: scrollContainer.scrollTop });
+    setIsPanning(true);
+  }, []);
+
+  const handlePanMove = useCallback((e: MouseEvent | TouchEvent) => {
+    if (!isPanning) return;
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    let clientX: number, clientY: number;
+    if ('touches' in e) {
+      if (e.touches.length !== 1) return;
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    const dx = panStart.x - clientX;
+    const dy = panStart.y - clientY;
+    
+    scrollContainer.scrollLeft = scrollStart.x + dx;
+    scrollContainer.scrollTop = scrollStart.y + dy;
+  }, [isPanning, panStart, scrollStart]);
+
+  const handlePanEnd = useCallback(() => {
+    setIsPanning(false);
+  }, []);
+
+  useEffect(() => {
+    if (isPanning) {
+      window.addEventListener('mousemove', handlePanMove);
+      window.addEventListener('mouseup', handlePanEnd);
+      window.addEventListener('touchmove', handlePanMove, { passive: true });
+      window.addEventListener('touchend', handlePanEnd);
+      return () => {
+        window.removeEventListener('mousemove', handlePanMove);
+        window.removeEventListener('mouseup', handlePanEnd);
+        window.removeEventListener('touchmove', handlePanMove);
+        window.removeEventListener('touchend', handlePanEnd);
+      };
+    }
+  }, [isPanning, handlePanMove, handlePanEnd]);
+
+  // Eraser function
+  const eraseAtPoint = useCallback((pos: Point) => {
+    const eraserRadius = eraserSettings.size / 2;
+    
+    const updatedElements = elements.filter(el => {
+      if (el.type !== 'drawing' || el.page !== currentPage) return true;
+      
+      const drawEl = el as DrawingElement;
+      // Check if any point in the drawing is within eraser radius
+      const hitPoint = drawEl.points.some(p => {
+        const dx = (p.x + drawEl.x) - pos.x;
+        const dy = (p.y + drawEl.y) - pos.y;
+        return Math.hypot(dx, dy) < eraserRadius;
+      });
+      
+      return !hitPoint;
+    });
+
+    if (updatedElements.length !== elements.length) {
+      onElementsChange(updatedElements);
+    }
+  }, [elements, currentPage, eraserSettings.size, onElementsChange]);
+
   const handleCanvasMouseDown = useCallback((e: React.MouseEvent) => {
     const pos = getMousePosition(e);
+    
+    // Pan tool
+    if (activeTool === 'pan') {
+      handlePanStart(e);
+      return;
+    }
+
+    // Eraser tool
+    if (activeTool === 'eraser') {
+      setIsDrawing(true);
+      eraseAtPoint(pos);
+      return;
+    }
     
     // Check if clicking on an element
     const target = e.target as HTMLElement;
@@ -121,11 +293,11 @@ export const EditorCanvas = memo(({
         fillColor: 'transparent',
         strokeWidth: 2,
       });
-    } else if (['pen', 'highlight', 'underline'].includes(activeTool)) {
+    } else if (['pen', 'highlight', 'underline', 'brush'].includes(activeTool)) {
       setIsDrawing(true);
       setCurrentDrawing([pos]);
     }
-  }, [activeTool, currentPage, elements.length, getMousePosition, onAddElement, onSelectElement]);
+  }, [activeTool, currentPage, elements.length, getMousePosition, onAddElement, onSelectElement, handlePanStart, eraseAtPoint]);
 
   const handleCanvasMouseMove = useCallback((e: React.MouseEvent) => {
     const pos = getMousePosition(e);
@@ -145,9 +317,13 @@ export const EditorCanvas = memo(({
     }
     
     if (isDrawing) {
-      setCurrentDrawing(prev => [...prev, pos]);
+      if (activeTool === 'eraser') {
+        eraseAtPoint(pos);
+      } else {
+        setCurrentDrawing(prev => [...prev, pos]);
+      }
     }
-  }, [getMousePosition, isDrawing, shapeStart, tempShape]);
+  }, [getMousePosition, isDrawing, shapeStart, tempShape, activeTool, eraseAtPoint]);
 
   const handleCanvasMouseUp = useCallback(() => {
     if (tempShape && shapeStart) {
@@ -159,7 +335,7 @@ export const EditorCanvas = memo(({
       setShapeStart(null);
     }
     
-    if (isDrawing && currentDrawing.length > 1) {
+    if (isDrawing && currentDrawing.length > 1 && activeTool !== 'eraser') {
       const bounds = currentDrawing.reduce(
         (acc, p) => ({
           minX: Math.min(acc.minX, p.x),
@@ -169,6 +345,8 @@ export const EditorCanvas = memo(({
         }),
         { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity }
       );
+
+      const isBrush = activeTool === 'brush';
       
       const drawing: DrawingElement = {
         id: `drawing-${Date.now()}`,
@@ -179,20 +357,58 @@ export const EditorCanvas = memo(({
         width: bounds.maxX - bounds.minX,
         height: bounds.maxY - bounds.minY,
         rotation: 0,
-        opacity: activeTool === 'highlight' ? 0.4 : 1,
+        opacity: isBrush ? brushSettings.opacity : (activeTool === 'highlight' ? 0.4 : 1),
         locked: false,
         zIndex: elements.length,
         points: currentDrawing.map(p => ({ x: p.x - bounds.minX, y: p.y - bounds.minY })),
-        strokeColor: activeTool === 'highlight' ? '#FFFF00' : activeTool === 'underline' ? '#FF0000' : '#000000',
-        strokeWidth: activeTool === 'highlight' ? 20 : activeTool === 'underline' ? 3 : 2,
-        drawingType: activeTool as 'pen' | 'highlight' | 'underline',
+        strokeColor: isBrush ? brushSettings.color : (activeTool === 'highlight' ? '#FFFF00' : activeTool === 'underline' ? '#FF0000' : '#000000'),
+        strokeWidth: isBrush ? brushSettings.size : (activeTool === 'highlight' ? 20 : activeTool === 'underline' ? 3 : 2),
+        drawingType: activeTool as 'pen' | 'highlight' | 'underline' | 'brush',
       };
       onAddElement(drawing);
     }
     
     setIsDrawing(false);
     setCurrentDrawing([]);
-  }, [activeTool, currentDrawing, currentPage, elements.length, isDrawing, onAddElement, onSelectElement, shapeStart, tempShape]);
+  }, [activeTool, currentDrawing, currentPage, elements.length, isDrawing, onAddElement, onSelectElement, shapeStart, tempShape, brushSettings]);
+
+  // Touch handlers
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const pos = getMousePosition(e);
+      
+      if (activeTool === 'pan') {
+        handlePanStart(e);
+        return;
+      }
+
+      if (activeTool === 'eraser') {
+        setIsDrawing(true);
+        eraseAtPoint(pos);
+        return;
+      }
+
+      if (['pen', 'highlight', 'underline', 'brush'].includes(activeTool)) {
+        setIsDrawing(true);
+        setCurrentDrawing([pos]);
+      }
+    }
+  }, [activeTool, getMousePosition, handlePanStart, eraseAtPoint]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 1 && isDrawing) {
+      const pos = getMousePosition(e);
+      if (activeTool === 'eraser') {
+        eraseAtPoint(pos);
+      } else {
+        setCurrentDrawing(prev => [...prev, pos]);
+      }
+    }
+  }, [isDrawing, getMousePosition, activeTool, eraseAtPoint]);
+
+  const handleTouchEnd = useCallback(() => {
+    handleCanvasMouseUp();
+  }, [handleCanvasMouseUp]);
 
   // Element drag handlers
   const handleElementMouseDown = useCallback((e: React.MouseEvent, elementId: string) => {
@@ -547,6 +763,8 @@ export const EditorCanvas = memo(({
   const renderCurrentDrawing = () => {
     if (currentDrawing.length < 2) return null;
     
+    const isBrush = activeTool === 'brush';
+    
     const pathData = currentDrawing.reduce((acc, point, i) => {
       return acc + (i === 0 ? `M ${point.x} ${point.y}` : ` L ${point.x} ${point.y}`);
     }, '');
@@ -555,14 +773,31 @@ export const EditorCanvas = memo(({
       <svg className="absolute inset-0 pointer-events-none overflow-visible">
         <path
           d={pathData}
-          stroke={activeTool === 'highlight' ? '#FFFF00' : activeTool === 'underline' ? '#FF0000' : '#000000'}
-          strokeWidth={activeTool === 'highlight' ? 20 : activeTool === 'underline' ? 3 : 2}
+          stroke={isBrush ? brushSettings.color : (activeTool === 'highlight' ? '#FFFF00' : activeTool === 'underline' ? '#FF0000' : '#000000')}
+          strokeWidth={isBrush ? brushSettings.size : (activeTool === 'highlight' ? 20 : activeTool === 'underline' ? 3 : 2)}
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity={activeTool === 'highlight' ? 0.4 : 1}
+          opacity={isBrush ? brushSettings.opacity : (activeTool === 'highlight' ? 0.4 : 1)}
         />
       </svg>
+    );
+  };
+
+  // Render eraser cursor
+  const renderEraserCursor = () => {
+    if (activeTool !== 'eraser') return null;
+    
+    return (
+      <div
+        className="pointer-events-none fixed border-2 border-red-500 rounded-full bg-red-500/10"
+        style={{
+          width: eraserSettings.size,
+          height: eraserSettings.size,
+          transform: 'translate(-50%, -50%)',
+        }}
+        id="eraser-cursor"
+      />
     );
   };
 
@@ -574,25 +809,36 @@ export const EditorCanvas = memo(({
     );
   }
 
+  const getCursor = () => {
+    if (activeTool === 'pan') return isPanning ? 'grabbing' : 'grab';
+    if (activeTool === 'text') return 'text';
+    if (['rectangle', 'circle', 'line', 'arrow'].includes(activeTool)) return 'crosshair';
+    if (['pen', 'highlight', 'underline', 'brush'].includes(activeTool)) return 'crosshair';
+    if (activeTool === 'eraser') return 'none';
+    return 'default';
+  };
+
   return (
-    <div className="flex-1 overflow-auto bg-muted/30 p-4">
+    <div 
+      ref={scrollContainerRef}
+      className="flex-1 overflow-auto bg-muted/30 p-4"
+    >
       <div
         ref={containerRef}
-        className="relative mx-auto bg-white shadow-lg"
+        className="relative mx-auto bg-white shadow-lg select-none"
         style={{
           width: currentPageData.width * zoom,
           height: currentPageData.height * zoom,
           transform: `rotate(${currentPageData.rotation}deg)`,
-          cursor: activeTool === 'pan' ? 'grab' : 
-                  activeTool === 'text' ? 'text' :
-                  ['rectangle', 'circle', 'line', 'arrow'].includes(activeTool) ? 'crosshair' :
-                  ['pen', 'highlight', 'underline'].includes(activeTool) ? 'crosshair' :
-                  'default',
+          cursor: getCursor(),
         }}
         onMouseDown={handleCanvasMouseDown}
         onMouseMove={handleCanvasMouseMove}
         onMouseUp={handleCanvasMouseUp}
         onMouseLeave={handleCanvasMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* PDF Page Image */}
         {currentPageData.canvas && (
@@ -614,6 +860,7 @@ export const EditorCanvas = memo(({
           {renderCurrentDrawing()}
         </div>
       </div>
+      {renderEraserCursor()}
     </div>
   );
 });

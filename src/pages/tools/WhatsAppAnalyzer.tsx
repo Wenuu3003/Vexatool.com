@@ -115,48 +115,103 @@ const WhatsAppAnalyzer = () => {
   };
 
   const handleShare = async () => {
-    if (!result) return;
+    if (!result) {
+      toast.error("No analysis result to share!");
+      return;
+    }
     
-    const shareText = `🔥 WhatsApp Chat Truth Revealed!\n\n${result.analysis.verdict}\n\nVibes: ${result.analysis.overallVibes} ✨\n\nAnalyze yours at mypdfs.in/whatsapp-analyzer`;
+    const shareText = `🔥 WhatsApp Chat Truth Revealed!\n\n${result.analysis.verdict}\n\nVibes: ${result.analysis.overallVibes} ✨\n\n${result.personA}: ${result.analysis.personAInterest}% interest\n${result.personB}: ${result.analysis.personBInterest}% interest\n\nAnalyze yours at https://mypdfs.lovable.app/whatsapp-analyzer`;
     
-    if (navigator.share) {
-      try {
+    try {
+      if (navigator.share && navigator.canShare && navigator.canShare({ text: shareText })) {
         await navigator.share({
           title: "WhatsApp Chat Analysis",
           text: shareText,
+          url: "https://mypdfs.lovable.app/whatsapp-analyzer"
         });
-      } catch {
+        toast.success("Shared successfully! 🎉");
+      } else {
         await navigator.clipboard.writeText(shareText);
         toast.success("Copied to clipboard! Share it now 📤");
       }
-    } else {
-      await navigator.clipboard.writeText(shareText);
-      toast.success("Copied to clipboard! Share it now 📤");
+    } catch (error) {
+      // User cancelled sharing or error occurred
+      if ((error as Error).name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(shareText);
+          toast.success("Copied to clipboard! Share it now 📤");
+        } catch {
+          toast.error("Unable to share. Please try again.");
+        }
+      }
     }
   };
 
   const handleDownloadCard = async () => {
-    if (!shareCardRef.current || !result) return;
+    if (!shareCardRef.current) {
+      toast.error("Unable to capture image. Please try again.");
+      return;
+    }
+    
+    if (!result) {
+      toast.error("No analysis result to download!");
+      return;
+    }
     
     setIsDownloading(true);
+    
     try {
-      const canvas = await html2canvas(shareCardRef.current, {
-        backgroundColor: null,
-        scale: 2,
+      // Wait for any animations to settle
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const element = shareCardRef.current;
+      
+      // Create canvas with specific options for better rendering
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#10b981', // Fallback emerald color
+        scale: 2, // High resolution
         useCORS: true,
         logging: false,
+        allowTaint: true,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        onclone: (clonedDoc) => {
+          // Ensure gradient backgrounds render properly in cloned element
+          const clonedElement = clonedDoc.querySelector('[data-share-card]');
+          if (clonedElement) {
+            (clonedElement as HTMLElement).style.background = 'linear-gradient(135deg, #22c55e 0%, #10b981 50%, #14b8a6 100%)';
+          }
+        }
       });
       
-      const link = document.createElement('a');
-      link.download = `whatsapp-analysis-${result.personA}-${result.personB}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      // Convert to blob for better compatibility
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          toast.error("Failed to create image. Please try again.");
+          setIsDownloading(false);
+          return;
+        }
+        
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const fileName = `whatsapp-analysis-${result.personA.replace(/\s+/g, '-')}-${result.personB.replace(/\s+/g, '-')}-${Date.now()}.png`;
+        
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Cleanup
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        
+        toast.success("Image downloaded! Share it on social media 📸");
+        setIsDownloading(false);
+      }, 'image/png', 1.0);
       
-      toast.success("Image downloaded! Share it on social media 📸");
     } catch (error) {
       console.error("Download error:", error);
-      toast.error("Failed to download image. Try again!");
-    } finally {
+      toast.error("Failed to download image. Please try again!");
       setIsDownloading(false);
     }
   };
@@ -331,6 +386,7 @@ Example format:
             {/* Shareable Image Card */}
             <div 
               ref={shareCardRef}
+              data-share-card="true"
               className="p-6 rounded-2xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-600 text-white shadow-2xl"
             >
               <div className="text-center space-y-4">

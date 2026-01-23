@@ -52,7 +52,17 @@ export interface DrawingElement extends EditorElement {
   points: Point[];
   strokeColor: string;
   strokeWidth: number;
-  drawingType: 'pen' | 'highlight' | 'underline';
+  drawingType: 'pen' | 'highlight' | 'underline' | 'brush';
+}
+
+export interface BrushSettings {
+  color: string;
+  size: number;
+  opacity: number;
+}
+
+export interface EraserSettings {
+  size: number;
 }
 
 export interface WatermarkElement extends EditorElement {
@@ -121,8 +131,13 @@ export type Tool =
   | 'line'
   | 'arrow'
   | 'pen'
+  | 'brush'
   | 'highlight'
   | 'underline'
+  | 'eraser'
   | 'image'
   | 'watermark'
   | 'pan';
+
+export const BRUSH_SIZES = [2, 4, 8, 12, 16, 24, 32];
+export const ERASER_SIZES = [10, 20, 30, 40, 50];

@@ -121,14 +121,14 @@ const WhatsAppAnalyzer = () => {
       return;
     }
     
-    const shareText = `🔥 WhatsApp Chat Truth Revealed!\n\n${result.analysis.verdict}\n\nVibes: ${result.analysis.overallVibes} ✨\n\n${result.personA}: ${result.analysis.personAInterest}% interest\n${result.personB}: ${result.analysis.personBInterest}% interest\n\nAnalyze yours at https://mypdfs.lovable.app/whatsapp-analyzer`;
+    const shareText = `🔥 WhatsApp Chat Truth Revealed!\n\n${result.analysis.verdict}\n\nVibes: ${result.analysis.overallVibes} ✨\n\n${result.personA}: ${result.analysis.personAInterest}% interest\n${result.personB}: ${result.analysis.personBInterest}% interest\n\nAnalyze yours at https://mypdfs.in/whatsapp-analyzer`;
     
     try {
       if (navigator.share && navigator.canShare && navigator.canShare({ text: shareText })) {
         await navigator.share({
           title: "WhatsApp Chat Analysis",
           text: shareText,
-          url: "https://mypdfs.lovable.app/whatsapp-analyzer"
+          url: "https://mypdfs.in/whatsapp-analyzer"
         });
         toast.success("Shared successfully! 🎉");
       } else {

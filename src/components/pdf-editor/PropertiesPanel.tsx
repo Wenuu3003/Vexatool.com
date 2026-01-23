@@ -11,6 +11,7 @@ import {
   TextElement, 
   ShapeElement, 
   ImageElement,
+  RedactElement,
   FONT_FAMILIES, 
   FONT_SIZES, 
   COLORS 
@@ -214,6 +215,36 @@ export const PropertiesPanel = memo(({ element, onUpdate }: PropertiesPanelProps
               label="Fill Color"
             />
           )}
+        </div>
+      )}
+      
+      {/* Redact Properties */}
+      {element.type === 'redact' && (
+        <div className="space-y-3">
+          <div className="text-xs text-muted-foreground">
+            Use this to cover/mask original scanned text
+          </div>
+          <ColorPicker
+            value={(element as RedactElement).fillColor}
+            onChange={(fillColor) => handleUpdate({ fillColor })}
+            label="Cover Color"
+          />
+          <div className="flex gap-2">
+            <Button
+              variant={(element as RedactElement).fillColor === '#FFFFFF' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleUpdate({ fillColor: '#FFFFFF' })}
+            >
+              White
+            </Button>
+            <Button
+              variant={(element as RedactElement).fillColor === '#000000' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => handleUpdate({ fillColor: '#000000' })}
+            >
+              Black
+            </Button>
+          </div>
         </div>
       )}
       

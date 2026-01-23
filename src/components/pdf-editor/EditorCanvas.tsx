@@ -6,6 +6,7 @@ import {
   ImageElement, 
   DrawingElement,
   WatermarkElement,
+  RedactElement,
   PageInfo, 
   Tool,
   Point,
@@ -58,6 +59,7 @@ export const EditorCanvas = memo(({
   const [editingText, setEditingText] = useState<string | null>(null);
   const [shapeStart, setShapeStart] = useState<Point | null>(null);
   const [tempShape, setTempShape] = useState<ShapeElement | null>(null);
+  const [tempRedact, setTempRedact] = useState<RedactElement | null>(null);
   
   const currentPageData = pages[currentPage];
   const pageElements = elements.filter(el => el.page === currentPage || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all'));
@@ -293,6 +295,23 @@ export const EditorCanvas = memo(({
         fillColor: 'transparent',
         strokeWidth: 2,
       });
+    } else if (activeTool === 'redact') {
+      // Redact tool - create white/color patch to cover original text
+      setShapeStart(pos);
+      setTempRedact({
+        id: `redact-${Date.now()}`,
+        type: 'redact',
+        page: currentPage,
+        x: pos.x,
+        y: pos.y,
+        width: 0,
+        height: 0,
+        rotation: 0,
+        opacity: 1,
+        locked: false,
+        zIndex: elements.length,
+        fillColor: '#FFFFFF', // White by default to cover scanned text
+      });
     } else if (['pen', 'highlight', 'underline', 'brush'].includes(activeTool)) {
       setIsDrawing(true);
       setCurrentDrawing([pos]);
@@ -316,6 +335,19 @@ export const EditorCanvas = memo(({
       });
     }
     
+    // Handle redact tool drag
+    if (shapeStart && tempRedact) {
+      const width = pos.x - shapeStart.x;
+      const height = pos.y - shapeStart.y;
+      setTempRedact({
+        ...tempRedact,
+        width: Math.abs(width),
+        height: Math.abs(height),
+        x: width < 0 ? pos.x : shapeStart.x,
+        y: height < 0 ? pos.y : shapeStart.y,
+      });
+    }
+    
     if (isDrawing) {
       if (activeTool === 'eraser') {
         eraseAtPoint(pos);
@@ -323,7 +355,7 @@ export const EditorCanvas = memo(({
         setCurrentDrawing(prev => [...prev, pos]);
       }
     }
-  }, [getMousePosition, isDrawing, shapeStart, tempShape, activeTool, eraseAtPoint]);
+  }, [getMousePosition, isDrawing, shapeStart, tempShape, tempRedact, activeTool, eraseAtPoint]);
 
   const handleCanvasMouseUp = useCallback(() => {
     if (tempShape && shapeStart) {
@@ -332,6 +364,16 @@ export const EditorCanvas = memo(({
         onSelectElement(tempShape.id);
       }
       setTempShape(null);
+      setShapeStart(null);
+    }
+    
+    // Handle redact tool completion
+    if (tempRedact && shapeStart) {
+      if (tempRedact.width > 5 || tempRedact.height > 5) {
+        onAddElement(tempRedact);
+        onSelectElement(tempRedact.id);
+      }
+      setTempRedact(null);
       setShapeStart(null);
     }
     
@@ -737,10 +779,55 @@ export const EditorCanvas = memo(({
         );
       }
       
+      case 'redact': {
+        const redactEl = element as RedactElement;
+        return (
+          <div
+            key={element.id}
+            className={`editor-element ${isSelected ? 'ring-2 ring-primary' : ''}`}
+            style={{
+              ...baseStyle,
+              backgroundColor: redactEl.fillColor,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            }}
+            onMouseDown={(e) => handleElementMouseDown(e, element.id)}
+          >
+            {isSelected && !element.locked && (
+              <div
+                className="absolute bottom-0 right-0 w-3 h-3 bg-primary cursor-se-resize"
+                onMouseDown={(e) => handleResizeStart(e, element.id)}
+              />
+            )}
+          </div>
+        );
+      }
+      
       default:
         return null;
     }
   }, [activeTool, editingText, handleElementMouseDown, handleResizeStart, handleTextBlur, handleTextChange, handleTextDoubleClick, selectedElement]);
+
+  // Render temp redact while drawing
+  const renderTempRedact = () => {
+    if (!tempRedact) return null;
+    
+    return (
+      <div
+        className="absolute pointer-events-none border-2 border-dashed border-red-500"
+        style={{
+          left: tempRedact.x,
+          top: tempRedact.y,
+          width: tempRedact.width,
+          height: tempRedact.height,
+          backgroundColor: 'rgba(255,255,255,0.8)',
+        }}
+      >
+        <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs text-red-500 font-medium whitespace-nowrap">
+          Redact Area
+        </span>
+      </div>
+    );
+  };
 
   // Render temp shape while drawing
   const renderTempShape = () => {
@@ -857,6 +944,7 @@ export const EditorCanvas = memo(({
         >
           {pageElements.map(renderElement)}
           {renderTempShape()}
+          {renderTempRedact()}
           {renderCurrentDrawing()}
         </div>
       </div>

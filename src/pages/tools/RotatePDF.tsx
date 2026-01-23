@@ -5,7 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { PDFDocument, degrees } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const RotatePDF = () => {
@@ -93,12 +93,11 @@ const RotatePDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Rotate PDF Pages Online Free | Mypdfs</title>
-        <meta name="description" content="Free online PDF rotation tool. Rotate PDF pages 90, 180, or 270 degrees. Fix upside-down or sideways PDF pages instantly." />
-        <meta name="keywords" content="rotate PDF, turn PDF, flip PDF pages, PDF rotation, fix PDF orientation, free PDF rotate" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/rotate-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Rotate PDF Pages Online Free | Mypdfs"
+        description="Free online PDF rotation tool. Rotate PDF pages 90, 180, or 270 degrees. Fix upside-down or sideways PDF pages."
+        keywords="rotate PDF, turn PDF, flip PDF pages, PDF rotation, fix PDF orientation, free PDF rotate"
+      />
       <ToolLayout
         title="Rotate PDF"
         description="Rotate all pages in your PDF document"

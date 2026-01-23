@@ -7,7 +7,7 @@ export interface Point {
 
 export interface EditorElement {
   id: string;
-  type: 'text' | 'shape' | 'image' | 'drawing' | 'watermark';
+  type: 'text' | 'shape' | 'image' | 'drawing' | 'watermark' | 'redact';
   page: number;
   x: number;
   y: number;
@@ -77,7 +77,7 @@ export interface WatermarkElement extends EditorElement {
   applyTo: 'current' | 'all';
 }
 
-export type AnyElement = TextElement | ShapeElement | ImageElement | DrawingElement | WatermarkElement;
+export type AnyElement = TextElement | ShapeElement | ImageElement | DrawingElement | WatermarkElement | RedactElement;
 
 export interface HistoryState {
   elements: AnyElement[];
@@ -137,7 +137,13 @@ export type Tool =
   | 'eraser'
   | 'image'
   | 'watermark'
-  | 'pan';
+  | 'pan'
+  | 'redact';
+
+export interface RedactElement extends EditorElement {
+  type: 'redact';
+  fillColor: string;
+}
 
 export const BRUSH_SIZES = [2, 4, 8, 12, 16, 24, 32];
 export const ERASER_SIZES = [10, 20, 30, 40, 50];

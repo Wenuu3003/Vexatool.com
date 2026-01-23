@@ -10,6 +10,7 @@ import {
   ImageElement, 
   DrawingElement,
   WatermarkElement,
+  RedactElement,
   PageInfo, 
   Tool,
   ZOOM_LEVELS,
@@ -152,6 +153,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           case 'l': setActiveTool('line'); break;
           case 'a': setActiveTool('arrow'); break;
           case 'p': setActiveTool('pen'); break;
+          case 'x': setActiveTool('redact'); break;
           case 'i': setActiveTool('image'); imageInputRef.current?.click(); break;
           case 'w': setActiveTool('watermark'); setShowWatermarkDialog(true); break;
         }
@@ -531,6 +533,26 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
                 });
               }
             }
+          } else if (element.type === 'redact') {
+            // Redact elements - draw solid rectangle to cover original text
+            const redactEl = element as RedactElement;
+            const fillColor = redactEl.fillColor.replace('#', '');
+            const fr = parseInt(fillColor.substring(0, 2), 16) / 255;
+            const fg = parseInt(fillColor.substring(2, 4), 16) / 255;
+            const fb = parseInt(fillColor.substring(4, 6), 16) / 255;
+            
+            const x = redactEl.x * scaleFactor;
+            const y = pageHeight - (redactEl.y * scaleFactor) - (redactEl.height * scaleFactor);
+            
+            // Draw filled rectangle to completely cover original content
+            page.drawRectangle({
+              x,
+              y,
+              width: redactEl.width * scaleFactor,
+              height: redactEl.height * scaleFactor,
+              color: rgb(fr, fg, fb),
+              opacity: redactEl.opacity,
+            });
           }
         }
       }

@@ -4,7 +4,7 @@ import {
   Pencil, Highlighter, Underline, Image, Droplets, Hand,
   Undo2, Redo2, ZoomIn, ZoomOut, Maximize, 
   Trash2, Copy, Lock, Unlock, Download, RotateCcw,
-  Paintbrush, Eraser
+  Paintbrush, Eraser, RectangleHorizontal
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -119,6 +119,7 @@ export const EditorToolbar = memo(({
         <ToolButton icon={Circle} tool="circle" activeTool={activeTool} onClick={onToolChange} tooltip="Circle (C)" />
         <ToolButton icon={Minus} tool="line" activeTool={activeTool} onClick={onToolChange} tooltip="Line (L)" />
         <ToolButton icon={MoveRight} tool="arrow" activeTool={activeTool} onClick={onToolChange} tooltip="Arrow (A)" />
+        <ToolButton icon={RectangleHorizontal} tool="redact" activeTool={activeTool} onClick={onToolChange} tooltip="Redact/White Patch (X) - Cover original text" />
       </div>
       
       <Separator orientation="vertical" className="h-6 mx-1" />

@@ -5,7 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const MergePDF = () => {
@@ -67,12 +67,11 @@ const MergePDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Merge PDF Files Online Free - Combine PDFs | Mypdfs</title>
-        <meta name="description" content="Free online PDF merger. Combine multiple PDF files into one document. Easy to use, no registration required. Merge PDFs instantly." />
-        <meta name="keywords" content="merge PDF, combine PDF, join PDF files, PDF merger, free PDF combine, online PDF merger" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/merge-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Merge PDF Files Online Free - Combine PDFs | Mypdfs"
+        description="Free online PDF merger. Combine multiple PDF files into one document. Easy to use, no registration required."
+        keywords="merge PDF, combine PDF, join PDF files, PDF merger, free PDF combine, online PDF merger"
+      />
       <ToolLayout
         title="Merge PDF"
         description="Combine multiple PDF files into one document"

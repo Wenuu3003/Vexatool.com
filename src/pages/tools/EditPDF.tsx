@@ -5,7 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { AdPlaceholder } from "@/components/AdBanner";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 // Lazy load the heavy editor component
@@ -70,12 +70,11 @@ const EditPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Professional PDF Editor Online Free - Edit PDF with Text, Shapes, Images | Mypdfs</title>
-        <meta name="description" content="Free professional PDF editor online. Add text, shapes, drawings, images, watermarks. Rotate, delete, reorder pages. Undo/redo support. High-quality export. No software needed." />
-        <meta name="keywords" content="PDF editor, edit PDF online, add text to PDF, PDF shapes, PDF watermark, PDF page editor, free PDF editor, professional PDF editor, draw on PDF, PDF annotations" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/edit-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Professional PDF Editor Online Free - Edit PDF with Text, Shapes, Images | Mypdfs"
+        description="Free professional PDF editor online. Add text, shapes, drawings, images, watermarks. Rotate, delete, reorder pages. High-quality export."
+        keywords="PDF editor, edit PDF online, add text to PDF, PDF shapes, PDF watermark, PDF page editor, free PDF editor, professional PDF editor"
+      />
       <ToolLayout
         title="Professional PDF Editor"
         description="Full-featured PDF editor with text, shapes, images, watermarks, and page management"

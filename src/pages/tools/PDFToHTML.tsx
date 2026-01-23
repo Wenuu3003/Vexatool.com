@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import DOMPurify from "dompurify";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
@@ -230,12 +230,11 @@ const PDFToHTML = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PDF to HTML Converter Free Online - Convert PDF to Web Page | Mypdfs</title>
-        <meta name="description" content="Free online PDF to HTML converter. Convert PDF documents to HTML web pages. Create responsive HTML from PDF files instantly." />
-        <meta name="keywords" content="pdf to html, convert pdf to html, pdf to web page, pdf converter, free html converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-html" />
-      </Helmet>
+      <CanonicalHead 
+        title="PDF to HTML Converter Free Online - Convert PDF to Web Page | Mypdfs"
+        description="Free online PDF to HTML converter. Convert PDF documents to HTML web pages. Create responsive HTML instantly."
+        keywords="pdf to html, convert pdf to html, pdf to web page, pdf converter, free html converter"
+      />
       <ToolLayout
         title="PDF to HTML"
         description="Convert PDF documents to HTML web pages"

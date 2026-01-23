@@ -5,7 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const OrganizePDF = () => {
@@ -122,12 +122,11 @@ const OrganizePDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Organize PDF Pages Free Online - Reorder PDF | Mypdfs</title>
-        <meta name="description" content="Free online PDF organizer. Reorder, rearrange, and reorganize PDF pages with drag and drop. Easy page management." />
-        <meta name="keywords" content="organize PDF, reorder PDF pages, rearrange PDF, PDF page order, sort PDF pages, free PDF organizer" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/organize-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Organize PDF Pages Free Online - Reorder PDF | Mypdfs"
+        description="Free online PDF organizer. Reorder, rearrange, and reorganize PDF pages with drag and drop."
+        keywords="organize PDF, reorder PDF pages, rearrange PDF, PDF page order, sort PDF pages, free PDF organizer"
+      />
       <ToolLayout
         title="Organize PDF"
         description="Reorder pages in your PDF document"

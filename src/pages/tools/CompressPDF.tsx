@@ -5,7 +5,7 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import ToolSEOContent from "@/components/ToolSEOContent";
@@ -187,12 +187,11 @@ const CompressPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Compress PDF Online Free - Reduce PDF File Size | Mypdfs</title>
-        <meta name="description" content="Free online PDF compressor. Reduce PDF file size while maintaining quality. Compress large PDFs instantly without losing quality." />
-        <meta name="keywords" content="compress PDF, reduce PDF size, PDF compressor, shrink PDF, optimize PDF, free PDF compression" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/compress-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Compress PDF Online Free - Reduce PDF File Size | Mypdfs"
+        description="Free online PDF compressor. Reduce PDF file size while maintaining quality. Compress large PDFs instantly."
+        keywords="compress PDF, reduce PDF size, PDF compressor, shrink PDF, optimize PDF, free PDF compression"
+      />
       <ToolLayout
         title="Compress PDF"
         description="Reduce the file size of your PDF documents"

@@ -3,7 +3,7 @@ import { FileSpreadsheet, Download, FileText } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const WordToExcel = () => {
@@ -146,12 +146,11 @@ const WordToExcel = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Word to Excel Converter Free Online - DOC to XLS CSV | Mypdfs</title>
-        <meta name="description" content="Free online Word to Excel converter. Convert DOC and DOCX files to Excel CSV format. Extract tables and data from Word documents." />
-        <meta name="keywords" content="word to excel, doc to xls, docx to csv, word to csv, convert word to excel, free converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/word-to-excel" />
-      </Helmet>
+      <CanonicalHead 
+        title="Word to Excel Converter Free Online - DOC to XLS CSV | Mypdfs"
+        description="Free online Word to Excel converter. Convert DOC and DOCX files to Excel CSV format. Extract tables."
+        keywords="word to excel, doc to xls, docx to csv, word to csv, convert word to excel"
+      />
       <ToolLayout
         title="Word to Excel"
         description="Convert Word documents to Excel spreadsheet format"

@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const PDFToJPG = () => {
@@ -111,12 +111,11 @@ const PDFToJPG = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PDF to JPG Converter Free Online - Convert PDF to JPEG | Mypdfs</title>
-        <meta name="description" content="Free online PDF to JPG converter. Convert PDF pages to JPEG images instantly. Extract all pages as high-quality JPG files." />
-        <meta name="keywords" content="pdf to jpg, pdf to jpeg, convert pdf to image, extract pdf pages, free pdf to jpg" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-jpg" />
-      </Helmet>
+      <CanonicalHead 
+        title="PDF to JPG Converter Free Online - Convert PDF to JPEG | Mypdfs"
+        description="Free online PDF to JPG converter. Convert PDF pages to JPEG images instantly. High-quality conversion."
+        keywords="pdf to jpg, pdf to jpeg, convert pdf to image, extract pdf pages, free pdf to jpg"
+      />
       <ToolLayout
         title="PDF to JPG"
         description="Convert PDF pages to JPG/JPEG images"

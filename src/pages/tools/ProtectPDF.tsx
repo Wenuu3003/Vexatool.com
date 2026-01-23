@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ProtectPDF = () => {
@@ -99,12 +99,11 @@ const ProtectPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Protect PDF with Password Free Online | Mypdfs</title>
-        <meta name="description" content="Free online PDF protection tool. Add password protection to your PDF documents. Secure your PDFs with encryption." />
-        <meta name="keywords" content="protect PDF, password PDF, encrypt PDF, secure PDF, PDF password protection, lock PDF" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/protect-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Protect PDF with Password Free Online | Mypdfs"
+        description="Free online PDF protection tool. Add password protection to your PDF documents. Secure your PDFs."
+        keywords="protect PDF, password PDF, encrypt PDF, secure PDF, PDF password protection, lock PDF"
+      />
       <ToolLayout
         title="Protect PDF"
         description="Add password protection to your PDF documents"

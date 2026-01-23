@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { compressImageFile } from "@/lib/imageCompression";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import { Slider } from "@/components/ui/slider";
 import { PDFDocument } from "pdf-lib";
 
@@ -168,12 +168,11 @@ const FileCompressor = () => {
 
   return (
     <>
-      <Helmet>
-        <title>File Compressor Free Online - Compress Images PDF Files | Mypdfs</title>
-        <meta name="description" content="Free online file compressor. Compress images, PDFs and other files to reduce size. Supports JPG, PNG, PDF compression with quality control." />
-        <meta name="keywords" content="file compressor, compress files, reduce file size, image compression, pdf compression, free compressor" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/file-compressor" />
-      </Helmet>
+      <CanonicalHead 
+        title="File Compressor Free Online - Compress Images PDF Files | Mypdfs"
+        description="Free online file compressor. Compress images, PDFs and other files to reduce size with quality control."
+        keywords="file compressor, compress files, reduce file size, image compression, pdf compression"
+      />
       <ToolLayout
         title="File Compressor"
         description="Compress images and PDF files to reduce size"

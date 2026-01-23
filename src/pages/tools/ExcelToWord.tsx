@@ -3,7 +3,7 @@ import { FileText, Download, Table } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const ExcelToWord = () => {
@@ -185,12 +185,11 @@ const ExcelToWord = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Excel to Word Converter Free Online - XLS CSV to DOC | Mypdfs</title>
-        <meta name="description" content="Free online Excel to Word converter. Convert XLS, XLSX, and CSV files to Word document format. Convert spreadsheets to editable documents." />
-        <meta name="keywords" content="excel to word, xls to doc, csv to word, spreadsheet to word, convert excel, free converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/excel-to-word" />
-      </Helmet>
+      <CanonicalHead 
+        title="Excel to Word Converter Free Online - XLS CSV to DOC | Mypdfs"
+        description="Free online Excel to Word converter. Convert XLS, XLSX, and CSV files to Word document format."
+        keywords="excel to word, xls to doc, csv to word, spreadsheet to word, convert excel"
+      />
       <ToolLayout
         title="Excel to Word"
         description="Convert Excel spreadsheets to Word document format"

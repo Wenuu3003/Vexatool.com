@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const SignPDF = () => {
@@ -207,12 +207,11 @@ const SignPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Sign PDF Online Free - Add Digital Signature | Mypdfs</title>
-        <meta name="description" content="Free online PDF signing tool. Add your signature to PDF documents. Draw or type your signature easily. No registration required." />
-        <meta name="keywords" content="sign PDF, e-signature PDF, digital signature, add signature to PDF, free PDF signer" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/sign-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Sign PDF Online Free - Add Digital Signature | Mypdfs"
+        description="Free online PDF signing tool. Add your signature to PDF documents. Draw or type your signature easily."
+        keywords="sign PDF, e-signature PDF, digital signature, add signature to PDF, free PDF signer"
+      />
       <ToolLayout
         title="Sign PDF"
         description="Add your signature to PDF documents"

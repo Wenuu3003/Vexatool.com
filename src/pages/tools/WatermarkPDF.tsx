@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PDFDocument, rgb } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
 
@@ -269,12 +269,11 @@ const WatermarkPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Add Watermark to PDF Free Online | Text & Image Watermarks | Mypdfs</title>
-        <meta name="description" content="Free online PDF watermark tool. Add text or image watermarks to protect your PDF documents. Add logos, symbols, or custom text. Customize opacity and position easily." />
-        <meta name="keywords" content="watermark PDF, add watermark, PDF stamp, protect PDF, text watermark, image watermark, logo watermark, free PDF watermark" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/watermark-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Add Watermark to PDF Free Online | Text & Image Watermarks | Mypdfs"
+        description="Free online PDF watermark tool. Add text or image watermarks to protect your PDF documents."
+        keywords="watermark PDF, add watermark, PDF stamp, protect PDF, text watermark, image watermark, logo watermark"
+      />
       <ToolLayout
         title="Watermark PDF"
         description="Add text or image watermark to your PDF documents"

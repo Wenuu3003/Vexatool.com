@@ -4,7 +4,7 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { PDFDocument } from "pdf-lib";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
@@ -156,12 +156,11 @@ const PDFToImage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>PDF to Image Converter Free Online - PDF to JPG PNG | Mypdfs</title>
-        <meta name="description" content="Free online PDF to image converter. Convert PDF pages to JPG or PNG images. Extract images from PDF documents instantly." />
-        <meta name="keywords" content="pdf to image, pdf to jpg, pdf to png, convert pdf, extract pdf images, free pdf converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/pdf-to-image" />
-      </Helmet>
+      <CanonicalHead 
+        title="PDF to Image Converter Free Online - PDF to JPG PNG | Mypdfs"
+        description="Free online PDF to image converter. Convert PDF pages to JPG or PNG images. Extract images from PDF instantly."
+        keywords="pdf to image, pdf to jpg, pdf to png, convert pdf, extract pdf images, free pdf converter"
+      />
       <ToolLayout
         title="PDF to Image"
         description="Convert PDF pages to JPG or PNG images"

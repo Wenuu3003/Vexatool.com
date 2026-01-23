@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 
 const GoogleDriveToPDF = () => {
   const [driveLink, setDriveLink] = useState("");
@@ -110,12 +110,11 @@ const GoogleDriveToPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Google Drive to PDF Converter Free | Mypdfs</title>
-        <meta name="description" content="Convert Google Drive files to PDF. Export Google Docs, Sheets, and Slides to PDF format easily. Free online converter." />
-        <meta name="keywords" content="Google Drive to PDF, Google Docs to PDF, Google Sheets to PDF, Google Slides to PDF, free Drive converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/google-drive-to-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Google Drive to PDF Converter Free | Mypdfs"
+        description="Convert Google Drive files to PDF. Export Google Docs, Sheets, and Slides to PDF format easily."
+        keywords="Google Drive to PDF, Google Docs to PDF, Google Sheets to PDF, Google Slides to PDF"
+      />
       <ToolLayout
         title="Google Drive to PDF"
         description="Convert Google Drive files to PDF format"

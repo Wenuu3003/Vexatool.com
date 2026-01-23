@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import * as XLSX from "xlsx";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
 
@@ -387,12 +387,11 @@ const ExcelToPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Excel to PDF Converter – Batch Processing & Clean Sheets | Mypdfs</title>
-        <meta name="description" content="Convert Excel to PDF online with batch processing and clean sheet options. Auto-fit columns, secure processing. Supports XLS, XLSX, and CSV files." />
-        <meta name="keywords" content="Excel to PDF, XLS to PDF, XLSX to PDF, CSV to PDF, batch Excel convert, spreadsheet to PDF, free Excel converter" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/excel-to-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Excel to PDF Converter – Batch Processing & Clean Sheets | Mypdfs"
+        description="Convert Excel to PDF online with batch processing and clean sheet options. Supports XLS, XLSX, and CSV."
+        keywords="Excel to PDF, XLS to PDF, XLSX to PDF, CSV to PDF, batch Excel convert, spreadsheet to PDF"
+      />
       <ToolLayout
         title="Excel to PDF"
         description="Convert Excel spreadsheets to PDF with formatting"

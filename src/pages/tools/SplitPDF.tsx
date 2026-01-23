@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
+import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 const SplitPDF = () => {
@@ -121,12 +121,11 @@ const SplitPDF = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Split PDF Online Free - Extract Pages from PDF | Mypdfs</title>
-        <meta name="description" content="Free online PDF splitter. Extract specific pages from PDF files. Split PDFs into multiple documents easily. No registration required." />
-        <meta name="keywords" content="split PDF, extract PDF pages, PDF splitter, divide PDF, separate PDF pages, free PDF split" />
-        <link rel="canonical" href="https://mypdfs.lovable.app/split-pdf" />
-      </Helmet>
+      <CanonicalHead 
+        title="Split PDF Online Free - Extract Pages from PDF | Mypdfs"
+        description="Free online PDF splitter. Extract specific pages from PDF files. Split PDFs into multiple documents easily."
+        keywords="split PDF, extract PDF pages, PDF splitter, divide PDF, separate PDF pages, free PDF split"
+      />
       <ToolLayout
         title="Split PDF"
         description="Extract specific pages from your PDF document"

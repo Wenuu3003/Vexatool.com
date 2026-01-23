@@ -653,19 +653,53 @@ export const routes: RouteConfig[] = [
   },
 ];
 
-export const BASE_URL = 'https://mypdfs.in';
+// Use the published domain for sitemap generation
+export const BASE_URL = 'https://mypdfs.lovable.app';
+
+// Tool update dates for accurate lastmod (format: YYYY-MM-DD)
+// Update these when significant changes are made to specific tools
+export const toolUpdateDates: Record<string, string> = {
+  '/': '2026-01-23',
+  '/blog': '2026-01-23',
+  '/edit-pdf': '2026-01-23', // Major update: Professional PDF Editor
+  '/watermark-pdf': '2026-01-23', // Added image/logo watermarks
+  '/sign-pdf': '2026-01-23', 
+  '/whatsapp-analyzer': '2026-01-23', // Fixed share/download
+  '/merge-pdf': '2026-01-23',
+  '/split-pdf': '2026-01-23',
+  '/compress-pdf': '2026-01-23',
+  '/pdf-to-excel': '2026-01-23', // Added batch processing
+  '/excel-to-pdf': '2026-01-23', // Added batch processing
+  '/ai-resume-builder': '2026-01-23',
+  '/ai-chat': '2026-01-20',
+  '/ai-text-generator': '2026-01-20',
+  '/ai-grammar-tool': '2026-01-20',
+  '/qr-code-generator': '2026-01-20',
+  '/qr-code-scanner': '2026-01-20',
+  '/background-remover': '2026-01-20',
+  '/image-resizer': '2026-01-20',
+  '/compress-image': '2026-01-20',
+  '/pincode-generator': '2026-01-20',
+  '/youtube-generator': '2026-01-20',
+  '/hashtag-generator': '2026-01-20',
+};
+
+// Default lastmod date for routes without specific update dates
+const DEFAULT_LASTMOD = '2026-01-23';
 
 export const generateSitemapXml = (): string => {
-  const today = new Date().toISOString().split('T')[0];
-  
   const urls = routes
     .filter(route => route.includeInSitemap)
-    .map(route => `  <url>
+    .map(route => {
+      // Use specific update date if available, otherwise default
+      const lastmod = toolUpdateDates[route.path] || DEFAULT_LASTMOD;
+      return `  <url>
     <loc>${BASE_URL}${route.path === '/' ? '' : route.path}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${lastmod}</lastmod>
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>
-  </url>`)
+  </url>`;
+    })
     .join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>

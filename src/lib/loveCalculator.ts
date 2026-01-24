@@ -1,4 +1,5 @@
 import type { Gender } from "@/components/calculators/LoveCalculatorForm";
+import { getZodiacCompatibility, type ZodiacCompatibilityResult } from "./zodiacCompatibility";
 
 interface LoveCalculationInput {
   name1: string;
@@ -13,6 +14,7 @@ interface LoveCalculationResult {
   percentage: number;
   nameMatchScore: number;
   numerologyScore: number;
+  zodiacResult: ZodiacCompatibilityResult | null;
   message: string;
   compatibilityLevel: string;
 }
@@ -129,11 +131,24 @@ export function calculateLoveCompatibility(input: LoveCalculationInput): LoveCal
     numerologyScore = getNumerologyCompatibility(lifePath1, lifePath2);
   }
   
-  // Weighted average (60% names, 40% numerology)
+  // Calculate zodiac compatibility if DOBs provided
+  const zodiacResult = dob1 && dob2 ? getZodiacCompatibility(dob1, dob2) : null;
+  
+  // Weighted average: 50% names, 30% numerology, 20% zodiac (if available)
   const hasDobs = dob1 && dob2;
-  const percentage = hasDobs
-    ? Math.round(nameMatchScore * 0.6 + numerologyScore * 0.4)
-    : nameMatchScore;
+  let percentage: number;
+  
+  if (hasDobs && zodiacResult) {
+    percentage = Math.round(
+      nameMatchScore * 0.45 + 
+      numerologyScore * 0.30 + 
+      zodiacResult.score * 0.25
+    );
+  } else if (hasDobs) {
+    percentage = Math.round(nameMatchScore * 0.6 + numerologyScore * 0.4);
+  } else {
+    percentage = nameMatchScore;
+  }
   
   // Ensure always positive (50-100 range)
   const finalPercentage = Math.max(50, Math.min(100, percentage));
@@ -150,6 +165,7 @@ export function calculateLoveCompatibility(input: LoveCalculationInput): LoveCal
     percentage: finalPercentage,
     nameMatchScore,
     numerologyScore,
+    zodiacResult,
     message: "", // Message will be set by the component based on language
     compatibilityLevel,
   };

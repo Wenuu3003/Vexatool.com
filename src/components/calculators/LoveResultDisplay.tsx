@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2 } from "lucide-react";
+import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confetti, useCelebrationSound } from "@/components/Confetti";
 import { LoveShareCard } from "./LoveShareCard";
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
+import type { ZodiacCompatibilityResult } from "@/lib/zodiacCompatibility";
 
 export interface LoveResult {
   percentage: number;
   message: string;
   nameMatchScore: number;
   numerologyScore: number;
+  zodiacResult: ZodiacCompatibilityResult | null;
   compatibilityLevel: string;
 }
 
@@ -18,6 +20,8 @@ interface LoveResultDisplayProps {
   result: LoveResult;
   name1: string;
   name2: string;
+  photo1: string | null;
+  photo2: string | null;
   onReset: () => void;
   onShare: () => void;
   translations: {
@@ -27,6 +31,7 @@ interface LoveResultDisplayProps {
     nameMatch: string;
     numerology: string;
     downloadCard?: string;
+    zodiac?: string;
   };
 }
 
@@ -34,6 +39,8 @@ export function LoveResultDisplay({
   result,
   name1,
   name2,
+  photo1,
+  photo2,
   onReset,
   onShare,
   translations: t,
@@ -210,7 +217,7 @@ export function LoveResultDisplay({
         </div>
 
         {/* Compatibility Breakdown */}
-        <div className="grid grid-cols-2 gap-3 max-w-xs mx-auto">
+        <div className={`grid gap-3 max-w-md mx-auto ${result.zodiacResult ? 'grid-cols-3' : 'grid-cols-2'}`}>
           <div className="p-3 bg-white/80 dark:bg-gray-900/50 rounded-lg text-center">
             <Sparkles className="w-4 h-4 mx-auto mb-1 text-pink-500" />
             <div className="text-lg font-bold text-pink-600">{result.nameMatchScore}%</div>
@@ -221,7 +228,33 @@ export function LoveResultDisplay({
             <div className="text-lg font-bold text-purple-600">{result.numerologyScore}%</div>
             <div className="text-xs text-muted-foreground">{t.numerology}</div>
           </div>
+          {result.zodiacResult && (
+            <div className="p-3 bg-white/80 dark:bg-gray-900/50 rounded-lg text-center">
+              <Star className="w-4 h-4 mx-auto mb-1 text-amber-500" />
+              <div className="text-lg font-bold text-amber-600">{result.zodiacResult.score}%</div>
+              <div className="text-xs text-muted-foreground">{t.zodiac || "Zodiac"}</div>
+            </div>
+          )}
         </div>
+
+        {/* Zodiac Details */}
+        {result.zodiacResult && (
+          <div className="mt-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-xl border border-indigo-200 dark:border-indigo-800">
+            <div className="flex items-center justify-center gap-4 mb-2">
+              <span className="text-2xl">{result.zodiacResult.sign1.symbol}</span>
+              <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{result.zodiacResult.sign1.name}</span>
+              <Heart className="w-4 h-4 text-pink-500" fill="currentColor" />
+              <span className="text-sm font-medium text-purple-600 dark:text-purple-400">{result.zodiacResult.sign2.name}</span>
+              <span className="text-2xl">{result.zodiacResult.sign2.symbol}</span>
+            </div>
+            <p className="text-center text-sm font-medium text-indigo-700 dark:text-indigo-300">
+              {result.zodiacResult.elementMatch}
+            </p>
+            <p className="text-center text-xs text-muted-foreground mt-1">
+              {result.zodiacResult.description}
+            </p>
+          </div>
+        )}
 
         {/* Message */}
         <p className="text-lg font-medium text-pink-700 dark:text-pink-300 px-4">
@@ -265,9 +298,12 @@ export function LoveResultDisplay({
           ref={shareCardRef}
           name1={name1}
           name2={name2}
+          photo1={photo1}
+          photo2={photo2}
           percentage={result.percentage}
           nameMatchScore={result.nameMatchScore}
           numerologyScore={result.numerologyScore}
+          zodiacResult={result.zodiacResult}
           compatibilityLevel={result.compatibilityLevel}
           message={result.message}
         />

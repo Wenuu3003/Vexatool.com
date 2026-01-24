@@ -96,6 +96,7 @@ const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
 const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
 const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
 const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
+const LoveCalculator = lazy(() => import("./pages/tools/LoveCalculator"));
 
 // Utility Tools - additional
 const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
@@ -155,6 +156,7 @@ const App = () => (
               <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/emi-calculator" element={<EMICalculator />} />
               <Route path="/gst-calculator" element={<GSTCalculator />} />
+              <Route path="/love-calculator" element={<LoveCalculator />} />
               {/* Image Tools */}
               <Route path="/image-resizer" element={<ImageResizer />} />
               <Route path="/image-format-converter" element={<ImageFormatConverter />} />

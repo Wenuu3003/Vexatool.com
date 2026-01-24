@@ -116,11 +116,18 @@ const tools = [
     colorClass: "bg-teal-500",
     href: "/compress-image",
   },
-  // Calculator Tools - Age Calculator merged into Love Calculator
+  // Calculator Tools
+  {
+    title: "Love & Age Calculator",
+    description: "Calculate love compatibility with zodiac & numerology. Find your exact age too!",
+    icon: Heart,
+    colorClass: "bg-gradient-to-br from-pink-500 to-rose-500",
+    href: "/love-calculator",
+  },
   {
     title: "BMI Calculator",
     description: "Calculate your Body Mass Index and get health recommendations.",
-    icon: Heart,
+    icon: Scale,
     colorClass: "bg-gradient-to-br from-red-400 to-pink-500",
     href: "/bmi-calculator",
   },

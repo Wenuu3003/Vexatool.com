@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
-import { Heart, RefreshCw, Copy, Sparkles } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Heart, RefreshCw, Copy, Sparkles, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Confetti, useCelebrationSound } from "@/components/Confetti";
 
 export interface LoveResult {
   percentage: number;
@@ -34,6 +35,19 @@ export function LoveResultDisplay({
   translations: t,
 }: LoveResultDisplayProps) {
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [celebrationTriggered, setCelebrationTriggered] = useState(false);
+  const playCelebrationSound = useCelebrationSound();
+  const resultIdRef = useRef(`${name1}-${name2}-${result.percentage}`);
+
+  // Reset celebration state when result changes
+  useEffect(() => {
+    const newResultId = `${name1}-${name2}-${result.percentage}`;
+    if (resultIdRef.current !== newResultId) {
+      resultIdRef.current = newResultId;
+      setCelebrationTriggered(false);
+    }
+  }, [name1, name2, result.percentage]);
 
   useEffect(() => {
     setAnimatedPercentage(0);
@@ -46,12 +60,21 @@ export function LoveResultDisplay({
       if (current >= result.percentage) {
         setAnimatedPercentage(result.percentage);
         clearInterval(timer);
+        
+        // Trigger celebration for 90%+ compatibility
+        if (result.percentage >= 90 && !celebrationTriggered) {
+          setCelebrationTriggered(true);
+          setShowConfetti(true);
+          playCelebrationSound();
+        }
       } else {
         setAnimatedPercentage(Math.floor(current));
       }
     }, duration / steps);
     return () => clearInterval(timer);
-  }, [result.percentage]);
+  }, [result.percentage, celebrationTriggered, playCelebrationSound]);
+
+  const isHighCompatibility = result.percentage >= 90;
 
   const getHeartColor = (percentage: number) => {
     if (percentage >= 90) return "text-red-500";
@@ -61,14 +84,31 @@ export function LoveResultDisplay({
   };
 
   return (
-    <div className="mt-6 p-6 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30 rounded-xl border border-pink-200 dark:border-pink-800 animate-scale-in">
-      <div className="text-center space-y-4">
-        {/* Names Display */}
-        <div className="flex items-center justify-center gap-3 text-lg font-medium flex-wrap">
-          <span className="px-3 py-1 bg-pink-100 dark:bg-pink-900/50 rounded-full">{name1}</span>
-          <Heart className={`w-6 h-6 ${getHeartColor(result.percentage)} animate-pulse`} fill="currentColor" />
-          <span className="px-3 py-1 bg-rose-100 dark:bg-rose-900/50 rounded-full">{name2}</span>
-        </div>
+    <>
+      {/* Confetti celebration for 90%+ matches */}
+      <Confetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
+      
+      <div className={`mt-6 p-6 rounded-xl border animate-scale-in ${
+        isHighCompatibility 
+          ? "bg-gradient-to-br from-pink-100 via-rose-50 to-amber-50 dark:from-pink-950/50 dark:via-rose-950/40 dark:to-amber-950/30 border-pink-300 dark:border-pink-700 shadow-lg shadow-pink-200/50 dark:shadow-pink-900/30" 
+          : "bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30 border-pink-200 dark:border-pink-800"
+      }`}>
+        <div className="text-center space-y-4">
+          {/* High Compatibility Banner */}
+          {isHighCompatibility && (
+            <div className="flex items-center justify-center gap-2 text-amber-600 dark:text-amber-400 animate-fade-in">
+              <PartyPopper className="w-5 h-5" />
+              <span className="font-bold text-lg">Perfect Match!</span>
+              <PartyPopper className="w-5 h-5" />
+            </div>
+          )}
+          
+          {/* Names Display */}
+          <div className="flex items-center justify-center gap-3 text-lg font-medium flex-wrap">
+            <span className="px-3 py-1 bg-pink-100 dark:bg-pink-900/50 rounded-full">{name1}</span>
+            <Heart className={`w-6 h-6 ${getHeartColor(result.percentage)} ${isHighCompatibility ? 'animate-bounce' : 'animate-pulse'}`} fill="currentColor" />
+            <span className="px-3 py-1 bg-rose-100 dark:bg-rose-900/50 rounded-full">{name2}</span>
+          </div>
 
         {/* Animated Progress Circle */}
         <div className="relative w-44 h-44 mx-auto">
@@ -144,7 +184,8 @@ export function LoveResultDisplay({
             {t.shareResult}
           </Button>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

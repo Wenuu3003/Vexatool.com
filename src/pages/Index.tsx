@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { QuickAccessBar } from "@/components/QuickAccessBar";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner";
@@ -89,6 +90,7 @@ const Index = () => {
       
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
+        <QuickAccessBar />
         <main className="flex-1" role="main">
           <Hero />
           

@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { readExcelFile, sheetToArray } from "@/lib/excelUtils";
 
 const ExcelToWord = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.xls') || selectedFile.name.endsWith('.xlsx')) {
@@ -23,36 +24,6 @@ const ExcelToWord = () => {
         });
       }
     }
-  };
-
-  const parseCSV = (text: string): string[][] => {
-    const rows: string[][] = [];
-    const lines = text.split('\n');
-    
-    for (const line of lines) {
-      if (line.trim()) {
-        const cells: string[] = [];
-        let current = '';
-        let inQuotes = false;
-        
-        for (let i = 0; i < line.length; i++) {
-          const char = line[i];
-          
-          if (char === '"') {
-            inQuotes = !inQuotes;
-          } else if (char === ',' && !inQuotes) {
-            cells.push(current.trim());
-            current = '';
-          } else {
-            current += char;
-          }
-        }
-        cells.push(current.trim());
-        rows.push(cells);
-      }
-    }
-    
-    return rows;
   };
 
   const handleConvert = async () => {
@@ -68,32 +39,21 @@ const ExcelToWord = () => {
     setIsProcessing(true);
 
     try {
-      let rows: string[][] = [];
+      // Read Excel file using exceljs
+      const { workbook } = await readExcelFile(file);
       
-      if (file.name.endsWith('.csv')) {
-        const text = await file.text();
-        rows = parseCSV(text);
-      } else {
-        // For .xls/.xlsx, try to extract text
-        const arrayBuffer = await file.arrayBuffer();
-        const bytes = new Uint8Array(arrayBuffer);
-        
-        let extractedText = "";
-        for (let i = 0; i < bytes.length; i++) {
-          const char = bytes[i];
-          if ((char >= 32 && char <= 126) || char === 10 || char === 13 || char === 9) {
-            extractedText += String.fromCharCode(char);
-          }
+      // Get all data from all sheets
+      const allRows: (string | number | boolean | null)[][] = [];
+      
+      workbook.worksheets.forEach(worksheet => {
+        const sheetData = sheetToArray(worksheet);
+        if (sheetData.length > 0) {
+          // Add sheet name as header
+          allRows.push([`--- ${worksheet.name} ---`]);
+          allRows.push(...sheetData);
+          allRows.push([]); // Empty row between sheets
         }
-        
-        const lines = extractedText.split(/[\n\r]+/).filter(l => l.trim().length > 3);
-        rows = lines.map(line => {
-          if (line.includes('\t')) {
-            return line.split('\t').map(c => c.trim());
-          }
-          return [line.trim()];
-        });
-      }
+      });
 
       // Create RTF document (Rich Text Format - opens in Word)
       let rtfContent = '{\\rtf1\\ansi\\deff0\n';
@@ -101,11 +61,11 @@ const ExcelToWord = () => {
       rtfContent += '\\f0\\fs24\n';
       
       // Add table
-      if (rows.length > 0) {
-        const maxCols = Math.max(...rows.map(r => r.length));
+      if (allRows.length > 0) {
+        const maxCols = Math.max(...allRows.map(r => r.length), 1);
         const colWidth = Math.floor(9000 / maxCols);
         
-        for (const row of rows) {
+        for (const row of allRows) {
           rtfContent += '\\trowd\\trgaph108\n';
           
           for (let i = 0; i < maxCols; i++) {
@@ -113,7 +73,7 @@ const ExcelToWord = () => {
           }
           
           for (let i = 0; i < maxCols; i++) {
-            const cell = row[i] || '';
+            const cell = String(row[i] ?? '');
             const escapedCell = cell
               .replace(/\\/g, '\\\\')
               .replace(/\{/g, '\\{')
@@ -170,14 +130,14 @@ const ExcelToWord = () => {
       "Converts .xls, .xlsx, and .csv files",
       "Creates RTF tables compatible with all word processors",
       "Preserves row and column structure",
-      "Handles quoted fields and special characters in CSV",
+      "Handles multiple sheets in workbooks",
       "Fast client-side processing",
       "No file size limits for standard spreadsheets"
     ],
     safetyNote: "Your Excel files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring complete privacy for your spreadsheet data. Both original and converted files remain on your device.",
     faqs: [
       { question: "Will my table formatting be preserved?", answer: "The converter creates a basic table structure in RTF format. While the data and layout are preserved, you may need to adjust styling (colors, fonts, borders) in your word processor after conversion." },
-      { question: "Can I convert files with multiple sheets?", answer: "For .xlsx files with multiple sheets, the tool extracts text content. For best results with multi-sheet workbooks, save each sheet as a separate CSV file." },
+      { question: "Can I convert files with multiple sheets?", answer: "Yes! The tool now reads all sheets from your Excel workbook and includes them in the RTF output with sheet name headers." },
       { question: "Why RTF instead of DOCX?", answer: "RTF is universally compatible with all word processors including Microsoft Word, Google Docs, LibreOffice, and others. It ensures your converted file can be opened anywhere." },
       { question: "What about formulas in my Excel file?", answer: "The converter exports the visible values, not the underlying formulas. If you need to preserve formulas, keep your original Excel file." }
     ]

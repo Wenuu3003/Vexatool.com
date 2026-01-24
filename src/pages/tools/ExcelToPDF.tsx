@@ -9,14 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
+import { readExcelFile, sheetToArray } from "@/lib/excelUtils";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
 
 interface BatchFile {
   file: File;
-  workbook: XLSX.WorkBook | null;
+  workbook: ExcelJS.Workbook | null;
   sheetNames: string[];
   status: 'pending' | 'processing' | 'done' | 'error';
   progress: number;
@@ -28,7 +29,7 @@ const ExcelToPDF = () => {
   const [progress, setProgress] = useState(0);
   const [sheetNames, setSheetNames] = useState<string[]>([]);
   const [selectedSheets, setSelectedSheets] = useState<string[]>([]);
-  const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null);
+  const [workbook, setWorkbook] = useState<ExcelJS.Workbook | null>(null);
   
   // Batch mode
   const [batchMode, setBatchMode] = useState(false);
@@ -43,7 +44,7 @@ const ExcelToPDF = () => {
   
   const { saveFileHistory } = useFileHistory();
 
-  const processExcelFile = async (selectedFile: File): Promise<{ workbook: XLSX.WorkBook; sheetNames: string[] } | null> => {
+  const processExcelFile = async (selectedFile: File): Promise<{ workbook: ExcelJS.Workbook; sheetNames: string[] } | null> => {
     const validExtensions = ['.xlsx', '.xls', '.csv'];
     const isValid = validExtensions.some(ext => selectedFile.name.toLowerCase().endsWith(ext));
     
@@ -57,9 +58,8 @@ const ExcelToPDF = () => {
     }
     
     try {
-      const arrayBuffer = await selectedFile.arrayBuffer();
-      const wb = XLSX.read(arrayBuffer, { type: 'array' });
-      return { workbook: wb, sheetNames: wb.SheetNames };
+      const result = await readExcelFile(selectedFile);
+      return result;
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error("Error reading Excel file:", error);
@@ -127,7 +127,7 @@ const ExcelToPDF = () => {
   };
 
   const convertWorkbookToPDF = useCallback(async (
-    wb: XLSX.WorkBook, 
+    wb: ExcelJS.Workbook, 
     sheetsToConvert: string[],
     onProgress?: (p: number) => void
   ): Promise<Uint8Array> => {
@@ -152,8 +152,10 @@ const ExcelToPDF = () => {
     const totalSheets = sheetsToConvert.length;
 
     for (const sheetName of sheetsToConvert) {
-      const ws = wb.Sheets[sheetName];
-      const jsonData: (string | number | boolean | null)[][] = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      const ws = wb.getWorksheet(sheetName);
+      if (!ws) continue;
+      
+      const jsonData = sheetToArray(ws);
       
       let cleanedData = jsonData;
       if (removeEmptyRows) {
@@ -503,11 +505,11 @@ const ExcelToPDF = () => {
             </div>
           )}
 
-          {/* Single File Mode */}
+          {/* Single File Selected */}
           {!batchMode && file && workbook && (
             <div className="space-y-4">
               <div className="bg-card p-4 rounded-lg border border-border">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <FileSpreadsheet className="w-8 h-8 text-green-600" />
                     <div>
@@ -522,51 +524,51 @@ const ExcelToPDF = () => {
                     Remove
                   </Button>
                 </div>
-              </div>
 
-              {sheetNames.length > 1 && (
-                <div className="bg-card p-4 rounded-lg border border-border space-y-3">
+                {/* Sheet Selection */}
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-foreground">Select Sheets</h3>
+                    <Label className="text-sm font-medium">Select sheets to convert:</Label>
                     <Button variant="ghost" size="sm" onClick={handleSelectAllSheets}>
-                      {selectedSheets.length === sheetNames.length ? 'Deselect All' : 'Select All'}
+                      {selectedSheets.length === sheetNames.length ? "Deselect All" : "Select All"}
                     </Button>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {sheetNames.map((name) => (
-                      <div key={name} className="flex items-center space-x-2">
-                        <Checkbox 
-                          id={`sheet-${name}`} 
-                          checked={selectedSheets.includes(name)}
-                          onCheckedChange={() => handleSheetToggle(name)}
-                        />
-                        <Label htmlFor={`sheet-${name}`} className="text-sm truncate">
-                          {name}
-                        </Label>
-                      </div>
+                      <Button
+                        key={name}
+                        variant={selectedSheets.includes(name) ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handleSheetToggle(name)}
+                      >
+                        {name}
+                      </Button>
                     ))}
                   </div>
                 </div>
-              )}
+              </div>
 
               {isProcessing && (
                 <div className="space-y-2">
                   <Progress value={progress} className="h-2" />
-                  <p className="text-sm text-center text-muted-foreground">Converting sheets...</p>
+                  <p className="text-sm text-center text-muted-foreground">
+                    Converting sheets... {Math.round(progress)}%
+                  </p>
                 </div>
               )}
             </div>
           )}
 
-          {/* Clean Sheet Options */}
+          {/* Conversion Options */}
           {((batchMode && batchFiles.length > 0) || (!batchMode && file)) && (
             <div className="bg-card p-4 rounded-lg border border-border space-y-4">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
                 <Settings className="w-4 h-4" />
-                Clean Sheet Options
+                Conversion Options
               </h3>
               
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Page Size */}
                 <div className="space-y-2">
                   <Label>Page Size</Label>
                   <Select value={pageSize} onValueChange={(v) => setPageSize(v as "a4" | "letter")}>
@@ -580,110 +582,97 @@ const ExcelToPDF = () => {
                   </Select>
                 </div>
 
+                {/* Orientation */}
                 <div className="space-y-2">
                   <Label>Orientation</Label>
                   <RadioGroup value={orientation} onValueChange={(v) => setOrientation(v as "portrait" | "landscape")} className="flex gap-4">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="portrait" id="portrait" />
-                      <Label htmlFor="portrait">Portrait</Label>
+                      <Label htmlFor="portrait" className="font-normal">Portrait</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="landscape" id="landscape" />
-                      <Label htmlFor="landscape">Landscape</Label>
+                      <Label htmlFor="landscape" className="font-normal">Landscape</Label>
                     </div>
                   </RadioGroup>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-6">
                 <div className="flex items-center space-x-2">
                   <Checkbox 
-                    id="autoFit" 
+                    id="autoFitColumns" 
                     checked={autoFitColumns}
                     onCheckedChange={(checked) => setAutoFitColumns(checked as boolean)}
                   />
-                  <Label htmlFor="autoFit" className="text-sm">Auto-fit columns</Label>
+                  <Label htmlFor="autoFitColumns" className="text-sm">Auto-fit columns</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox 
-                    id="removeEmpty" 
+                    id="removeEmptyRows" 
                     checked={removeEmptyRows}
                     onCheckedChange={(checked) => setRemoveEmptyRows(checked as boolean)}
                   />
-                  <Label htmlFor="removeEmpty" className="text-sm">Remove empty rows</Label>
+                  <Label htmlFor="removeEmptyRows" className="text-sm">Remove empty rows</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Checkbox 
-                    id="onePerPage" 
+                    id="oneSheetPerPage" 
                     checked={oneSheetPerPage}
                     onCheckedChange={(checked) => setOneSheetPerPage(checked as boolean)}
                   />
-                  <Label htmlFor="onePerPage" className="text-sm">One sheet per page</Label>
+                  <Label htmlFor="oneSheetPerPage" className="text-sm">One sheet per page</Label>
                 </div>
               </div>
             </div>
           )}
 
           {/* Convert Button */}
-          {((batchMode && batchFiles.length > 0) || (!batchMode && file)) && (
+          {((batchMode && batchFiles.length > 0) || (!batchMode && file && selectedSheets.length > 0)) && (
             <div className="text-center">
               <Button
                 size="lg"
                 onClick={batchMode ? handleBatchConvert : handleConvert}
-                disabled={isProcessing || (!batchMode && selectedSheets.length === 0)}
-                className="gap-2 bg-green-600 hover:bg-green-700"
+                disabled={isProcessing}
+                className="gap-2"
               >
                 {isProcessing ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                    Converting...
-                  </>
+                  "Converting..."
                 ) : (
                   <>
                     <Download className="w-5 h-5" />
-                    {batchMode ? `Convert All (${batchFiles.length} files)` : "Convert to PDF"}
+                    {batchMode ? `Convert ${batchFiles.length} Files` : `Convert ${selectedSheets.length} Sheet(s) to PDF`}
                   </>
                 )}
               </Button>
             </div>
           )}
 
-          {/* Security Note */}
-          <div className="bg-muted/30 p-4 rounded-lg flex items-start gap-3">
-            <Shield className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-medium text-foreground">Security Note</p>
-              <p className="text-sm text-muted-foreground">
-                All file processing is secure and happens locally in your browser. 
-                Files are never uploaded to any server.
-              </p>
-            </div>
-          </div>
-
           <ToolSEOContent
             toolName="Excel to PDF Converter"
-            whatIs="The Excel to PDF Converter transforms Excel spreadsheets into shareable PDF documents while maintaining layout and formatting. Now with batch processing support to convert multiple files at once."
+            whatIs="The Excel to PDF Converter is a free online tool that transforms Excel spreadsheets (.xls, .xlsx) and CSV files into professional PDF documents. It preserves your table formatting, allows you to select specific sheets, and provides options for page size, orientation, and layout. With batch processing support, you can convert multiple files at once."
             howToUse={[
-              "Choose Single File or Batch Processing mode.",
-              "Upload your Excel file(s) (.xls, .xlsx, or .csv).",
-              "Select sheets and configure clean sheet options.",
-              "Click Convert to generate PDF(s).",
-              "Download your converted files automatically."
+              "Upload your Excel file (.xls, .xlsx, or .csv) by clicking the upload area.",
+              "For multiple files, switch to 'Batch Processing' mode.",
+              "Select which sheets you want to include in the PDF.",
+              "Customize page size, orientation, and other options.",
+              "Click 'Convert to PDF' to generate and download your PDF."
             ]}
             features={[
-              "Batch processing for multiple files",
-              "Sheet selection for multi-sheet workbooks",
-              "Page size options (A4, Letter)",
+              "Batch processing for multiple Excel files",
+              "Sheet selection - convert specific sheets only",
+              "A4 and Letter page size options",
               "Portrait and landscape orientation",
-              "Auto-fit column widths",
+              "Auto-fit columns for optimal layout",
               "Remove empty rows option",
-              "Preserves table formatting"
+              "100% client-side processing - no uploads"
             ]}
-            safetyNote="All processing happens locally in your browser. Your files are never uploaded to any server, ensuring complete privacy and security."
+            safetyNote="Your Excel files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring complete privacy for your spreadsheet data."
             faqs={[
-              { question: "Can I convert multiple Excel files at once?", answer: "Yes! Use Batch Processing mode to add multiple Excel files and convert them all to PDF at once." },
-              { question: "Will my formatting be preserved?", answer: "Yes, the converter preserves table structure, headers, and cell content. You can also auto-fit columns for optimal display." },
-              { question: "What Excel formats are supported?", answer: "We support .xlsx, .xls, and .csv files." }
+              { question: "Will my table formatting be preserved?", answer: "The tool maintains your table structure, headers, and cell data. For complex formatting like colors and merged cells, the PDF will show a clean representation of your data." },
+              { question: "Can I convert multiple sheets to one PDF?", answer: "Yes! Select multiple sheets from your workbook, and they'll all be included in a single PDF document." },
+              { question: "What's the difference between A4 and Letter size?", answer: "A4 (210 × 297 mm) is the international standard, while Letter (8.5 × 11 in) is common in North America. Choose based on your printing needs." },
+              { question: "Is there a file size limit?", answer: "There's no strict limit, but very large files may take longer to process since everything happens in your browser." }
             ]}
           />
         </div>

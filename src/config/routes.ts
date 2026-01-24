@@ -296,6 +296,16 @@ export const routes: RouteConfig[] = [
     category: 'Calculator Tools'
   },
   { 
+    path: '/love-calculator', 
+    priority: 0.9, 
+    changefreq: 'weekly', 
+    includeInSitemap: true,
+    title: 'Love Calculator ❤️ & Age Calculator – Check Compatibility Online | Mypdfs',
+    description: 'Check love compatibility with our Love Calculator ❤️ Also calculate your exact age, next birthday & more. Free, fun, fast & AdSense-safe tool.',
+    keywords: 'love calculator, age calculator, love compatibility, name love calculator, online age calculator, fun love test',
+    category: 'Calculator Tools'
+  },
+  {
     path: '/unit-converter', 
     priority: 0.8, 
     changefreq: 'weekly', 

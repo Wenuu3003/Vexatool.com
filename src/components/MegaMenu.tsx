@@ -146,6 +146,7 @@ const categories: Category[] = [
     name: "Calculators",
     icon: Calculator,
     tools: [
+      { name: "Love Calculator", href: "/love-calculator", icon: Heart, badge: "new" },
       { name: "EMI Calculator", href: "/emi-calculator", icon: Percent, badge: "popular" },
       { name: "GST Calculator", href: "/gst-calculator", icon: Percent },
       { name: "BMI Calculator", href: "/bmi-calculator", icon: Heart },

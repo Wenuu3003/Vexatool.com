@@ -163,27 +163,17 @@ export default function Account() {
       // Log the delete action before deleting
       await logAuditEvent({ action_type: 'profile_delete' });
 
-      // Delete audit logs first (GDPR compliance - right to erasure)
-      await supabase
-        .from('audit_log')
-        .delete()
-        .eq('user_id', user.id);
+      // Use edge function to delete all user data (GDPR compliance)
+      // This uses service role to properly delete audit logs which have no client DELETE policy
+      const { error } = await supabase.functions.invoke('delete-user-data');
 
-      // Delete user files
-      await supabase
-        .from('user_files')
-        .delete()
-        .eq('user_id', user.id);
-
-      // Delete profile
-      await supabase
-        .from('profiles')
-        .delete()
-        .eq('user_id', user.id);
+      if (error) {
+        throw new Error(error.message || 'Failed to delete user data');
+      }
 
       toast({
         title: 'Profile deleted',
-        description: 'Your profile and file history have been removed',
+        description: 'Your profile, file history, and activity logs have been removed',
       });
 
       await signOut();
@@ -192,7 +182,7 @@ export default function Account() {
       console.error('Error deleting profile:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete profile',
+        description: 'Failed to delete profile. Please try again.',
         variant: 'destructive',
       });
     } finally {

@@ -20,7 +20,7 @@ const ALL_URLS = [
   "/tools/repair-pdf", "/tools/convert-pdf", "/tools/compress-image", "/tools/resize-image",
   "/tools/image-format-converter", "/tools/background-remover", "/tools/qr-code-generator",
   "/tools/qr-code-scanner", "/tools/word-counter", "/tools/calculator", "/tools/unit-converter",
-  "/tools/currency-converter", "/tools/age-calculator", "/tools/bmi-calculator",
+  "/tools/currency-converter", "/tools/love-calculator", "/tools/bmi-calculator",
   "/tools/emi-calculator", "/tools/gst-calculator", "/tools/pin-code-generator",
   "/tools/ai-text-generator", "/tools/ai-grammar-tool", "/tools/ai-resume-builder",
   "/tools/ai-chat", "/tools/ai-search", "/tools/hashtag-generator", "/tools/youtube-generator",

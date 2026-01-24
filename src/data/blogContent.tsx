@@ -924,7 +924,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     date: "2026-01-16",
     readTime: "6 min read",
     relatedTools: [
-      { name: "Age Calculator", href: "/age-calculator" },
+      { name: "Love & Age Calculator", href: "/love-calculator" },
       { name: "BMI Calculator", href: "/bmi-calculator" },
     ],
     content: (
@@ -997,7 +997,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     readTime: "8 min read",
     relatedTools: [
       { name: "BMI Calculator", href: "/bmi-calculator" },
-      { name: "Age Calculator", href: "/age-calculator" },
+      { name: "Love & Age Calculator", href: "/love-calculator" },
     ],
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">

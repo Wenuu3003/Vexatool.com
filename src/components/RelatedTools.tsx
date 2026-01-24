@@ -70,9 +70,9 @@ const toolRelationships: Record<string, string[]> = {
   
   // Calculator Tools
   "/calculator": ["/gst-calculator", "/emi-calculator", "/unit-converter", "/currency-converter"],
-  "/age-calculator": ["/bmi-calculator", "/calculator", "/emi-calculator", "/gst-calculator"],
-  "/bmi-calculator": ["/age-calculator", "/calculator", "/unit-converter", "/emi-calculator"],
-  "/emi-calculator": ["/gst-calculator", "/calculator", "/currency-converter", "/age-calculator"],
+  "/love-calculator": ["/bmi-calculator", "/calculator", "/emi-calculator", "/gst-calculator"],
+  "/bmi-calculator": ["/love-calculator", "/calculator", "/unit-converter", "/emi-calculator"],
+  "/emi-calculator": ["/gst-calculator", "/calculator", "/currency-converter", "/love-calculator"],
   "/gst-calculator": ["/emi-calculator", "/calculator", "/currency-converter", "/unit-converter"],
   "/unit-converter": ["/currency-converter", "/calculator", "/bmi-calculator", "/gst-calculator"],
   "/currency-converter": ["/unit-converter", "/calculator", "/gst-calculator", "/emi-calculator"],
@@ -138,7 +138,7 @@ const toolMeta: Record<string, { name: string; icon: React.ElementType; colorCla
   
   // Calculator Tools
   "/calculator": { name: "Calculator", icon: Calculator, colorClass: "bg-gray-600" },
-  "/age-calculator": { name: "Age Calculator", icon: Calendar, colorClass: "bg-pink-600" },
+  "/love-calculator": { name: "Love & Age Calculator", icon: Heart, colorClass: "bg-pink-600" },
   "/bmi-calculator": { name: "BMI Calculator", icon: Heart, colorClass: "bg-red-500" },
   "/emi-calculator": { name: "EMI Calculator", icon: IndianRupee, colorClass: "bg-green-600" },
   "/gst-calculator": { name: "GST Calculator", icon: Percent, colorClass: "bg-blue-600" },

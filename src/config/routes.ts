@@ -254,17 +254,7 @@ export const routes: RouteConfig[] = [
     category: 'Calculator Tools'
   },
   
-  // Calculator Tools
-  { 
-    path: '/age-calculator', 
-    priority: 0.8, 
-    changefreq: 'weekly', 
-    includeInSitemap: true,
-    title: 'Age Calculator - Calculate Exact Age in Years, Months, Days | Mypdfs',
-    description: 'Calculate your exact age in years, months, days. Free age calculator with birthday countdown. How old am I calculator.',
-    keywords: 'age calculator, birthday calculator, how old am i, age finder, date calculator, age in days',
-    category: 'Calculator Tools'
-  },
+  // Calculator Tools (Age Calculator merged into Love Calculator - redirect handled in App.tsx)
   { 
     path: '/bmi-calculator', 
     priority: 0.8, 

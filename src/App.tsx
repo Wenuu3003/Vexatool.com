@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { CookieConsent } from "./components/CookieConsent";
 import { AdSenseLoader } from "./components/AdSenseLoader";
@@ -92,7 +92,6 @@ const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
 const ImageFormatConverter = lazy(() => import("./pages/tools/ImageFormatConverter"));
 
 // Calculator Tools
-const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
 const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
 const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
 const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
@@ -152,7 +151,8 @@ const App = () => (
               <Route path="/youtube-generator" element={<YouTubeGenerator />} />
               <Route path="/whatsapp-analyzer" element={<WhatsAppAnalyzer />} />
               {/* Calculator Tools */}
-              <Route path="/age-calculator" element={<AgeCalculator />} />
+              {/* 301 Redirect: Age Calculator merged into Love Calculator */}
+              <Route path="/age-calculator" element={<Navigate to="/love-calculator" replace />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/emi-calculator" element={<EMICalculator />} />
               <Route path="/gst-calculator" element={<GSTCalculator />} />

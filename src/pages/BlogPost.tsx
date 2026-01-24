@@ -3,15 +3,19 @@ import { Helmet } from "react-helmet";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Calendar, Clock, ArrowLeft } from "lucide-react";
+import { newBlogPosts } from "@/data/blogContent";
 
 interface BlogPostContent {
   title: string;
   date: string;
   readTime: string;
   content: React.ReactNode;
+  relatedTools?: { name: string; href: string }[];
 }
 
+// Merge new blog posts with existing ones
 const blogContent: Record<string, BlogPostContent> = {
+  ...newBlogPosts,
   "what-whatsapp-chat-reveals-about-relationship": {
     title: "What Your WhatsApp Chat Reveals About Your Relationship",
     date: "2026-01-06",

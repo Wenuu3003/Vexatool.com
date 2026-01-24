@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
-import * as XLSX from "xlsx";
+import { createExcelFromData } from "@/lib/excelUtils";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
@@ -148,35 +148,11 @@ const PDFToExcel = () => {
     return allData;
   }, [detectTables]);
 
-  const createExcelFromData = useCallback((data: string[][], fileName: string) => {
-    const wb = XLSX.utils.book_new();
-    const maxCols = Math.max(...data.map(row => row.length), 1);
-    const normalizedData = data.map(row => {
-      const newRow = [...row];
-      while (newRow.length < maxCols) {
-        newRow.push("");
-      }
-      return newRow;
+  const createExcel = useCallback(async (data: string[][]): Promise<ArrayBuffer> => {
+    return await createExcelFromData(data, {
+      sheetName: 'Extracted Data',
+      preserveFormatting
     });
-    
-    const ws = XLSX.utils.aoa_to_sheet(normalizedData);
-    
-    if (preserveFormatting) {
-      const colWidths: { wch: number }[] = [];
-      for (let i = 0; i < maxCols; i++) {
-        let maxWidth = 10;
-        normalizedData.forEach(row => {
-          if (row[i] && row[i].length > maxWidth) {
-            maxWidth = Math.min(row[i].length, 50);
-          }
-        });
-        colWidths.push({ wch: maxWidth });
-      }
-      ws['!cols'] = colWidths;
-    }
-    
-    XLSX.utils.book_append_sheet(wb, ws, "Extracted Data");
-    return XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
   }, [preserveFormatting]);
 
   const handleConvert = async () => {
@@ -197,7 +173,7 @@ const PDFToExcel = () => {
       setExtractedData(data);
       setProgress(90);
 
-      const excelBuffer = createExcelFromData(data, files[0].name);
+      const excelBuffer = await createExcel(data);
       const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       
       const url = URL.createObjectURL(blob);
@@ -255,7 +231,7 @@ const PDFToExcel = () => {
           ));
         });
 
-        const excelBuffer = createExcelFromData(data, bf.file.name);
+        const excelBuffer = await createExcel(data);
         const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         
         const url = URL.createObjectURL(blob);
@@ -486,55 +462,52 @@ const PDFToExcel = () => {
                 size="lg"
                 onClick={batchMode ? handleBatchConvert : handleConvert}
                 disabled={isProcessing}
-                className="gap-2 bg-green-600 hover:bg-green-700"
+                className="gap-2"
               >
                 {isProcessing ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                    Converting...
-                  </>
+                  "Converting..."
                 ) : (
                   <>
                     <Download className="w-5 h-5" />
-                    {batchMode ? `Convert All (${batchFiles.length} files)` : "Convert to Excel"}
+                    {batchMode ? `Convert ${batchFiles.length} Files` : "Convert to Excel"}
                   </>
                 )}
               </Button>
             </div>
           )}
 
-          {/* Trust & Privacy Section */}
-          <Alert className="border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/20">
-            <Shield className="h-4 w-4 text-green-600" />
+          {/* Privacy Note */}
+          <Alert>
+            <Info className="h-4 w-4" />
             <AlertDescription className="text-muted-foreground">
-              <strong className="text-foreground">Your Privacy Matters.</strong> All files are processed 
-              locally in your browser. We do not store or analyze your documents.
+              Your files are processed securely in your browser. No data is uploaded to any server.
             </AlertDescription>
           </Alert>
 
           <ToolSEOContent
             toolName="PDF to Excel Converter"
-            whatIs="The PDF to Excel Converter is a powerful online tool designed to extract tabular data from PDF documents and convert it into editable Excel spreadsheet format (.xlsx). Now with batch processing support to convert multiple files at once."
+            whatIs="The PDF to Excel Converter is a free online tool that extracts tables and structured data from PDF documents and converts them into editable Excel spreadsheets (.xlsx format). This tool is essential for users who need to analyze, edit, or reuse data locked in PDF files. With batch processing support, you can convert multiple PDF files at once, saving time on repetitive tasks."
             howToUse={[
-              "Choose Single File or Batch Processing mode.",
-              "Upload your PDF file(s) containing tables or data.",
-              "Select conversion options (table detection, formatting).",
-              "Click Convert to start the conversion.",
-              "Download your Excel file(s) automatically."
+              "Upload your PDF file by clicking the upload area or drag and drop.",
+              "For multiple files, switch to 'Batch Processing' mode.",
+              "Enable 'Detect table structure' for better data extraction.",
+              "Click 'Convert to Excel' to start the conversion.",
+              "Your Excel file will download automatically."
             ]}
             features={[
-              "Batch processing for multiple PDF files",
+              "Batch processing for multiple PDFs",
               "Smart table detection algorithm",
-              "Auto-fit column widths",
-              "Multi-page PDF support",
-              "Progress tracking for each file",
-              "Secure client-side processing"
+              "Auto-fit column widths option",
+              "Preview extracted data before download",
+              "100% client-side processing - no uploads",
+              "Supports all PDF versions"
             ]}
-            safetyNote="All files are processed entirely in your browser. No data is uploaded to any server, ensuring complete privacy and security."
+            safetyNote="Your PDF files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring complete privacy for your documents."
             faqs={[
-              { question: "Can I convert multiple PDFs at once?", answer: "Yes! Use Batch Processing mode to add multiple PDF files and convert them all at once." },
-              { question: "Is there a file size limit?", answer: "Processing happens in your browser, so very large files may be slow. For best results, keep files under 50MB." },
-              { question: "Will my data be stored?", answer: "No. All processing happens locally in your browser. Your files never leave your device." }
+              { question: "How accurate is the table extraction?", answer: "The tool uses advanced text position analysis to detect table structures. Accuracy is highest for well-formatted PDFs with clear grid lines or consistent spacing." },
+              { question: "Can I convert scanned PDFs?", answer: "This tool extracts text from digital PDFs. Scanned documents (images) require OCR processing first." },
+              { question: "Is there a file size limit?", answer: "There's no strict limit, but larger files may take longer to process as everything happens in your browser." },
+              { question: "What Excel format is generated?", answer: "The tool generates .xlsx files (Excel 2007+), which are compatible with Microsoft Excel, Google Sheets, and LibreOffice Calc." }
             ]}
           />
         </div>

@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Heart, RefreshCw, Copy, Sparkles, PartyPopper } from "lucide-react";
+import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confetti, useCelebrationSound } from "@/components/Confetti";
+import { LoveShareCard } from "./LoveShareCard";
+import html2canvas from "html2canvas";
+import { toast } from "sonner";
 
 export interface LoveResult {
   percentage: number;
@@ -23,6 +26,7 @@ interface LoveResultDisplayProps {
     compatibility: string;
     nameMatch: string;
     numerology: string;
+    downloadCard?: string;
   };
 }
 
@@ -37,8 +41,10 @@ export function LoveResultDisplay({
   const [animatedPercentage, setAnimatedPercentage] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [celebrationTriggered, setCelebrationTriggered] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const playCelebrationSound = useCelebrationSound();
   const resultIdRef = useRef(`${name1}-${name2}-${result.percentage}`);
+  const shareCardRef = useRef<HTMLDivElement>(null);
 
   // Reset celebration state when result changes
   useEffect(() => {
@@ -73,6 +79,59 @@ export function LoveResultDisplay({
     }, duration / steps);
     return () => clearInterval(timer);
   }, [result.percentage, celebrationTriggered, playCelebrationSound]);
+
+  const handleDownloadCard = async () => {
+    if (!shareCardRef.current) {
+      toast.error("Unable to capture image. Please try again.");
+      return;
+    }
+    
+    setIsDownloading(true);
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const element = shareCardRef.current;
+      const isHigh = result.percentage >= 90;
+      
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#ec4899',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        allowTaint: true,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.querySelector('[data-share-card]');
+          if (clonedElement) {
+            (clonedElement as HTMLElement).style.background = isHigh
+              ? 'linear-gradient(135deg, #ec4899 0%, #f43f5e 30%, #ef4444 60%, #f97316 100%)'
+              : 'linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #a855f7 100%)';
+          }
+        }
+      });
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `love-result-${name1}-${name2}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast.success("Image downloaded! Share it on Instagram or WhatsApp! 💕");
+        }
+      }, 'image/png', 1.0);
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error("Failed to download image. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const isHighCompatibility = result.percentage >= 90;
 
@@ -170,21 +229,48 @@ export function LoveResultDisplay({
         </p>
 
         {/* Actions */}
-        <div className="flex gap-3 justify-center flex-wrap pt-2">
+        <div className="flex gap-2 justify-center flex-wrap pt-2">
           <Button variant="outline" onClick={onReset} className="gap-2">
             <RefreshCw className="w-4 h-4" />
             {t.tryAnother}
           </Button>
           <Button 
-            variant="default" 
+            variant="outline" 
             onClick={onShare} 
-            className="gap-2 bg-gradient-to-r from-pink-500 to-rose-500"
+            className="gap-2"
           >
             <Copy className="w-4 h-4" />
             {t.shareResult}
           </Button>
+          <Button 
+            variant="default" 
+            onClick={handleDownloadCard}
+            disabled={isDownloading}
+            className="gap-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600"
+          >
+            {isDownloading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            {t.downloadCard || "Download Card"}
+          </Button>
         </div>
         </div>
+      </div>
+
+      {/* Hidden Share Card for Download */}
+      <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
+        <LoveShareCard
+          ref={shareCardRef}
+          name1={name1}
+          name2={name2}
+          percentage={result.percentage}
+          nameMatchScore={result.nameMatchScore}
+          numerologyScore={result.numerologyScore}
+          compatibilityLevel={result.compatibilityLevel}
+          message={result.message}
+        />
       </div>
     </>
   );

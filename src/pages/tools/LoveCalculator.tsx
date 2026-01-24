@@ -51,6 +51,8 @@ const translations: Record<Language, Record<string, any>> = {
     optional: "Optional",
     nameMatch: "Name Match",
     numerology: "Numerology",
+    zodiac: "Zodiac",
+    uploadPhoto: "Add Photo",
     totalDays: "Total Days",
     totalWeeks: "Total Weeks",
     totalHours: "Total Hours",
@@ -94,6 +96,8 @@ const translations: Record<Language, Record<string, any>> = {
     optional: "Bonus",
     nameMatch: "Name Vibes",
     numerology: "Cosmic Score",
+    zodiac: "Star Signs",
+    uploadPhoto: "Selfie",
     totalDays: "Adventures",
     totalWeeks: "Weekends",
     totalHours: "Coffee Hours",
@@ -137,6 +141,8 @@ const translations: Record<Language, Record<string, any>> = {
     optional: "वैकल्पिक",
     nameMatch: "नाम मिलान",
     numerology: "अंक ज्योतिष",
+    zodiac: "राशि",
+    uploadPhoto: "फोटो जोड़ें",
     totalDays: "कुल दिन",
     totalWeeks: "कुल सप्ताह",
     totalHours: "कुल घंटे",
@@ -180,6 +186,8 @@ const translations: Record<Language, Record<string, any>> = {
     optional: "ఐచ్ఛికం",
     nameMatch: "పేరు సరిపోలిక",
     numerology: "సంఖ్యాశాస్త్రం",
+    zodiac: "రాశి",
+    uploadPhoto: "ఫోటో జోడించు",
     totalDays: "మొత్తం రోజులు",
     totalWeeks: "మొత్తం వారాలు",
     totalHours: "మొత్తం గంటలు",
@@ -204,9 +212,11 @@ export default function LoveCalculator() {
     name1: "",
     gender1: "male",
     dob1: "",
+    photo1: null,
     name2: "",
     gender2: "female",
     dob2: "",
+    photo2: null,
   });
   const [loveResult, setLoveResult] = useState<LoveResult | null>(null);
 
@@ -259,9 +269,11 @@ export default function LoveCalculator() {
       name1: "",
       gender1: "male",
       dob1: "",
+      photo1: null,
       name2: "",
       gender2: "female",
       dob2: "",
+      photo2: null,
     });
     setLoveResult(null);
   };
@@ -459,6 +471,8 @@ export default function LoveCalculator() {
                   result={loveResult}
                   name1={loveForm.name1}
                   name2={loveForm.name2}
+                  photo1={loveForm.photo1}
+                  photo2={loveForm.photo2}
                   onReset={handleResetLove}
                   onShare={handleShareLove}
                   translations={{
@@ -467,6 +481,8 @@ export default function LoveCalculator() {
                     compatibility: t.compatibility,
                     nameMatch: t.nameMatch,
                     numerology: t.numerology,
+                    zodiac: t.zodiac,
+                    downloadCard: t.downloadCard,
                   }}
                 />
               )}

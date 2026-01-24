@@ -1,9 +1,10 @@
-import { Heart, User } from "lucide-react";
+import { Heart, User, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRef } from "react";
 
 export type Gender = "male" | "female";
 
@@ -11,9 +12,11 @@ export interface LoveFormData {
   name1: string;
   gender1: Gender;
   dob1: string;
+  photo1: string | null;
   name2: string;
   gender2: Gender;
   dob2: string;
+  photo2: string | null;
 }
 
 interface LoveCalculatorFormProps {
@@ -30,6 +33,7 @@ interface LoveCalculatorFormProps {
     male: string;
     female: string;
     optional: string;
+    uploadPhoto?: string;
   };
 }
 
@@ -39,6 +43,41 @@ export function LoveCalculatorForm({
   onCalculate,
   translations: t,
 }: LoveCalculatorFormProps) {
+  const fileInput1Ref = useRef<HTMLInputElement>(null);
+  const fileInput2Ref = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = (personIndex: 1 | 2, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) return;
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      if (personIndex === 1) {
+        onFormChange({ photo1: result });
+      } else {
+        onFormChange({ photo2: result });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removePhoto = (personIndex: 1 | 2) => {
+    if (personIndex === 1) {
+      onFormChange({ photo1: null });
+      if (fileInput1Ref.current) fileInput1Ref.current.value = "";
+    } else {
+      onFormChange({ photo2: null });
+      if (fileInput2Ref.current) fileInput2Ref.current.value = "";
+    }
+  };
+
   return (
     <Card className="border-pink-200 dark:border-pink-900">
       <CardHeader className="text-center pb-4">
@@ -56,6 +95,44 @@ export function LoveCalculatorForm({
             <span>Person 1</span>
           </div>
           
+          {/* Photo Upload */}
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              {formData.photo1 ? (
+                <div className="relative w-16 h-16">
+                  <img
+                    src={formData.photo1}
+                    alt="Person 1"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-pink-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(1)}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInput1Ref.current?.click()}
+                  className="w-16 h-16 rounded-full border-2 border-dashed border-pink-300 flex items-center justify-center hover:bg-pink-100 dark:hover:bg-pink-900/30 transition-colors"
+                >
+                  <Camera className="w-6 h-6 text-pink-400" />
+                </button>
+              )}
+              <input
+                ref={fileInput1Ref}
+                type="file"
+                accept="image/*"
+                onChange={(e) => handlePhotoUpload(1, e)}
+                className="hidden"
+              />
+            </div>
+            <span className="text-sm text-muted-foreground">{t.uploadPhoto || "Add Photo"} ({t.optional})</span>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="name1">{t.yourName} *</Label>
             <Input
@@ -111,6 +188,44 @@ export function LoveCalculatorForm({
             <span>Person 2</span>
           </div>
           
+          {/* Photo Upload */}
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              {formData.photo2 ? (
+                <div className="relative w-16 h-16">
+                  <img
+                    src={formData.photo2}
+                    alt="Person 2"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-rose-300"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removePhoto(2)}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInput2Ref.current?.click()}
+                  className="w-16 h-16 rounded-full border-2 border-dashed border-rose-300 flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-900/30 transition-colors"
+                >
+                  <Camera className="w-6 h-6 text-rose-400" />
+                </button>
+              )}
+              <input
+                ref={fileInput2Ref}
+                type="file"
+                accept="image/*"
+                onChange={(e) => handlePhotoUpload(2, e)}
+                className="hidden"
+              />
+            </div>
+            <span className="text-sm text-muted-foreground">{t.uploadPhoto || "Add Photo"} ({t.optional})</span>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="name2">{t.partnerName} *</Label>
             <Input

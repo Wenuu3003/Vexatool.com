@@ -1,18 +1,22 @@
 import { forwardRef } from "react";
-import { Heart, Sparkles } from "lucide-react";
+import { Heart, Sparkles, Star, User } from "lucide-react";
+import type { ZodiacCompatibilityResult } from "@/lib/zodiacCompatibility";
 
 interface LoveShareCardProps {
   name1: string;
   name2: string;
+  photo1: string | null;
+  photo2: string | null;
   percentage: number;
   nameMatchScore: number;
   numerologyScore: number;
+  zodiacResult: ZodiacCompatibilityResult | null;
   compatibilityLevel: string;
   message: string;
 }
 
 export const LoveShareCard = forwardRef<HTMLDivElement, LoveShareCardProps>(
-  ({ name1, name2, percentage, nameMatchScore, numerologyScore, compatibilityLevel, message }, ref) => {
+  ({ name1, name2, photo1, photo2, percentage, nameMatchScore, numerologyScore, zodiacResult, compatibilityLevel, message }, ref) => {
     const isHighCompatibility = percentage >= 90;
     
     return (
@@ -47,11 +51,11 @@ export const LoveShareCard = forwardRef<HTMLDivElement, LoveShareCardProps>(
         {/* Content */}
         <div className="relative z-10 flex flex-col h-full">
           {/* Header */}
-          <div className="text-center mb-4">
+          <div className="text-center mb-3">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Heart className="w-6 h-6" fill="white" />
-              <span className="text-lg font-semibold tracking-wide opacity-90">Love Calculator</span>
-              <Heart className="w-6 h-6" fill="white" />
+              <Heart className="w-5 h-5" fill="white" />
+              <span className="text-base font-semibold tracking-wide opacity-90">Love Calculator</span>
+              <Heart className="w-5 h-5" fill="white" />
             </div>
             {isHighCompatibility && (
               <div className="inline-block px-3 py-1 bg-white/20 rounded-full text-sm font-bold backdrop-blur-sm">
@@ -60,80 +64,82 @@ export const LoveShareCard = forwardRef<HTMLDivElement, LoveShareCardProps>(
             )}
           </div>
 
-          {/* Names */}
-          <div className="text-center my-4">
-            <div className="text-2xl font-bold mb-2 drop-shadow-lg">{name1}</div>
-            <div className="flex items-center justify-center gap-2 my-3">
-              <div className="h-px w-12 bg-white/40"></div>
-              <Heart className="w-8 h-8 text-white animate-pulse" fill="white" />
-              <div className="h-px w-12 bg-white/40"></div>
+          {/* Photos and Names */}
+          <div className="flex items-center justify-center gap-4 my-3">
+            <div className="text-center">
+              {photo1 ? (
+                <img src={photo1} alt={name1} className="w-16 h-16 rounded-full object-cover border-3 border-white/50 mx-auto" />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto border-2 border-white/30">
+                  <User className="w-8 h-8 text-white/70" />
+                </div>
+              )}
+              <div className="text-lg font-bold mt-1 drop-shadow-lg">{name1}</div>
+              {zodiacResult && <span className="text-xl">{zodiacResult.sign1.symbol}</span>}
             </div>
-            <div className="text-2xl font-bold drop-shadow-lg">{name2}</div>
+            
+            <Heart className="w-8 h-8 text-white" fill="white" />
+            
+            <div className="text-center">
+              {photo2 ? (
+                <img src={photo2} alt={name2} className="w-16 h-16 rounded-full object-cover border-3 border-white/50 mx-auto" />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto border-2 border-white/30">
+                  <User className="w-8 h-8 text-white/70" />
+                </div>
+              )}
+              <div className="text-lg font-bold mt-1 drop-shadow-lg">{name2}</div>
+              {zodiacResult && <span className="text-xl">{zodiacResult.sign2.symbol}</span>}
+            </div>
           </div>
 
           {/* Main Percentage Circle */}
           <div className="flex-1 flex items-center justify-center">
-            <div className="relative w-48 h-48">
-              {/* Outer glow */}
+            <div className="relative w-40 h-40">
               <div className="absolute inset-0 rounded-full bg-white/20 blur-xl"></div>
-              
-              {/* Circle background */}
               <div className="absolute inset-2 rounded-full bg-white/10 backdrop-blur-sm border-4 border-white/30"></div>
-              
-              {/* Progress ring */}
               <svg className="absolute inset-0 w-full h-full transform -rotate-90">
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="85"
-                  stroke="rgba(255,255,255,0.2)"
-                  strokeWidth="8"
-                  fill="none"
-                />
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="85"
-                  stroke="white"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeDasharray={534}
-                  strokeDashoffset={534 - (534 * percentage) / 100}
-                />
+                <circle cx="80" cy="80" r="70" stroke="rgba(255,255,255,0.2)" strokeWidth="8" fill="none" />
+                <circle cx="80" cy="80" r="70" stroke="white" strokeWidth="8" fill="none" strokeLinecap="round"
+                  strokeDasharray={440} strokeDashoffset={440 - (440 * percentage) / 100} />
               </svg>
-              
-              {/* Percentage text */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-6xl font-black drop-shadow-lg">{percentage}%</span>
-                <span className="text-sm font-medium opacity-80 mt-1">{compatibilityLevel}</span>
+                <span className="text-5xl font-black drop-shadow-lg">{percentage}%</span>
+                <span className="text-xs font-medium opacity-80 mt-1">{compatibilityLevel}</span>
               </div>
             </div>
           </div>
 
           {/* Score breakdown */}
-          <div className="grid grid-cols-2 gap-3 my-4">
-            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-              <Sparkles className="w-5 h-5 mx-auto mb-1" />
-              <div className="text-2xl font-bold">{nameMatchScore}%</div>
-              <div className="text-xs opacity-80">Name Match</div>
+          <div className={`grid gap-2 my-3 ${zodiacResult ? 'grid-cols-3' : 'grid-cols-2'}`}>
+            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-2 text-center">
+              <Sparkles className="w-4 h-4 mx-auto mb-1" />
+              <div className="text-xl font-bold">{nameMatchScore}%</div>
+              <div className="text-[10px] opacity-80">Name</div>
             </div>
-            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-3 text-center">
-              <span className="text-xl">🔮</span>
-              <div className="text-2xl font-bold">{numerologyScore}%</div>
-              <div className="text-xs opacity-80">Numerology</div>
+            <div className="bg-white/15 backdrop-blur-sm rounded-xl p-2 text-center">
+              <span className="text-base">🔮</span>
+              <div className="text-xl font-bold">{numerologyScore}%</div>
+              <div className="text-[10px] opacity-80">Numerology</div>
             </div>
+            {zodiacResult && (
+              <div className="bg-white/15 backdrop-blur-sm rounded-xl p-2 text-center">
+                <Star className="w-4 h-4 mx-auto mb-1" />
+                <div className="text-xl font-bold">{zodiacResult.score}%</div>
+                <div className="text-[10px] opacity-80">Zodiac</div>
+              </div>
+            )}
           </div>
 
           {/* Message */}
-          <div className="text-center px-4 mb-4">
-            <p className="text-sm font-medium opacity-90 leading-relaxed">{message}</p>
+          <div className="text-center px-2 mb-3">
+            <p className="text-xs font-medium opacity-90 leading-relaxed line-clamp-2">{message}</p>
           </div>
 
           {/* Footer */}
-          <div className="text-center pt-3 border-t border-white/20">
-            <div className="flex items-center justify-center gap-2 text-sm opacity-80">
-              <Heart className="w-4 h-4" fill="white" />
+          <div className="text-center pt-2 border-t border-white/20">
+            <div className="flex items-center justify-center gap-2 text-xs opacity-80">
+              <Heart className="w-3 h-3" fill="white" />
               <span className="font-medium">mypdfs.in/love-calculator</span>
             </div>
           </div>

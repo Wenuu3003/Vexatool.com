@@ -201,7 +201,11 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
     : [];
 
   return (
-    <div className="w-full max-h-[70vh] overflow-hidden flex flex-col">
+    <div 
+      className="w-full max-h-[70vh] overflow-hidden flex flex-col"
+      onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+    >
       {/* Search Bar */}
       <div className="p-4 border-b border-border shrink-0">
         <div className="relative max-w-md mx-auto">
@@ -225,7 +229,7 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
 
       {/* Search Results */}
       {searchQuery && searchResults.length > 0 && (
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="p-4">
             <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Search Results ({searchResults.length})</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
@@ -259,7 +263,7 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
 
       {/* Categories */}
       {!searchQuery && (
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="grid md:grid-cols-6 divide-y md:divide-y-0 md:divide-x divide-border">
             {categories.map((category) => {
               const isExpanded = expandedCategories.has(category.name);
@@ -346,7 +350,12 @@ export const MobileMegaMenu = ({ onNavigate }: MegaMenuProps) => {
     : [];
 
   return (
-    <div className="py-4">
+    <div 
+      className="py-4 h-full overscroll-contain"
+      style={{ WebkitOverflowScrolling: 'touch' }}
+      onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+    >
       {/* Search */}
       <div className="px-4 mb-4">
         <div className="relative">
@@ -419,7 +428,10 @@ export const MobileMegaMenu = ({ onNavigate }: MegaMenuProps) => {
                 />
               </button>
               {expandedCategory === category.name && (
-                <div className="bg-muted/50 py-2 max-h-[50vh] overflow-y-auto">
+                <div 
+                  className="bg-muted/50 py-2 max-h-[50vh] overflow-y-auto overscroll-contain"
+                  style={{ WebkitOverflowScrolling: 'touch' }}
+                >
                   {category.tools.map((tool) => (
                     <Link
                       key={tool.href}

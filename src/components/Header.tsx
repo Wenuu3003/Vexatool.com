@@ -1,6 +1,6 @@
 import { FileText, ChevronDown, Menu, LogOut, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -17,6 +17,21 @@ export const Header = () => {
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+
+  // Disable body scroll when menus are open
+  useEffect(() => {
+    if (megaMenuOpen || mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = 'var(--scrollbar-width, 0px)';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, [megaMenuOpen, mobileMenuOpen]);
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -133,7 +148,11 @@ export const Header = () => {
 
         {/* Desktop Mega Menu */}
         {megaMenuOpen && (
-          <div className="hidden md:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-lg animate-fade-in z-50">
+          <div 
+            className="hidden md:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-lg animate-fade-in z-50"
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
             <div className="container mx-auto">
               <MegaMenu onNavigate={() => setMegaMenuOpen(false)} />
             </div>
@@ -142,7 +161,12 @@ export const Header = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-16 bg-card z-50 overflow-y-auto animate-fade-in">
+          <div 
+            className="md:hidden fixed inset-0 top-16 bg-card z-50 overflow-y-auto animate-fade-in overscroll-contain"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
             <MobileMegaMenu onNavigate={closeMobileMenu} />
             <div className="p-4 border-t border-border">
               {user ? (

@@ -5,24 +5,56 @@ interface CanonicalHeadProps {
   title: string;
   description: string;
   keywords?: string;
+  ogImage?: string;
+  ogType?: string;
 }
 
+const DEFAULT_OG_IMAGE = "https://mypdfs.in/og-image.png";
+const SITE_NAME = "MyPDFs";
+const TWITTER_HANDLE = "@Mypdfs5";
+
 /**
- * Reusable component for adding canonical URLs and SEO meta tags to pages.
+ * Reusable component for adding canonical URLs, SEO meta tags, 
+ * Open Graph, and Twitter Card tags to pages.
  * Uses the production domain (mypdfs.in) for all canonical URLs.
  */
-export const CanonicalHead = ({ title, description, keywords }: CanonicalHeadProps) => {
+export const CanonicalHead = ({ 
+  title, 
+  description, 
+  keywords,
+  ogImage,
+  ogType = "website"
+}: CanonicalHeadProps) => {
   const canonicalUrl = useCanonicalUrl();
+  const imageUrl = ogImage || DEFAULT_OG_IMAGE;
   
   return (
     <Helmet>
+      {/* Basic SEO */}
       <title>{title}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       <link rel="canonical" href={canonicalUrl} />
+      
+      {/* Open Graph */}
+      <meta property="og:type" content={ogType} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content="en_US" />
+      
+      {/* Twitter Card */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:site" content={TWITTER_HANDLE} />
+      <meta name="twitter:creator" content={TWITTER_HANDLE} />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={imageUrl} />
+      <meta name="twitter:image:alt" content={title} />
     </Helmet>
   );
 };

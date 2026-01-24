@@ -146,11 +146,10 @@ const categories: Category[] = [
     name: "Calculators",
     icon: Calculator,
     tools: [
-      { name: "Love Calculator", href: "/love-calculator", icon: Heart, badge: "new" },
+      { name: "Love & Age Calculator", href: "/love-calculator", icon: Heart, badge: "new" },
       { name: "EMI Calculator", href: "/emi-calculator", icon: Percent, badge: "popular" },
       { name: "GST Calculator", href: "/gst-calculator", icon: Percent },
       { name: "BMI Calculator", href: "/bmi-calculator", icon: Heart },
-      { name: "Age Calculator", href: "/age-calculator", icon: Cake },
       { name: "Currency Converter", href: "/currency-converter", icon: Coins },
       { name: "Unit Converter", href: "/unit-converter", icon: Ruler },
       { name: "Calculator", href: "/calculator", icon: Calculator },

@@ -60,7 +60,7 @@ const categoryMap: Record<string, string> = {
   "word-counter": "AI Tools",
   // Calculator Tools
   "calculator": "Calculator Tools",
-  "age-calculator": "Calculator Tools",
+  "love-calculator": "Calculator Tools",
   "bmi-calculator": "Calculator Tools",
   "emi-calculator": "Calculator Tools",
   "gst-calculator": "Calculator Tools",

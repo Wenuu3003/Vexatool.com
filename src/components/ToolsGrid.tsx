@@ -116,14 +116,7 @@ const tools = [
     colorClass: "bg-teal-500",
     href: "/compress-image",
   },
-  // Calculator Tools
-  {
-    title: "Age Calculator",
-    description: "Calculate your exact age in years, months, days, hours, and minutes.",
-    icon: Cake,
-    colorClass: "bg-gradient-to-br from-pink-400 to-rose-400",
-    href: "/age-calculator",
-  },
+  // Calculator Tools - Age Calculator merged into Love Calculator
   {
     title: "BMI Calculator",
     description: "Calculate your Body Mass Index and get health recommendations.",

@@ -300,12 +300,7 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://mypdfs.in/age-calculator</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- Age Calculator merged into Love Calculator - /age-calculator redirects to /love-calculator -->
   <url>
     <loc>https://mypdfs.in/bmi-calculator</loc>
     <lastmod>2026-01-23</lastmod>

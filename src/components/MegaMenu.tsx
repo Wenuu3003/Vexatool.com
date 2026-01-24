@@ -263,7 +263,7 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
 
       {/* Categories */}
       {!searchQuery && (
-        <ScrollArea className="flex-1 overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="flex-1 overflow-y-auto overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="grid md:grid-cols-6 divide-y md:divide-y-0 md:divide-x divide-border">
             {categories.map((category) => {
               const isExpanded = expandedCategories.has(category.name);
@@ -302,7 +302,20 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
                     ))}
                     {hasMore && (
                       <button
-                        onClick={() => toggleCategory(category.name)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleCategory(category.name);
+                          // Scroll to show expanded content after state update
+                          setTimeout(() => {
+                            const container = e.currentTarget.closest('.overflow-y-auto');
+                            if (container && !expandedCategories.has(category.name)) {
+                              const categoryDiv = e.currentTarget.closest('.p-4');
+                              if (categoryDiv) {
+                                categoryDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                              }
+                            }
+                          }, 50);
+                        }}
                         className="flex items-center gap-1 text-xs text-primary hover:underline pl-2 pt-1"
                       >
                         {isExpanded ? (
@@ -323,7 +336,7 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
               );
             })}
           </div>
-        </ScrollArea>
+        </div>
       )}
     </div>
   );

@@ -1,18 +1,18 @@
 import { Link } from "react-router-dom";
 import { 
-  Layers, 
-  FileDown, 
   QrCode, 
-  FileUser, 
-  ImageOff 
+  ImageOff, 
+  MessageCircle,
+  ScanLine,
+  Youtube
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const popularTools = [
-  { name: "Merge PDF", href: "/merge-pdf", icon: Layers },
-  { name: "Compress PDF", href: "/compress-pdf", icon: FileDown },
+  { name: "WhatsApp Analyzer", href: "/whatsapp-analyzer", icon: MessageCircle },
   { name: "QR Generator", href: "/qr-code-generator", icon: QrCode },
-  { name: "AI Resume", href: "/ai-resume-builder", icon: FileUser },
+  { name: "QR Scanner", href: "/qr-code-scanner", icon: ScanLine },
+  { name: "YouTube Tags", href: "/youtube-generator", icon: Youtube },
   { name: "Remove BG", href: "/background-remover", icon: ImageOff },
 ];
 

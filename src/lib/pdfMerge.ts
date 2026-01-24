@@ -111,9 +111,11 @@ export const removeFile = (files: File[], index: number): File[] => {
  */
 export const estimateMergeTime = (totalBytes: number): string => {
   // Rough estimation: ~10MB per second
-  const seconds = Math.ceil(totalBytes / (10 * 1024 * 1024));
+  const rawSeconds = totalBytes / (10 * 1024 * 1024);
   
-  if (seconds < 1) return 'Less than 1 second';
+  if (rawSeconds < 1) return 'Less than 1 second';
+  
+  const seconds = Math.ceil(rawSeconds);
   if (seconds === 1) return '~1 second';
   if (seconds < 60) return `~${seconds} seconds`;
   

@@ -203,6 +203,7 @@ describe('PDF Merge Utilities', () => {
 
   describe('estimateMergeTime', () => {
     it('should estimate less than 1 second for small files', () => {
+      // 100KB is less than 10MB, so rawSeconds < 1
       expect(estimateMergeTime(100000)).toBe('Less than 1 second');
     });
 

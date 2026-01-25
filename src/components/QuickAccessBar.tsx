@@ -22,7 +22,15 @@ export const QuickAccessBar = () => {
   return (
     <div className="sticky top-16 z-40 bg-muted/80 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-2 sm:px-4">
-        <div className="flex items-center justify-center gap-1 sm:gap-2 py-1.5 overflow-x-auto scrollbar-hide">
+        <div 
+          className="flex items-center justify-start sm:justify-center gap-1 sm:gap-2 py-1.5 overflow-x-auto overflow-y-hidden scrollbar-hide"
+          style={{ 
+            WebkitOverflowScrolling: 'touch',
+            touchAction: 'pan-x',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
           <span className="text-xs text-muted-foreground shrink-0 hidden sm:block">Quick:</span>
           {popularTools.map((tool) => (
             <Link

@@ -223,6 +223,7 @@ export default function LoveCalculator() {
   // Age Calculator State
   const [birthDate, setBirthDate] = useState("");
   const [targetDate, setTargetDate] = useState(new Date().toISOString().split("T")[0]);
+  const [agePhoto, setAgePhoto] = useState<string | null>(null);
   const [ageResult, setAgeResult] = useState<AgeResult | null>(null);
 
   const t = translations[language];
@@ -500,14 +501,18 @@ export default function LoveCalculator() {
               <AgeCalculatorForm
                 birthDate={birthDate}
                 targetDate={targetDate}
+                photo={agePhoto}
                 onBirthDateChange={setBirthDate}
                 onTargetDateChange={setTargetDate}
+                onPhotoChange={setAgePhoto}
                 onCalculate={handleCalculateAge}
                 translations={{
                   ageCalculator: t.ageCalculator,
                   dateOfBirth: t.dateOfBirth,
                   calculateAge: t.calculateAge,
                   calculateAgeOn: t.calculateAgeOn,
+                  uploadPhoto: t.uploadPhoto,
+                  optional: t.optional,
                 }}
               />
 
@@ -515,6 +520,7 @@ export default function LoveCalculator() {
                 <AgeResultDisplay
                   result={ageResult}
                   birthDate={birthDate}
+                  photo={agePhoto}
                   onShare={handleShareAge}
                   translations={{
                     yourAge: t.yourAge,

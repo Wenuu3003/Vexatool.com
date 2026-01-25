@@ -1,14 +1,15 @@
 import { forwardRef } from "react";
-import { Cake, Clock, Calendar, Hash, Sparkles } from "lucide-react";
+import { Cake, Clock, Calendar, Hash, Sparkles, User } from "lucide-react";
 import type { AgeResult } from "./AgeResultDisplay";
 
 interface AgeWhatsAppCardProps {
   result: AgeResult;
   birthDate: string;
+  photo?: string | null;
 }
 
 export const AgeWhatsAppCard = forwardRef<HTMLDivElement, AgeWhatsAppCardProps>(
-  ({ result, birthDate }, ref) => {
+  ({ result, birthDate, photo }, ref) => {
     const isBirthday = result.daysUntilBirthday === 0;
     
     return (
@@ -94,32 +95,61 @@ export const AgeWhatsAppCard = forwardRef<HTMLDivElement, AgeWhatsAppCardProps>(
             </span>
           </div>
 
-          {/* Main Age Circle */}
-          <div className="relative w-52 h-52 mb-6">
-            <div 
-              className="absolute inset-0 rounded-full blur-xl opacity-50"
-              style={{
-                background: isBirthday 
-                  ? "linear-gradient(135deg, #fbbf24 0%, #3b82f6 100%)"
-                  : "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
-              }}
-            />
-            
-            <div 
-              className="absolute inset-3 rounded-full flex flex-col items-center justify-center"
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                backdropFilter: "blur(10px)",
-                border: "5px solid rgba(255,255,255,0.3)",
-              }}
-            >
-              <span 
-                className="text-7xl font-black text-white"
-                style={{ textShadow: "0 0 30px rgba(255,255,255,0.5)" }}
+          {/* Photo + Age Row */}
+          <div className="flex items-center justify-center gap-6 mb-6">
+            {/* Photo Circle (if photo exists) */}
+            {photo && (
+              <div className="relative w-36 h-36 flex-shrink-0">
+                <div 
+                  className="absolute inset-0 rounded-full blur-lg opacity-50"
+                  style={{
+                    background: "linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%)",
+                  }}
+                />
+                <div 
+                  className="absolute inset-2 rounded-full overflow-hidden"
+                  style={{
+                    border: "4px solid rgba(255,255,255,0.4)",
+                    boxShadow: "0 0 20px rgba(255,255,255,0.3)",
+                  }}
+                >
+                  <img
+                    src={photo}
+                    alt="User"
+                    className="w-full h-full object-cover"
+                    crossOrigin="anonymous"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Main Age Circle */}
+            <div className={`relative ${photo ? 'w-40 h-40' : 'w-52 h-52'}`}>
+              <div 
+                className="absolute inset-0 rounded-full blur-xl opacity-50"
+                style={{
+                  background: isBirthday 
+                    ? "linear-gradient(135deg, #fbbf24 0%, #3b82f6 100%)"
+                    : "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)",
+                }}
+              />
+              
+              <div 
+                className="absolute inset-3 rounded-full flex flex-col items-center justify-center"
+                style={{
+                  background: "rgba(255,255,255,0.15)",
+                  backdropFilter: "blur(10px)",
+                  border: "5px solid rgba(255,255,255,0.3)",
+                }}
               >
-                {result.years}
-              </span>
-              <span className="text-xl font-semibold text-white/90">Years Old</span>
+                <span 
+                  className={`${photo ? 'text-5xl' : 'text-7xl'} font-black text-white`}
+                  style={{ textShadow: "0 0 30px rgba(255,255,255,0.5)" }}
+                >
+                  {result.years}
+                </span>
+                <span className={`${photo ? 'text-base' : 'text-xl'} font-semibold text-white/90`}>Years Old</span>
+              </div>
             </div>
           </div>
 

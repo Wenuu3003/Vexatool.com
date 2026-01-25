@@ -1,14 +1,15 @@
 import { forwardRef } from "react";
-import { Cake, Clock, Calendar, Hash, Sparkles } from "lucide-react";
+import { Cake, Clock, Calendar, Hash, Sparkles, User } from "lucide-react";
 import type { AgeResult } from "./AgeResultDisplay";
 
 interface AgeInstagramStoryCardProps {
   result: AgeResult;
   birthDate: string;
+  photo?: string | null;
 }
 
 export const AgeInstagramStoryCard = forwardRef<HTMLDivElement, AgeInstagramStoryCardProps>(
-  ({ result, birthDate }, ref) => {
+  ({ result, birthDate, photo }, ref) => {
     const isBirthday = result.daysUntilBirthday === 0;
     
     return (
@@ -116,8 +117,34 @@ export const AgeInstagramStoryCard = forwardRef<HTMLDivElement, AgeInstagramStor
             </div>
           </div>
 
+          {/* Photo Circle (if photo exists) */}
+          {photo && (
+            <div className="relative w-48 h-48 mb-8">
+              <div 
+                className="absolute inset-0 rounded-full blur-xl opacity-60"
+                style={{
+                  background: "linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%)",
+                }}
+              />
+              <div 
+                className="absolute inset-2 rounded-full overflow-hidden"
+                style={{
+                  border: "6px solid rgba(255,255,255,0.4)",
+                  boxShadow: "0 0 40px rgba(59, 130, 246, 0.5)",
+                }}
+              >
+                <img
+                  src={photo}
+                  alt="User"
+                  className="w-full h-full object-cover"
+                  crossOrigin="anonymous"
+                />
+              </div>
+            </div>
+          )}
+
           {/* Main Age Display Circle */}
-          <div className="relative w-80 h-80 mb-10">
+          <div className={`relative ${photo ? 'w-56 h-56' : 'w-80 h-80'} mb-10`}>
             {/* Outer glow */}
             <div 
               className="absolute inset-0 rounded-full blur-xl"
@@ -139,14 +166,14 @@ export const AgeInstagramStoryCard = forwardRef<HTMLDivElement, AgeInstagramStor
               }}
             >
               <span 
-                className="text-9xl font-black text-white"
+                className={`${photo ? 'text-7xl' : 'text-9xl'} font-black text-white`}
                 style={{
                   textShadow: "0 0 40px rgba(59, 130, 246, 0.8)",
                 }}
               >
                 {result.years}
               </span>
-              <span className="text-3xl font-semibold text-white/80">Years Old</span>
+              <span className={`${photo ? 'text-2xl' : 'text-3xl'} font-semibold text-white/80`}>Years Old</span>
             </div>
           </div>
 

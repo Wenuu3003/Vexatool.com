@@ -9,9 +9,11 @@ interface AgeCalculatorFormProps {
   birthDate: string;
   targetDate: string;
   photo: string | null;
+  name: string;
   onBirthDateChange: (date: string) => void;
   onTargetDateChange: (date: string) => void;
   onPhotoChange: (photo: string | null) => void;
+  onNameChange: (name: string) => void;
   onCalculate: () => void;
   translations: {
     ageCalculator: string;
@@ -20,6 +22,7 @@ interface AgeCalculatorFormProps {
     calculateAgeOn: string;
     uploadPhoto?: string;
     optional?: string;
+    yourName?: string;
   };
 }
 
@@ -27,9 +30,11 @@ export function AgeCalculatorForm({
   birthDate,
   targetDate,
   photo,
+  name,
   onBirthDateChange,
   onTargetDateChange,
   onPhotoChange,
+  onNameChange,
   onCalculate,
   translations: t,
 }: AgeCalculatorFormProps) {
@@ -104,6 +109,20 @@ export function AgeCalculatorForm({
           <span className="text-sm text-muted-foreground">
             {t.uploadPhoto || "Add Photo"} ({t.optional || "Optional"})
           </span>
+        </div>
+
+        {/* Name Input */}
+        <div className="space-y-2">
+          <Label htmlFor="ageName">{t.yourName || "Your Name"} ({t.optional || "Optional"})</Label>
+          <Input
+            id="ageName"
+            type="text"
+            placeholder="Enter your name for personalized cards"
+            value={name}
+            onChange={(e) => onNameChange(e.target.value)}
+            className="border-blue-200 focus:border-blue-400"
+            maxLength={30}
+          />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">

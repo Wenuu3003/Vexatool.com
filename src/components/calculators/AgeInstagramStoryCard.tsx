@@ -6,10 +6,11 @@ interface AgeInstagramStoryCardProps {
   result: AgeResult;
   birthDate: string;
   photo?: string | null;
+  name?: string;
 }
 
 export const AgeInstagramStoryCard = forwardRef<HTMLDivElement, AgeInstagramStoryCardProps>(
-  ({ result, birthDate, photo }, ref) => {
+  ({ result, birthDate, photo, name }, ref) => {
     const isBirthday = result.daysUntilBirthday === 0;
     
     return (
@@ -119,7 +120,7 @@ export const AgeInstagramStoryCard = forwardRef<HTMLDivElement, AgeInstagramStor
 
           {/* Photo Circle (if photo exists) */}
           {photo && (
-            <div className="relative w-48 h-48 mb-8">
+            <div className="relative w-48 h-48 mb-4">
               <div 
                 className="absolute inset-0 rounded-full blur-xl opacity-60"
                 style={{
@@ -140,6 +141,16 @@ export const AgeInstagramStoryCard = forwardRef<HTMLDivElement, AgeInstagramStor
                   crossOrigin="anonymous"
                 />
               </div>
+            </div>
+          )}
+
+          {/* User Name Display */}
+          {name && (
+            <div 
+              className="text-4xl font-bold text-white mb-6 text-center"
+              style={{ textShadow: "0 0 20px rgba(59, 130, 246, 0.6)" }}
+            >
+              {name}
             </div>
           )}
 

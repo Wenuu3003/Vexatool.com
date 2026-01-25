@@ -224,6 +224,7 @@ export default function LoveCalculator() {
   const [birthDate, setBirthDate] = useState("");
   const [targetDate, setTargetDate] = useState(new Date().toISOString().split("T")[0]);
   const [agePhoto, setAgePhoto] = useState<string | null>(null);
+  const [ageName, setAgeName] = useState("");
   const [ageResult, setAgeResult] = useState<AgeResult | null>(null);
 
   const t = translations[language];
@@ -321,49 +322,62 @@ export default function LoveCalculator() {
 
   const seoContent = {
     toolName: "Love Calculator & Age Calculator",
-    whatIs: "Our Love Calculator is a professional entertainment tool that calculates love compatibility using both name matching and numerology analysis. By adding your Date of Birth, the algorithm considers numerological life path numbers for enhanced compatibility insights. Our Age Calculator provides precise age calculations including years, months, days, total days lived, and a countdown to your next birthday.",
+    whatIs: "Our Love Calculator is a fun entertainment tool that calculates love compatibility using a triple-scoring algorithm: name matching (45%), numerology life path analysis (30%), and zodiac sign compatibility (25%). By adding your Date of Birth, the algorithm considers astrological harmony for enhanced results. Our Age Calculator provides precise age calculations including years, months, days, total days lived, and a countdown to your next birthday. Both tools support photo uploads for personalized shareable cards perfect for Instagram Stories and WhatsApp Status.",
     howToUse: [
-      "For Love Calculator: Enter both names, select gender, and optionally add DOB for numerology analysis.",
+      "For Love Calculator: Enter both names, select gender, and optionally add DOB for numerology & zodiac analysis.",
+      "Upload photos (optional) to personalize your share cards with profile pictures.",
       "Click 'Calculate Love' to see your compatibility percentage with detailed breakdown.",
-      "For Age Calculator: Enter your date of birth and optionally select a target date.",
+      "For Age Calculator: Enter your name (optional), date of birth, and optionally select a target date.",
+      "Upload your photo to create personalized birthday share cards.",
       "View your exact age, total days lived, birth day, and birthday countdown.",
-      "Share your fun results with friends using the 'Share Result' button!",
+      "Share fun results on Instagram Stories (9:16) or WhatsApp Status (1:1) using the share buttons!",
     ],
     features: [
-      "Advanced love compatibility using name matching + numerology",
-      "Gender selection for personalized results",
-      "Optional DOB input for numerological life path analysis",
+      "Triple-scoring love compatibility: Name matching (45%) + Numerology (30%) + Zodiac (25%)",
+      "Zodiac sign compatibility with element matching (Fire, Earth, Air, Water)",
+      "Photo uploads for personalized social media share cards",
+      "Instagram Story format (1080×1920) & WhatsApp Status format (1080×1080)",
+      "Web Share API for direct mobile sharing to apps",
       "Precise age calculation in years, months, and days",
       "Total days, weeks, and hours lived statistics",
       "Next birthday countdown feature",
-      "Multi-language support (English, Hindi, Telugu)",
-      "100% client-side - no data sent to servers",
+      "Multi-language support (English, Hindi, Telugu, Fun English)",
+      "100% client-side processing - no data sent to servers",
+      "Confetti celebration for 90%+ compatibility scores!",
     ],
-    safetyNote: "Absolutely! Both tools run entirely in your browser. No personal data is collected, stored, or transmitted. The Love Calculator is purely for entertainment and does not make any real predictions about relationships.",
+    safetyNote: "Absolutely! Both tools run entirely in your browser. No personal data, names, photos, or birth dates are collected, stored, or transmitted to any server. The Love Calculator is purely for entertainment and fun with friends and family. Photos are processed locally and never uploaded anywhere.",
     faqs: [
       {
         question: "What is a Love Calculator?",
-        answer: "A Love Calculator is a fun entertainment tool that generates a compatibility percentage based on names and optionally numerology. It uses letter matching and life path number analysis for enhanced results.",
+        answer: "A Love Calculator is a fun entertainment tool that generates a compatibility percentage based on names and optionally birth dates. It uses name matching, numerology life path analysis, and zodiac sign compatibility for engaging results. Remember, it's purely for entertainment!",
       },
       {
-        question: "Is this Love Calculator accurate?",
-        answer: "No, this is purely for entertainment! Love and relationships are complex and cannot be determined by any calculator. Use this tool just for fun with friends and family.",
+        question: "How does the zodiac compatibility feature work?",
+        answer: "When you enter birth dates, the calculator identifies your zodiac signs and checks element compatibility. Fire signs (Aries, Leo, Sagittarius) match well with Air signs (Gemini, Libra, Aquarius), while Earth signs (Taurus, Virgo, Capricorn) pair with Water signs (Cancer, Scorpio, Pisces). Same-element matches also score high!",
       },
       {
-        question: "How does the numerology feature work?",
-        answer: "When you enter birth dates, the calculator computes life path numbers (a numerology concept) and checks compatibility between them. This adds an extra fun dimension to the results.",
+        question: "Can I share my results on Instagram and WhatsApp?",
+        answer: "Yes! Both calculators generate beautiful share cards optimized for Instagram Stories (9:16 vertical format) and WhatsApp Status (1:1 square format). On mobile devices, you can share directly to apps using the native share feature. On desktop, images are downloaded for manual sharing.",
       },
       {
-        question: "Is the Age Calculator free?",
-        answer: "Yes, both the Age Calculator and Love Calculator are completely free to use with no hidden charges or subscriptions required.",
+        question: "Why should I add my photo and name?",
+        answer: "Adding your photo and name personalizes the share cards! Your photo appears in a beautiful circular frame, and your name is prominently displayed on the generated images. This makes sharing on social media more fun and personal.",
       },
       {
-        question: "Can I calculate age on a past or future date?",
-        answer: "Yes! The 'Calculate Age On' field lets you see your age on any date - past or future. Great for finding out your age on a special occasion.",
+        question: "Is this Love Calculator accurate for real relationships?",
+        answer: "No, this is purely for entertainment! Real love and relationships are complex and cannot be determined by any calculator or algorithm. Use this tool just for fun with friends, family, and crushes. Real compatibility depends on communication, shared values, and mutual respect.",
       },
       {
-        question: "Is this tool safe to use?",
-        answer: "Yes, completely safe. Both tools run 100% in your browser. We don't collect, store, or transmit any personal information. Your data stays on your device.",
+        question: "Is the Age Calculator free to use?",
+        answer: "Yes, both the Age Calculator and Love Calculator are completely free to use with no hidden charges, subscriptions, or account registration required. All features including photo uploads and shareable cards are free!",
+      },
+      {
+        question: "Can I calculate my age on a past or future date?",
+        answer: "Yes! The 'Calculate Age On' field lets you see your age on any date—past or future. Great for finding out your age on special occasions like weddings, graduations, or future milestones.",
+      },
+      {
+        question: "Is my data safe when using these tools?",
+        answer: "Absolutely safe! Both tools run 100% in your browser. We don't collect, store, or transmit any personal information including names, birth dates, or photos. Your data never leaves your device—complete privacy guaranteed.",
       },
     ],
   };
@@ -384,9 +398,9 @@ export default function LoveCalculator() {
   return (
     <>
       <CanonicalHead
-        title="Love Calculator ❤️ & Age Calculator – Check Compatibility & Exact Age Online"
-        description="Check love compatibility with our Love Calculator using name matching & numerology. Calculate exact age, total days lived & birthday countdown. Free & fun!"
-        keywords="love calculator, age calculator, love compatibility, name love calculator, numerology love test, online age calculator, birthday calculator"
+        title="Love Calculator ❤️ & Age Calculator – Free Compatibility Test with Zodiac & Shareable Cards"
+        description="Free Love Calculator with zodiac compatibility & Age Calculator with personalized share cards. Upload photos, get Instagram & WhatsApp ready images. Fun & safe!"
+        keywords="love calculator, age calculator, love compatibility test, zodiac love calculator, name love calculator, birthday calculator, instagram story maker, whatsapp status creator"
       />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
@@ -502,9 +516,11 @@ export default function LoveCalculator() {
                 birthDate={birthDate}
                 targetDate={targetDate}
                 photo={agePhoto}
+                name={ageName}
                 onBirthDateChange={setBirthDate}
                 onTargetDateChange={setTargetDate}
                 onPhotoChange={setAgePhoto}
+                onNameChange={setAgeName}
                 onCalculate={handleCalculateAge}
                 translations={{
                   ageCalculator: t.ageCalculator,
@@ -513,6 +529,7 @@ export default function LoveCalculator() {
                   calculateAgeOn: t.calculateAgeOn,
                   uploadPhoto: t.uploadPhoto,
                   optional: t.optional,
+                  yourName: t.yourName,
                 }}
               />
 
@@ -521,6 +538,7 @@ export default function LoveCalculator() {
                   result={ageResult}
                   birthDate={birthDate}
                   photo={agePhoto}
+                  name={ageName}
                   onShare={handleShareAge}
                   translations={{
                     yourAge: t.yourAge,

@@ -6,10 +6,11 @@ interface AgeWhatsAppCardProps {
   result: AgeResult;
   birthDate: string;
   photo?: string | null;
+  name?: string;
 }
 
 export const AgeWhatsAppCard = forwardRef<HTMLDivElement, AgeWhatsAppCardProps>(
-  ({ result, birthDate, photo }, ref) => {
+  ({ result, birthDate, photo, name }, ref) => {
     const isBirthday = result.daysUntilBirthday === 0;
     
     return (
@@ -94,6 +95,16 @@ export const AgeWhatsAppCard = forwardRef<HTMLDivElement, AgeWhatsAppCardProps>(
               })}
             </span>
           </div>
+
+          {/* User Name Display */}
+          {name && (
+            <div 
+              className="text-3xl font-bold text-white mb-4 text-center"
+              style={{ textShadow: "0 0 15px rgba(255,255,255,0.4)" }}
+            >
+              {name}
+            </div>
+          )}
 
           {/* Photo + Age Row */}
           <div className="flex items-center justify-center gap-6 mb-6">

@@ -48,46 +48,15 @@ function isMobileDevice(): boolean {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-// Check if WebGPU is available AND working properly
-async function isWebGPUAvailable(): Promise<boolean> {
-  // Force WASM on mobile devices - WebGPU is unstable on mobile browsers
+// Force WASM for stability - WebGPU has inconsistent support across browsers
+// This ensures reliable background removal on all devices
+function getDeviceBackend(): "wasm" {
   if (isMobileDevice()) {
-    console.log("Mobile device detected, using WASM for stability");
-    return false;
+    console.log("Mobile device detected, using WASM");
+  } else {
+    console.log("Using WASM backend for maximum compatibility");
   }
-  
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const nav = navigator as any;
-    if (!nav.gpu) return false;
-    
-    const adapter = await nav.gpu.requestAdapter();
-    if (!adapter) return false;
-    
-    // Test if device can actually create buffers (some implementations fail here)
-    const device = await adapter.requestDevice();
-    if (!device) return false;
-    
-    // Try creating a small test buffer to verify WebGPU actually works
-    try {
-      const testBuffer = device.createBuffer({
-        size: 64,
-        usage: 1, // GPUBufferUsage.MAP_READ
-        mappedAtCreation: true,
-      });
-      testBuffer.unmap();
-      testBuffer.destroy();
-      device.destroy();
-      return true;
-    } catch (bufferError) {
-      console.log("WebGPU buffer creation failed, falling back to WASM:", bufferError);
-      device.destroy();
-      return false;
-    }
-  } catch (e) {
-    console.log("WebGPU not available:", e);
-    return false;
-  }
+  return "wasm";
 }
 
 export const removeBackground = async (
@@ -113,8 +82,7 @@ export const removeBackground = async (
       console.log("Loading segmentation model...");
       updateProgress(10);
       
-      const hasWebGPU = await isWebGPUAvailable();
-      console.log(`WebGPU available: ${hasWebGPU}`);
+      const backend = getDeviceBackend();
       
       // Use Xenova/modnet - a much faster and lighter model (~25MB vs ~170MB for RMBG)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,7 +90,7 @@ export const removeBackground = async (
         "image-segmentation",
         "Xenova/modnet",
         {
-          device: hasWebGPU ? "webgpu" : "wasm",
+          device: backend,
           // Progress callback for model download
           progress_callback: (progress: { progress?: number; status?: string }) => {
             if (progress.progress !== undefined) {

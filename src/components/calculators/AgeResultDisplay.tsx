@@ -23,6 +23,7 @@ interface AgeResultDisplayProps {
   result: AgeResult;
   birthDate: string;
   photo?: string | null;
+  name?: string;
   onShare: () => void;
   translations: {
     yourAge: string;
@@ -43,6 +44,7 @@ export function AgeResultDisplay({
   result,
   birthDate,
   photo,
+  name,
   onShare,
   translations: t,
 }: AgeResultDisplayProps) {
@@ -254,6 +256,7 @@ export function AgeResultDisplay({
           result={result}
           birthDate={birthDate}
           photo={photo}
+          name={name}
         />
       </div>
 
@@ -264,6 +267,7 @@ export function AgeResultDisplay({
           result={result}
           birthDate={birthDate}
           photo={photo}
+          name={name}
         />
       </div>
     </>

@@ -291,9 +291,9 @@ export const routes: RouteConfig[] = [
     priority: 0.9, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Love Calculator ❤️ & Age Calculator – Check Compatibility Online | Mypdfs',
-    description: 'Check love compatibility with our Love Calculator ❤️ Also calculate your exact age, next birthday & more. Free, fun, fast & AdSense-safe tool.',
-    keywords: 'love calculator, age calculator, love compatibility, name love calculator, online age calculator, fun love test',
+    title: 'Love Calculator ❤️ & Age Calculator – Free Compatibility Test with Zodiac & Share Cards | Mypdfs',
+    description: 'Free Love Calculator with zodiac compatibility & Age Calculator with personalized share cards. Upload photos, get Instagram & WhatsApp ready images. Fun & safe!',
+    keywords: 'love calculator, age calculator, love compatibility test, zodiac love calculator, instagram story maker, whatsapp status, birthday calculator, numerology',
     category: 'Calculator Tools'
   },
   {

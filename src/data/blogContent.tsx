@@ -920,18 +920,19 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
   },
 
   "love-age-calculator-complete-guide": {
-    title: "Love Calculator & Age Calculator: Complete Guide to Compatibility Testing & Exact Age Calculation",
-    date: "2026-01-24",
-    readTime: "10 min read",
+    title: "Love Calculator & Age Calculator: Complete Guide with Zodiac Compatibility, Photo Cards & Social Sharing",
+    date: "2026-01-25",
+    readTime: "12 min read",
     relatedTools: [
       { name: "Love & Age Calculator", href: "/love-calculator" },
       { name: "BMI Calculator", href: "/bmi-calculator" },
       { name: "EMI Calculator", href: "/emi-calculator" },
+      { name: "QR Code Generator", href: "/qr-code-generator" },
     ],
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">
         <p className="lead text-xl text-muted-foreground mb-6">
-          Looking for a fun way to test love compatibility or calculate your exact age? Our combined Love Calculator and Age Calculator tool offers entertainment and precision in one place. Whether you're curious about relationship chemistry or need accurate age calculations for official purposes, this guide covers everything you need to know.
+          Looking for a fun way to test love compatibility or calculate your exact age? Our combined Love Calculator and Age Calculator tool offers entertainment and precision in one place. With zodiac compatibility, photo uploads, and shareable cards for Instagram Stories and WhatsApp Status, this guide covers everything you need to know about using these fun tools.
         </p>
 
         <h2>What is a Love Calculator?</h2>
@@ -939,44 +940,78 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           A Love Calculator is an entertainment tool that generates compatibility percentages based on names and optional birth dates. While not scientifically proven, these calculators have been popular for decades as a fun way to explore potential relationship chemistry with friends, crushes, or partners.
         </p>
         <p>
-          Modern love calculators like the Mypdfs Love Calculator use sophisticated algorithms combining name pattern matching and numerology to create engaging results. The key is understanding these tools are meant for entertainment—real relationships require communication, trust, and mutual respect.
+          Modern love calculators like the Mypdfs Love Calculator use sophisticated algorithms combining name pattern matching, numerology, and zodiac compatibility to create engaging results. The key is understanding these tools are meant for entertainment—real relationships require communication, trust, and mutual respect.
         </p>
 
         <h2>How Does Our Love Calculator Work?</h2>
         <p>
-          The Mypdfs Love Calculator uses a dual-scoring algorithm that analyzes two key factors:
+          The Mypdfs Love Calculator uses a triple-scoring algorithm that analyzes three key factors for a comprehensive compatibility score:
         </p>
 
-        <h3>1. Name Matching Analysis</h3>
+        <h3>1. Name Matching Analysis (45% Weight)</h3>
         <p>
           Our algorithm examines letter patterns, frequencies, and combinations between two names. It looks at shared letters, complementary sounds, and phonetic compatibility. Names with harmonious letter patterns often score higher, creating that satisfying "meant to be" feeling.
         </p>
 
-        <h3>2. Numerology Compatibility</h3>
+        <h3>2. Numerology Compatibility (30% Weight)</h3>
         <p>
           When you enter birth dates, the calculator computes Life Path numbers—a core concept in numerology. Your Life Path number is derived by adding all digits of your birth date until reaching a single digit (or master numbers 11, 22, 33). Compatible Life Path combinations receive higher scores.
         </p>
         <p>
-          For example, if your birthday is January 15, 1995, the calculation would be: 1+1+5+1+9+9+5 = 31, then 3+1 = 4. Your Life Path number is 4. Certain numbers naturally complement each other in numerological traditions.
+          For example, if your birthday is January 15, 1995, the calculation would be: 1+1+5+1+9+9+5 = 31, then 3+1 = 4. Your Life Path number is 4.
+        </p>
+
+        <h3>3. Zodiac Sign Compatibility (25% Weight)</h3>
+        <p>
+          The calculator identifies your zodiac signs based on birth dates and checks element compatibility:
+        </p>
+        <ul>
+          <li><strong>Fire Signs</strong> (Aries, Leo, Sagittarius) match well with Air Signs</li>
+          <li><strong>Earth Signs</strong> (Taurus, Virgo, Capricorn) pair well with Water Signs</li>
+          <li><strong>Air Signs</strong> (Gemini, Libra, Aquarius) complement Fire Signs</li>
+          <li><strong>Water Signs</strong> (Cancer, Scorpio, Pisces) harmonize with Earth Signs</li>
+        </ul>
+        <p>
+          Same-element matches also receive high compatibility scores, as they share similar temperaments and values.
         </p>
 
         <h2>Understanding Your Love Compatibility Score</h2>
         <p>
-          After calculation, you'll receive a percentage score along with a breakdown:
+          After calculation, you'll receive a percentage score along with a detailed breakdown:
         </p>
         <ul>
-          <li><strong>90-100%:</strong> Exceptional match! The algorithm detects strong harmony in both names and numerology. Celebrate with our confetti animation! 🎉</li>
+          <li><strong>90-100%:</strong> Exceptional match! The algorithm detects strong harmony across all three factors. Celebrate with our confetti animation and special sound effect! 🎉</li>
           <li><strong>75-89%:</strong> Great compatibility with genuine connection potential</li>
           <li><strong>60-74%:</strong> Good chemistry with room to grow together</li>
           <li><strong>50-59%:</strong> Moderate compatibility—every relationship takes work!</li>
         </ul>
+
+        <h2>Photo Uploads & Personalized Share Cards</h2>
+        <p>
+          One of the most exciting features is the ability to upload photos for both people in the Love Calculator and for yourself in the Age Calculator. These photos appear in beautiful circular frames on the generated share cards, making them perfect for social media.
+        </p>
+        <p>
+          The Age Calculator also lets you add your name, which appears prominently on the share cards alongside your photo and age statistics.
+        </p>
+
+        <h2>Sharing to Instagram Stories & WhatsApp Status</h2>
+        <p>
+          Both calculators generate optimized share cards for social media:
+        </p>
+        <ul>
+          <li><strong>Instagram Stories:</strong> 1080×1920 pixels (9:16 vertical format) with safe zones to avoid UI overlays</li>
+          <li><strong>WhatsApp Status:</strong> 1080×1080 pixels (1:1 square format) for perfect display</li>
+        </ul>
+        <p>
+          On mobile devices with Web Share API support, you can share directly to Instagram, WhatsApp, or any other app using the native share sheet. On desktop, images are downloaded for manual sharing.
+        </p>
 
         <h2>What is an Age Calculator?</h2>
         <p>
           An Age Calculator determines your exact age from your birth date to any specified date. Unlike simple year subtraction, a proper age calculator accounts for months, days, and even considers leap years for precision.
         </p>
         <p>
-          Age calculators serve both practical and fun purposes—from completing official forms requiring exact age to discovering interesting facts about your life journey.
+          Age calculators serve both practical and fun purposes—from completing official forms requiring exact age to discovering interesting facts about your life journey and creating personalized birthday share cards.
         </p>
 
         <h2>Why Calculate Exact Age?</h2>
@@ -987,6 +1022,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           <li><strong>Legal Requirements:</strong> School admissions, voting eligibility, driving licenses, and retirement benefits all depend on exact birth dates</li>
           <li><strong>Medical Records:</strong> Healthcare providers often need precise age for medication dosing and developmental assessments</li>
           <li><strong>Official Documents:</strong> Passport applications, visa forms, and insurance policies require accurate age information</li>
+          <li><strong>Fun Social Sharing:</strong> Create personalized birthday cards with your exact age statistics!</li>
           <li><strong>Milestone Celebrations:</strong> Knowing exactly when you'll turn 10,000 days old or celebrating your half-birthday</li>
         </ul>
 
@@ -1001,7 +1037,8 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           <li><strong>Total Hours:</strong> Fascinating way to appreciate every moment</li>
           <li><strong>Day of Birth:</strong> Find out which day of the week you were born (Monday's child is fair of face...)</li>
           <li><strong>Birthday Countdown:</strong> See exactly how many days until your next birthday celebration</li>
-          <li><strong>Calculate Age On:</strong> Find your age on any past or future date—great for historical research or planning</li>
+          <li><strong>Calculate Age On:</strong> Find your age on any past or future date</li>
+          <li><strong>Photo & Name Input:</strong> Personalize your share cards with your picture and name</li>
         </ul>
 
         <h2>Milestone Ages in India</h2>
@@ -1025,7 +1062,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
         </p>
         <ul>
           <li><strong>English:</strong> Standard professional language</li>
-          <li><strong>English (Fun):</strong> Playful, casual tone for entertainment</li>
+          <li><strong>English (Fun):</strong> Playful, casual tone for maximum entertainment</li>
           <li><strong>Hindi (हिंदी):</strong> For Hindi-speaking users across India</li>
           <li><strong>Telugu (తెలుగు):</strong> For Telugu-speaking users in Andhra Pradesh and Telangana</li>
         </ul>
@@ -1039,35 +1076,41 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
         </p>
         <ul>
           <li>Breaking the ice with friends</li>
-          <li>Fun party games</li>
-          <li>Social media sharing</li>
-          <li>Light-hearted entertainment</li>
+          <li>Fun party games and gatherings</li>
+          <li>Social media sharing and viral content</li>
+          <li>Light-hearted entertainment with family</li>
         </ul>
 
         <h2>Privacy and Safety</h2>
         <p>
-          The Mypdfs Love & Age Calculator runs entirely in your browser. We don't collect, store, or transmit any personal information. Your names, birth dates, and results stay on your device—complete privacy guaranteed.
+          The Mypdfs Love & Age Calculator runs entirely in your browser. We don't collect, store, or transmit any personal information—including names, birth dates, and photos. Your data never leaves your device—complete privacy guaranteed.
         </p>
         <p>
-          This tool is also fully AdSense-compliant with no misleading claims, adult content, or false promises. It's safe for all ages and appropriate for family use.
+          Photos are processed locally using browser APIs and are never uploaded to any server. When you share cards, only the generated image is shared, not your original data.
+        </p>
+        <p>
+          This tool is fully AdSense-compliant with no misleading claims, adult content, or false promises. It's safe for all ages and appropriate for family use.
         </p>
 
         <h2>How to Use the Love & Age Calculator</h2>
         <h3>For Love Calculator:</h3>
         <ol>
           <li>Enter your name and select your gender</li>
+          <li>Optionally upload your photo for personalized share cards</li>
           <li>Enter your partner's or crush's name and gender</li>
-          <li>Optionally add birth dates for numerology analysis</li>
+          <li>Optionally add birth dates for numerology and zodiac analysis</li>
           <li>Click "Calculate Love" and watch the magic happen!</li>
-          <li>Share your results with friends using the copy button</li>
+          <li>Share your results on Instagram Stories or WhatsApp Status</li>
         </ol>
 
         <h3>For Age Calculator:</h3>
         <ol>
+          <li>Enter your name (optional) for personalized cards</li>
+          <li>Upload your photo (optional) for a personal touch</li>
           <li>Enter your date of birth</li>
           <li>Optionally change the "Calculate Age On" date for past/future calculations</li>
           <li>Click "Calculate Age" to see your comprehensive age statistics</li>
-          <li>Share your age facts with friends</li>
+          <li>Share your age cards on Instagram or WhatsApp!</li>
         </ol>
 
         <h2>Fun Facts About Birthdays and Age</h2>
@@ -1077,14 +1120,15 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           <li>The chances of two people in a group of 23 sharing a birthday is 50%</li>
           <li>Your 10,000th day on Earth is a popular milestone to celebrate</li>
           <li>Mars years are 687 Earth days—you'd be younger on Mars!</li>
+          <li>The most common birthday in the world is September 9th</li>
         </ul>
 
         <h2>Conclusion</h2>
         <p>
-          Whether you're testing love compatibility for fun or calculating exact age for practical purposes, the Mypdfs Love & Age Calculator delivers entertainment and precision. With multi-language support, numerology integration, and complete privacy, it's the perfect tool for curious minds.
+          Whether you're testing love compatibility for fun or calculating exact age for practical purposes, the Mypdfs Love & Age Calculator delivers entertainment and precision. With zodiac compatibility, photo uploads, multi-language support, and beautiful shareable cards for Instagram and WhatsApp, it's the perfect tool for curious minds and social media enthusiasts.
         </p>
         <p>
-          Try the <a href="/love-calculator" className="text-primary hover:underline">Love & Age Calculator</a> now—and don't forget to share your results (especially those 90%+ matches with confetti celebrations! 🎊).
+          Try the <a href="/love-calculator" className="text-primary hover:underline">Love & Age Calculator</a> now—add your photos, check your zodiac compatibility, and don't forget to share your results (especially those 90%+ matches with confetti celebrations! 🎊).
         </p>
       </div>
     ),

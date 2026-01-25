@@ -1,8 +1,11 @@
-import { useState, useCallback } from "react";
-import { Eraser, Upload, Download, Loader2, ImageIcon, Edit2 } from "lucide-react";
+import { useState, useCallback, useRef } from "react";
+import { Eraser, Upload, Download, Loader2, ImageIcon, Edit2, Eye, EyeOff, Clock, Sparkles } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -34,6 +37,13 @@ const BackgroundRemover = () => {
   const [outputFormat, setOutputFormat] = useState<OutputFormat>("png");
   const [isDragging, setIsDragging] = useState(false);
 
+  // Processing time tracking
+  const startTimeRef = useRef<number>(0);
+  const [processingTime, setProcessingTime] = useState<number | null>(null);
+
+  // Toggle view state
+  const [showOriginal, setShowOriginal] = useState(false);
+
   // Mask editing state
   const [isEditing, setIsEditing] = useState(false);
   const [removalResult, setRemovalResult] = useState<RemovalResult | null>(null);
@@ -45,6 +55,12 @@ const BackgroundRemover = () => {
       return;
     }
 
+    // Check file size (max 10MB)
+    if (selectedFile.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
+
     setFile(selectedFile);
     setPreview(URL.createObjectURL(selectedFile));
     setResultBlob(null);
@@ -53,6 +69,8 @@ const BackgroundRemover = () => {
     setIsEditing(false);
     setRemovalResult(null);
     setCurrentMaskData(null);
+    setProcessingTime(null);
+    setShowOriginal(false);
   }, []);
 
   const handleDrop = useCallback(
@@ -82,12 +100,17 @@ const BackgroundRemover = () => {
 
     setIsProcessing(true);
     setProgress(0);
+    startTimeRef.current = performance.now();
 
     try {
       const img = await loadImage(file);
       setProgress(5);
 
       const result = await removeBackground(img, setProgress);
+      
+      const endTime = performance.now();
+      setProcessingTime(Math.round((endTime - startTimeRef.current) / 1000 * 10) / 10);
+
       setRemovalResult(result);
       setCurrentMaskData(new Float32Array(result.maskData));
       setResultBlob(result.blob);
@@ -165,6 +188,19 @@ const BackgroundRemover = () => {
     }
   };
 
+  const handleReset = () => {
+    setFile(null);
+    setPreview(null);
+    setResultBlob(null);
+    setResultUrl(null);
+    setProgress(0);
+    setIsEditing(false);
+    setRemovalResult(null);
+    setCurrentMaskData(null);
+    setProcessingTime(null);
+    setShowOriginal(false);
+  };
+
   return (
     <>
       <CanonicalHead
@@ -238,6 +274,39 @@ const BackgroundRemover = () => {
           {/* Preview and Result */}
           {file && !isEditing && (
             <div className="space-y-6">
+              {/* Processing Time & Toggle Controls */}
+              {resultUrl && (
+                <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-muted/30 rounded-xl">
+                  <div className="flex items-center gap-4">
+                    {processingTime !== null && (
+                      <Badge variant="secondary" className="gap-1.5 text-sm py-1.5 px-3">
+                        <Clock className="w-3.5 h-3.5" />
+                        Processed in {processingTime}s
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className="gap-1.5 text-sm py-1.5 px-3">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      AI-Powered
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Label htmlFor="toggle-view" className="text-sm text-muted-foreground cursor-pointer">
+                      {showOriginal ? "Showing Original" : "Showing Result"}
+                    </Label>
+                    <Switch
+                      id="toggle-view"
+                      checked={showOriginal}
+                      onCheckedChange={setShowOriginal}
+                    />
+                    {showOriginal ? (
+                      <EyeOff className="w-4 h-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-primary" />
+                    )}
+                  </div>
+                </div>
+              )}
+
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Original Image */}
                 <div className="space-y-2">
@@ -253,23 +322,27 @@ const BackgroundRemover = () => {
                   </div>
                 </div>
 
-                {/* Result Image */}
+                {/* Result Image with Toggle */}
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-muted-foreground">Result</h3>
+                  <h3 className="text-sm font-medium text-muted-foreground">
+                    Result {showOriginal && resultUrl && "(Toggle to see)"}
+                  </h3>
                   <div
                     className="relative aspect-square rounded-xl overflow-hidden flex items-center justify-center"
                     style={{
-                      backgroundImage:
-                        "linear-gradient(45deg, hsl(var(--muted)) 25%, transparent 25%), linear-gradient(-45deg, hsl(var(--muted)) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, hsl(var(--muted)) 75%), linear-gradient(-45deg, transparent 75%, hsl(var(--muted)) 75%)",
+                      backgroundImage: showOriginal 
+                        ? "none"
+                        : "linear-gradient(45deg, hsl(var(--muted)) 25%, transparent 25%), linear-gradient(-45deg, hsl(var(--muted)) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, hsl(var(--muted)) 75%), linear-gradient(-45deg, transparent 75%, hsl(var(--muted)) 75%)",
                       backgroundSize: "20px 20px",
                       backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
+                      backgroundColor: showOriginal ? "hsl(var(--muted))" : undefined,
                     }}
                   >
                     {resultUrl ? (
                       <img
-                        src={resultUrl}
-                        alt="Result"
-                        className="max-w-full max-h-full object-contain"
+                        src={showOriginal ? preview! : resultUrl}
+                        alt={showOriginal ? "Original" : "Result"}
+                        className="max-w-full max-h-full object-contain transition-opacity duration-300"
                       />
                     ) : (
                       <div className="flex flex-col items-center gap-2 text-muted-foreground">
@@ -285,7 +358,11 @@ const BackgroundRemover = () => {
               {isProcessing && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Processing...</span>
+                    <span className="text-muted-foreground">
+                      {progress < 35 ? "Loading AI model..." : 
+                       progress < 50 ? "Preparing image..." :
+                       progress < 80 ? "Removing background..." : "Finalizing..."}
+                    </span>
                     <span className="font-medium">{progress}%</span>
                   </div>
                   <Progress value={progress} className="h-2" />
@@ -347,19 +424,7 @@ const BackgroundRemover = () => {
                   </>
                 )}
 
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setFile(null);
-                    setPreview(null);
-                    setResultBlob(null);
-                    setResultUrl(null);
-                    setProgress(0);
-                    setIsEditing(false);
-                    setRemovalResult(null);
-                    setCurrentMaskData(null);
-                  }}
-                >
+                <Button variant="outline" onClick={handleReset}>
                   Upload New Image
                 </Button>
               </div>
@@ -375,7 +440,7 @@ const BackgroundRemover = () => {
               <ul className="space-y-2 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">1.</span>
-                  Upload any image (JPG, PNG, or WebP)
+                  Upload any image (JPG, PNG, or WebP up to 10MB)
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">2.</span>
@@ -383,15 +448,19 @@ const BackgroundRemover = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">3.</span>
-                  Use the <strong>Edit Mask</strong> button to manually refine edges
+                  Use the <strong>Edit Mask</strong> button to manually refine edges with brush tools
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">4.</span>
+                  Toggle between original and result to compare
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">5.</span>
                   Download your image with transparent background in PNG, JPG, or WebP
                 </li>
               </ul>
               <p className="text-sm text-muted-foreground">
-                All processing happens in your browser. Your images are never uploaded to any server.
+                ✨ All processing happens in your browser. Your images are never uploaded to any server.
               </p>
             </div>
           )}
@@ -402,15 +471,18 @@ const BackgroundRemover = () => {
             howToUse={[
               "Upload your image by clicking the upload area or dragging and dropping.",
               "Click 'Remove Background' to let the AI process your image.",
-              "Use the 'Edit Mask' feature to refine edges if needed.",
+              "Use the toggle switch to compare original and result side by side.",
+              "Use the 'Edit Mask' feature to refine edges with erase/restore brush tools.",
               "Choose your output format (PNG, JPG, or WebP) and download."
             ]}
             features={[
               "AI-powered automatic subject detection and background removal.",
-              "Manual mask editing for precise edge refinement.",
+              "Manual mask editing with erase and restore brush tools.",
+              "Real-time original vs result comparison toggle.",
+              "Processing time display for performance tracking.",
               "Multiple output formats: PNG (transparent), JPG, and WebP.",
-              "Works with photos, product images, and portraits.",
-              "Real-time processing progress indicator.",
+              "Undo/redo support in mask editor with keyboard shortcuts.",
+              "Zoom and pan controls for precise editing.",
               "All processing happens locally in your browser for privacy."
             ]}
             safetyNote="Your images are processed entirely within your browser using on-device AI technology. No photos are uploaded to external servers, ensuring your images remain completely private. This browser-based approach also means faster processing without waiting for server responses."
@@ -421,7 +493,7 @@ const BackgroundRemover = () => {
               },
               {
                 question: "Can I edit the result if the AI misses some areas?",
-                answer: "Yes, use the 'Edit Mask' button after initial processing. You can paint to add or remove areas from the selection, giving you complete control over the final result."
+                answer: "Yes, use the 'Edit Mask' button after initial processing. You can use the Erase brush (E key) to remove areas or Restore brush (R key) to bring back areas. Adjust brush size with [ and ] keys."
               },
               {
                 question: "Which output format should I choose?",
@@ -429,7 +501,7 @@ const BackgroundRemover = () => {
               },
               {
                 question: "Why is processing taking a while?",
-                answer: "The AI model runs in your browser, which requires loading the model on first use. Subsequent images process faster. Processing time also depends on image size and your device's capabilities."
+                answer: "The AI model runs in your browser, which requires loading the model on first use (~25MB). Subsequent images process faster. Processing time depends on image size and your device's capabilities - you can see the exact time after processing completes."
               }
             ]}
           />

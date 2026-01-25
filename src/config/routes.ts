@@ -102,14 +102,14 @@ export const routes: RouteConfig[] = [
   })),
   
   // Social Media & AI Tools - High priority
-  { 
+{ 
     path: '/instagram-facebook-video-downloader', 
     priority: 0.95, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Instagram & Facebook Video Downloader – Reels, Stories & Videos | Mypdfs',
-    description: 'Download Instagram reels, stories and Facebook videos from public accounts. Free, fast, mobile-friendly and AdSense safe online tool.',
-    keywords: 'instagram video downloader, facebook video downloader, download instagram reels, download facebook videos, instagram story downloader, free video downloader, save instagram video',
+    title: 'Instagram, Facebook & YouTube Video Downloader – Free Online | Mypdfs',
+    description: 'Download Instagram reels, Facebook videos, and YouTube videos from public accounts. Free, fast, mobile-friendly with HD quality.',
+    keywords: 'instagram video downloader, facebook video downloader, youtube video downloader, download instagram reels, download youtube shorts, free video downloader',
     category: 'Social Media Tools'
   },
   { 

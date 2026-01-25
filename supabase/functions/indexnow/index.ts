@@ -8,6 +8,51 @@ const corsHeaders = {
 const INDEXNOW_KEY = "mypdfs-indexnow-2026-key";
 const SITE_HOST = "mypdfs.in";
 
+// Rate limiting configuration
+const RATE_LIMIT = 10; // Max requests per window
+const RATE_WINDOW_MS = 3600000; // 1 hour in milliseconds
+const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
+
+// Clean up old rate limit entries periodically
+function cleanupRateLimits() {
+  const now = Date.now();
+  for (const [key, value] of rateLimitMap.entries()) {
+    if (now - value.timestamp > RATE_WINDOW_MS) {
+      rateLimitMap.delete(key);
+    }
+  }
+}
+
+// Check rate limit for an IP
+function checkRateLimit(ip: string): boolean {
+  cleanupRateLimits();
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  
+  if (!entry || now - entry.timestamp > RATE_WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, timestamp: now });
+    return true;
+  }
+  
+  if (entry.count >= RATE_LIMIT) {
+    return false;
+  }
+  
+  entry.count++;
+  return true;
+}
+
+// Validate URL format
+function isValidUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    // Only allow URLs from our domain
+    return parsed.hostname === SITE_HOST || parsed.hostname === `www.${SITE_HOST}`;
+  } catch {
+    return false;
+  }
+}
+
 // All URLs to index
 const ALL_URLS = [
   "/", "/about", "/contact", "/privacy-policy", "/terms-and-conditions", "/blog",
@@ -36,32 +81,62 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Get client IP for rate limiting
+  const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
+                   req.headers.get('x-real-ip') || 
+                   'unknown';
+
+  // Apply rate limiting
+  if (!checkRateLimit(clientIp)) {
+    return new Response(
+      JSON.stringify({ error: "Rate limit exceeded. Maximum 10 requests per hour." }),
+      { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
   try {
     const { urls, submitAll } = await req.json();
     
-    const urlsToSubmit = submitAll 
-      ? ALL_URLS.map(path => `https://${SITE_HOST}${path}`)
-      : (urls || []);
+    let urlsToSubmit: string[];
+    
+    if (submitAll) {
+      urlsToSubmit = ALL_URLS.map(path => `https://${SITE_HOST}${path}`);
+    } else if (Array.isArray(urls)) {
+      // Validate and filter URLs - only allow our domain
+      urlsToSubmit = urls.filter((url: unknown) => {
+        if (typeof url !== 'string') return false;
+        return isValidUrl(url);
+      });
+      
+      if (urlsToSubmit.length !== urls.length) {
+        console.warn(`Filtered out ${urls.length - urlsToSubmit.length} invalid URLs`);
+      }
+    } else {
+      urlsToSubmit = [];
+    }
 
     if (urlsToSubmit.length === 0) {
       return new Response(
-        JSON.stringify({ error: "No URLs provided" }),
+        JSON.stringify({ error: "No valid URLs provided. URLs must be from mypdfs.in domain." }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // Limit to max 10,000 URLs per IndexNow spec
+    const limitedUrls = urlsToSubmit.slice(0, 10000);
 
     // Submit to IndexNow (Bing, Yandex, Seznam, Naver)
     const indexNowPayload = {
       host: SITE_HOST,
       key: INDEXNOW_KEY,
       keyLocation: `https://${SITE_HOST}/indexnow-key.txt`,
-      urlList: urlsToSubmit.slice(0, 10000) // Max 10,000 URLs per request
+      urlList: limitedUrls
     };
 
     const results = {
-      bing: null as any,
-      yandex: null as any,
-      urlsSubmitted: urlsToSubmit.length
+      bing: null as { status?: number; success?: boolean; error?: string } | null,
+      yandex: null as { status?: number; success?: boolean; error?: string } | null,
+      urlsSubmitted: limitedUrls.length
     };
 
     // Submit to Bing IndexNow
@@ -97,7 +172,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        message: `Submitted ${urlsToSubmit.length} URLs to IndexNow`,
+        message: `Submitted ${limitedUrls.length} URLs to IndexNow`,
         results 
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -105,8 +180,8 @@ serve(async (req) => {
 
   } catch (error: unknown) {
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: "Invalid request format" }),
+      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

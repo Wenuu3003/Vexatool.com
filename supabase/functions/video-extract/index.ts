@@ -42,7 +42,6 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Clean up old rate limit entries periodically
 setInterval(() => {
   const now = Date.now();
   for (const [ip, entry] of rateLimitMap.entries()) {
@@ -71,315 +70,327 @@ function isInstagramStory(url: string): boolean {
   return lowerUrl.includes('/stories/') || lowerUrl.includes('/story/');
 }
 
+// Instagram extraction using RapidAPI
 async function extractInstagram(url: string, apiKey: string): Promise<VideoResult> {
-  try {
-    // Using RapidAPI's Instagram downloader
-    const response = await fetch('https://instagram-scraper-api2.p.rapidapi.com/v1/post_info', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-rapidapi-host': 'instagram-scraper-api2.p.rapidapi.com',
-        'x-rapidapi-key': apiKey,
-      },
-      body: JSON.stringify({ code_or_id_or_url: url }),
-    });
-
-    if (!response.ok) {
-      console.error('Instagram API error:', response.status);
-      // Fallback: try alternative API
-      return await extractInstagramFallback(url, apiKey);
-    }
-
-    const data = await response.json();
-    console.log('Instagram API response:', JSON.stringify(data).substring(0, 500));
-
-    if (data.data) {
-      const post = data.data;
-      const videos: VideoResult['videos'] = [];
-
-      // Extract video URLs
-      if (post.video_url) {
-        videos.push({ quality: 'HD', url: post.video_url });
-      }
-      if (post.video_versions && Array.isArray(post.video_versions)) {
-        post.video_versions.forEach((v: any, i: number) => {
-          if (v.url && !videos.some(vid => vid.url === v.url)) {
-            videos.push({ quality: i === 0 ? 'HD' : 'SD', url: v.url });
-          }
-        });
-      }
-
-      // Handle carousel posts
-      if (post.carousel_media && Array.isArray(post.carousel_media)) {
-        post.carousel_media.forEach((item: any) => {
-          if (item.video_url) {
-            videos.push({ quality: 'HD', url: item.video_url });
-          }
-        });
-      }
-
-      return {
-        success: true,
-        platform: 'instagram',
-        title: post.caption?.text?.substring(0, 100) || 'Instagram Video',
-        thumbnail: post.thumbnail_url || post.display_url,
-        author: post.user?.username || 'Unknown',
-        videos: videos.length > 0 ? videos : undefined,
-      };
-    }
-
-    return await extractInstagramFallback(url, apiKey);
-  } catch (error) {
-    console.error('Instagram extraction error:', error);
-    return await extractInstagramFallback(url, apiKey);
-  }
-}
-
-async function extractInstagramFallback(url: string, apiKey: string): Promise<VideoResult> {
-  try {
-    // Alternative API
-    const response = await fetch(`https://social-media-video-downloader.p.rapidapi.com/smvd/get/instagram?url=${encodeURIComponent(url)}`, {
+  const apis = [
+    {
+      name: 'instagram-bulk-scraper-api',
+      url: 'https://instagram-bulk-scraper-api.p.rapidapi.com/media_download_by_shortcode',
+      host: 'instagram-bulk-scraper-api.p.rapidapi.com',
       method: 'GET',
-      headers: {
-        'x-rapidapi-host': 'social-media-video-downloader.p.rapidapi.com',
-        'x-rapidapi-key': apiKey,
+      getUrl: (inputUrl: string) => {
+        // Extract shortcode from URL
+        const match = inputUrl.match(/\/(p|reel|reels)\/([A-Za-z0-9_-]+)/);
+        const shortcode = match ? match[2] : '';
+        return `https://instagram-bulk-scraper-api.p.rapidapi.com/media_download_by_shortcode?shortcode=${shortcode}`;
       },
-    });
+      parseResponse: (data: any) => {
+        if (data.data?.main_media_hd || data.data?.video_url) {
+          return {
+            success: true,
+            platform: 'instagram',
+            title: 'Instagram Reel',
+            thumbnail: data.data?.thumbnail_url,
+            videos: [{
+              quality: 'HD',
+              url: data.data?.main_media_hd || data.data?.video_url,
+            }],
+          };
+        }
+        return null;
+      },
+    },
+    {
+      name: 'instagram-scraper-api3',
+      url: 'https://instagram-scraper-api3.p.rapidapi.com/post',
+      host: 'instagram-scraper-api3.p.rapidapi.com',
+      method: 'GET',
+      getUrl: (inputUrl: string) => `https://instagram-scraper-api3.p.rapidapi.com/post?url=${encodeURIComponent(inputUrl)}`,
+      parseResponse: (data: any) => {
+        const videos: VideoResult['videos'] = [];
+        if (data.video_url) {
+          videos.push({ quality: 'HD', url: data.video_url });
+        }
+        if (data.video_versions) {
+          data.video_versions.forEach((v: any, i: number) => {
+            if (v.url && !videos.some(vid => vid.url === v.url)) {
+              videos.push({ quality: i === 0 ? 'HD' : 'SD', url: v.url });
+            }
+          });
+        }
+        if (videos.length > 0) {
+          return {
+            success: true,
+            platform: 'instagram',
+            title: data.caption?.text?.substring(0, 50) || 'Instagram Video',
+            thumbnail: data.thumbnail_url || data.display_url,
+            author: data.user?.username,
+            videos,
+          };
+        }
+        return null;
+      },
+    },
+  ];
 
-    if (!response.ok) {
-      return {
-        success: false,
-        platform: 'instagram',
-        error: 'Unable to fetch this content. It may be from a private account.',
-      };
+  for (const api of apis) {
+    try {
+      console.log(`Trying Instagram API: ${api.name}`);
+      const response = await fetch(api.getUrl(url), {
+        method: api.method,
+        headers: {
+          'x-rapidapi-host': api.host,
+          'x-rapidapi-key': apiKey,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`${api.name} response:`, JSON.stringify(data).substring(0, 300));
+        const result = api.parseResponse(data);
+        if (result) return result;
+      } else {
+        console.log(`${api.name} failed with status:`, response.status);
+      }
+    } catch (error) {
+      console.error(`${api.name} error:`, error);
     }
-
-    const data = await response.json();
-    console.log('Instagram fallback response:', JSON.stringify(data).substring(0, 500));
-
-    if (data.links && data.links.length > 0) {
-      const videos = data.links
-        .filter((link: any) => link.link)
-        .map((link: any, i: number) => ({
-          quality: link.quality || (i === 0 ? 'HD' : 'SD'),
-          url: link.link,
-          size: link.size,
-        }));
-
-      return {
-        success: true,
-        platform: 'instagram',
-        title: data.title || 'Instagram Video',
-        thumbnail: data.picture,
-        duration: data.duration,
-        videos,
-      };
-    }
-
-    return {
-      success: false,
-      platform: 'instagram',
-      error: 'No downloadable content found. Ensure the post is public.',
-    };
-  } catch (error) {
-    console.error('Instagram fallback error:', error);
-    return {
-      success: false,
-      platform: 'instagram',
-      error: 'Failed to extract video. Please try again later.',
-    };
   }
+
+  return {
+    success: false,
+    platform: 'instagram',
+    error: 'Unable to fetch this content. It may be from a private account.',
+  };
 }
 
+// Facebook extraction using RapidAPI
 async function extractFacebook(url: string, apiKey: string): Promise<VideoResult> {
-  try {
-    const response = await fetch(`https://social-media-video-downloader.p.rapidapi.com/smvd/get/facebook?url=${encodeURIComponent(url)}`, {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-host': 'social-media-video-downloader.p.rapidapi.com',
-        'x-rapidapi-key': apiKey,
+  const apis = [
+    {
+      name: 'facebook-video-downloader3',
+      url: 'https://facebook-video-downloader3.p.rapidapi.com/download/',
+      host: 'facebook-video-downloader3.p.rapidapi.com',
+      getUrl: (inputUrl: string) => `https://facebook-video-downloader3.p.rapidapi.com/download/?url=${encodeURIComponent(inputUrl)}`,
+      parseResponse: (data: any) => {
+        const videos: VideoResult['videos'] = [];
+        if (data.hd) videos.push({ quality: 'HD', url: data.hd });
+        if (data.sd) videos.push({ quality: 'SD', url: data.sd });
+        if (data.url) videos.push({ quality: 'HD', url: data.url });
+        if (videos.length > 0) {
+          return {
+            success: true,
+            platform: 'facebook',
+            title: data.title || 'Facebook Video',
+            thumbnail: data.thumbnail,
+            videos,
+          };
+        }
+        return null;
       },
-    });
+    },
+    {
+      name: 'social-media-video-downloader',
+      url: 'https://social-media-video-downloader.p.rapidapi.com/smvd/get/facebook',
+      host: 'social-media-video-downloader.p.rapidapi.com',
+      getUrl: (inputUrl: string) => `https://social-media-video-downloader.p.rapidapi.com/smvd/get/facebook?url=${encodeURIComponent(inputUrl)}`,
+      parseResponse: (data: any) => {
+        if (data.links && data.links.length > 0) {
+          const videos = data.links
+            .filter((link: any) => link.link)
+            .map((link: any, i: number) => ({
+              quality: link.quality || (i === 0 ? 'HD' : 'SD'),
+              url: link.link,
+              size: link.size,
+            }));
+          if (videos.length > 0) {
+            return {
+              success: true,
+              platform: 'facebook',
+              title: data.title || 'Facebook Video',
+              thumbnail: data.picture,
+              duration: data.duration,
+              videos,
+            };
+          }
+        }
+        return null;
+      },
+    },
+  ];
 
-    if (!response.ok) {
-      console.error('Facebook API error:', response.status);
-      return {
-        success: false,
-        platform: 'facebook',
-        error: 'Unable to fetch this content. It may be from a private account.',
-      };
+  for (const api of apis) {
+    try {
+      console.log(`Trying Facebook API: ${api.name}`);
+      const response = await fetch(api.getUrl(url), {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-host': api.host,
+          'x-rapidapi-key': apiKey,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`${api.name} response:`, JSON.stringify(data).substring(0, 300));
+        const result = api.parseResponse(data);
+        if (result) return result;
+      } else {
+        console.log(`${api.name} failed with status:`, response.status);
+      }
+    } catch (error) {
+      console.error(`${api.name} error:`, error);
     }
-
-    const data = await response.json();
-    console.log('Facebook API response:', JSON.stringify(data).substring(0, 500));
-
-    if (data.links && data.links.length > 0) {
-      const videos = data.links
-        .filter((link: any) => link.link)
-        .map((link: any, i: number) => ({
-          quality: link.quality || (i === 0 ? 'HD' : 'SD'),
-          url: link.link,
-          size: link.size,
-        }));
-
-      return {
-        success: true,
-        platform: 'facebook',
-        title: data.title || 'Facebook Video',
-        thumbnail: data.picture,
-        duration: data.duration,
-        videos,
-      };
-    }
-
-    return {
-      success: false,
-      platform: 'facebook',
-      error: 'No downloadable content found. Ensure the post is public.',
-    };
-  } catch (error) {
-    console.error('Facebook extraction error:', error);
-    return {
-      success: false,
-      platform: 'facebook',
-      error: 'Failed to extract video. Please try again later.',
-    };
   }
+
+  return {
+    success: false,
+    platform: 'facebook',
+    error: 'Unable to fetch this content. It may be from a private account.',
+  };
 }
 
+// YouTube extraction using RapidAPI
 async function extractYouTube(url: string, apiKey: string): Promise<VideoResult> {
-  try {
-    // Extract video ID from YouTube URL
-    let videoId = '';
-    if (url.includes('youtu.be/')) {
-      videoId = url.split('youtu.be/')[1]?.split('?')[0] || '';
-    } else if (url.includes('youtube.com/watch')) {
-      const urlParams = new URL(url).searchParams;
-      videoId = urlParams.get('v') || '';
-    } else if (url.includes('youtube.com/shorts/')) {
-      videoId = url.split('shorts/')[1]?.split('?')[0] || '';
-    }
+  // Extract video ID
+  let videoId = '';
+  if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1]?.split('?')[0] || '';
+  } else if (url.includes('youtube.com/watch')) {
+    const urlParams = new URL(url).searchParams;
+    videoId = urlParams.get('v') || '';
+  } else if (url.includes('youtube.com/shorts/')) {
+    videoId = url.split('shorts/')[1]?.split('?')[0] || '';
+  }
 
-    if (!videoId) {
-      return {
-        success: false,
-        platform: 'youtube',
-        error: 'Invalid YouTube URL',
-      };
-    }
+  if (!videoId) {
+    return { success: false, platform: 'youtube', error: 'Invalid YouTube URL' };
+  }
 
-    // Using RapidAPI YouTube downloader
-    const response = await fetch(`https://youtube-media-downloader.p.rapidapi.com/v2/video/details?videoId=${videoId}`, {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-host': 'youtube-media-downloader.p.rapidapi.com',
-        'x-rapidapi-key': apiKey,
+  const apis = [
+    {
+      name: 'ytstream-download-youtube-videos',
+      getUrl: () => `https://ytstream-download-youtube-videos.p.rapidapi.com/dl?id=${videoId}`,
+      host: 'ytstream-download-youtube-videos.p.rapidapi.com',
+      parseResponse: (data: any) => {
+        const videos: VideoResult['videos'] = [];
+        if (data.formats) {
+          data.formats
+            .filter((f: any) => f.url && f.mimeType?.includes('video') && f.hasAudio !== false)
+            .slice(0, 4)
+            .forEach((f: any) => {
+              videos.push({
+                quality: f.qualityLabel || f.quality || 'SD',
+                url: f.url,
+                size: f.contentLength,
+              });
+            });
+        }
+        if (videos.length > 0) {
+          return {
+            success: true,
+            platform: 'youtube',
+            title: data.title || 'YouTube Video',
+            thumbnail: data.thumbnail?.[0]?.url || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            author: data.channelTitle,
+            duration: data.lengthSeconds ? `${Math.floor(data.lengthSeconds / 60)}:${(data.lengthSeconds % 60).toString().padStart(2, '0')}` : undefined,
+            videos,
+          };
+        }
+        return null;
       },
-    });
+    },
+    {
+      name: 'youtube-video-download-info',
+      getUrl: () => `https://youtube-video-download-info.p.rapidapi.com/dl?id=${videoId}`,
+      host: 'youtube-video-download-info.p.rapidapi.com',
+      parseResponse: (data: any) => {
+        const videos: VideoResult['videos'] = [];
+        if (data.link) {
+          Object.entries(data.link).forEach(([key, value]: [string, any]) => {
+            if (value && typeof value === 'object' && value[0]) {
+              videos.push({
+                quality: key,
+                url: value[0],
+              });
+            }
+          });
+        }
+        if (videos.length > 0) {
+          return {
+            success: true,
+            platform: 'youtube',
+            title: data.title || 'YouTube Video',
+            thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            duration: data.duration,
+            videos: videos.slice(0, 4),
+          };
+        }
+        return null;
+      },
+    },
+  ];
 
-    if (!response.ok) {
-      console.error('YouTube API error:', response.status);
-      return await extractYouTubeFallback(url, apiKey);
+  for (const api of apis) {
+    try {
+      console.log(`Trying YouTube API: ${api.name}`);
+      const response = await fetch(api.getUrl(), {
+        method: 'GET',
+        headers: {
+          'x-rapidapi-host': api.host,
+          'x-rapidapi-key': apiKey,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`${api.name} response:`, JSON.stringify(data).substring(0, 300));
+        const result = api.parseResponse(data);
+        if (result) return result;
+      } else {
+        console.log(`${api.name} failed with status:`, response.status);
+      }
+    } catch (error) {
+      console.error(`${api.name} error:`, error);
     }
+  }
 
-    const data = await response.json();
-    console.log('YouTube API response:', JSON.stringify(data).substring(0, 500));
-
-    if (data.status && data.videos?.items) {
-      const videos = data.videos.items
-        .filter((item: any) => item.url && item.hasAudio)
-        .slice(0, 4)
-        .map((item: any) => ({
-          quality: item.quality || 'SD',
-          url: item.url,
-          size: item.sizeText,
-        }));
-
+  // Fallback: Return video info with external link
+  try {
+    const metaResponse = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(url)}`);
+    if (metaResponse.ok) {
+      const metaData = await metaResponse.json();
       return {
         success: true,
         platform: 'youtube',
-        title: data.title || 'YouTube Video',
-        thumbnail: data.thumbnails?.[0]?.url,
-        duration: data.lengthText,
-        author: data.channel?.name,
-        videos,
+        title: metaData.title || 'YouTube Video',
+        author: metaData.author_name,
+        thumbnail: metaData.thumbnail_url || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+        videos: [{
+          quality: 'Download Page',
+          url: `https://www.y2mate.com/youtube/${videoId}`,
+        }],
       };
     }
-
-    return await extractYouTubeFallback(url, apiKey);
-  } catch (error) {
-    console.error('YouTube extraction error:', error);
-    return await extractYouTubeFallback(url, apiKey);
+  } catch (e) {
+    console.error('Fallback metadata fetch failed:', e);
   }
-}
 
-async function extractYouTubeFallback(url: string, apiKey: string): Promise<VideoResult> {
-  try {
-    const response = await fetch(`https://social-media-video-downloader.p.rapidapi.com/smvd/get/youtube?url=${encodeURIComponent(url)}`, {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-host': 'social-media-video-downloader.p.rapidapi.com',
-        'x-rapidapi-key': apiKey,
-      },
-    });
-
-    if (!response.ok) {
-      return {
-        success: false,
-        platform: 'youtube',
-        error: 'Unable to fetch this video.',
-      };
-    }
-
-    const data = await response.json();
-    console.log('YouTube fallback response:', JSON.stringify(data).substring(0, 500));
-
-    if (data.links && data.links.length > 0) {
-      const videos = data.links
-        .filter((link: any) => link.link && link.mimeType?.includes('video'))
-        .slice(0, 4)
-        .map((link: any, i: number) => ({
-          quality: link.quality || (i === 0 ? '720p' : '360p'),
-          url: link.link,
-          size: link.size,
-        }));
-
-      return {
-        success: true,
-        platform: 'youtube',
-        title: data.title || 'YouTube Video',
-        thumbnail: data.picture,
-        duration: data.duration,
-        videos,
-      };
-    }
-
-    return {
-      success: false,
-      platform: 'youtube',
-      error: 'No downloadable content found.',
-    };
-  } catch (error) {
-    console.error('YouTube fallback error:', error);
-    return {
-      success: false,
-      platform: 'youtube',
-      error: 'Failed to extract video. Please try again later.',
-    };
-  }
+  return {
+    success: false,
+    platform: 'youtube',
+    error: 'Unable to fetch this video.',
+  };
 }
 
 serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Get client IP for rate limiting
     const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 
-                     req.headers.get('cf-connecting-ip') || 
-                     'unknown';
+                     req.headers.get('cf-connecting-ip') || 'unknown';
     
     if (!checkRateLimit(clientIP)) {
       return new Response(
@@ -397,7 +408,6 @@ serve(async (req) => {
       );
     }
 
-    // Validate URL
     try {
       new URL(url);
     } catch {
@@ -407,7 +417,6 @@ serve(async (req) => {
       );
     }
 
-    // Check for Instagram Stories
     if (isInstagramStory(url)) {
       return new Response(
         JSON.stringify({ 
@@ -419,7 +428,6 @@ serve(async (req) => {
       );
     }
 
-    // Detect platform
     const platform = detectPlatform(url);
     if (!platform) {
       return new Response(
@@ -428,7 +436,6 @@ serve(async (req) => {
       );
     }
 
-    // Get API key
     const apiKey = Deno.env.get('RAPIDAPI_KEY');
     if (!apiKey) {
       console.error('RAPIDAPI_KEY not configured');

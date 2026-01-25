@@ -286,14 +286,15 @@ export const LoveInstagramStoryCard = forwardRef<HTMLDivElement, LoveInstagramSt
 
           {/* Message */}
           <div 
-            className="text-center px-8 py-5 rounded-2xl max-w-2xl mb-8"
+            className="text-center px-10 py-6 rounded-2xl max-w-2xl mb-8"
             style={{
               background: "rgba(255,255,255,0.1)",
               backdropFilter: "blur(10px)",
               border: "2px solid rgba(255,255,255,0.15)",
+              minHeight: "auto",
             }}
           >
-            <p className="text-2xl font-medium text-white leading-relaxed">{message}</p>
+            <p className="text-2xl font-medium text-white" style={{ lineHeight: "1.5", wordBreak: "break-word" }}>{message}</p>
           </div>
 
           {/* Footer */}

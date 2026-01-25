@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.india-postal]
 verify_jwt = false
+
+[functions.indexnow]
+verify_jwt = false

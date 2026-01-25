@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2, Star } from "lucide-react";
+import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2, Star, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confetti, useCelebrationSound } from "@/components/Confetti";
 import { LoveShareCard } from "./LoveShareCard";
+import { LoveInstagramStoryCard } from "./LoveInstagramStoryCard";
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
 import type { ZodiacCompatibilityResult } from "@/lib/zodiacCompatibility";
@@ -52,6 +53,8 @@ export function LoveResultDisplay({
   const playCelebrationSound = useCelebrationSound();
   const resultIdRef = useRef(`${name1}-${name2}-${result.percentage}`);
   const shareCardRef = useRef<HTMLDivElement>(null);
+  const instagramStoryRef = useRef<HTMLDivElement>(null);
+  const [isDownloadingStory, setIsDownloadingStory] = useState(false);
 
   // Reset celebration state when result changes
   useEffect(() => {
@@ -137,6 +140,71 @@ export function LoveResultDisplay({
       toast.error("Failed to download image. Please try again.");
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  // Download Instagram Story (1080x1920)
+  const handleDownloadInstagramStory = async () => {
+    if (!instagramStoryRef.current) {
+      toast.error("Unable to capture story. Tap & hold image to save.");
+      return;
+    }
+    
+    setIsDownloadingStory(true);
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      const element = instagramStoryRef.current;
+      
+      // Capture at 2x scale for high quality
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#1a0a1f',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        allowTaint: true,
+        width: 1080,
+        height: 1920,
+        windowWidth: 1080,
+        windowHeight: 1920,
+      });
+      
+      // Create final canvas at exact Instagram Story dimensions
+      const finalCanvas = document.createElement('canvas');
+      finalCanvas.width = 1080;
+      finalCanvas.height = 1920;
+      const ctx = finalCanvas.getContext('2d');
+      
+      if (!ctx) {
+        throw new Error('Canvas context not available');
+      }
+      
+      // Draw captured content scaled to fit
+      ctx.drawImage(canvas, 0, 0, 1080, 1920);
+      
+      finalCanvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `love-story-${name1}-${name2}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast.success("Instagram Story downloaded! 📸💕", {
+            description: "Perfect 9:16 format ready to share!"
+          });
+        }
+      }, 'image/png', 1.0);
+    } catch (error) {
+      console.error('Instagram Story download error:', error);
+      toast.error("Tap & hold image to save", {
+        description: "If download fails, try again or screenshot"
+      });
+    } finally {
+      setIsDownloadingStory(false);
     }
   };
 
@@ -288,6 +356,19 @@ export function LoveResultDisplay({
             )}
             {t.downloadCard || "Download Card"}
           </Button>
+          <Button 
+            variant="default" 
+            onClick={handleDownloadInstagramStory}
+            disabled={isDownloadingStory}
+            className="gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500"
+          >
+            {isDownloadingStory ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Instagram className="w-4 h-4" />
+            )}
+            📸 Instagram Story
+          </Button>
         </div>
         </div>
       </div>
@@ -296,6 +377,23 @@ export function LoveResultDisplay({
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
         <LoveShareCard
           ref={shareCardRef}
+          name1={name1}
+          name2={name2}
+          photo1={photo1}
+          photo2={photo2}
+          percentage={result.percentage}
+          nameMatchScore={result.nameMatchScore}
+          numerologyScore={result.numerologyScore}
+          zodiacResult={result.zodiacResult}
+          compatibilityLevel={result.compatibilityLevel}
+          message={result.message}
+        />
+      </div>
+
+      {/* Hidden Instagram Story Card for Download */}
+      <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
+        <LoveInstagramStoryCard
+          ref={instagramStoryRef}
           name1={name1}
           name2={name2}
           photo1={photo1}

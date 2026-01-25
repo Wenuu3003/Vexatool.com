@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2, Star, Instagram } from "lucide-react";
+import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2, Star, Instagram, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confetti, useCelebrationSound } from "@/components/Confetti";
 import { LoveShareCard } from "./LoveShareCard";
 import { LoveInstagramStoryCard } from "./LoveInstagramStoryCard";
+import { LoveWhatsAppCard } from "./LoveWhatsAppCard";
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
 import type { ZodiacCompatibilityResult } from "@/lib/zodiacCompatibility";
-
 export interface LoveResult {
   percentage: number;
   message: string;
@@ -54,8 +54,9 @@ export function LoveResultDisplay({
   const resultIdRef = useRef(`${name1}-${name2}-${result.percentage}`);
   const shareCardRef = useRef<HTMLDivElement>(null);
   const instagramStoryRef = useRef<HTMLDivElement>(null);
+  const whatsappCardRef = useRef<HTMLDivElement>(null);
   const [isDownloadingStory, setIsDownloadingStory] = useState(false);
-
+  const [isDownloadingWhatsApp, setIsDownloadingWhatsApp] = useState(false);
   // Reset celebration state when result changes
   useEffect(() => {
     const newResultId = `${name1}-${name2}-${result.percentage}`;
@@ -205,6 +206,68 @@ export function LoveResultDisplay({
       });
     } finally {
       setIsDownloadingStory(false);
+    }
+  };
+
+  // Download WhatsApp Status Card (1080x1080)
+  const handleDownloadWhatsApp = async () => {
+    if (!whatsappCardRef.current) {
+      toast.error("Unable to capture image. Tap & hold to save.");
+      return;
+    }
+    
+    setIsDownloadingWhatsApp(true);
+    
+    try {
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      const element = whatsappCardRef.current;
+      
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#ec4899',
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        allowTaint: true,
+        width: 1080,
+        height: 1080,
+        windowWidth: 1080,
+        windowHeight: 1080,
+      });
+      
+      const finalCanvas = document.createElement('canvas');
+      finalCanvas.width = 1080;
+      finalCanvas.height = 1080;
+      const ctx = finalCanvas.getContext('2d');
+      
+      if (!ctx) {
+        throw new Error('Canvas context not available');
+      }
+      
+      ctx.drawImage(canvas, 0, 0, 1080, 1080);
+      
+      finalCanvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `love-whatsapp-${name1}-${name2}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          toast.success("WhatsApp Status downloaded! 💚", {
+            description: "Perfect 1:1 square format ready to share!"
+          });
+        }
+      }, 'image/png', 1.0);
+    } catch (error) {
+      console.error('WhatsApp card download error:', error);
+      toast.error("Tap & hold image to save", {
+        description: "If download fails, try again or screenshot"
+      });
+    } finally {
+      setIsDownloadingWhatsApp(false);
     }
   };
 
@@ -369,6 +432,19 @@ export function LoveResultDisplay({
             )}
             📸 Instagram Story
           </Button>
+          <Button 
+            variant="default" 
+            onClick={handleDownloadWhatsApp}
+            disabled={isDownloadingWhatsApp}
+            className="gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+          >
+            {isDownloadingWhatsApp ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <MessageCircle className="w-4 h-4" />
+            )}
+            💚 WhatsApp Status
+          </Button>
         </div>
         </div>
       </div>
@@ -394,6 +470,23 @@ export function LoveResultDisplay({
       <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
         <LoveInstagramStoryCard
           ref={instagramStoryRef}
+          name1={name1}
+          name2={name2}
+          photo1={photo1}
+          photo2={photo2}
+          percentage={result.percentage}
+          nameMatchScore={result.nameMatchScore}
+          numerologyScore={result.numerologyScore}
+          zodiacResult={result.zodiacResult}
+          compatibilityLevel={result.compatibilityLevel}
+          message={result.message}
+        />
+      </div>
+
+      {/* Hidden WhatsApp Status Card for Download */}
+      <div className="fixed -left-[9999px] top-0 pointer-events-none" aria-hidden="true">
+        <LoveWhatsAppCard
+          ref={whatsappCardRef}
           name1={name1}
           name2={name2}
           photo1={photo1}

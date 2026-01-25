@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2, Star, Instagram, MessageCircle } from "lucide-react";
+import { Heart, RefreshCw, Copy, Sparkles, PartyPopper, Download, Loader2, Star, Instagram, MessageCircle, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Confetti, useCelebrationSound } from "@/components/Confetti";
 import { LoveShareCard } from "./LoveShareCard";
 import { LoveInstagramStoryCard } from "./LoveInstagramStoryCard";
 import { LoveWhatsAppCard } from "./LoveWhatsAppCard";
+import { shareOrDownloadImage, canShareFiles } from "@/lib/shareUtils";
 import html2canvas from "html2canvas";
 import { toast } from "sonner";
 import type { ZodiacCompatibilityResult } from "@/lib/zodiacCompatibility";
@@ -144,8 +145,8 @@ export function LoveResultDisplay({
     }
   };
 
-  // Download Instagram Story (1080x1920)
-  const handleDownloadInstagramStory = async () => {
+  // Share/Download Instagram Story (1080x1920)
+  const handleShareInstagramStory = async () => {
     if (!instagramStoryRef.current) {
       toast.error("Unable to capture story. Tap & hold image to save.");
       return;
@@ -154,63 +155,37 @@ export function LoveResultDisplay({
     setIsDownloadingStory(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
-      const element = instagramStoryRef.current;
-      
-      // Capture at 2x scale for high quality
-      const canvas = await html2canvas(element, {
-        backgroundColor: '#1a0a1f',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        width: 1080,
-        height: 1920,
-        windowWidth: 1080,
-        windowHeight: 1920,
-      });
-      
-      // Create final canvas at exact Instagram Story dimensions
-      const finalCanvas = document.createElement('canvas');
-      finalCanvas.width = 1080;
-      finalCanvas.height = 1920;
-      const ctx = finalCanvas.getContext('2d');
-      
-      if (!ctx) {
-        throw new Error('Canvas context not available');
-      }
-      
-      // Draw captured content scaled to fit
-      ctx.drawImage(canvas, 0, 0, 1080, 1920);
-      
-      finalCanvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `love-story-${name1}-${name2}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast.success("Instagram Story downloaded! 📸💕", {
-            description: "Perfect 9:16 format ready to share!"
-          });
+      const result = await shareOrDownloadImage(
+        instagramStoryRef.current,
+        {
+          backgroundColor: '#1a0a1f',
+          width: 1080,
+          height: 1920,
+        },
+        {
+          title: `Love Calculator: ${name1} ❤️ ${name2}`,
+          text: `${name1} & ${name2} got ${resultData.percentage}% love compatibility! 💕 Try yours at mypdfs.in/love-calculator`,
+          fileName: `love-story-${name1}-${name2}.png`,
         }
-      }, 'image/png', 1.0);
+      );
+      
+      if (result.shared) {
+        toast.success("Shared successfully! 📸💕");
+      } else if (result.downloaded) {
+        toast.success("Instagram Story downloaded! 📸💕", {
+          description: "Perfect 9:16 format ready to share!"
+        });
+      }
     } catch (error) {
-      console.error('Instagram Story download error:', error);
-      toast.error("Tap & hold image to save", {
-        description: "If download fails, try again or screenshot"
-      });
+      console.error('Instagram Story error:', error);
+      toast.error("Tap & hold image to save");
     } finally {
       setIsDownloadingStory(false);
     }
   };
 
-  // Download WhatsApp Status Card (1080x1080)
-  const handleDownloadWhatsApp = async () => {
+  // Share/Download WhatsApp Status Card (1080x1080)
+  const handleShareWhatsApp = async () => {
     if (!whatsappCardRef.current) {
       toast.error("Unable to capture image. Tap & hold to save.");
       return;
@@ -219,57 +194,37 @@ export function LoveResultDisplay({
     setIsDownloadingWhatsApp(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
-      const element = whatsappCardRef.current;
-      
-      const canvas = await html2canvas(element, {
-        backgroundColor: '#ec4899',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        width: 1080,
-        height: 1080,
-        windowWidth: 1080,
-        windowHeight: 1080,
-      });
-      
-      const finalCanvas = document.createElement('canvas');
-      finalCanvas.width = 1080;
-      finalCanvas.height = 1080;
-      const ctx = finalCanvas.getContext('2d');
-      
-      if (!ctx) {
-        throw new Error('Canvas context not available');
-      }
-      
-      ctx.drawImage(canvas, 0, 0, 1080, 1080);
-      
-      finalCanvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `love-whatsapp-${name1}-${name2}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast.success("WhatsApp Status downloaded! 💚", {
-            description: "Perfect 1:1 square format ready to share!"
-          });
+      const result = await shareOrDownloadImage(
+        whatsappCardRef.current,
+        {
+          backgroundColor: '#ec4899',
+          width: 1080,
+          height: 1080,
+        },
+        {
+          title: `Love Calculator: ${name1} ❤️ ${name2}`,
+          text: `${name1} & ${name2} got ${resultData.percentage}% love compatibility! 💚 Try yours at mypdfs.in/love-calculator`,
+          fileName: `love-whatsapp-${name1}-${name2}.png`,
         }
-      }, 'image/png', 1.0);
+      );
+      
+      if (result.shared) {
+        toast.success("Shared successfully! 💚");
+      } else if (result.downloaded) {
+        toast.success("WhatsApp Status downloaded! 💚", {
+          description: "Perfect 1:1 square format ready to share!"
+        });
+      }
     } catch (error) {
-      console.error('WhatsApp card download error:', error);
-      toast.error("Tap & hold image to save", {
-        description: "If download fails, try again or screenshot"
-      });
+      console.error('WhatsApp card error:', error);
+      toast.error("Tap & hold image to save");
     } finally {
       setIsDownloadingWhatsApp(false);
     }
   };
+
+  const supportsNativeShare = canShareFiles();
+  const resultData = result;
 
   const isHighCompatibility = result.percentage >= 90;
 
@@ -421,29 +376,33 @@ export function LoveResultDisplay({
           </Button>
           <Button 
             variant="default" 
-            onClick={handleDownloadInstagramStory}
+            onClick={handleShareInstagramStory}
             disabled={isDownloadingStory}
             className="gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500"
           >
             {isDownloadingStory ? (
               <Loader2 className="w-4 h-4 animate-spin" />
+            ) : supportsNativeShare ? (
+              <Share2 className="w-4 h-4" />
             ) : (
               <Instagram className="w-4 h-4" />
             )}
-            📸 Instagram Story
+            {supportsNativeShare ? "Share" : "📸"} Instagram
           </Button>
           <Button 
             variant="default" 
-            onClick={handleDownloadWhatsApp}
+            onClick={handleShareWhatsApp}
             disabled={isDownloadingWhatsApp}
             className="gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
           >
             {isDownloadingWhatsApp ? (
               <Loader2 className="w-4 h-4 animate-spin" />
+            ) : supportsNativeShare ? (
+              <Share2 className="w-4 h-4" />
             ) : (
               <MessageCircle className="w-4 h-4" />
             )}
-            💚 WhatsApp Status
+            {supportsNativeShare ? "Share" : "💚"} WhatsApp
           </Button>
         </div>
         </div>

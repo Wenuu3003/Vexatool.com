@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
-import { Cake, Clock, Calendar, Copy, Hash, Instagram, MessageCircle, Download, Loader2 } from "lucide-react";
+import { Cake, Clock, Calendar, Copy, Hash, Instagram, MessageCircle, Loader2, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { AgeInstagramStoryCard } from "./AgeInstagramStoryCard";
 import { AgeWhatsAppCard } from "./AgeWhatsAppCard";
-import html2canvas from "html2canvas";
+import { shareOrDownloadImage, canShareFiles } from "@/lib/shareUtils";
 import { toast } from "sonner";
 
 export interface AgeResult {
@@ -49,8 +49,10 @@ export function AgeResultDisplay({
   const instagramStoryRef = useRef<HTMLDivElement>(null);
   const whatsappCardRef = useRef<HTMLDivElement>(null);
 
-  // Download Instagram Story (1080x1920)
-  const handleDownloadInstagramStory = async () => {
+  const supportsNativeShare = canShareFiles();
+
+  // Share/Download Instagram Story (1080x1920)
+  const handleShareInstagramStory = async () => {
     if (!instagramStoryRef.current) {
       toast.error("Unable to capture story. Tap & hold to save.");
       return;
@@ -59,56 +61,37 @@ export function AgeResultDisplay({
     setIsDownloadingStory(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
-      const element = instagramStoryRef.current;
-      
-      const canvas = await html2canvas(element, {
-        backgroundColor: '#0a1628',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        width: 1080,
-        height: 1920,
-        windowWidth: 1080,
-        windowHeight: 1920,
-      });
-      
-      const finalCanvas = document.createElement('canvas');
-      finalCanvas.width = 1080;
-      finalCanvas.height = 1920;
-      const ctx = finalCanvas.getContext('2d');
-      
-      if (!ctx) throw new Error('Canvas context not available');
-      
-      ctx.drawImage(canvas, 0, 0, 1080, 1920);
-      
-      finalCanvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `age-story-${result.years}years.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast.success("Instagram Story downloaded! 📸🎂", {
-            description: "Perfect 9:16 format ready to share!"
-          });
+      const shareResult = await shareOrDownloadImage(
+        instagramStoryRef.current,
+        {
+          backgroundColor: '#0a1628',
+          width: 1080,
+          height: 1920,
+        },
+        {
+          title: `I'm ${result.years} years old! 🎂`,
+          text: `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 🎂 Check your age at mypdfs.in/love-calculator`,
+          fileName: `age-story-${result.years}years.png`,
         }
-      }, 'image/png', 1.0);
+      );
+      
+      if (shareResult.shared) {
+        toast.success("Shared successfully! 📸🎂");
+      } else if (shareResult.downloaded) {
+        toast.success("Instagram Story downloaded! 📸🎂", {
+          description: "Perfect 9:16 format ready to share!"
+        });
+      }
     } catch (error) {
-      console.error('Instagram Story download error:', error);
+      console.error('Instagram Story error:', error);
       toast.error("Tap & hold image to save");
     } finally {
       setIsDownloadingStory(false);
     }
   };
 
-  // Download WhatsApp Status (1080x1080)
-  const handleDownloadWhatsApp = async () => {
+  // Share/Download WhatsApp Status (1080x1080)
+  const handleShareWhatsApp = async () => {
     if (!whatsappCardRef.current) {
       toast.error("Unable to capture image. Tap & hold to save.");
       return;
@@ -117,48 +100,29 @@ export function AgeResultDisplay({
     setIsDownloadingWhatsApp(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 150));
-      
-      const element = whatsappCardRef.current;
-      
-      const canvas = await html2canvas(element, {
-        backgroundColor: '#3b82f6',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        allowTaint: true,
-        width: 1080,
-        height: 1080,
-        windowWidth: 1080,
-        windowHeight: 1080,
-      });
-      
-      const finalCanvas = document.createElement('canvas');
-      finalCanvas.width = 1080;
-      finalCanvas.height = 1080;
-      const ctx = finalCanvas.getContext('2d');
-      
-      if (!ctx) throw new Error('Canvas context not available');
-      
-      ctx.drawImage(canvas, 0, 0, 1080, 1080);
-      
-      finalCanvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `age-whatsapp-${result.years}years.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          toast.success("WhatsApp Status downloaded! 💚🎂", {
-            description: "Perfect 1:1 square format ready to share!"
-          });
+      const shareResult = await shareOrDownloadImage(
+        whatsappCardRef.current,
+        {
+          backgroundColor: '#3b82f6',
+          width: 1080,
+          height: 1080,
+        },
+        {
+          title: `I'm ${result.years} years old! 🎂`,
+          text: `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 💚 Check your age at mypdfs.in/love-calculator`,
+          fileName: `age-whatsapp-${result.years}years.png`,
         }
-      }, 'image/png', 1.0);
+      );
+      
+      if (shareResult.shared) {
+        toast.success("Shared successfully! 💚🎂");
+      } else if (shareResult.downloaded) {
+        toast.success("WhatsApp Status downloaded! 💚🎂", {
+          description: "Perfect 1:1 square format ready to share!"
+        });
+      }
     } catch (error) {
-      console.error('WhatsApp card download error:', error);
+      console.error('WhatsApp card error:', error);
       toast.error("Tap & hold image to save");
     } finally {
       setIsDownloadingWhatsApp(false);
@@ -250,29 +214,33 @@ export function AgeResultDisplay({
           </Button>
           <Button 
             variant="default" 
-            onClick={handleDownloadInstagramStory}
+            onClick={handleShareInstagramStory}
             disabled={isDownloadingStory}
             className="gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 hover:from-purple-600 hover:via-pink-600 hover:to-orange-500"
           >
             {isDownloadingStory ? (
               <Loader2 className="w-4 h-4 animate-spin" />
+            ) : supportsNativeShare ? (
+              <Share2 className="w-4 h-4" />
             ) : (
               <Instagram className="w-4 h-4" />
             )}
-            📸 Instagram
+            {supportsNativeShare ? "Share" : "📸"} Instagram
           </Button>
           <Button 
             variant="default" 
-            onClick={handleDownloadWhatsApp}
+            onClick={handleShareWhatsApp}
             disabled={isDownloadingWhatsApp}
             className="gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
           >
             {isDownloadingWhatsApp ? (
               <Loader2 className="w-4 h-4 animate-spin" />
+            ) : supportsNativeShare ? (
+              <Share2 className="w-4 h-4" />
             ) : (
               <MessageCircle className="w-4 h-4" />
             )}
-            💚 WhatsApp
+            {supportsNativeShare ? "Share" : "💚"} WhatsApp
           </Button>
         </div>
       </div>

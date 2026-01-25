@@ -71,20 +71,29 @@ export const removeBackground = async (
   imageElement: HTMLImageElement,
   onProgress?: (progress: number) => void,
 ): Promise<RemovalResult> => {
+  // Use stable progress updates with a reference to prevent flickering
+  let currentProgress = 0;
+  const updateProgress = (value: number) => {
+    // Only update if new value is greater (never go backwards)
+    if (value > currentProgress) {
+      currentProgress = value;
+      onProgress?.(value);
+    }
+  };
+
   try {
     console.log("Starting background removal process...");
-    onProgress?.(5);
+    updateProgress(5);
 
     // Use cached segmenter or create new one
     if (!cachedSegmenter) {
       console.log("Loading segmentation model...");
-      onProgress?.(10);
+      updateProgress(10);
       
       const hasWebGPU = await isWebGPUAvailable();
       console.log(`WebGPU available: ${hasWebGPU}`);
       
       // Use Xenova/modnet - a much faster and lighter model (~25MB vs ~170MB for RMBG)
-      // It's specifically optimized for portrait/human background removal
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       cachedSegmenter = await pipeline(
         "image-segmentation",
@@ -94,9 +103,9 @@ export const removeBackground = async (
           // Progress callback for model download
           progress_callback: (progress: { progress?: number; status?: string }) => {
             if (progress.progress !== undefined) {
-              // Map download progress to 10-35%
-              const downloadProgress = 10 + Math.round(progress.progress * 0.25);
-              onProgress?.(downloadProgress);
+              // Map download progress to 10-40% (smooth progression)
+              const downloadProgress = Math.round(10 + progress.progress * 0.30);
+              updateProgress(downloadProgress);
             }
           },
         }
@@ -104,7 +113,7 @@ export const removeBackground = async (
       console.log("Model loaded successfully");
     }
 
-    onProgress?.(40);
+    updateProgress(45);
 
     // Convert HTMLImageElement to canvas
     const canvas = document.createElement("canvas");
@@ -120,13 +129,24 @@ export const removeBackground = async (
     const imageData = canvas.toDataURL("image/png");
     console.log("Image converted to base64");
 
-    onProgress?.(50);
+    updateProgress(55);
 
     // Process the image with the segmentation model
     console.log("Processing with background removal model...");
+    
+    // Start a smooth progress animation during segmentation
+    let segmentationComplete = false;
+    const progressInterval = setInterval(() => {
+      if (!segmentationComplete && currentProgress < 75) {
+        updateProgress(currentProgress + 2);
+      }
+    }, 200);
+    
     const result = await cachedSegmenter(imageData);
+    segmentationComplete = true;
+    clearInterval(progressInterval);
 
-    onProgress?.(80);
+    updateProgress(85);
 
     console.log("Segmentation result:", result);
 
@@ -137,10 +157,12 @@ export const removeBackground = async (
     // ModNet returns a foreground mask where values near 1 = subject (keep), 0 = background (remove)
     const maskData = new Float32Array(result[0].mask.data);
 
+    updateProgress(92);
+
     // Create the result blob - ModNet uses foreground mask like RMBG
     const blob = await applyMaskToImage(canvas, maskData, true);
 
-    onProgress?.(100);
+    updateProgress(100);
 
     return {
       blob,
@@ -276,5 +298,65 @@ export const convertBlobToFormat = (
     };
     img.onerror = () => reject(new Error("Failed to load image for conversion"));
     img.src = URL.createObjectURL(blob);
+  });
+};
+
+// Apply a custom background (color or image) to a transparent image
+export const applyCustomBackground = async (
+  transparentBlob: Blob,
+  background: { type: 'color'; value: string } | { type: 'image'; value: string },
+  outputFormat: "png" | "jpeg" | "webp" = "png"
+): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = async () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      
+      if (!ctx) {
+        reject(new Error("Could not get canvas context"));
+        return;
+      }
+
+      // Apply background
+      if (background.type === 'color') {
+        ctx.fillStyle = background.value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        
+        canvas.toBlob(
+          (blob) => blob ? resolve(blob) : reject(new Error("Failed to create blob")),
+          `image/${outputFormat}`,
+          0.92
+        );
+      } else {
+        // Load background image
+        const bgImg = new Image();
+        bgImg.crossOrigin = "anonymous";
+        bgImg.onload = () => {
+          // Draw background image scaled to cover canvas
+          const scale = Math.max(canvas.width / bgImg.width, canvas.height / bgImg.height);
+          const bgWidth = bgImg.width * scale;
+          const bgHeight = bgImg.height * scale;
+          const bgX = (canvas.width - bgWidth) / 2;
+          const bgY = (canvas.height - bgHeight) / 2;
+          
+          ctx.drawImage(bgImg, bgX, bgY, bgWidth, bgHeight);
+          ctx.drawImage(img, 0, 0);
+          
+          canvas.toBlob(
+            (blob) => blob ? resolve(blob) : reject(new Error("Failed to create blob")),
+            `image/${outputFormat}`,
+            0.92
+          );
+        };
+        bgImg.onerror = () => reject(new Error("Failed to load background image"));
+        bgImg.src = background.value;
+      }
+    };
+    img.onerror = () => reject(new Error("Failed to load transparent image"));
+    img.src = URL.createObjectURL(transparentBlob);
   });
 };

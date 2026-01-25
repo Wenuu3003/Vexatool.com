@@ -5,13 +5,11 @@ import {
   MessageCircle,
   ScanLine,
   Youtube,
-  Heart,
-  Video
+  Heart
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const popularTools = [
-  { name: "Video Downloader", href: "/instagram-facebook-video-downloader", icon: Video },
   { name: "Love Calculator", href: "/love-calculator", icon: Heart },
   { name: "WhatsApp Analyzer", href: "/whatsapp-analyzer", icon: MessageCircle },
   { name: "QR Generator", href: "/qr-code-generator", icon: QrCode },

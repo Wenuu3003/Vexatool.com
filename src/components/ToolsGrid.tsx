@@ -420,7 +420,7 @@ export const ToolsGrid = () => {
           All Free Online Tools
         </h2>
         <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10">
-          Choose from our collection of 30+ free tools for PDF editing, QR codes, file conversion, and more.
+          Choose from our collection of 40+ free tools for PDF editing, QR codes, image editing, calculators, and more.
         </p>
         <div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"

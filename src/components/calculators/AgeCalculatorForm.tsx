@@ -1,4 +1,5 @@
-import { Calendar, Cake } from "lucide-react";
+import { useRef } from "react";
+import { Calendar, Cake, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,25 +8,55 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 interface AgeCalculatorFormProps {
   birthDate: string;
   targetDate: string;
+  photo: string | null;
   onBirthDateChange: (date: string) => void;
   onTargetDateChange: (date: string) => void;
+  onPhotoChange: (photo: string | null) => void;
   onCalculate: () => void;
   translations: {
     ageCalculator: string;
     dateOfBirth: string;
     calculateAge: string;
     calculateAgeOn: string;
+    uploadPhoto?: string;
+    optional?: string;
   };
 }
 
 export function AgeCalculatorForm({
   birthDate,
   targetDate,
+  photo,
   onBirthDateChange,
   onTargetDateChange,
+  onPhotoChange,
   onCalculate,
   translations: t,
 }: AgeCalculatorFormProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) return;
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      onPhotoChange(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removePhoto = () => {
+    onPhotoChange(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   return (
     <Card className="border-blue-200 dark:border-blue-900">
       <CardHeader className="text-center pb-4">
@@ -35,6 +66,46 @@ export function AgeCalculatorForm({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Photo Upload */}
+        <div className="flex items-center justify-center gap-4">
+          <div className="relative">
+            {photo ? (
+              <div className="relative w-20 h-20">
+                <img
+                  src={photo}
+                  alt="Your photo"
+                  className="w-20 h-20 rounded-full object-cover border-3 border-blue-300 shadow-lg"
+                />
+                <button
+                  type="button"
+                  onClick={removePhoto}
+                  className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 shadow-md"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-20 h-20 rounded-full border-2 border-dashed border-blue-300 flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+              >
+                <Camera className="w-8 h-8 text-blue-400" />
+              </button>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoUpload}
+              className="hidden"
+            />
+          </div>
+          <span className="text-sm text-muted-foreground">
+            {t.uploadPhoto || "Add Photo"} ({t.optional || "Optional"})
+          </span>
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="birthDate">{t.dateOfBirth} *</Label>

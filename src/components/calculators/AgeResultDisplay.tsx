@@ -22,6 +22,7 @@ export interface AgeResult {
 interface AgeResultDisplayProps {
   result: AgeResult;
   birthDate: string;
+  photo?: string | null;
   onShare: () => void;
   translations: {
     yourAge: string;
@@ -41,6 +42,7 @@ interface AgeResultDisplayProps {
 export function AgeResultDisplay({
   result,
   birthDate,
+  photo,
   onShare,
   translations: t,
 }: AgeResultDisplayProps) {
@@ -251,6 +253,7 @@ export function AgeResultDisplay({
           ref={instagramStoryRef}
           result={result}
           birthDate={birthDate}
+          photo={photo}
         />
       </div>
 
@@ -260,6 +263,7 @@ export function AgeResultDisplay({
           ref={whatsappCardRef}
           result={result}
           birthDate={birthDate}
+          photo={photo}
         />
       </div>
     </>

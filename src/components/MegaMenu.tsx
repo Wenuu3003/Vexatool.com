@@ -16,6 +16,7 @@ import {
   Sparkles,
   MessageSquare,
   SpellCheck,
+  Video,
   // Image Tools
   Image,
   Minimize2,
@@ -81,9 +82,10 @@ const categories: Category[] = [
     name: "AI Tools",
     icon: Bot,
     tools: [
+      { name: "Video Downloader", href: "/instagram-facebook-video-downloader", icon: Video, badge: "new" },
       { name: "AI Resume Builder", href: "/ai-resume-builder", icon: FileUser, badge: "popular" },
       { name: "AI Background Remover", href: "/background-remover", icon: ImageOff, badge: "popular" },
-      { name: "WhatsApp Analyzer", href: "/whatsapp-analyzer", icon: MessageCircle, badge: "new" },
+      { name: "WhatsApp Analyzer", href: "/whatsapp-analyzer", icon: MessageCircle },
       { name: "AI Text Generator", href: "/ai-text-generator", icon: Sparkles },
       { name: "AI Grammar Tool", href: "/ai-grammar-tool", icon: SpellCheck },
       { name: "AI Chat", href: "/ai-chat", icon: Bot },

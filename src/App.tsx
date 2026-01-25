@@ -86,6 +86,7 @@ const AIResumeBuilder = lazy(() => import("./pages/tools/AIResumeBuilder"));
 const HashtagGenerator = lazy(() => import("./pages/tools/HashtagGenerator"));
 const YouTubeGenerator = lazy(() => import("./pages/tools/YouTubeGenerator"));
 const WhatsAppAnalyzer = lazy(() => import("./pages/tools/WhatsAppAnalyzer"));
+const SocialVideoDownloader = lazy(() => import("./pages/tools/SocialVideoDownloader"));
 
 // Image Tools - additional
 const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
@@ -150,6 +151,7 @@ const App = () => (
               <Route path="/hashtag-generator" element={<HashtagGenerator />} />
               <Route path="/youtube-generator" element={<YouTubeGenerator />} />
               <Route path="/whatsapp-analyzer" element={<WhatsAppAnalyzer />} />
+              <Route path="/instagram-facebook-video-downloader" element={<SocialVideoDownloader />} />
               {/* Calculator Tools */}
               {/* 301 Redirect: Age Calculator merged into Love Calculator */}
               <Route path="/age-calculator" element={<Navigate to="/love-calculator" replace />} />

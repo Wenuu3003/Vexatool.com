@@ -40,11 +40,19 @@ import {
   AlignLeft,
   MapPin,
   MessageCircle,
+  Video,
 } from "lucide-react";
 import { ToolCard } from "./ToolCard";
 
 const tools = [
-  // AI Tools - Top Priority
+  // AI & Social Tools - Top Priority
+  {
+    title: "Video Downloader",
+    description: "Download Instagram Reels, Stories & Facebook Videos free. HD quality, no login required.",
+    icon: Video,
+    colorClass: "bg-gradient-to-br from-pink-500 via-purple-500 to-blue-500",
+    href: "/instagram-facebook-video-downloader",
+  },
   {
     title: "AI Text Generator",
     description: "Generate creative content, articles, and stories using AI. Perfect for writers and marketers.",

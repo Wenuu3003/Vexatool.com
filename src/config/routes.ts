@@ -101,7 +101,17 @@ export const routes: RouteConfig[] = [
     category: 'Blog'
   })),
   
-  // AI Tools - High priority
+  // Social Media & AI Tools - High priority
+  { 
+    path: '/instagram-facebook-video-downloader', 
+    priority: 0.95, 
+    changefreq: 'weekly', 
+    includeInSitemap: true,
+    title: 'Instagram & Facebook Video Downloader – Reels, Stories & Videos | Mypdfs',
+    description: 'Download Instagram reels, stories and Facebook videos from public accounts. Free, fast, mobile-friendly and AdSense safe online tool.',
+    keywords: 'instagram video downloader, facebook video downloader, download instagram reels, download facebook videos, instagram story downloader, free video downloader, save instagram video',
+    category: 'Social Media Tools'
+  },
   { 
     path: '/ai-chat', 
     priority: 0.9, 
@@ -660,17 +670,19 @@ export const BASE_URL = 'https://mypdfs.in';
 // Tool update dates for accurate lastmod (format: YYYY-MM-DD)
 // Update these when significant changes are made to specific tools
 export const toolUpdateDates: Record<string, string> = {
-  '/': '2026-01-23',
-  '/blog': '2026-01-23',
-  '/edit-pdf': '2026-01-23', // Major update: Professional PDF Editor
-  '/watermark-pdf': '2026-01-23', // Added image/logo watermarks
+  '/': '2026-01-25',
+  '/blog': '2026-01-25',
+  '/instagram-facebook-video-downloader': '2026-01-25', // New tool added
+  '/love-calculator': '2026-01-25', // Updated with photo + name
+  '/edit-pdf': '2026-01-23',
+  '/watermark-pdf': '2026-01-23',
   '/sign-pdf': '2026-01-23', 
-  '/whatsapp-analyzer': '2026-01-23', // Fixed share/download
+  '/whatsapp-analyzer': '2026-01-23',
   '/merge-pdf': '2026-01-23',
   '/split-pdf': '2026-01-23',
   '/compress-pdf': '2026-01-23',
-  '/pdf-to-excel': '2026-01-23', // Added batch processing
-  '/excel-to-pdf': '2026-01-23', // Added batch processing
+  '/pdf-to-excel': '2026-01-23',
+  '/excel-to-pdf': '2026-01-23',
   '/ai-resume-builder': '2026-01-23',
   '/ai-chat': '2026-01-20',
   '/ai-text-generator': '2026-01-20',

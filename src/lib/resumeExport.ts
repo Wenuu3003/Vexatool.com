@@ -27,31 +27,102 @@ interface ResumeData {
   certifications: string;
   projects: string;
   languages: string;
+  profileImage?: string | null;
 }
 
 export const exportToPDF = async (elementId: string, filename: string): Promise<void> => {
   const element = document.getElementById(elementId);
   if (!element) throw new Error("Resume preview element not found");
 
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    useCORS: true,
-    logging: false,
-    backgroundColor: "#ffffff",
-  });
+  // Store original styles
+  const originalWidth = element.style.width;
+  const originalTransform = element.style.transform;
+  const originalPosition = element.style.position;
+  
+  // Set fixed width for consistent rendering (A4 width in pixels at 96dpi = 794px)
+  const A4_WIDTH_PX = 794;
+  const A4_HEIGHT_PX = 1123;
+  
+  // Prepare element for capture
+  element.style.width = `${A4_WIDTH_PX}px`;
+  element.style.transform = 'none';
+  element.style.position = 'relative';
 
-  const imgWidth = 210; // A4 width in mm
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  // Wait for fonts and layout to settle
+  await document.fonts.ready;
+  await new Promise(resolve => setTimeout(resolve, 100));
 
-  const pdf = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
+  try {
+    const canvas = await html2canvas(element, {
+      scale: 3, // Higher scale for better quality
+      useCORS: true,
+      logging: false,
+      backgroundColor: "#ffffff",
+      width: A4_WIDTH_PX,
+      windowWidth: A4_WIDTH_PX,
+      onclone: (clonedDoc) => {
+        const clonedElement = clonedDoc.getElementById(elementId);
+        if (clonedElement) {
+          // Force fixed dimensions on cloned element
+          clonedElement.style.width = `${A4_WIDTH_PX}px`;
+          clonedElement.style.maxWidth = `${A4_WIDTH_PX}px`;
+          clonedElement.style.minWidth = `${A4_WIDTH_PX}px`;
+          clonedElement.style.transform = 'none';
+          clonedElement.style.position = 'relative';
+          clonedElement.style.overflow = 'visible';
+          
+          // Fix any flex issues
+          const allElements = clonedElement.querySelectorAll('*');
+          allElements.forEach((el) => {
+            const htmlEl = el as HTMLElement;
+            const computed = window.getComputedStyle(htmlEl);
+            if (computed.display === 'flex') {
+              htmlEl.style.flexWrap = 'wrap';
+            }
+          });
+        }
+      }
+    });
 
-  const imgData = canvas.toDataURL("image/png");
-  pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-  pdf.save(`${filename}.pdf`);
+    const imgWidth = 210; // A4 width in mm
+    const pageHeight = 297; // A4 height in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: true,
+    });
+
+    const imgData = canvas.toDataURL("image/jpeg", 0.95);
+
+    // Handle multi-page if content is longer than one page
+    let heightLeft = imgHeight;
+    let position = 0;
+    let pageCount = 0;
+
+    while (heightLeft > 0) {
+      if (pageCount > 0) {
+        pdf.addPage();
+      }
+      
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      position -= pageHeight;
+      pageCount++;
+      
+      // Safety limit
+      if (pageCount > 10) break;
+    }
+
+    pdf.save(`${filename}.pdf`);
+  } finally {
+    // Restore original styles
+    element.style.width = originalWidth;
+    element.style.transform = originalTransform;
+    element.style.position = originalPosition;
+  }
 };
 
 export const exportToWord = async (data: ResumeData, filename: string): Promise<void> => {

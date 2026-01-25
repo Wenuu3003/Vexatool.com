@@ -62,33 +62,30 @@ serve(async (req) => {
   }
 
   try {
-    // Server-side authentication verification
+    // Optional authentication - log user if authenticated, allow anonymous access
+    let userId = "anonymous";
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: "Authentication required. Please log in to use AI Chat." }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    
+    if (authHeader && authHeader !== `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`) {
+      try {
+        const supabaseClient = createClient(
+          Deno.env.get('SUPABASE_URL') ?? '',
+          Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+          { global: { headers: { Authorization: authHeader } } }
+        );
+
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (user) {
+          userId = user.id;
+        }
+      } catch (authErr) {
+        // Authentication failed but we allow anonymous access
+        console.log("Auth check skipped for anonymous request");
+      }
     }
 
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    );
+    console.log(`AI Chat request from: ${userId}`);
 
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-    if (authError || !user) {
-      console.error("Authentication failed:", authError?.message);
-      return new Response(
-        JSON.stringify({ error: "Invalid authentication. Please log in again." }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    console.log(`AI Chat request from user: ${user.id}`);
-
-    // Parse and validate request body
     // Parse and validate request body
     let body: { messages?: unknown; systemPrompt?: string };
     try {
@@ -138,7 +135,7 @@ If asked about using tools on the website, guide them to the appropriate tool.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         messages: [
           { 
             role: "system", 
@@ -175,7 +172,7 @@ If asked about using tools on the website, guide them to the appropriate tool.`;
     const data = await response.json();
     const assistantResponse = data.choices?.[0]?.message?.content || "I couldn't generate a response.";
 
-    console.log("AI response generated successfully");
+    console.log("AI response generated successfully for:", userId);
 
     return new Response(
       JSON.stringify({ response: assistantResponse }),

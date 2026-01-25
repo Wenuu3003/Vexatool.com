@@ -514,6 +514,7 @@ export default function LoveCalculator() {
               {ageResult && (
                 <AgeResultDisplay
                   result={ageResult}
+                  birthDate={birthDate}
                   onShare={handleShareAge}
                   translations={{
                     yourAge: t.yourAge,

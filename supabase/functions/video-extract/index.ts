@@ -70,6 +70,112 @@ function isInstagramStory(url: string): boolean {
   return lowerUrl.includes('/stories/') || lowerUrl.includes('/story/');
 }
 
+// FastSaver API - reliable multi-platform downloader with free tier
+async function extractWithFastSaver(url: string, platform: string, apiKey: string): Promise<VideoResult | null> {
+  try {
+    console.log(`Trying FastSaver API for ${platform}`);
+    const response = await fetch('https://fastsaverapi.p.rapidapi.com/api/v1/download', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-rapidapi-host': 'fastsaverapi.p.rapidapi.com',
+        'x-rapidapi-key': apiKey,
+      },
+      body: JSON.stringify({ url }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`FastSaver response:`, JSON.stringify(data).substring(0, 500));
+      
+      const videos: VideoResult['videos'] = [];
+      
+      if (data.result && Array.isArray(data.result)) {
+        data.result.forEach((item: any) => {
+          if (item.url) {
+            videos.push({
+              quality: item.quality || item.type || 'HD',
+              url: item.url,
+              size: item.size,
+            });
+          }
+        });
+      }
+      
+      if (data.url) {
+        videos.push({ quality: 'HD', url: data.url });
+      }
+      
+      if (videos.length > 0) {
+        return {
+          success: true,
+          platform,
+          title: data.title || `${platform.charAt(0).toUpperCase() + platform.slice(1)} Video`,
+          thumbnail: data.thumbnail || data.thumb,
+          duration: data.duration,
+          author: data.author,
+          videos: videos.slice(0, 4),
+        };
+      }
+    } else {
+      console.log(`FastSaver failed with status:`, response.status);
+    }
+  } catch (error) {
+    console.error('FastSaver error:', error);
+  }
+  return null;
+}
+
+// Social Download API - multi-platform downloader
+async function extractWithSocialDownload(url: string, platform: string, apiKey: string): Promise<VideoResult | null> {
+  try {
+    console.log(`Trying Social Download API for ${platform}`);
+    const response = await fetch(`https://social-download-all-in-one.p.rapidapi.com/v1/social/autolink?url=${encodeURIComponent(url)}`, {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-host': 'social-download-all-in-one.p.rapidapi.com',
+        'x-rapidapi-key': apiKey,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`Social Download response:`, JSON.stringify(data).substring(0, 500));
+      
+      const videos: VideoResult['videos'] = [];
+      
+      if (data.medias && Array.isArray(data.medias)) {
+        data.medias.forEach((media: any) => {
+          if (media.url && (media.type === 'video' || media.extension === 'mp4')) {
+            videos.push({
+              quality: media.quality || 'HD',
+              url: media.url,
+              size: media.formattedSize,
+            });
+          }
+        });
+      }
+      
+      if (videos.length > 0) {
+        return {
+          success: true,
+          platform,
+          title: data.title || `${platform.charAt(0).toUpperCase() + platform.slice(1)} Video`,
+          thumbnail: data.thumbnail,
+          duration: data.duration,
+          author: data.author,
+          videos: videos.slice(0, 4),
+        };
+      }
+    } else {
+      console.log(`Social Download failed with status:`, response.status);
+    }
+  } catch (error) {
+    console.error('Social Download error:', error);
+  }
+  return null;
+}
+
 // All-in-one social media downloader API (supports multiple platforms)
 async function extractWithAllInOne(url: string, platform: string, apiKey: string): Promise<VideoResult | null> {
   try {
@@ -195,8 +301,16 @@ async function extractWithSaveFrom(url: string, platform: string, apiKey: string
 
 // Instagram extraction using RapidAPI
 async function extractInstagram(url: string, apiKey: string): Promise<VideoResult> {
-  // Try all-in-one first
-  let result = await extractWithAllInOne(url, 'instagram', apiKey);
+  // Try FastSaver first (most reliable with free tier)
+  let result = await extractWithFastSaver(url, 'instagram', apiKey);
+  if (result) return result;
+  
+  // Try Social Download API
+  result = await extractWithSocialDownload(url, 'instagram', apiKey);
+  if (result) return result;
+  
+  // Try all-in-one
+  result = await extractWithAllInOne(url, 'instagram', apiKey);
   if (result) return result;
   
   // Try savefrom
@@ -323,8 +437,16 @@ async function extractInstagram(url: string, apiKey: string): Promise<VideoResul
 
 // Facebook extraction using RapidAPI
 async function extractFacebook(url: string, apiKey: string): Promise<VideoResult> {
-  // Try all-in-one first
-  let result = await extractWithAllInOne(url, 'facebook', apiKey);
+  // Try FastSaver first (most reliable with free tier)
+  let result = await extractWithFastSaver(url, 'facebook', apiKey);
+  if (result) return result;
+  
+  // Try Social Download API
+  result = await extractWithSocialDownload(url, 'facebook', apiKey);
+  if (result) return result;
+  
+  // Try all-in-one
+  result = await extractWithAllInOne(url, 'facebook', apiKey);
   if (result) return result;
   
   // Try savefrom

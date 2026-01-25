@@ -1,11 +1,12 @@
 import { useState, useCallback, useRef } from "react";
-import { Eraser, Upload, Download, Loader2, ImageIcon, Edit2, Eye, EyeOff, Clock, Sparkles } from "lucide-react";
+import { Eraser, Upload, Download, Loader2, ImageIcon, Edit2, Eye, EyeOff, Clock, Sparkles, Palette, Image as ImageIconLucide } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -13,12 +14,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { toast } from "sonner";
 import { 
   removeBackground, 
   loadImage, 
   convertBlobToFormat, 
   applyEditedMask,
+  applyCustomBackground,
   type RemovalResult 
 } from "@/lib/backgroundRemoval";
 import { MaskEditor } from "@/components/MaskEditor";
@@ -26,6 +33,12 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { CanonicalHead } from "@/components/CanonicalHead";
 
 type OutputFormat = "png" | "jpeg" | "webp";
+
+const PRESET_COLORS = [
+  "#FFFFFF", "#000000", "#EF4444", "#F97316", "#EAB308", 
+  "#22C55E", "#06B6D4", "#3B82F6", "#8B5CF6", "#EC4899",
+  "#F472B6", "#A855F7", "#6366F1", "#14B8A6", "#84CC16"
+];
 
 const BackgroundRemover = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -49,6 +62,14 @@ const BackgroundRemover = () => {
   const [removalResult, setRemovalResult] = useState<RemovalResult | null>(null);
   const [currentMaskData, setCurrentMaskData] = useState<Float32Array | null>(null);
 
+  // Original transparent blob (before background applied)
+  const [originalTransparentBlob, setOriginalTransparentBlob] = useState<Blob | null>(null);
+
+  // Custom background state
+  const [backgroundColor, setBackgroundColor] = useState<string>("");
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [isApplyingBackground, setIsApplyingBackground] = useState(false);
+
   const handleFileSelect = useCallback((selectedFile: File) => {
     if (!selectedFile.type.startsWith("image/")) {
       toast.error("Please select an image file");
@@ -65,12 +86,15 @@ const BackgroundRemover = () => {
     setPreview(URL.createObjectURL(selectedFile));
     setResultBlob(null);
     setResultUrl(null);
+    setOriginalTransparentBlob(null);
     setProgress(0);
     setIsEditing(false);
     setRemovalResult(null);
     setCurrentMaskData(null);
     setProcessingTime(null);
     setShowOriginal(false);
+    setBackgroundColor("");
+    setBackgroundImage(null);
   }, []);
 
   const handleDrop = useCallback(
@@ -114,6 +138,7 @@ const BackgroundRemover = () => {
       setRemovalResult(result);
       setCurrentMaskData(new Float32Array(result.maskData));
       setResultBlob(result.blob);
+      setOriginalTransparentBlob(result.blob);
       setResultUrl(URL.createObjectURL(result.blob));
       toast.success("Background removed successfully!");
     } catch (error) {
@@ -144,13 +169,90 @@ const BackgroundRemover = () => {
         removalResult.height
       );
       setResultBlob(newBlob);
+      setOriginalTransparentBlob(newBlob);
       setResultUrl(URL.createObjectURL(newBlob));
+      setBackgroundColor("");
+      setBackgroundImage(null);
       setIsEditing(false);
       toast.success("Edits applied successfully!");
     } catch (error) {
       console.error("Error applying edits:", error);
       toast.error("Failed to apply edits");
     }
+  };
+
+  // Apply custom background color
+  const handleApplyBackgroundColor = async (color: string) => {
+    if (!originalTransparentBlob) return;
+    
+    setIsApplyingBackground(true);
+    setBackgroundColor(color);
+    setBackgroundImage(null);
+    
+    try {
+      const newBlob = await applyCustomBackground(
+        originalTransparentBlob,
+        { type: 'color', value: color },
+        outputFormat
+      );
+      setResultBlob(newBlob);
+      setResultUrl(URL.createObjectURL(newBlob));
+      toast.success("Background color applied!");
+    } catch (error) {
+      console.error("Error applying background color:", error);
+      toast.error("Failed to apply background color");
+    } finally {
+      setIsApplyingBackground(false);
+    }
+  };
+
+  // Apply custom background image
+  const handleApplyBackgroundImage = async (imageUrl: string) => {
+    if (!originalTransparentBlob) return;
+    
+    setIsApplyingBackground(true);
+    setBackgroundImage(imageUrl);
+    setBackgroundColor("");
+    
+    try {
+      const newBlob = await applyCustomBackground(
+        originalTransparentBlob,
+        { type: 'image', value: imageUrl },
+        outputFormat
+      );
+      setResultBlob(newBlob);
+      setResultUrl(URL.createObjectURL(newBlob));
+      toast.success("Background image applied!");
+    } catch (error) {
+      console.error("Error applying background image:", error);
+      toast.error("Failed to apply background image");
+    } finally {
+      setIsApplyingBackground(false);
+    }
+  };
+
+  // Remove custom background (restore transparent)
+  const handleRemoveCustomBackground = () => {
+    if (!originalTransparentBlob) return;
+    setBackgroundColor("");
+    setBackgroundImage(null);
+    setResultBlob(originalTransparentBlob);
+    setResultUrl(URL.createObjectURL(originalTransparentBlob));
+    toast.success("Transparent background restored");
+  };
+
+  // Handle background image upload
+  const handleBackgroundImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const bgFile = e.target.files?.[0];
+    if (!bgFile) return;
+    
+    if (!bgFile.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    
+    const imageUrl = URL.createObjectURL(bgFile);
+    handleApplyBackgroundImage(imageUrl);
   };
 
   const handleCancelEditing = () => {
@@ -167,7 +269,7 @@ const BackgroundRemover = () => {
     try {
       let downloadBlob = resultBlob;
 
-      if (outputFormat !== "png") {
+      if (outputFormat !== "png" && !backgroundColor && !backgroundImage) {
         downloadBlob = await convertBlobToFormat(resultBlob, outputFormat);
       }
 
@@ -175,7 +277,8 @@ const BackgroundRemover = () => {
       const a = document.createElement("a");
       a.href = url;
       const baseName = file?.name.replace(/\.[^/.]+$/, "") || "image";
-      a.download = `${baseName}-no-bg.${outputFormat}`;
+      const bgSuffix = backgroundColor || backgroundImage ? "-with-bg" : "-no-bg";
+      a.download = `${baseName}${bgSuffix}.${outputFormat}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -193,12 +296,15 @@ const BackgroundRemover = () => {
     setPreview(null);
     setResultBlob(null);
     setResultUrl(null);
+    setOriginalTransparentBlob(null);
     setProgress(0);
     setIsEditing(false);
     setRemovalResult(null);
     setCurrentMaskData(null);
     setProcessingTime(null);
     setShowOriginal(false);
+    setBackgroundColor("");
+    setBackgroundImage(null);
   };
 
   return (
@@ -403,6 +509,103 @@ const BackgroundRemover = () => {
                       Edit Mask
                     </Button>
 
+                    {/* Custom Background Popover */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="gap-2"
+                          disabled={isApplyingBackground}
+                        >
+                          {isApplyingBackground ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Palette className="w-4 h-4" />
+                          )}
+                          Add Background
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-72" align="start">
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-medium text-sm mb-2">Solid Colors</h4>
+                            <div className="grid grid-cols-5 gap-2">
+                              {PRESET_COLORS.map((color) => (
+                                <button
+                                  key={color}
+                                  className={`w-8 h-8 rounded-md border-2 transition-all hover:scale-110 ${
+                                    backgroundColor === color ? "border-primary ring-2 ring-primary/50" : "border-border"
+                                  }`}
+                                  style={{ backgroundColor: color }}
+                                  onClick={() => handleApplyBackgroundColor(color)}
+                                  title={color}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h4 className="font-medium text-sm mb-2">Custom Color</h4>
+                            <div className="flex gap-2">
+                              <Input
+                                type="color"
+                                className="w-12 h-10 p-1 cursor-pointer"
+                                onChange={(e) => handleApplyBackgroundColor(e.target.value)}
+                              />
+                              <Input
+                                type="text"
+                                placeholder="#FFFFFF"
+                                className="flex-1"
+                                value={backgroundColor}
+                                onChange={(e) => {
+                                  if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+                                    handleApplyBackgroundColor(e.target.value);
+                                  }
+                                }}
+                              />
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <h4 className="font-medium text-sm mb-2">Background Image</h4>
+                            <div className="flex gap-2">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleBackgroundImageUpload}
+                                className="hidden"
+                                id="bg-image-input"
+                              />
+                              <label
+                                htmlFor="bg-image-input"
+                                className="flex-1 cursor-pointer"
+                              >
+                                <Button variant="outline" className="w-full gap-2" asChild>
+                                  <span>
+                                    <ImageIconLucide className="w-4 h-4" />
+                                    Upload Image
+                                  </span>
+                                </Button>
+                              </label>
+                            </div>
+                          </div>
+                          
+                          {(backgroundColor || backgroundImage) && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="w-full text-destructive hover:text-destructive"
+                              onClick={handleRemoveCustomBackground}
+                            >
+                              <Eraser className="w-4 h-4 mr-2" />
+                              Remove Background (Transparent)
+                            </Button>
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+
                     <Select
                       value={outputFormat}
                       onValueChange={(v) => setOutputFormat(v as OutputFormat)}
@@ -428,6 +631,23 @@ const BackgroundRemover = () => {
                   Upload New Image
                 </Button>
               </div>
+
+              {/* Background indicator */}
+              {resultUrl && (backgroundColor || backgroundImage) && (
+                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
+                  <Palette className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-muted-foreground">
+                    Custom background applied
+                    {backgroundColor && (
+                      <span
+                        className="inline-block w-4 h-4 rounded-full ml-2 border border-border align-middle"
+                        style={{ backgroundColor }}
+                      />
+                    )}
+                    {backgroundImage && " (image)"}
+                  </span>
+                </div>
+              )}
             </div>
           )}
 
@@ -448,15 +668,19 @@ const BackgroundRemover = () => {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">3.</span>
-                  Use the <strong>Edit Mask</strong> button to manually refine edges with brush tools
+                  Use <strong>Add Background</strong> to replace with solid colors or custom images
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">4.</span>
-                  Toggle between original and result to compare
+                  Use <strong>Edit Mask</strong> to manually refine edges with brush tools
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary font-bold">5.</span>
-                  Download your image with transparent background in PNG, JPG, or WebP
+                  Toggle between original and result to compare
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary font-bold">6.</span>
+                  Download your image in PNG, JPG, or WebP format
                 </li>
               </ul>
               <p className="text-sm text-muted-foreground">
@@ -471,12 +695,15 @@ const BackgroundRemover = () => {
             howToUse={[
               "Upload your image by clicking the upload area or dragging and dropping.",
               "Click 'Remove Background' to let the AI process your image.",
+              "Use 'Add Background' to replace with solid colors or upload a custom image.",
               "Use the toggle switch to compare original and result side by side.",
               "Use the 'Edit Mask' feature to refine edges with erase/restore brush tools.",
               "Choose your output format (PNG, JPG, or WebP) and download."
             ]}
             features={[
               "AI-powered automatic subject detection and background removal.",
+              "Custom background colors - choose from presets or pick any color.",
+              "Custom background images - upload your own background.",
               "Manual mask editing with erase and restore brush tools.",
               "Real-time original vs result comparison toggle.",
               "Processing time display for performance tracking.",

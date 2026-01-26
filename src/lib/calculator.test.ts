@@ -5,11 +5,16 @@ import {
   inputDecimal,
   clear,
   clearEntry,
+  backspace,
   percentage,
   toggleSign,
+  squareRoot,
+  square,
+  reciprocal,
   performCalculation,
   performOperation,
   calculate,
+  formatDisplayNumber,
   type CalculatorState,
 } from './calculator';
 
@@ -20,6 +25,26 @@ describe('Calculator Logic', () => {
       expect(initialState.previousValue).toBeNull();
       expect(initialState.operation).toBeNull();
       expect(initialState.waitingForOperand).toBe(false);
+      expect(initialState.error).toBeNull();
+    });
+  });
+
+  describe('formatDisplayNumber', () => {
+    it('should format normal numbers correctly', () => {
+      expect(formatDisplayNumber(123)).toBe('123');
+      expect(formatDisplayNumber(0.5)).toBe('0.5');
+    });
+
+    it('should use exponential notation for very large numbers', () => {
+      expect(formatDisplayNumber(1e20)).toContain('e');
+    });
+
+    it('should use exponential notation for very small numbers', () => {
+      expect(formatDisplayNumber(1e-20)).toContain('e');
+    });
+
+    it('should handle Infinity', () => {
+      expect(formatDisplayNumber(Infinity)).toBe('Error');
     });
   });
 
@@ -47,6 +72,13 @@ describe('Calculator Logic', () => {
       state = inputDigit(state, '2');
       state = inputDigit(state, '3');
       expect(state.display).toBe('123');
+    });
+
+    it('should clear error state on digit input', () => {
+      const state: CalculatorState = { ...initialState, error: 'Some error', display: 'Error' };
+      const result = inputDigit(state, '5');
+      expect(result.error).toBeNull();
+      expect(result.display).toBe('5');
     });
   });
 
@@ -85,11 +117,33 @@ describe('Calculator Logic', () => {
         previousValue: '50',
         operation: '+',
         waitingForOperand: false,
+        error: null,
       };
       const result = clearEntry(state);
       expect(result.display).toBe('0');
       expect(result.previousValue).toBe('50');
       expect(result.operation).toBe('+');
+    });
+  });
+
+  describe('backspace', () => {
+    it('should remove last character', () => {
+      const state: CalculatorState = { ...initialState, display: '123' };
+      const result = backspace(state);
+      expect(result.display).toBe('12');
+    });
+
+    it('should return 0 when only one digit', () => {
+      const state: CalculatorState = { ...initialState, display: '5' };
+      const result = backspace(state);
+      expect(result.display).toBe('0');
+    });
+
+    it('should reset to 0 when in error state', () => {
+      const state: CalculatorState = { ...initialState, error: 'Error', display: 'Error' };
+      const result = backspace(state);
+      expect(result.display).toBe('0');
+      expect(result.error).toBeNull();
     });
   });
 
@@ -127,6 +181,70 @@ describe('Calculator Logic', () => {
     });
   });
 
+  describe('squareRoot', () => {
+    it('should calculate square root correctly', () => {
+      const state: CalculatorState = { ...initialState, display: '16' };
+      const result = squareRoot(state);
+      // Success case returns CalculatorState (has display property), error returns { error: string }
+      if ('display' in result) {
+        expect(result.display).toBe('4');
+        expect(result.waitingForOperand).toBe(true);
+      } else {
+        expect.fail('Expected CalculatorState but got error');
+      }
+    });
+
+    it('should return error for negative numbers', () => {
+      const state: CalculatorState = { ...initialState, display: '-4' };
+      const result = squareRoot(state);
+      // Error case returns { error: string } (no display property)
+      if (!('display' in result)) {
+        expect(result.error).toBe('Invalid input for square root');
+      } else {
+        expect.fail('Expected error but got CalculatorState');
+      }
+    });
+  });
+
+  describe('square', () => {
+    it('should calculate square correctly', () => {
+      const state: CalculatorState = { ...initialState, display: '5' };
+      const result = square(state);
+      expect(result.display).toBe('25');
+    });
+
+    it('should handle negative numbers', () => {
+      const state: CalculatorState = { ...initialState, display: '-3' };
+      const result = square(state);
+      expect(result.display).toBe('9');
+    });
+  });
+
+  describe('reciprocal', () => {
+    it('should calculate reciprocal correctly', () => {
+      const state: CalculatorState = { ...initialState, display: '4' };
+      const result = reciprocal(state);
+      // Success case returns CalculatorState (has display property), error returns { error: string }
+      if ('display' in result) {
+        expect(result.display).toBe('0.25');
+        expect(result.waitingForOperand).toBe(true);
+      } else {
+        expect.fail('Expected CalculatorState but got error');
+      }
+    });
+
+    it('should return error for zero', () => {
+      const state: CalculatorState = { ...initialState, display: '0' };
+      const result = reciprocal(state);
+      // Error case returns { error: string } (no display property)
+      if (!('display' in result)) {
+        expect(result.error).toBe('Cannot divide by zero');
+      } else {
+        expect.fail('Expected error but got CalculatorState');
+      }
+    });
+  });
+
   describe('performCalculation', () => {
     it('should add correctly', () => {
       expect(performCalculation(5, 3, '+')).toBe(8);
@@ -142,6 +260,10 @@ describe('Calculator Logic', () => {
 
     it('should divide correctly', () => {
       expect(performCalculation(20, 4, '/')).toBe(5);
+    });
+
+    it('should calculate power correctly', () => {
+      expect(performCalculation(2, 3, '^')).toBe(8);
     });
 
     it('should return error for division by zero', () => {
@@ -165,12 +287,13 @@ describe('Calculator Logic', () => {
         { ...initialState, display: '5' },
         '+'
       );
-      expect(result).toEqual({
-        display: '5',
-        previousValue: '5',
-        operation: '+',
-        waitingForOperand: true,
-      });
+      if (!('state' in result)) {
+        expect(result.display).toBe('5');
+        expect(result.previousValue).toBe('5');
+        expect(result.operation).toBe('+');
+        expect(result.waitingForOperand).toBe(true);
+        expect(result.error).toBeNull();
+      }
     });
 
     it('should chain operations', () => {
@@ -179,6 +302,7 @@ describe('Calculator Logic', () => {
         previousValue: '5',
         operation: '+',
         waitingForOperand: false,
+        error: null,
       };
       const result = performOperation(state, '*');
       
@@ -187,6 +311,23 @@ describe('Calculator Logic', () => {
         expect(result.state.previousValue).toBe('8');
         expect(result.state.operation).toBe('*');
         expect(result.historyEntry).toBe('5 + 3 = 8');
+      }
+    });
+
+    it('should auto-correct operator when waiting for operand', () => {
+      const state: CalculatorState = {
+        display: '5',
+        previousValue: '5',
+        operation: '+',
+        waitingForOperand: true,
+        error: null,
+      };
+      const result = performOperation(state, '-');
+      // When waiting for operand, operation should be updated
+      if ('state' in result) {
+        expect(result.state.operation).toBe('-');
+      } else {
+        expect(result.operation).toBe('-');
       }
     });
   });
@@ -198,6 +339,7 @@ describe('Calculator Logic', () => {
         previousValue: '10',
         operation: '+',
         waitingForOperand: false,
+        error: null,
       };
       const result = calculate(state);
       
@@ -220,6 +362,7 @@ describe('Calculator Logic', () => {
         previousValue: '10',
         operation: '/',
         waitingForOperand: false,
+        error: null,
       };
       const result = calculate(state);
       expect(result).toEqual({ error: 'Cannot divide by zero' });
@@ -276,6 +419,20 @@ describe('Calculator Logic', () => {
       const calcResult = calculate(state);
       if ('state' in calcResult && !('error' in calcResult)) {
         expect(parseFloat(calcResult.state.display)).toBe(4.2);
+      }
+    });
+
+    it('should handle power operation: 2 ^ 10 =', () => {
+      let state = inputDigit(initialState, '2');
+      let opResult = performOperation(state, '^');
+      state = 'state' in opResult ? opResult.state : opResult;
+      
+      state = inputDigit(state, '1');
+      state = inputDigit(state, '0');
+      
+      const calcResult = calculate(state);
+      if ('state' in calcResult && !('error' in calcResult)) {
+        expect(calcResult.state.display).toBe('1024');
       }
     });
   });

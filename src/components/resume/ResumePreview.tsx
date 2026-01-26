@@ -38,10 +38,11 @@ interface ResumePreviewProps {
   template: TemplateType;
   font: FontFamily;
   pageSize: "a4" | "letter";
+  id?: string;
 }
 
 export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
-  ({ data, template, font, pageSize }, ref) => {
+  ({ data, template, font, pageSize, id }, ref) => {
     const config = templateConfig[template];
     const fontClass = fontConfig[font].className;
 
@@ -54,7 +55,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
     return (
       <div
         ref={ref}
-        id="resume-preview"
+        id={id}
         className={cn(
           "bg-white text-gray-900 shadow-lg mx-auto print:shadow-none",
           fontClass
@@ -66,6 +67,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
           fontSize: "11pt", 
           lineHeight: "1.5",
           boxSizing: "border-box",
+          transform: 'none',
         }}
       >
         {/* Header */}

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
@@ -18,12 +18,15 @@ import {
   Eye,
   Settings,
   FileUp,
+  Save,
+  RotateCcw,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { TemplateSelector, FontSelector, TemplateType, FontFamily } from "@/components/resume/ResumeTemplates";
 import { ResumePreview } from "@/components/resume/ResumePreview";
 import { exportToPDF, exportToWord } from "@/lib/resumeExport";
 import { parseResumeFile } from "@/lib/resumeParser";
+import { useResumeDraft } from "@/hooks/useResumeDraft";
 import {
   Select,
   SelectContent,
@@ -76,10 +79,71 @@ export default function AIResumeBuilder() {
 
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [draftRestored, setDraftRestored] = useState(false);
   const { toast } = useToast();
   const resumeRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const importInputRef = useRef<HTMLInputElement>(null);
+
+  // Draft functionality
+  const { draft, isLoaded, hasDraft, saveDraft, clearDraft } = useResumeDraft();
+
+  // Restore draft on load
+  useEffect(() => {
+    if (isLoaded && hasDraft && draft && !draftRestored) {
+      setFullName(draft.fullName);
+      setEmail(draft.email);
+      setPhone(draft.phone);
+      setLocation(draft.location);
+      setSummary(draft.summary);
+      setSkills(draft.skills);
+      setCertifications(draft.certifications);
+      setProjects(draft.projects);
+      setLanguages(draft.languages);
+      if (draft.experiences.length > 0) setExperiences(draft.experiences);
+      if (draft.education.length > 0) setEducation(draft.education);
+      setProfileImage(draft.profileImage);
+      setImagePosition(draft.imagePosition);
+      setImageShape(draft.imageShape);
+      setShowImage(draft.showImage);
+      setTemplate(draft.template as TemplateType);
+      setFont(draft.font as FontFamily);
+      setPageSize(draft.pageSize);
+      setDraftRestored(true);
+      toast({
+        title: "Draft Restored",
+        description: `Your resume draft from ${new Date(draft.lastSaved).toLocaleDateString()} has been loaded.`,
+      });
+    }
+  }, [isLoaded, hasDraft, draft, draftRestored, toast]);
+
+  const handleSaveDraft = useCallback(() => {
+    const success = saveDraft({
+      fullName,
+      email,
+      phone,
+      location,
+      summary,
+      skills,
+      certifications,
+      projects,
+      languages,
+      experiences,
+      education,
+      profileImage,
+      imagePosition,
+      imageShape,
+      showImage,
+      template,
+      font,
+      pageSize,
+    });
+    if (success) {
+      toast({ title: "Draft Saved!", description: "Your resume progress has been saved locally." });
+    } else {
+      toast({ title: "Save failed", description: "Could not save draft to browser storage.", variant: "destructive" });
+    }
+  }, [fullName, email, phone, location, summary, skills, certifications, projects, languages, experiences, education, profileImage, imagePosition, imageShape, showImage, template, font, pageSize, saveDraft, toast]);
 
   const addExperience = () => {
     setExperiences([...experiences, { company: "", position: "", duration: "", description: "" }]);
@@ -565,34 +629,56 @@ export default function AIResumeBuilder() {
           </Tabs>
 
           {/* Export Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              onClick={handleExportPDF}
-              disabled={isExporting || !fullName.trim()}
-              className="flex-1"
-              size="lg"
-            >
-              {isExporting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Download className="mr-2 h-4 w-4" />
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
+              <Button
+                onClick={handleSaveDraft}
+                variant="outline"
+                className="flex-1"
+              >
+                <Save className="mr-2 h-4 w-4" />
+                Save Draft
+              </Button>
+              {hasDraft && (
+                <Button
+                  onClick={clearDraft}
+                  variant="ghost"
+                  size="icon"
+                  title="Clear saved draft"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
               )}
-              Download PDF
-            </Button>
-            <Button
-              onClick={handleExportWord}
-              disabled={isExporting || !fullName.trim()}
-              variant="outline"
-              className="flex-1"
-              size="lg"
-            >
-              {isExporting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <FileText className="mr-2 h-4 w-4" />
-              )}
-              Download Word
-            </Button>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                onClick={handleExportPDF}
+                disabled={isExporting || !fullName.trim()}
+                className="flex-1"
+                size="lg"
+              >
+                {isExporting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-4 w-4" />
+                )}
+                Download PDF
+              </Button>
+              <Button
+                onClick={handleExportWord}
+                disabled={isExporting || !fullName.trim()}
+                variant="outline"
+                className="flex-1"
+                size="lg"
+              >
+                {isExporting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <FileText className="mr-2 h-4 w-4" />
+                )}
+                Download Word
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -605,7 +691,6 @@ export default function AIResumeBuilder() {
             <div className="border rounded-lg bg-muted/30 p-4 overflow-auto max-h-[800px]">
               <div className="scale-[0.45] origin-top-left" style={{ width: "220%" }}>
                 <ResumePreview
-                  ref={resumeRef}
                   data={resumeData}
                   template={template}
                   font={font}
@@ -616,6 +701,28 @@ export default function AIResumeBuilder() {
           </div>
         </div>
       </div>
+
+      {/* Hidden full-size preview for PDF export */}
+      <div 
+        style={{ 
+          position: 'absolute', 
+          left: '-9999px', 
+          top: 0,
+          width: '794px',
+          overflow: 'visible',
+        }}
+        aria-hidden="true"
+      >
+        <ResumePreview
+          ref={resumeRef}
+          id="resume-preview"
+          data={resumeData}
+          template={template}
+          font={font}
+          pageSize={pageSize}
+        />
+      </div>
+
         <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>

@@ -17,11 +17,13 @@ import {
   FileText,
   Eye,
   Settings,
+  FileUp,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { TemplateSelector, FontSelector, TemplateType, FontFamily } from "@/components/resume/ResumeTemplates";
 import { ResumePreview } from "@/components/resume/ResumePreview";
 import { exportToPDF, exportToWord } from "@/lib/resumeExport";
+import { parseResumeFile } from "@/lib/resumeParser";
 import {
   Select,
   SelectContent,
@@ -73,9 +75,11 @@ export default function AIResumeBuilder() {
   const [showImage, setShowImage] = useState(true);
 
   const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   const { toast } = useToast();
   const resumeRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const addExperience = () => {
     setExperiences([...experiences, { company: "", position: "", duration: "", description: "" }]);
@@ -121,6 +125,52 @@ export default function AIResumeBuilder() {
         setProfileImage(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImportResume = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImporting(true);
+    try {
+      const parsed = await parseResumeFile(file);
+      
+      // Pre-fill the form with parsed data
+      setFullName(parsed.fullName);
+      setEmail(parsed.email);
+      setPhone(parsed.phone);
+      setLocation(parsed.location);
+      setSummary(parsed.summary);
+      setSkills(parsed.skills.join(", "));
+      setCertifications(parsed.certifications);
+      setProjects(parsed.projects);
+      setLanguages(parsed.languages);
+      
+      if (parsed.experiences.length > 0) {
+        setExperiences(parsed.experiences);
+      }
+      
+      if (parsed.education.length > 0) {
+        setEducation(parsed.education);
+      }
+      
+      toast({ 
+        title: "Resume Imported!", 
+        description: "Your resume data has been extracted. Please review and adjust as needed." 
+      });
+    } catch (error) {
+      console.error("Import error:", error);
+      toast({ 
+        title: "Import failed", 
+        description: error instanceof Error ? error.message : "Could not parse the resume file.", 
+        variant: "destructive" 
+      });
+    } finally {
+      setIsImporting(false);
+      if (importInputRef.current) {
+        importInputRef.current.value = "";
+      }
     }
   };
 
@@ -249,6 +299,38 @@ export default function AIResumeBuilder() {
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Left: Form */}
         <div className="space-y-6">
+          {/* Import Resume Button */}
+          <div className="p-4 border-2 border-dashed border-primary/30 rounded-lg bg-primary/5">
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <h3 className="font-semibold text-sm">Import Existing Resume</h3>
+                <p className="text-xs text-muted-foreground">Upload a PDF or Word file to auto-fill the form</p>
+              </div>
+              <div>
+                <input
+                  ref={importInputRef}
+                  type="file"
+                  accept=".pdf,.docx"
+                  onChange={handleImportResume}
+                  className="hidden"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => importInputRef.current?.click()}
+                  disabled={isImporting}
+                >
+                  {isImporting ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <FileUp className="w-4 h-4 mr-2" />
+                  )}
+                  {isImporting ? "Parsing..." : "Import Resume"}
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <Tabs defaultValue="info" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="info" className="gap-2">

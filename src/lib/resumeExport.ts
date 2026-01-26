@@ -57,9 +57,9 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
 
   try {
     const canvas = await html2canvas(element, {
-      scale: 2, // Good balance of quality and performance
+      scale: 2,
       useCORS: true,
-      allowTaint: true, // Allow cross-origin images
+      allowTaint: true,
       logging: false,
       backgroundColor: "#ffffff",
       width: A4_WIDTH_PX,
@@ -76,6 +76,31 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
           clonedElement.style.position = 'relative';
           clonedElement.style.overflow = 'visible';
           
+          // FIX: Replace CSS gradients with solid colors for html2canvas compatibility
+          const elementsWithGradients = clonedElement.querySelectorAll('[class*="bg-gradient"]');
+          elementsWithGradients.forEach((el) => {
+            const htmlEl = el as HTMLElement;
+            const computed = window.getComputedStyle(htmlEl);
+            const bgImage = computed.backgroundImage;
+            
+            // Extract first color from gradient and use as solid background
+            if (bgImage && bgImage.includes('gradient')) {
+              // Get approximate solid color based on template class
+              if (htmlEl.className.includes('from-pink')) {
+                htmlEl.style.background = '#ec4899'; // pink-500
+              } else if (htmlEl.className.includes('from-amber')) {
+                htmlEl.style.background = '#b45309'; // amber-700
+              } else if (htmlEl.className.includes('from-cyan')) {
+                htmlEl.style.background = '#0891b2'; // cyan-600
+              } else if (htmlEl.className.includes('from-emerald')) {
+                htmlEl.style.background = '#047857'; // emerald-700
+              } else {
+                htmlEl.style.background = '#3b82f6'; // blue-500 fallback
+              }
+              htmlEl.style.backgroundImage = 'none';
+            }
+          });
+          
           // Fix any flex issues
           const allElements = clonedElement.querySelectorAll('*');
           allElements.forEach((el) => {
@@ -83,14 +108,6 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
             const computed = window.getComputedStyle(htmlEl);
             if (computed.display === 'flex') {
               htmlEl.style.flexWrap = 'wrap';
-            }
-          });
-          
-          // Handle profile images - convert to data URLs if needed
-          const clonedImages = clonedElement.querySelectorAll('img');
-          clonedImages.forEach((img) => {
-            if (img.src.startsWith('data:')) {
-              img.crossOrigin = 'anonymous';
             }
           });
         }

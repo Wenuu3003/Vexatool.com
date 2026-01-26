@@ -533,6 +533,34 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
                 });
               }
             }
+          } else if (element.type === 'drawing') {
+            // Drawing elements - pen, brush, highlight, underline
+            const drawEl = element as DrawingElement;
+            if (drawEl.points && drawEl.points.length > 1) {
+              const strokeColor = drawEl.strokeColor.replace('#', '');
+              const sr = parseInt(strokeColor.substring(0, 2), 16) / 255;
+              const sg = parseInt(strokeColor.substring(2, 4), 16) / 255;
+              const sb = parseInt(strokeColor.substring(4, 6), 16) / 255;
+              
+              // Draw each line segment between consecutive points
+              for (let j = 0; j < drawEl.points.length - 1; j++) {
+                const startPoint = drawEl.points[j];
+                const endPoint = drawEl.points[j + 1];
+                
+                const startX = startPoint.x * scaleFactor;
+                const startY = pageHeight - (startPoint.y * scaleFactor);
+                const endX = endPoint.x * scaleFactor;
+                const endY = pageHeight - (endPoint.y * scaleFactor);
+                
+                page.drawLine({
+                  start: { x: startX, y: startY },
+                  end: { x: endX, y: endY },
+                  color: rgb(sr, sg, sb),
+                  thickness: drawEl.strokeWidth * scaleFactor,
+                  opacity: drawEl.opacity,
+                });
+              }
+            }
           } else if (element.type === 'redact') {
             // Redact elements - draw solid rectangle to cover original text
             const redactEl = element as RedactElement;

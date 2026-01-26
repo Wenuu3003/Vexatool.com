@@ -102,6 +102,9 @@ const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
 const WordCounter = lazy(() => import("./pages/tools/WordCounter"));
 const PinCodeGenerator = lazy(() => import("./pages/tools/PinCodeGenerator"));
 
+// Admin Tools
+const BotVerifier = lazy(() => import("./pages/tools/BotVerifier"));
+
 const queryClient = new QueryClient();
 
 // Loading fallback component
@@ -198,6 +201,8 @@ const App = () => (
               <Route path="/ppt-to-pdf" element={<PPTToPDF />} />
               <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
               <Route path="/google-drive-to-pdf" element={<GoogleDriveToPDF />} />
+              {/* Admin Tools */}
+              <Route path="/bot-verifier" element={<BotVerifier />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

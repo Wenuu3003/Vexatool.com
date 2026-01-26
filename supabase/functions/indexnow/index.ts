@@ -53,6 +53,139 @@ function isValidUrl(url: string): boolean {
   }
 }
 
+// Validate IP address format
+function isValidIpAddress(ip: string): boolean {
+  // IPv4 pattern
+  const ipv4Pattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+  // IPv6 pattern (simplified)
+  const ipv6Pattern = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$|^::$|^([0-9a-fA-F]{1,4}:)*::([0-9a-fA-F]{1,4}:)*[0-9a-fA-F]{1,4}$/;
+  
+  if (ipv4Pattern.test(ip)) {
+    // Validate each octet is 0-255
+    const octets = ip.split('.').map(Number);
+    return octets.every(octet => octet >= 0 && octet <= 255);
+  }
+  
+  return ipv6Pattern.test(ip);
+}
+
+// Verify Bingbot IP using reverse DNS lookup
+// Legitimate Bingbot IPs resolve to hostnames ending with .search.msn.com
+async function verifyBingbotIp(ip: string): Promise<{
+  isValid: boolean;
+  hostname: string | null;
+  forwardIp: string | null;
+  error: string | null;
+}> {
+  try {
+    // Step 1: Reverse DNS lookup using public DNS API
+    // Using Cloudflare's DNS-over-HTTPS for reliable lookups
+    const reverseName = ip.split('.').reverse().join('.') + '.in-addr.arpa';
+    
+    const reverseResponse = await fetch(
+      `https://cloudflare-dns.com/dns-query?name=${reverseName}&type=PTR`,
+      {
+        headers: { 'Accept': 'application/dns-json' }
+      }
+    );
+    
+    if (!reverseResponse.ok) {
+      return {
+        isValid: false,
+        hostname: null,
+        forwardIp: null,
+        error: "Failed to perform reverse DNS lookup"
+      };
+    }
+    
+    const reverseData = await reverseResponse.json();
+    
+    if (!reverseData.Answer || reverseData.Answer.length === 0) {
+      return {
+        isValid: false,
+        hostname: null,
+        forwardIp: null,
+        error: "No PTR record found for this IP"
+      };
+    }
+    
+    // Get hostname from PTR record
+    let hostname = reverseData.Answer[0].data;
+    // Remove trailing dot if present
+    hostname = hostname.replace(/\.$/, '');
+    
+    // Check if hostname ends with search.msn.com (Bingbot identifier)
+    const isBingHostname = hostname.endsWith('.search.msn.com');
+    
+    if (!isBingHostname) {
+      return {
+        isValid: false,
+        hostname,
+        forwardIp: null,
+        error: `Hostname "${hostname}" does not end with .search.msn.com`
+      };
+    }
+    
+    // Step 2: Forward DNS lookup to verify the hostname resolves back to the IP
+    const forwardResponse = await fetch(
+      `https://cloudflare-dns.com/dns-query?name=${hostname}&type=A`,
+      {
+        headers: { 'Accept': 'application/dns-json' }
+      }
+    );
+    
+    if (!forwardResponse.ok) {
+      return {
+        isValid: false,
+        hostname,
+        forwardIp: null,
+        error: "Failed to perform forward DNS lookup"
+      };
+    }
+    
+    const forwardData = await forwardResponse.json();
+    
+    if (!forwardData.Answer || forwardData.Answer.length === 0) {
+      return {
+        isValid: false,
+        hostname,
+        forwardIp: null,
+        error: "No A record found for hostname"
+      };
+    }
+    
+    // Check if any of the resolved IPs match the original IP
+    const resolvedIps = forwardData.Answer.map((a: { data: string }) => a.data);
+    const forwardIp = resolvedIps[0];
+    const ipMatches = resolvedIps.includes(ip);
+    
+    if (!ipMatches) {
+      return {
+        isValid: false,
+        hostname,
+        forwardIp,
+        error: `Forward lookup IP (${forwardIp}) does not match original IP (${ip})`
+      };
+    }
+    
+    // Both checks passed - this is a legitimate Bingbot IP
+    return {
+      isValid: true,
+      hostname,
+      forwardIp,
+      error: null
+    };
+    
+  } catch (e: unknown) {
+    return {
+      isValid: false,
+      hostname: null,
+      forwardIp: null,
+      error: e instanceof Error ? e.message : "Unknown error during verification"
+    };
+  }
+}
+
 // All URLs to index
 const ALL_URLS = [
   "/", "/about", "/contact", "/privacy-policy", "/terms-and-conditions", "/blog",
@@ -95,8 +228,43 @@ serve(async (req) => {
   }
 
   try {
-    const { urls, submitAll } = await req.json();
+    const body = await req.json();
+    const { urls, submitAll, action, ip } = body;
     
+    // Handle Bingbot IP verification action
+    if (action === 'verify-bingbot') {
+      if (!ip || typeof ip !== 'string') {
+        return new Response(
+          JSON.stringify({ error: "IP address is required for verification" }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      // Validate IP format
+      if (!isValidIpAddress(ip)) {
+        return new Response(
+          JSON.stringify({ error: "Invalid IP address format" }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      const result = await verifyBingbotIp(ip);
+      
+      return new Response(
+        JSON.stringify({
+          ip,
+          isBingbot: result.isValid,
+          hostname: result.hostname,
+          forwardIp: result.forwardIp,
+          error: result.error,
+          verificationMethod: "Reverse DNS lookup (PTR) + Forward DNS verification",
+          trustedHostnameSuffix: ".search.msn.com"
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    // Default action: Submit URLs to IndexNow
     let urlsToSubmit: string[];
     
     if (submitAll) {

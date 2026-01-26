@@ -5,5 +5,8 @@ export { PropertiesPanel } from './PropertiesPanel';
 export { PageThumbnails } from './PageThumbnails';
 export { WatermarkDialog } from './WatermarkDialog';
 export { DownloadPreviewDialog } from './DownloadPreviewDialog';
+export { OCRPanel } from './OCRPanel';
+export { TextSelectionLayer } from './TextSelectionLayer';
 export { useEditorHistory } from './useEditorHistory';
+export { useOCR } from './useOCR';
 export * from './types';

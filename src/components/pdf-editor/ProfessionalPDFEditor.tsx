@@ -23,7 +23,10 @@ import { PropertiesPanel } from './PropertiesPanel';
 import { PageThumbnails } from './PageThumbnails';
 import { WatermarkDialog } from './WatermarkDialog';
 import { DownloadPreviewDialog } from './DownloadPreviewDialog';
+import { OCRPanel } from './OCRPanel';
+import { TextSelectionLayer } from './TextSelectionLayer';
 import { useEditorHistory } from './useEditorHistory';
+import { useOCR, OCRTextBlock } from './useOCR';
 
 // Set up the worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -53,6 +56,22 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [showWatermarkDialog, setShowWatermarkDialog] = useState(false);
   const [showDownloadDialog, setShowDownloadDialog] = useState(false);
   const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
+  
+  // OCR and text selection state
+  const [pdfType, setPdfType] = useState<'text-based' | 'scanned' | 'mixed' | null>(null);
+  const [textSelectionEnabled, setTextSelectionEnabled] = useState(false);
+  const [deletedTextBlocks, setDeletedTextBlocks] = useState<Set<string>>(new Set());
+  
+  // OCR hook
+  const { 
+    isProcessing: isOCRProcessing, 
+    progress: ocrProgress, 
+    textBlocks, 
+    performOCR, 
+    extractPDFText,
+    detectPDFType,
+    clearTextBlocks 
+  } = useOCR();
   
   // Brush and eraser settings
   const [brushSettings, setBrushSettings] = useState<BrushSettings>({
@@ -109,6 +128,15 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         
         setPages(loadedPages);
         saveToHistory();
+        
+        // Detect PDF type
+        const type = await detectPDFType(pdf, 0);
+        setPdfType(type);
+        
+        toast({
+          title: 'PDF Loaded',
+          description: `${type === 'text-based' ? 'Text-based' : type === 'scanned' ? 'Scanned/Image' : 'Mixed'} PDF detected. ${pdf.numPages} page(s).`,
+        });
       } catch (error) {
         console.error('Error loading PDF:', error);
         toast({
@@ -165,6 +193,133 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedElement, undo, redo]);
+
+  // OCR handlers
+  const handleRunOCR = useCallback(async () => {
+    const currentPageData = pages[currentPage];
+    if (!currentPageData?.canvas) {
+      toast({
+        title: 'Error',
+        description: 'Page canvas not available for OCR',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    try {
+      await performOCR(currentPageData.canvas, currentPage, 'eng');
+      setTextSelectionEnabled(true);
+      toast({
+        title: 'OCR Complete',
+        description: 'Text detected. Click on highlighted areas to edit or delete.',
+      });
+    } catch (error) {
+      toast({
+        title: 'OCR Failed',
+        description: 'Failed to perform OCR. Please try again.',
+        variant: 'destructive',
+      });
+    }
+  }, [pages, currentPage, performOCR, toast]);
+
+  const handleExtractText = useCallback(async () => {
+    if (!pdfDocument) return;
+    
+    try {
+      await extractPDFText(pdfDocument, currentPage);
+      setTextSelectionEnabled(true);
+      toast({
+        title: 'Text Extracted',
+        description: 'Selectable text detected. Click on text to edit or delete.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Extraction Failed',
+        description: 'Failed to extract text. Try OCR for scanned content.',
+        variant: 'destructive',
+      });
+    }
+  }, [pdfDocument, currentPage, extractPDFText, toast]);
+
+  // Text edit handlers
+  const handleTextDelete = useCallback((blockId: string) => {
+    const block = textBlocks.find(b => b.id === blockId);
+    if (!block) return;
+    
+    // Add a white redact element to cover the deleted text
+    const redactElement: RedactElement = {
+      id: `redact-${Date.now()}`,
+      type: 'redact',
+      page: block.pageIndex,
+      x: block.x,
+      y: block.y,
+      width: block.width + 4,
+      height: block.height + 2,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length,
+      fillColor: '#FFFFFF',
+    };
+    
+    setElements(prev => [...prev, redactElement]);
+    setDeletedTextBlocks(prev => new Set(prev).add(blockId));
+    saveToHistory();
+    
+    toast({
+      title: 'Text Deleted',
+      description: 'Original text covered. Add new text if needed.',
+    });
+  }, [textBlocks, elements.length, saveToHistory, toast]);
+
+  const handleTextReplace = useCallback((blockId: string, newText: string, originalBlock: OCRTextBlock) => {
+    // First, cover the original text with a white redact
+    const redactElement: RedactElement = {
+      id: `redact-${Date.now()}`,
+      type: 'redact',
+      page: originalBlock.pageIndex,
+      x: originalBlock.x,
+      y: originalBlock.y,
+      width: originalBlock.width + 4,
+      height: originalBlock.height + 2,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length,
+      fillColor: '#FFFFFF',
+    };
+    
+    // Then add new text at the same position
+    const textElement: TextElement = {
+      id: `text-${Date.now()}`,
+      type: 'text',
+      page: originalBlock.pageIndex,
+      x: originalBlock.x,
+      y: originalBlock.y,
+      width: Math.max(originalBlock.width, newText.length * 8),
+      height: originalBlock.height,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length + 1,
+      text: newText,
+      fontSize: Math.max(12, Math.round(originalBlock.height * 0.8)),
+      fontFamily: 'Helvetica',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+      color: '#000000',
+    };
+    
+    setElements(prev => [...prev, redactElement, textElement]);
+    setDeletedTextBlocks(prev => new Set(prev).add(blockId));
+    saveToHistory();
+    
+    toast({
+      title: 'Text Replaced',
+      description: 'New text added in place of original.',
+    });
+  }, [elements.length, saveToHistory, toast]);
 
   // Zoom controls
   const handleZoomIn = useCallback(() => {
@@ -237,9 +392,12 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     setElements([]);
     setPages(pages.map(p => ({ ...p, rotation: 0, deleted: false })));
     setSelectedElement(null);
+    setDeletedTextBlocks(new Set());
+    clearTextBlocks();
+    setTextSelectionEnabled(false);
     resetHistory();
     toast({ title: 'Reset', description: 'All changes have been reset' });
-  }, [pages, resetHistory, toast]);
+  }, [pages, resetHistory, clearTextBlocks, toast]);
 
   // Page operations
   const handleRotatePage = useCallback((index: number) => {
@@ -276,7 +434,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       pageNumber: pages.length + 1,
       rotation: 0,
       deleted: false,
-      width: 612 * 1.5, // Letter size at 1.5 scale
+      width: 612 * 1.5,
       height: 792 * 1.5,
       canvas: undefined,
     };
@@ -366,7 +524,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     if (!pdfDocument) return;
     
     setShowDownloadDialog(false);
-    
     setIsProcessing(true);
     
     try {
@@ -413,13 +570,11 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             const textEl = element as TextElement;
             const font = fontMap[textEl.fontFamily] || helveticaFont;
             
-            // Parse color
             const color = textEl.color.replace('#', '');
             const r = parseInt(color.substring(0, 2), 16) / 255;
             const g = parseInt(color.substring(2, 4), 16) / 255;
             const b = parseInt(color.substring(4, 6), 16) / 255;
             
-            // Convert coordinates
             const x = textEl.x * scaleFactor;
             const y = pageHeight - (textEl.y * scaleFactor) - (textEl.fontSize * scaleFactor);
             
@@ -475,7 +630,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           } else if (element.type === 'image') {
             const imgEl = element as ImageElement;
             try {
-              // Determine image type and embed
               const imageData = imgEl.src;
               let image;
               if (imageData.includes('data:image/png')) {
@@ -512,7 +666,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               const textWidth = font.widthOfTextAtSize(wmEl.text, fontSize);
               
               if (wmEl.position === 'tiled') {
-                // Tile the watermark
                 for (let tx = 0; tx < pageWidth; tx += textWidth + 100) {
                   for (let ty = 0; ty < pageHeight; ty += fontSize * 3) {
                     page.drawText(wmEl.text, {
@@ -527,7 +680,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
                   }
                 }
               } else {
-                // Center or diagonal
                 const x = (pageWidth - textWidth) / 2;
                 const y = pageHeight / 2;
                 
@@ -543,7 +695,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               }
             }
           } else if (element.type === 'drawing') {
-            // Drawing elements - pen, brush, highlight, underline
             const drawEl = element as DrawingElement;
             if (drawEl.points && drawEl.points.length > 1) {
               const strokeColor = drawEl.strokeColor.replace('#', '');
@@ -551,15 +702,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               const sg = parseInt(strokeColor.substring(2, 4), 16) / 255;
               const sb = parseInt(strokeColor.substring(4, 6), 16) / 255;
               
-              // Draw each line segment between consecutive points
               for (let j = 0; j < drawEl.points.length - 1; j++) {
                 const startPoint = drawEl.points[j];
                 const endPoint = drawEl.points[j + 1];
                 
-                const startX = startPoint.x * scaleFactor;
-                const startY = pageHeight - (startPoint.y * scaleFactor);
-                const endX = endPoint.x * scaleFactor;
-                const endY = pageHeight - (endPoint.y * scaleFactor);
+                const startX = (drawEl.x + startPoint.x) * scaleFactor;
+                const startY = pageHeight - ((drawEl.y + startPoint.y) * scaleFactor);
+                const endX = (drawEl.x + endPoint.x) * scaleFactor;
+                const endY = pageHeight - ((drawEl.y + endPoint.y) * scaleFactor);
                 
                 page.drawLine({
                   start: { x: startX, y: startY },
@@ -571,7 +721,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               }
             }
           } else if (element.type === 'redact') {
-            // Redact elements - draw solid rectangle to cover original text
             const redactEl = element as RedactElement;
             const fillColor = redactEl.fillColor.replace('#', '');
             const fr = parseInt(fillColor.substring(0, 2), 16) / 255;
@@ -581,7 +730,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             const x = redactEl.x * scaleFactor;
             const y = pageHeight - (redactEl.y * scaleFactor) - (redactEl.height * scaleFactor);
             
-            // Draw filled rectangle to completely cover original content
             page.drawRectangle({
               x,
               y,
@@ -623,6 +771,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   }, [pdfDocument, file, pages, elements, toast, saveFileHistory]);
 
   const selectedElementData = elements.find(el => el.id === selectedElement);
+  
+  // Filter out deleted text blocks
+  const visibleTextBlocks = textBlocks.filter(b => !deletedTextBlocks.has(b.id));
 
   if (isLoading) {
     return (
@@ -689,25 +840,56 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           onReorderPages={handleReorderPages}
         />
         
-        {/* Canvas */}
-        <EditorCanvas
-          pages={pages}
-          currentPage={currentPage}
-          elements={elements}
-          selectedElement={selectedElement}
-          activeTool={activeTool}
-          zoom={zoom}
-          brushSettings={brushSettings}
-          eraserSettings={eraserSettings}
-          onSelectElement={setSelectedElement}
-          onAddElement={handleAddElement}
-          onUpdateElement={handleUpdateElement}
-          onElementsChange={setElements}
-          onZoomChange={setZoom}
-        />
+        {/* Canvas with text selection layer */}
+        <div className="flex-1 relative">
+          <EditorCanvas
+            pages={pages}
+            currentPage={currentPage}
+            elements={elements}
+            selectedElement={selectedElement}
+            activeTool={activeTool}
+            zoom={zoom}
+            brushSettings={brushSettings}
+            eraserSettings={eraserSettings}
+            onSelectElement={setSelectedElement}
+            onAddElement={handleAddElement}
+            onUpdateElement={handleUpdateElement}
+            onElementsChange={setElements}
+            onZoomChange={setZoom}
+          />
+          
+          {/* Text selection overlay */}
+          {textSelectionEnabled && (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <TextSelectionLayer
+                textBlocks={visibleTextBlocks}
+                currentPage={currentPage}
+                zoom={zoom}
+                enabled={textSelectionEnabled && activeTool === 'select'}
+                onTextDelete={handleTextDelete}
+                onTextReplace={handleTextReplace}
+              />
+            </div>
+          )}
+        </div>
         
-        {/* Properties panel */}
-        <div className="w-64 bg-card border-l border-border overflow-hidden">
+        {/* Properties panel with OCR */}
+        <div className="w-64 bg-card border-l border-border overflow-y-auto">
+          {/* OCR Panel */}
+          <div className="p-2">
+            <OCRPanel
+              pdfType={pdfType}
+              isProcessing={isOCRProcessing}
+              progress={ocrProgress}
+              textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
+              onRunOCR={handleRunOCR}
+              onExtractText={handleExtractText}
+              currentPage={currentPage}
+              totalPages={pages.filter(p => !p.deleted).length}
+            />
+          </div>
+          
+          {/* Properties Panel */}
           <PropertiesPanel
             element={selectedElementData ?? null}
             onUpdate={handleUpdateElement}

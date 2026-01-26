@@ -1,5 +1,6 @@
 import { useState, useCallback, lazy, Suspense } from "react";
-import { FileEdit, Download, ArrowLeft } from "lucide-react";
+import { FileEdit, ArrowLeft } from "lucide-react";
+import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
@@ -32,19 +33,79 @@ const EditPDF = () => {
     setFiles([]);
   }, []);
 
+  // FAQ Schema for SEO
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Can I replace existing text in a PDF online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can replace existing text in a PDF if it is text-based. Upload the PDF, select the text, delete it and type new text in the same position."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I edit scanned PDF files?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, scanned PDFs can be edited using OCR technology which converts scanned images into editable text."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Will the original PDF quality be preserved?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, the editor preserves the original layout, clarity and formatting while editing."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this PDF editor free and safe?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, this PDF editor is free to use and files are processed securely without permanent storage."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does OCR work for scanned PDFs?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "OCR (Optical Character Recognition) analyzes the scanned image and identifies text patterns, converting them into selectable and editable text that you can modify or replace."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I add images and signatures to my PDF?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, you can add images, logos, and signatures to your PDF. Simply use the image tool to upload and position your graphics anywhere on the document."
+        }
+      }
+    ]
+  };
+
   const seoContent = {
-    toolName: "Professional PDF Editor",
-    whatIs: "Our Professional PDF Editor is a powerful free online tool that allows you to edit PDF documents with advanced features. Add text with full formatting options, insert shapes (rectangles, circles, lines, arrows), draw freehand, highlight content, add images and logos, apply watermarks, and manage pages. All editing is done visually with a live preview, undo/redo support, and high-quality PDF export.",
+    toolName: "Professional PDF Editor with OCR",
+    whatIs: "Our Professional PDF Editor is a powerful free online tool that allows you to edit PDF documents with advanced features including OCR (Optical Character Recognition) for scanned documents. Edit text-based PDFs by selecting and replacing existing text, or use OCR to convert scanned documents into editable text. Add new text with full formatting options, insert shapes, draw freehand, highlight content, add images and logos, apply watermarks, and manage pages. All editing is done visually with a live preview, undo/redo support, and high-quality PDF export.",
     howToUse: [
       "Upload your PDF file by clicking the upload area or dragging and dropping.",
-      "Use the toolbar to select editing tools: text, shapes, drawing, images, or watermarks.",
-      "Click anywhere on the PDF to add elements - click to add text, drag to draw shapes.",
-      "Select any element to access the properties panel for detailed customization.",
+      "The editor automatically detects if your PDF is text-based or scanned.",
+      "For text-based PDFs: Click 'Extract PDF Text' to enable text selection and editing.",
+      "For scanned PDFs: Click 'Run OCR' to detect text using optical character recognition.",
+      "Click on any detected text to edit, delete, or replace it with new content.",
+      "Use the toolbar to add new text, shapes, images, drawings, or watermarks.",
       "Use the page thumbnails on the left to navigate, rotate, reorder, or delete pages.",
       "Press Ctrl+Z to undo and Ctrl+Y to redo changes at any time.",
       "Click 'Download PDF' to save your edited document in high quality."
     ],
     features: [
+      "OCR technology for editing scanned and image-based PDFs",
+      "Select, edit, delete, and replace existing PDF text",
       "Add editable text with font family, size, bold, italic, underline, and color options",
       "Draw shapes: rectangles, circles, lines, and arrows with customizable stroke and fill",
       "Freehand drawing with pen, highlighter, and underline tools",
@@ -55,29 +116,39 @@ const EditPDF = () => {
       "Full undo/redo support with keyboard shortcuts (Ctrl+Z, Ctrl+Y)",
       "Lock/unlock elements to prevent accidental changes",
       "High-quality PDF export preserving original DPI and layout",
-      "Mobile-friendly responsive design"
+      "Mobile-friendly responsive design",
+      "No watermarks on exported files",
+      "100% secure - files processed locally in your browser"
     ],
     safetyNote: "Your PDF files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring your documents remain completely private. Files are automatically cleared when you close the editor or leave the page.",
     faqs: [
-      { question: "Can I add text to any page in my PDF?", answer: "Yes! Use the page thumbnails on the left to navigate between pages. Each page can have unlimited text, shapes, images, and drawings." },
-      { question: "How do I add shapes to my PDF?", answer: "Click on the shape tool (rectangle, circle, line, or arrow) in the toolbar, then click and drag on the PDF to draw the shape. Use the properties panel to customize colors and stroke width." },
-      { question: "Can I add my company logo or watermark?", answer: "Yes! Use the Image tool (I key) to add logos, or the Watermark tool (W key) to add text or image watermarks. Watermarks can be applied to all pages with opacity and position controls." },
-      { question: "Is there an undo feature?", answer: "Yes! Full undo/redo support is available. Use Ctrl+Z to undo and Ctrl+Y to redo, or click the undo/redo buttons in the toolbar." },
-      { question: "Will the edited PDF maintain quality?", answer: "Absolutely! The editor preserves the original PDF quality and DPI. All edits are rendered at high resolution for professional results." },
-      { question: "Can I reorder or delete pages?", answer: "Yes! The page thumbnails panel on the left allows you to rotate, delete, duplicate, reorder (drag and drop), and add blank pages to your PDF." }
+      { question: "Can I replace existing text in a PDF online?", answer: "Yes, you can replace existing text in a PDF if it is text-based. Upload the PDF, click 'Extract PDF Text', then click on any text to edit or replace it." },
+      { question: "Can I edit scanned PDF files?", answer: "Yes, scanned PDFs can be edited using OCR technology which converts scanned images into editable text. Click 'Run OCR' after uploading your scanned PDF." },
+      { question: "Will the original PDF quality be preserved?", answer: "Yes, the editor preserves the original layout, clarity and formatting while editing. All exports maintain the original DPI and resolution." },
+      { question: "Is this PDF editor free and safe?", answer: "Yes, this PDF editor is completely free to use and files are processed securely in your browser without any server uploads." },
+      { question: "How does the text replacement work?", answer: "When you select text to replace, the editor covers the original text with a white patch and places your new text in the same position, maintaining the document's layout." },
+      { question: "Can I add my company logo or watermark?", answer: "Yes! Use the Image tool (I key) to add logos, or the Watermark tool (W key) to add text or image watermarks. Watermarks can be applied to all pages with opacity and position controls." }
     ]
   };
 
   return (
     <>
       <CanonicalHead 
-        title="Professional PDF Editor Online Free - Edit PDF with Text, Shapes, Images | Mypdfs"
-        description="Free professional PDF editor online. Add text, shapes, drawings, images, watermarks. Rotate, delete, reorder pages. High-quality export."
-        keywords="PDF editor, edit PDF online, add text to PDF, PDF shapes, PDF watermark, PDF page editor, free PDF editor, professional PDF editor"
+        title="Edit PDF Online – Replace Text, OCR Scanned PDFs | Free PDF Editor"
+        description="Free online PDF editor to edit and replace text, add new content, OCR scanned PDFs, insert images, watermark, sign and download high-quality PDFs instantly."
+        keywords="PDF editor, edit PDF online, OCR PDF, replace PDF text, scanned PDF editor, add text to PDF, PDF watermark, free PDF editor, online PDF editor"
       />
+      
+      {/* FAQ Schema */}
+      <Helmet>
+        <script type="application/ld+json">
+          {JSON.stringify(faqSchema)}
+        </script>
+      </Helmet>
+      
       <ToolLayout
-        title="Professional PDF Editor"
-        description="Full-featured PDF editor with text, shapes, images, watermarks, and page management"
+        title="Edit PDF Online – Replace Text, OCR Scanned PDFs"
+        description="Free online PDF editor with OCR. Edit, replace, and add text to any PDF including scanned documents."
         icon={FileEdit}
         colorClass="bg-tool-edit"
       >
@@ -89,7 +160,7 @@ const EditPDF = () => {
               <div className="text-center mb-6">
                 <h2 className="text-xl font-semibold mb-2">Upload a PDF to Start Editing</h2>
                 <p className="text-muted-foreground">
-                  Add text, shapes, images, watermarks, and manage pages with our professional editor
+                  Edit text-based PDFs directly or use OCR for scanned documents. Replace, delete, or add new content.
                 </p>
               </div>
               <FileUpload
@@ -104,23 +175,42 @@ const EditPDF = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
                   <div className="text-2xl mb-2">✏️</div>
-                  <h3 className="font-medium text-sm">Add Text</h3>
-                  <p className="text-xs text-muted-foreground">Fonts, sizes, colors</p>
+                  <h3 className="font-medium text-sm">Edit & Replace Text</h3>
+                  <p className="text-xs text-muted-foreground">Select & modify existing text</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
-                  <div className="text-2xl mb-2">🔷</div>
-                  <h3 className="font-medium text-sm">Draw Shapes</h3>
-                  <p className="text-xs text-muted-foreground">Rectangles, circles, arrows</p>
+                  <div className="text-2xl mb-2">📝</div>
+                  <h3 className="font-medium text-sm">OCR Technology</h3>
+                  <p className="text-xs text-muted-foreground">Edit scanned PDFs</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
                   <div className="text-2xl mb-2">🖼️</div>
                   <h3 className="font-medium text-sm">Add Images</h3>
-                  <p className="text-xs text-muted-foreground">Logos, photos, graphics</p>
+                  <p className="text-xs text-muted-foreground">Logos, photos, signatures</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
                   <div className="text-2xl mb-2">💧</div>
                   <h3 className="font-medium text-sm">Watermarks</h3>
                   <p className="text-xs text-muted-foreground">Text or image watermarks</p>
+                </div>
+              </div>
+              
+              {/* Additional info */}
+              <div className="bg-muted/20 rounded-lg p-4 mt-4">
+                <h3 className="font-medium mb-2">Supported PDF Types</h3>
+                <div className="grid md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="font-medium text-primary">Text-Based PDFs</p>
+                    <p className="text-muted-foreground">
+                      PDFs with selectable text can be edited directly. Click on text to select, delete, or replace it.
+                    </p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-primary">Scanned PDFs</p>
+                    <p className="text-muted-foreground">
+                      Image-based or scanned PDFs use OCR to detect text. High accuracy for English documents.
+                    </p>
+                  </div>
                 </div>
               </div>
             </>

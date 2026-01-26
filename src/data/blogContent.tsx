@@ -149,7 +149,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
   "ai-resume-builder-tips-get-hired": {
     title: "AI Resume Builder: 10 Expert Tips to Get Hired Faster in 2026",
-    date: "2026-01-23",
+    date: "2026-01-26",
     readTime: "10 min read",
     relatedTools: [
       { name: "AI Resume Builder", href: "/ai-resume-builder" },

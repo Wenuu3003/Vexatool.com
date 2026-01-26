@@ -307,41 +307,62 @@ export default function AIResumeBuilder() {
 
   const seoContent = {
     toolName: "AI Resume Builder",
-    whatIs: "AI Resume Builder is a professional tool that helps you create polished, ATS-friendly resumes with multiple templates and customization options. It provides a live preview as you build your resume, supports profile photos, multiple template designs, and font choices. Download your completed resume as PDF or Word document, ready to submit to employers. Perfect for job seekers, career changers, and anyone who wants to create a standout resume without design skills.",
+    whatIs: "AI Resume Builder is a free, professional tool that creates polished, ATS-optimized resumes with multiple modern templates. It offers a live preview as you build, supports profile photos with customizable positioning, and includes seven unique templates (Modern, Classic, Minimal, Creative, Executive, Technical, Academic). Import existing resumes from PDF or Word files to auto-fill forms instantly. Save drafts locally and download your completed resume as PDF or Word document. Perfect for job seekers, fresh graduates, career changers, and professionals wanting to create standout resumes without design skills or expensive software.",
     howToUse: [
-      "Fill in your personal information: name, email, phone, and location.",
-      "Add your professional summary, skills, work experience, and education.",
-      "Optionally upload a profile photo and adjust image settings.",
-      "Choose your preferred template and font from the Design tab.",
-      "Preview your resume in real-time and make adjustments.",
-      "Download as PDF or Word document when you're satisfied."
+      "Import an existing resume (optional) - Upload a PDF or Word file to auto-fill the form with your data.",
+      "Fill in personal information: name, email, phone, and location.",
+      "Add your professional summary describing your career highlights and goals.",
+      "List your skills, work experience with achievements, and education details.",
+      "Upload a profile photo (optional) and customize image shape and position.",
+      "Choose your preferred template (7 styles) and font from the Design tab.",
+      "Save your draft to continue later - your progress is stored in your browser.",
+      "Preview in real-time and download as PDF or Word document."
     ],
     features: [
-      "Multiple professional resume templates: Modern, Classic, Minimal, Creative.",
-      "Live preview that updates as you type.",
-      "Profile photo support with position and shape options.",
-      "Multiple font choices for personalization.",
-      "A4 and US Letter page size options.",
-      "Export to PDF or Word (.docx) formats.",
-      "ATS-friendly formatting for applicant tracking systems."
+      "Seven professional resume templates: Modern, Classic, Minimal, Creative, Executive, Technical, Academic.",
+      "Resume import feature - parse existing PDF or Word resumes to auto-fill the form.",
+      "Save Draft functionality - store your resume progress in browser localStorage.",
+      "Live preview that updates instantly as you type for real-time editing.",
+      "Profile photo support with customizable position (left/right) and shape (circle/square).",
+      "Multiple font choices: Inter, Roboto, Open Sans, Lato, Georgia for personalization.",
+      "A4 and US Letter page size options for international compatibility.",
+      "Export to high-quality PDF or editable Word (.docx) formats.",
+      "ATS-friendly formatting tested against major applicant tracking systems.",
+      "100% free with no watermarks, no account required, works entirely in your browser."
     ],
-    safetyNote: "All resume data is processed locally in your browser. Your personal information is never stored on our servers. The resume you create stays completely private until you choose to download and share it.",
+    safetyNote: "All resume data is processed locally in your browser. Your personal information, work history, and contact details are never uploaded to any server. The Save Draft feature stores data only in your browser's localStorage, giving you complete control over your privacy. Your resume stays completely private until you choose to download and share it.",
     faqs: [
       {
-        question: "What is ATS-friendly formatting?",
-        answer: "ATS (Applicant Tracking System) is software used by employers to scan resumes. ATS-friendly formatting uses clear headings, standard sections, and readable fonts that these systems can parse correctly, increasing your chances of passing initial screening."
+        question: "What is ATS-friendly formatting and why does it matter?",
+        answer: "ATS (Applicant Tracking System) is software used by 99% of Fortune 500 companies and most employers to scan and filter resumes. ATS-friendly formatting uses clear section headings (Experience, Education, Skills), standard fonts, and proper structure that these systems can parse correctly. Our templates are designed to pass ATS screening while looking professional to human recruiters."
       },
       {
         question: "Should I include a photo on my resume?",
-        answer: "This depends on your location and industry. In the US, photos are typically not recommended due to potential bias concerns. In Europe and some other regions, photos are more common. The tool gives you the option to include or exclude photos based on your preference."
+        answer: "This depends on your location and industry. In the US and UK, photos are typically not recommended due to potential bias concerns and anti-discrimination laws. In Europe, Asia, and many other regions, photos are standard and expected. For creative industries like modeling or acting, photos are always appropriate. Our tool gives you the option to include or exclude photos based on your preference."
       },
       {
         question: "Which format should I download: PDF or Word?",
-        answer: "PDF is best for preserving formatting exactly as designed. Word (.docx) is useful if you need to make quick edits or if an employer specifically requests it. We recommend having both versions ready."
+        answer: "PDF is best for preserving formatting exactly as designed and is the most widely accepted format for job applications. It ensures your resume looks identical on any device. Word (.docx) is useful if you need to make quick edits, if an employer's ATS specifically requests it, or if a job posting requires Word format. We recommend having both versions ready for different application requirements."
       },
       {
         question: "Can I edit my resume after downloading?",
-        answer: "The Word format can be edited in Microsoft Word or Google Docs. For PDF, you would need to use this tool again or a PDF editor. We recommend saving your information to easily recreate or update your resume."
+        answer: "Yes! The Word format can be edited in Microsoft Word, Google Docs, or LibreOffice. For PDF, you can use our Edit PDF tool or recreate it using the Save Draft feature. We strongly recommend saving your draft before downloading so you can easily update your resume anytime without re-entering all information."
+      },
+      {
+        question: "How does the Resume Import feature work?",
+        answer: "Our AI-powered parser reads text from your uploaded PDF or Word resume and intelligently identifies sections like contact info, experience, education, and skills. It then auto-fills the corresponding form fields. While not perfect for all formats, it saves significant time. Always review and adjust the imported data for accuracy."
+      },
+      {
+        question: "Is my data safe with the Save Draft feature?",
+        answer: "Absolutely. The Save Draft feature stores your resume data exclusively in your browser's localStorage on your device. No data is sent to any server. Your information remains completely private and accessible only from your browser. Clearing browser data will remove saved drafts, so download your completed resume before clearing."
+      },
+      {
+        question: "What's the difference between the seven resume templates?",
+        answer: "Modern: Clean blue gradient header, ideal for tech and corporate roles. Classic: Traditional gray tones, suits conservative industries. Minimal: Simple black and white, maximum readability. Creative: Pink gradient, great for design and marketing. Executive: Amber/gold tones for senior leadership positions. Technical: Cyan/blue with section highlights for IT and engineering. Academic: Emerald/teal for researchers and educators."
+      },
+      {
+        question: "How long should my resume be?",
+        answer: "For most professionals, one page is ideal for those with less than 10 years of experience. Two pages are acceptable for senior professionals with extensive relevant experience. Academic CVs can be longer to include publications, research, and presentations. Our templates are designed to maximize content within appropriate page limits."
       }
     ]
   };
@@ -349,9 +370,9 @@ export default function AIResumeBuilder() {
   return (
     <>
       <CanonicalHead 
-        title="AI Resume Builder Free Online - Create Professional Resumes | MyPDFs"
-        description="Free AI resume builder with professional templates. Create ATS-friendly resumes with live preview."
-        keywords="resume builder, CV maker, professional resume, ATS resume, free resume, resume templates"
+        title="AI Resume Builder Free Online - Create ATS-Friendly Resumes | MyPDFs"
+        description="Free AI resume builder with 7 professional templates. Import existing resumes, save drafts, download PDF or Word. ATS-optimized, no signup required."
+        keywords="resume builder, CV maker, professional resume, ATS resume, free resume, resume templates, ai resume, job application, career, pdf resume"
       />
       <ToolLayout
         title="AI Resume Builder"

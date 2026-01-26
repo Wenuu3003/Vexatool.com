@@ -69,17 +69,20 @@ function isValidIpAddress(ip: string): boolean {
   return ipv6Pattern.test(ip);
 }
 
-// Verify Bingbot IP using reverse DNS lookup
-// Legitimate Bingbot IPs resolve to hostnames ending with .search.msn.com
-async function verifyBingbotIp(ip: string): Promise<{
+// Verify bot IP using reverse DNS lookup
+// Bingbot: hostnames ending with .search.msn.com
+// Googlebot: hostnames ending with .googlebot.com or .google.com
+async function verifyBotIp(
+  ip: string, 
+  botType: 'bingbot' | 'googlebot'
+): Promise<{
   isValid: boolean;
   hostname: string | null;
   forwardIp: string | null;
   error: string | null;
 }> {
   try {
-    // Step 1: Reverse DNS lookup using public DNS API
-    // Using Cloudflare's DNS-over-HTTPS for reliable lookups
+    // Step 1: Reverse DNS lookup using Cloudflare's DNS-over-HTTPS
     const reverseName = ip.split('.').reverse().join('.') + '.in-addr.arpa';
     
     const reverseResponse = await fetch(
@@ -114,15 +117,24 @@ async function verifyBingbotIp(ip: string): Promise<{
     // Remove trailing dot if present
     hostname = hostname.replace(/\.$/, '');
     
-    // Check if hostname ends with search.msn.com (Bingbot identifier)
-    const isBingHostname = hostname.endsWith('.search.msn.com');
+    // Check hostname based on bot type
+    let isValidHostname = false;
+    let expectedSuffix = '';
     
-    if (!isBingHostname) {
+    if (botType === 'bingbot') {
+      isValidHostname = hostname.endsWith('.search.msn.com');
+      expectedSuffix = '.search.msn.com';
+    } else if (botType === 'googlebot') {
+      isValidHostname = hostname.endsWith('.googlebot.com') || hostname.endsWith('.google.com');
+      expectedSuffix = '.googlebot.com or .google.com';
+    }
+    
+    if (!isValidHostname) {
       return {
         isValid: false,
         hostname,
         forwardIp: null,
-        error: `Hostname "${hostname}" does not end with .search.msn.com`
+        error: `Hostname "${hostname}" does not end with ${expectedSuffix}`
       };
     }
     
@@ -168,7 +180,7 @@ async function verifyBingbotIp(ip: string): Promise<{
       };
     }
     
-    // Both checks passed - this is a legitimate Bingbot IP
+    // Both checks passed - this is a legitimate bot IP
     return {
       isValid: true,
       hostname,
@@ -231,8 +243,8 @@ serve(async (req) => {
     const body = await req.json();
     const { urls, submitAll, action, ip } = body;
     
-    // Handle Bingbot IP verification action
-    if (action === 'verify-bingbot') {
+    // Handle bot IP verification actions
+    if (action === 'verify-bingbot' || action === 'verify-googlebot') {
       if (!ip || typeof ip !== 'string') {
         return new Response(
           JSON.stringify({ error: "IP address is required for verification" }),
@@ -248,17 +260,25 @@ serve(async (req) => {
         );
       }
       
-      const result = await verifyBingbotIp(ip);
+      const botType = action === 'verify-bingbot' ? 'bingbot' : 'googlebot';
+      const result = await verifyBotIp(ip, botType);
+      
+      const responseKey = botType === 'bingbot' ? 'isBingbot' : 'isGooglebot';
+      const suffix = botType === 'bingbot' 
+        ? '.search.msn.com' 
+        : '.googlebot.com or .google.com';
       
       return new Response(
         JSON.stringify({
           ip,
-          isBingbot: result.isValid,
+          botType,
+          [responseKey]: result.isValid,
+          isVerified: result.isValid,
           hostname: result.hostname,
           forwardIp: result.forwardIp,
           error: result.error,
           verificationMethod: "Reverse DNS lookup (PTR) + Forward DNS verification",
-          trustedHostnameSuffix: ".search.msn.com"
+          trustedHostnameSuffix: suffix
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

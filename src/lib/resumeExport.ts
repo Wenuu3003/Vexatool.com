@@ -34,32 +34,37 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
   const element = document.getElementById(elementId);
   if (!element) throw new Error("Resume preview element not found");
 
-  // Store original styles
-  const originalWidth = element.style.width;
-  const originalTransform = element.style.transform;
-  const originalPosition = element.style.position;
-  
   // Set fixed width for consistent rendering (A4 width in pixels at 96dpi = 794px)
   const A4_WIDTH_PX = 794;
-  const A4_HEIGHT_PX = 1123;
-  
-  // Prepare element for capture
-  element.style.width = `${A4_WIDTH_PX}px`;
-  element.style.transform = 'none';
-  element.style.position = 'relative';
 
-  // Wait for fonts and layout to settle
+  // Wait for fonts and images to load
   await document.fonts.ready;
-  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  // Wait for any images to load
+  const images = element.querySelectorAll('img');
+  await Promise.all(
+    Array.from(images).map((img) => {
+      if (img.complete) return Promise.resolve();
+      return new Promise((resolve) => {
+        img.onload = resolve;
+        img.onerror = resolve;
+      });
+    })
+  );
+  
+  // Short delay for layout stabilization
+  await new Promise(resolve => setTimeout(resolve, 150));
 
   try {
     const canvas = await html2canvas(element, {
-      scale: 3, // Higher scale for better quality
+      scale: 2, // Good balance of quality and performance
       useCORS: true,
+      allowTaint: true, // Allow cross-origin images
       logging: false,
       backgroundColor: "#ffffff",
       width: A4_WIDTH_PX,
       windowWidth: A4_WIDTH_PX,
+      imageTimeout: 5000,
       onclone: (clonedDoc) => {
         const clonedElement = clonedDoc.getElementById(elementId);
         if (clonedElement) {
@@ -80,6 +85,14 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
               htmlEl.style.flexWrap = 'wrap';
             }
           });
+          
+          // Handle profile images - convert to data URLs if needed
+          const clonedImages = clonedElement.querySelectorAll('img');
+          clonedImages.forEach((img) => {
+            if (img.src.startsWith('data:')) {
+              img.crossOrigin = 'anonymous';
+            }
+          });
         }
       }
     });
@@ -95,7 +108,7 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
       compress: true,
     });
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.95);
+    const imgData = canvas.toDataURL("image/jpeg", 0.92);
 
     // Handle multi-page if content is longer than one page
     let heightLeft = imgHeight;
@@ -117,11 +130,9 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
     }
 
     pdf.save(`${filename}.pdf`);
-  } finally {
-    // Restore original styles
-    element.style.width = originalWidth;
-    element.style.transform = originalTransform;
-    element.style.position = originalPosition;
+  } catch (error) {
+    console.error("PDF export error:", error);
+    throw new Error("Failed to generate PDF. Please try again.");
   }
 };
 

@@ -34,8 +34,9 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
   const element = document.getElementById(elementId);
   if (!element) throw new Error("Resume preview element not found");
 
-  // Set fixed width for consistent rendering (A4 width in pixels at 96dpi = 794px)
+  // A4 dimensions in pixels at 96dpi
   const A4_WIDTH_PX = 794;
+  const A4_HEIGHT_PX = 1123;
 
   // Wait for fonts and images to load
   await document.fonts.ready;
@@ -53,7 +54,7 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
   );
   
   // Short delay for layout stabilization
-  await new Promise(resolve => setTimeout(resolve, 150));
+  await new Promise(resolve => setTimeout(resolve, 200));
 
   try {
     const canvas = await html2canvas(element, {
@@ -63,45 +64,49 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
       logging: false,
       backgroundColor: "#ffffff",
       width: A4_WIDTH_PX,
+      height: Math.max(element.scrollHeight, A4_HEIGHT_PX),
       windowWidth: A4_WIDTH_PX,
       imageTimeout: 5000,
+      removeContainer: true,
       onclone: (clonedDoc) => {
         const clonedElement = clonedDoc.getElementById(elementId);
         if (clonedElement) {
-          // Force fixed dimensions on cloned element
-          clonedElement.style.width = `${A4_WIDTH_PX}px`;
-          clonedElement.style.maxWidth = `${A4_WIDTH_PX}px`;
-          clonedElement.style.minWidth = `${A4_WIDTH_PX}px`;
+          // Remove any transforms that might affect rendering
           clonedElement.style.transform = 'none';
           clonedElement.style.position = 'relative';
           clonedElement.style.overflow = 'visible';
+          clonedElement.style.width = `${A4_WIDTH_PX}px`;
+          clonedElement.style.maxWidth = `${A4_WIDTH_PX}px`;
+          clonedElement.style.minWidth = `${A4_WIDTH_PX}px`;
           
-          // FIX: Replace CSS gradients with solid colors for html2canvas compatibility
+          // Replace CSS gradients with solid colors for html2canvas compatibility
           const elementsWithGradients = clonedElement.querySelectorAll('[class*="bg-gradient"]');
           elementsWithGradients.forEach((el) => {
             const htmlEl = el as HTMLElement;
-            const computed = window.getComputedStyle(htmlEl);
-            const bgImage = computed.backgroundImage;
+            const className = htmlEl.className;
             
-            // Extract first color from gradient and use as solid background
-            if (bgImage && bgImage.includes('gradient')) {
-              // Get approximate solid color based on template class
-              if (htmlEl.className.includes('from-pink')) {
-                htmlEl.style.background = '#ec4899'; // pink-500
-              } else if (htmlEl.className.includes('from-amber')) {
-                htmlEl.style.background = '#b45309'; // amber-700
-              } else if (htmlEl.className.includes('from-cyan')) {
-                htmlEl.style.background = '#0891b2'; // cyan-600
-              } else if (htmlEl.className.includes('from-emerald')) {
-                htmlEl.style.background = '#047857'; // emerald-700
-              } else {
-                htmlEl.style.background = '#3b82f6'; // blue-500 fallback
-              }
-              htmlEl.style.backgroundImage = 'none';
+            // Map gradient classes to solid fallback colors
+            if (className.includes('from-pink')) {
+              htmlEl.style.background = '#ec4899';
+            } else if (className.includes('from-amber')) {
+              htmlEl.style.background = '#b45309';
+            } else if (className.includes('from-cyan')) {
+              htmlEl.style.background = '#0891b2';
+            } else if (className.includes('from-emerald')) {
+              htmlEl.style.background = '#047857';
+            } else if (className.includes('from-blue')) {
+              htmlEl.style.background = '#2563eb';
+            } else if (className.includes('from-gray') || className.includes('from-slate')) {
+              htmlEl.style.background = '#475569';
+            } else if (className.includes('from-purple')) {
+              htmlEl.style.background = '#7c3aed';
+            } else {
+              htmlEl.style.background = '#3b82f6';
             }
+            htmlEl.style.backgroundImage = 'none';
           });
           
-          // Fix any flex issues
+          // Fix flex issues
           const allElements = clonedElement.querySelectorAll('*');
           allElements.forEach((el) => {
             const htmlEl = el as HTMLElement;
@@ -125,7 +130,7 @@ export const exportToPDF = async (elementId: string, filename: string): Promise<
       compress: true,
     });
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.92);
+    const imgData = canvas.toDataURL("image/jpeg", 0.95);
 
     // Handle multi-page if content is longer than one page
     let heightLeft = imgHeight;

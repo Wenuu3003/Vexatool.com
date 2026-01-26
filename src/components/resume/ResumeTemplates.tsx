@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
-export type TemplateType = "modern" | "professional" | "minimal" | "creative";
-export type FontFamily = "inter" | "roboto" | "calibri" | "times";
+export type TemplateType = "modern" | "professional" | "minimal" | "creative" | "executive" | "technical" | "academic";
+export type FontFamily = "inter" | "roboto" | "calibri" | "times" | "georgia";
 
 export const templateConfig = {
   modern: {
@@ -32,6 +32,27 @@ export const templateConfig = {
     accentColor: "text-pink-600",
     sectionStyle: "rounded-lg bg-muted/30 p-3",
   },
+  executive: {
+    name: "Executive",
+    headerBg: "bg-gradient-to-r from-amber-700 to-amber-900",
+    headerText: "text-white",
+    accentColor: "text-amber-700",
+    sectionStyle: "border-b border-amber-200 pb-2",
+  },
+  technical: {
+    name: "Technical",
+    headerBg: "bg-gradient-to-r from-cyan-600 to-blue-700",
+    headerText: "text-white",
+    accentColor: "text-cyan-600",
+    sectionStyle: "border-l-2 border-cyan-500 pl-3 bg-cyan-50/30 rounded-r",
+  },
+  academic: {
+    name: "Academic",
+    headerBg: "bg-gradient-to-r from-emerald-700 to-teal-800",
+    headerText: "text-white",
+    accentColor: "text-emerald-700",
+    sectionStyle: "border-t border-emerald-200 pt-2",
+  },
 };
 
 export const fontConfig: Record<FontFamily, { name: string; className: string }> = {
@@ -39,6 +60,7 @@ export const fontConfig: Record<FontFamily, { name: string; className: string }>
   roboto: { name: "Roboto", className: "font-sans" },
   calibri: { name: "Calibri", className: "font-sans" },
   times: { name: "Times New Roman", className: "font-serif" },
+  georgia: { name: "Georgia", className: "font-serif" },
 };
 
 interface TemplateSelectorProps {
@@ -47,7 +69,7 @@ interface TemplateSelectorProps {
 }
 
 export const TemplateSelector = ({ selected, onSelect }: TemplateSelectorProps) => {
-  const templates: TemplateType[] = ["modern", "professional", "minimal", "creative"];
+  const templates: TemplateType[] = ["modern", "professional", "minimal", "creative", "executive", "technical", "academic"];
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -75,7 +97,7 @@ interface FontSelectorProps {
 }
 
 export const FontSelector = ({ selected, onSelect }: FontSelectorProps) => {
-  const fonts: FontFamily[] = ["inter", "roboto", "calibri", "times"];
+  const fonts: FontFamily[] = ["inter", "roboto", "calibri", "times", "georgia"];
 
   return (
     <div className="flex flex-wrap gap-2">

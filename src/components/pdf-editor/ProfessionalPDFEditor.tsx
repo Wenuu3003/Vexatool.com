@@ -22,6 +22,7 @@ import { EditorCanvas } from './EditorCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
 import { PageThumbnails } from './PageThumbnails';
 import { WatermarkDialog } from './WatermarkDialog';
+import { DownloadPreviewDialog } from './DownloadPreviewDialog';
 import { useEditorHistory } from './useEditorHistory';
 
 // Set up the worker
@@ -50,6 +51,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showWatermarkDialog, setShowWatermarkDialog] = useState(false);
+  const [showDownloadDialog, setShowDownloadDialog] = useState(false);
   const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   
   // Brush and eraser settings
@@ -354,9 +356,16 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     }
   }, []);
 
+  // Show download preview dialog
+  const handleShowDownloadDialog = useCallback(() => {
+    setShowDownloadDialog(true);
+  }, []);
+
   // Download PDF
   const handleDownload = useCallback(async () => {
     if (!pdfDocument) return;
+    
+    setShowDownloadDialog(false);
     
     setIsProcessing(true);
     
@@ -658,7 +667,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         onDelete={handleDelete}
         onDuplicate={handleDuplicate}
         onToggleLock={handleToggleLock}
-        onDownload={handleDownload}
+        onDownload={handleShowDownloadDialog}
         isProcessing={isProcessing}
         brushSettings={brushSettings}
         onBrushSettingsChange={setBrushSettings}
@@ -713,6 +722,17 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         onApply={handleApplyWatermark}
         currentPage={currentPage}
         totalPages={pages.filter(p => !p.deleted).length}
+      />
+      
+      {/* Download preview dialog */}
+      <DownloadPreviewDialog
+        open={showDownloadDialog}
+        onOpenChange={setShowDownloadDialog}
+        onConfirm={handleDownload}
+        elements={elements}
+        pages={pages}
+        fileName={file.name}
+        isProcessing={isProcessing}
       />
     </div>
   );

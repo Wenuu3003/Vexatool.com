@@ -433,14 +433,7 @@ export const ToolsGrid = () => {
           aria-label="PDF and utility tools"
         >
           {tools.map((tool, index) => (
-            <div
-              key={tool.title}
-              className="animate-fade-in"
-              style={{ animationDelay: `${Math.min(index * 0.02, 0.2)}s` }}
-              role="listitem"
-            >
-              <ToolCard {...tool} />
-            </div>
+            <ToolCard key={tool.title} {...tool} index={index} />
           ))}
         </div>
       </div>

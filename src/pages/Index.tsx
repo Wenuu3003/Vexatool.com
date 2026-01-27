@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { QuickAccessBar } from "@/components/QuickAccessBar";
 import { Hero } from "@/components/Hero";
+import { TrustStrip } from "@/components/TrustStrip";
 import { Footer } from "@/components/Footer";
 import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner";
 import { Helmet } from "react-helmet";
@@ -93,6 +94,7 @@ const Index = () => {
         <QuickAccessBar />
         <main className="flex-1" role="main">
           <Hero />
+          <TrustStrip />
           
           {showDeferredContent && (
             <>

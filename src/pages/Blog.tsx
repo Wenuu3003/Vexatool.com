@@ -225,17 +225,17 @@ const Blog = () => {
   return (
     <>
       <Helmet>
-        <title>PDF Blog - Expert Tips, Tutorials & Guides | MyPDFs</title>
-        <meta name="description" content="Expert PDF guides and tutorials. Learn to compress, merge, convert, protect, and edit PDFs. Free tips for better document management in 2026." />
-        <meta name="keywords" content="PDF blog, PDF tips, PDF guides, PDF tutorials, compress PDF, merge PDF, PDF to Word, document management, PDF tools, free PDF" />
+        <title>Document Tips & Tutorials - PDF Guides for 2026 | Mypdfs Blog</title>
+        <meta name="description" content="Learn professional PDF editing techniques, document conversion tips, and productivity guides. Expert tutorials for managing digital documents effectively." />
+        <meta name="keywords" content="PDF tutorials, document editing guide, file conversion tips, PDF compression guide, digital document management, productivity tips" />
         <link rel="canonical" href="https://mypdfs.in/blog" />
-        <meta property="og:title" content="PDF Blog - Expert Tips & Tutorials | MyPDFs" />
-        <meta property="og:description" content="Expert PDF guides and tutorials. Learn to compress, merge, convert, protect, and edit PDFs for free." />
+        <meta property="og:title" content="Document Tips & Tutorials | Mypdfs Blog" />
+        <meta property="og:description" content="Expert tutorials for PDF editing, document conversion, and digital productivity. Learn professional techniques for free." />
         <meta property="og:url" content="https://mypdfs.in/blog" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="PDF Blog - Expert Tips & Tutorials | MyPDFs" />
-        <meta name="twitter:description" content="Expert PDF guides and tutorials. Learn to compress, merge, convert, protect, and edit PDFs for free." />
+        <meta name="twitter:title" content="Document Tips & Tutorials | Mypdfs Blog" />
+        <meta name="twitter:description" content="Expert tutorials for PDF editing, document conversion, and digital productivity." />
         <meta name="robots" content="index, follow" />
       </Helmet>
 
@@ -244,9 +244,9 @@ const Blog = () => {
         
         <main className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold mb-4 text-foreground">Blog</h1>
+            <h1 className="text-4xl font-bold mb-4 text-foreground">Document Tips & Tutorials</h1>
             <p className="text-xl text-muted-foreground mb-12">
-              Tips, guides, and tutorials for working with PDFs and documents
+              Expert guides for PDF editing, file conversion, and digital productivity
             </p>
 
             <div className="space-y-8">

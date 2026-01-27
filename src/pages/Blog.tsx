@@ -14,6 +14,21 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  // Featured: Love & Age Calculator (high visibility for viral traffic)
+  {
+    slug: "love-age-calculator-complete-guide",
+    title: "Love Calculator & Age Calculator: Complete Guide with Zodiac Compatibility & Social Sharing",
+    excerpt: "Test love compatibility with our triple-scoring algorithm featuring name matching, numerology, and zodiac analysis. Create personalized share cards for Instagram Stories and WhatsApp Status.",
+    date: "2026-01-27",
+    readTime: "15 min read",
+  },
+  {
+    slug: "age-calculator-birthday-planning",
+    title: "Age Calculator: Beyond Numbers - Understanding Life Milestones in 2026",
+    excerpt: "Calculate your exact age in years, months, days, hours, and more. Discover legal age milestones in India, fascinating birthday facts, and create beautiful shareable cards.",
+    date: "2026-01-27",
+    readTime: "10 min read",
+  },
   // New SEO-optimized posts for top 20 tools
   {
     slug: "qr-code-generator-complete-guide",
@@ -70,13 +85,6 @@ const blogPosts: BlogPost[] = [
     excerpt: "Master PDF splitting for better document organization. Extract specific pages, create chapters, and manage large documents effectively.",
     date: "2026-01-17",
     readTime: "7 min read",
-  },
-  {
-    slug: "age-calculator-birthday-planning",
-    title: "Age Calculator: Beyond Numbers - Understanding Life Milestones",
-    excerpt: "Calculate your exact age in years, months, days, and more. Discover interesting age-related facts and plan milestone celebrations.",
-    date: "2026-01-16",
-    readTime: "6 min read",
   },
   {
     slug: "bmi-calculator-health-guide",

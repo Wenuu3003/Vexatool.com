@@ -92,18 +92,26 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     setPages
   );
 
-  // Load PDF on mount
+  // Load PDF on mount - run only once when file changes
   useEffect(() => {
+    let isCancelled = false;
+    
     const loadPDF = async () => {
       setIsLoading(true);
       try {
         const arrayBuffer = await file.arrayBuffer();
+        if (isCancelled) return;
+        
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        if (isCancelled) return;
+        
         setPdfDocument(pdf);
         
         const loadedPages: PageInfo[] = [];
         
         for (let i = 1; i <= pdf.numPages; i++) {
+          if (isCancelled) return;
+          
           const page = await pdf.getPage(i);
           const viewport = page.getViewport({ scale: 1.5 });
           
@@ -127,11 +135,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           });
         }
         
+        if (isCancelled) return;
+        
         setPages(loadedPages);
-        saveToHistory();
         
         // Detect PDF type
         const type = await detectPDFType(pdf, 0);
+        if (isCancelled) return;
+        
         setPdfType(type);
         
         toast({
@@ -139,6 +150,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           description: `${type === 'text-based' ? 'Text-based' : type === 'scanned' ? 'Scanned/Image' : 'Mixed'} PDF detected. ${pdf.numPages} page(s).`,
         });
       } catch (error) {
+        if (isCancelled) return;
         console.error('Error loading PDF:', error);
         toast({
           title: 'Error',
@@ -146,12 +158,19 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           variant: 'destructive',
         });
       } finally {
-        setIsLoading(false);
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       }
     };
     
     loadPDF();
-  }, [file, toast]);
+    
+    return () => {
+      isCancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
 
   // Keyboard shortcuts
   useEffect(() => {

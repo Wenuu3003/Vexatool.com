@@ -414,16 +414,21 @@ const tools = [
 
 export const ToolsGrid = () => {
   return (
-    <section id="tools-grid" className="py-12 md:py-16 bg-background" aria-labelledby="tools-section-heading">
+    <section id="tools-grid" className="py-16 md:py-24 bg-background" aria-labelledby="tools-section-heading">
       <div className="container mx-auto px-4">
-        <h2 id="tools-section-heading" className="text-2xl md:text-3xl font-bold text-foreground mb-8 text-center">
-          All Free Online Tools
-        </h2>
-        <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-10">
-          Choose from our collection of 40+ free tools for PDF editing, QR codes, image editing, calculators, and more.
-        </p>
+        {/* Section Header */}
+        <div className="text-center mb-14">
+          <h2 id="tools-section-heading" className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            All Free Online Tools
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Choose from our collection of 50+ free tools for PDF editing, image processing, AI assistance, and more.
+          </p>
+        </div>
+        
+        {/* Tools Grid */}
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
           role="list"
           aria-label="PDF and utility tools"
         >
@@ -431,7 +436,7 @@ export const ToolsGrid = () => {
             <div
               key={tool.title}
               className="animate-fade-in"
-              style={{ animationDelay: `${Math.min(index * 0.03, 0.3)}s` }}
+              style={{ animationDelay: `${Math.min(index * 0.02, 0.2)}s` }}
               role="listitem"
             >
               <ToolCard {...tool} />

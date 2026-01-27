@@ -49,20 +49,20 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-card border-b border-border" role="banner">
+    <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border" role="banner">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2" aria-label="Mypdfs Home - Free Online PDF Tools">
+          <Link to="/" className="flex items-center gap-2.5" aria-label="Mypdfs Home - Free Online PDF Tools">
             <img 
               src="/favicon.png" 
               alt="Mypdfs logo" 
-              className="w-9 h-9 rounded-lg"
+              className="w-9 h-9 rounded-xl shadow-sm"
               width={36}
               height={36}
             />
             <span className="text-xl font-bold text-foreground">
-              Mypdfs
+              My<span className="text-primary">pdfs</span>
             </span>
           </Link>
 
@@ -153,7 +153,7 @@ export const Header = () => {
         {/* Desktop Mega Menu */}
         {megaMenuOpen && (
           <div 
-            className="hidden md:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-lg animate-fade-in z-50"
+            className="hidden md:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-xl animate-fade-in z-50"
             onWheel={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
           >

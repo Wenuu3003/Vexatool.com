@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { Link } from "react-router-dom";
-import { FileText, Mail, Send, Facebook, Twitter, ShieldCheck, Lock, Zap, Globe } from "lucide-react";
+import { Mail, Send, Facebook, Twitter, ShieldCheck, Lock, Zap, Globe } from "lucide-react";
 
 export const Footer = forwardRef<HTMLElement>((_, ref) => {
   const currentYear = new Date().getFullYear();
@@ -49,15 +49,19 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
   return (
     <footer ref={ref} className="bg-card border-t border-border pt-16 pb-8" role="contentinfo" aria-label="Site footer">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-14">
           {/* Brand */}
           <div>
-            <Link to="/" className="flex items-center gap-2 mb-4" aria-label="Mypdfs Home">
-              <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-primary-foreground" aria-hidden="true" />
-              </div>
+            <Link to="/" className="flex items-center gap-2.5 mb-5" aria-label="Mypdfs Home">
+              <img 
+                src="/favicon.png" 
+                alt="Mypdfs logo" 
+                className="w-10 h-10 rounded-xl shadow-sm"
+                width={40}
+                height={40}
+              />
               <span className="text-xl font-bold text-foreground">
-                <span className="text-primary">My</span>pdfs
+                My<span className="text-primary">pdfs</span>
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -87,16 +91,16 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         </div>
 
         {/* Social Links */}
-        <div className="flex flex-col items-center gap-4 mb-8">
+        <div className="flex flex-col items-center gap-5 mb-10">
           <h4 className="font-semibold text-foreground">Connect With Us</h4>
-          <nav className="flex items-center gap-4" aria-label="Social media links">
+          <nav className="flex items-center gap-3" aria-label="Social media links">
             {socialLinks.map((social) => (
               <a
                 key={social.name}
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+                className="w-11 h-11 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-white transition-all duration-200"
                 aria-label={`Follow us on ${social.name}`}
                 title={`Follow us on ${social.name}`}
               >
@@ -105,27 +109,27 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
             ))}
           </nav>
           {/* Trust Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
             <a
               href="https://www.scamadviser.com/check-website/mypdfs.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors px-3 py-1.5 rounded-full bg-muted/50"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors px-4 py-2 rounded-xl bg-muted/50 border border-border"
               aria-label="View our ScamAdviser verification"
             >
               <ShieldCheck className="w-4 h-4 text-green-500" aria-hidden="true" />
               Verified Safe
             </a>
-            <span className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 rounded-full bg-muted/50">
+            <span className="flex items-center gap-2 text-sm text-muted-foreground px-4 py-2 rounded-xl bg-muted/50 border border-border">
               <Lock className="w-4 h-4 text-primary" aria-hidden="true" />
               256-bit SSL
             </span>
-            <span className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 rounded-full bg-muted/50">
-              <Zap className="w-4 h-4 text-yellow-500" aria-hidden="true" />
+            <span className="flex items-center gap-2 text-sm text-muted-foreground px-4 py-2 rounded-xl bg-muted/50 border border-border">
+              <Zap className="w-4 h-4 text-amber-500" aria-hidden="true" />
               100% Free
             </span>
-            <span className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 rounded-full bg-muted/50">
-              <Globe className="w-4 h-4 text-blue-500" aria-hidden="true" />
+            <span className="flex items-center gap-2 text-sm text-muted-foreground px-4 py-2 rounded-xl bg-muted/50 border border-border">
+              <Globe className="w-4 h-4 text-primary" aria-hidden="true" />
               Made in India
             </span>
           </div>

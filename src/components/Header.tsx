@@ -66,12 +66,13 @@ export const Header = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+          {/* Desktop Navigation - lg breakpoint for better tablet support */}
+          <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
             <Button
               variant="ghost"
+              size="sm"
               className={cn(
-                "text-foreground hover:text-primary flex items-center gap-1",
+                "text-foreground hover:text-primary flex items-center gap-1 text-sm",
                 megaMenuOpen && "bg-muted"
               )}
               onClick={() => setMegaMenuOpen(!megaMenuOpen)}
@@ -83,35 +84,38 @@ export const Header = () => {
             </Button>
             <Button
               variant="ghost"
-              className="text-foreground hover:text-primary"
+              size="sm"
+              className="text-foreground hover:text-primary text-sm"
               onClick={() => handleNavigation("/ai-resume-builder")}
             >
-              AI Resume Builder
+              AI Resume
             </Button>
             <Button
               variant="ghost"
-              className="text-foreground hover:text-primary"
+              size="sm"
+              className="text-foreground hover:text-primary text-sm"
               onClick={() => handleNavigation("/merge-pdf")}
             >
               Merge PDF
             </Button>
             <Button
               variant="ghost"
-              className="text-foreground hover:text-primary"
+              size="sm"
+              className="text-foreground hover:text-primary text-sm"
               onClick={() => handleNavigation("/compress-pdf")}
             >
-              Compress PDF
+              Compress
             </Button>
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
+                  <Button variant="outline" size="sm" className="gap-2">
                     <User className="w-4 h-4" />
-                    {user.email?.split("@")[0]}
+                    <span className="max-w-[100px] truncate">{user.email?.split("@")[0]}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -123,21 +127,21 @@ export const Header = () => {
               </DropdownMenu>
             ) : (
               <>
-                <Button variant="ghost" className="text-foreground" onClick={() => handleNavigation("/auth")}>
+                <Button variant="ghost" size="sm" className="text-foreground" onClick={() => handleNavigation("/auth")}>
                   Login
                 </Button>
-                <Button variant="default" onClick={() => handleNavigation("/auth")}>
+                <Button variant="default" size="sm" onClick={() => handleNavigation("/auth")}>
                   Sign up
                 </Button>
               </>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - visible on mobile and tablet */}
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
@@ -153,7 +157,7 @@ export const Header = () => {
         {/* Desktop Mega Menu */}
         {megaMenuOpen && (
           <div 
-            className="hidden md:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-xl animate-fade-in z-50"
+            className="hidden lg:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-xl animate-fade-in z-50"
             onWheel={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
           >
@@ -163,10 +167,10 @@ export const Header = () => {
           </div>
         )}
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - visible on mobile and tablet */}
         {mobileMenuOpen && (
           <div 
-            className="md:hidden fixed inset-0 top-16 bg-card z-50 overflow-y-auto animate-fade-in overscroll-contain"
+            className="lg:hidden fixed inset-0 top-16 bg-card z-50 overflow-y-auto animate-fade-in overscroll-contain"
             style={{ WebkitOverflowScrolling: 'touch' }}
             onWheel={(e) => e.stopPropagation()}
             onTouchMove={(e) => e.stopPropagation()}
@@ -196,7 +200,7 @@ export const Header = () => {
       {/* Overlay for mega menu */}
       {megaMenuOpen && (
         <div
-          className="fixed inset-0 top-16 bg-black/20 z-40 hidden md:block pointer-events-auto"
+          className="fixed inset-0 top-16 bg-black/20 z-40 hidden lg:block pointer-events-auto"
           onClick={() => setMegaMenuOpen(false)}
           aria-hidden="true"
         />

@@ -562,8 +562,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           el.page === i || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all')
         );
         
-        // Scale factor from canvas to PDF
-        const scaleFactor = pageWidth / (pageInfo.width / 1.5);
+        // Scale factor from editor canvas-space (PDF.js viewport at scale 1.5)
+        // to PDF user space (pdf-lib points). Since `pageInfo.width/height` are
+        // stored from `page.getViewport({ scale: 1.5 })`, we must scale back down.
+        const scaleFactor = pageWidth / pageInfo.width;
         
         for (const element of pageElements) {
           if (element.type === 'text') {

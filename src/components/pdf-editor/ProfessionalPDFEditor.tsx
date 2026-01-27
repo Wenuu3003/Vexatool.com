@@ -17,6 +17,7 @@ import {
   BrushSettings,
   EraserSettings
 } from './types';
+import { getAlignedPdfTextPlacement } from './pdfTextAlignment';
 import { EditorToolbar } from './EditorToolbar';
 import { EditorCanvas } from './EditorCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
@@ -577,13 +578,21 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             const g = parseInt(color.substring(2, 4), 16) / 255;
             const b = parseInt(color.substring(4, 6), 16) / 255;
             
-            const x = textEl.x * scaleFactor;
-            const y = pageHeight - (textEl.y * scaleFactor) - (textEl.fontSize * scaleFactor);
-            
+            const placement = getAlignedPdfTextPlacement({
+              pageHeight,
+              scaleFactor,
+              x: textEl.x,
+              y: textEl.y,
+              width: textEl.width,
+              height: textEl.height,
+              fontSize: textEl.fontSize,
+              font,
+            });
+
             page.drawText(textEl.text, {
-              x,
-              y,
-              size: textEl.fontSize * scaleFactor,
+              x: placement.x,
+              y: placement.y,
+              size: placement.size,
               font,
               color: rgb(r, g, b),
               opacity: textEl.opacity,

@@ -60,9 +60,9 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Mypdfs - Free Online PDF Tools, Image Tools & AI Utilities | 50+ Tools</title>
-        <meta name="description" content="Free PDF editor with 50+ tools. Merge, split, compress PDFs. QR code generator, AI tools & calculators. 100% free, no signup." />
-        <meta name="keywords" content="PDF tools, merge PDF, split PDF, compress PDF, PDF converter, PDF to Word, Word to PDF, PDF to Excel, JPG to PDF, PNG to PDF, QR code generator, QR code scanner, currency converter, SEO tool, free online tools, AI chat, file compressor, image resizer, background remover, EMI calculator, GST calculator" />
+        <title>Mypdfs - Free PDF Editor & Converter Tools Online | No Signup</title>
+        <meta name="description" content="Edit, merge, compress and convert PDF files online for free. Professional document tools including QR code generator, calculators and AI utilities. No registration required." />
+        <meta name="keywords" content="free PDF editor, PDF converter online, merge PDF files, compress PDF, PDF to Word converter, Word to PDF, image to PDF, QR code generator, document tools, online utilities" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="author" content="Mypdfs" />
         <meta name="publisher" content="Mypdfs" />
@@ -70,8 +70,8 @@ const Index = () => {
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Mypdfs - Free Online PDF Tools & Utilities | 50+ Tools" />
-        <meta property="og:description" content="Free PDF editor with 50+ tools. Merge, split, compress PDFs. QR generator, AI tools. No signup." />
+        <meta property="og:title" content="Mypdfs - Free PDF Editor & Document Tools" />
+        <meta property="og:description" content="Professional PDF editing and conversion tools. Merge, split, compress documents. Free QR generator and calculators." />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:site_name" content="Mypdfs" />
         <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
@@ -83,8 +83,8 @@ const Index = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@Mypdfs5" />
         <meta name="twitter:creator" content="@Mypdfs5" />
-        <meta name="twitter:title" content="Mypdfs - Free Online PDF Tools & Utilities" />
-        <meta name="twitter:description" content="Free online PDF editor with 50+ tools. QR code generator, AI chat, calculators. 100% free." />
+        <meta name="twitter:title" content="Mypdfs - Free PDF Editor & Document Tools" />
+        <meta name="twitter:description" content="Professional PDF tools online. Edit, merge, compress documents. Free calculators and QR generator." />
         <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
       </Helmet>
       

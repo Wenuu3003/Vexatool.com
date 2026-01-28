@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Image, Type } from 'lucide-react';
+import { Image, Type, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +9,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { WatermarkElement, FONT_FAMILIES, COLORS } from './types';
+
+// Branded watermark presets
+const WATERMARK_PRESETS = [
+  { label: "Powered by Mypdfs", text: "Powered by Mypdfs", position: "center" as const, opacity: 0.25, fontSize: 32, rotation: 0 },
+  { label: "Mypdfs.in", text: "mypdfs.in", position: "diagonal" as const, opacity: 0.3, fontSize: 36, rotation: 45 },
+  { label: "Confidential", text: "CONFIDENTIAL", position: "diagonal" as const, opacity: 0.3, fontSize: 48, rotation: 45 },
+  { label: "Draft", text: "DRAFT", position: "center" as const, opacity: 0.25, fontSize: 60, rotation: 0 },
+];
 
 interface WatermarkDialogProps {
   open: boolean;
@@ -26,16 +34,25 @@ export const WatermarkDialog = ({
   totalPages,
 }: WatermarkDialogProps) => {
   const [watermarkType, setWatermarkType] = useState<'text' | 'image'>('text');
-  const [text, setText] = useState('WATERMARK');
-  const [fontSize, setFontSize] = useState(48);
+  const [text, setText] = useState('Powered by Mypdfs');
+  const [fontSize, setFontSize] = useState(32);
   const [fontFamily, setFontFamily] = useState('Helvetica');
   const [color, setColor] = useState('#CCCCCC');
-  const [opacity, setOpacity] = useState(0.5);
-  const [rotation, setRotation] = useState(45);
-  const [position, setPosition] = useState<'center' | 'diagonal' | 'tiled'>('diagonal');
+  const [opacity, setOpacity] = useState(0.25);
+  const [rotation, setRotation] = useState(0);
+  const [position, setPosition] = useState<'center' | 'diagonal' | 'tiled'>('center');
   const [applyTo, setApplyTo] = useState<'current' | 'all'>('all');
   const [imageSrc, setImageSrc] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const applyPreset = (preset: typeof WATERMARK_PRESETS[0]) => {
+    setText(preset.text);
+    setPosition(preset.position);
+    setOpacity(preset.opacity);
+    setFontSize(preset.fontSize);
+    setRotation(preset.rotation);
+    setWatermarkType('text');
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,6 +108,27 @@ export const WatermarkDialog = ({
           </TabsList>
           
           <TabsContent value="text" className="space-y-4 mt-4">
+            {/* Quick Presets */}
+            <div className="space-y-2">
+              <Label className="flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-primary" />
+                Quick Presets
+              </Label>
+              <div className="flex flex-wrap gap-1.5">
+                {WATERMARK_PRESETS.map((preset) => (
+                  <Button
+                    key={preset.label}
+                    variant={text === preset.text ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => applyPreset(preset)}
+                    className="text-xs h-7"
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label>Watermark Text</Label>
               <Input

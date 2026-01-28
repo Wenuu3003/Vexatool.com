@@ -1,10 +1,10 @@
 import { Shield, Zap, UserX, Gift, FileText, Image, Cpu, Calculator } from "lucide-react";
 export const Hero = () => {
-  return <section className="py-16 md:py-28 bg-hero-gradient" aria-labelledby="hero-heading">
+  return <section className="py-16 md:py-28 bg-hero-gradient bg-gray-200" aria-labelledby="hero-heading">
       <div className="container mx-auto px-4">
         {/* Main Hero Content */}
-        <div className="max-w-4xl mx-auto text-center bg-[#fff0fd]">
-          <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+        <div className="max-w-4xl mx-auto text-center bg-slate-300">
+          <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight bg-slate-300">
             50+ Free Online Tools for{" "}
             <span className="text-primary">PDFs</span>,{" "}
             <span className="text-secondary">Images</span> & More
@@ -38,7 +38,7 @@ export const Hero = () => {
         
         {/* Trust indicators - Card style */}
         <div className="max-w-3xl mx-auto">
-          <div className="rounded-2xl p-6 shadow-md border border-border bg-amber-100">
+          <div className="rounded-2xl p-6 shadow-md border border-border bg-indigo-100">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">

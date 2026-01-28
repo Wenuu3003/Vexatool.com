@@ -17,7 +17,7 @@ const benefits = [{
   description: "Works on any device"
 }];
 export const TrustStrip = () => {
-  return <section className="py-8 border-y border-border bg-neutral-300" aria-label="Platform benefits">
+  return <section className="py-8 border-y border-border bg-[#fee6e6]" aria-label="Platform benefits">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {benefits.map(benefit => <div key={benefit.title} className="flex flex-col items-center text-center gap-2 p-4">

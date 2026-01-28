@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Droplets, Download, Image, Type, Upload } from "lucide-react";
+import { Droplets, Download, Image, Type, Upload, Sparkles } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { degrees } from "pdf-lib";
 import { FileUpload } from "@/components/FileUpload";
@@ -17,19 +17,37 @@ import { useFileHistory } from "@/hooks/useFileHistory";
 
 type WatermarkPosition = "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right" | "tile";
 
+// Preset watermark options
+const WATERMARK_PRESETS = [
+  { label: "Powered by Mypdfs", text: "Powered by Mypdfs", position: "bottom-right" as WatermarkPosition, opacity: 25, fontSize: 24, rotation: 0 },
+  { label: "Mypdfs.in", text: "mypdfs.in", position: "bottom-right" as WatermarkPosition, opacity: 30, fontSize: 28, rotation: 0 },
+  { label: "Confidential", text: "CONFIDENTIAL", position: "center" as WatermarkPosition, opacity: 30, fontSize: 48, rotation: -45 },
+  { label: "Draft", text: "DRAFT", position: "center" as WatermarkPosition, opacity: 25, fontSize: 60, rotation: -45 },
+  { label: "Sample", text: "SAMPLE", position: "tile" as WatermarkPosition, opacity: 20, fontSize: 36, rotation: -30 },
+];
+
 const WatermarkPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [watermarkType, setWatermarkType] = useState<"text" | "image">("text");
-  const [watermarkText, setWatermarkText] = useState("CONFIDENTIAL");
-  const [opacity, setOpacity] = useState([30]);
-  const [rotation, setRotation] = useState<number>(-45);
-  const [position, setPosition] = useState<WatermarkPosition>("center");
-  const [fontSize, setFontSize] = useState([40]);
+  const [watermarkText, setWatermarkText] = useState("Powered by Mypdfs");
+  const [opacity, setOpacity] = useState([25]);
+  const [rotation, setRotation] = useState<number>(0);
+  const [position, setPosition] = useState<WatermarkPosition>("bottom-right");
+  const [fontSize, setFontSize] = useState([24]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageScale, setImageScale] = useState([30]);
   const { saveFileHistory } = useFileHistory();
+
+  const applyPreset = (preset: typeof WATERMARK_PRESETS[0]) => {
+    setWatermarkText(preset.text);
+    setPosition(preset.position);
+    setOpacity([preset.opacity]);
+    setFontSize([preset.fontSize]);
+    setRotation(preset.rotation);
+    setWatermarkType("text");
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -304,6 +322,27 @@ const WatermarkPDF = () => {
                 </TabsList>
 
                 <TabsContent value="text" className="space-y-4 pt-4">
+                  {/* Quick Presets */}
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-primary" />
+                      Quick Presets
+                    </Label>
+                    <div className="flex flex-wrap gap-2">
+                      {WATERMARK_PRESETS.map((preset) => (
+                        <Button
+                          key={preset.label}
+                          variant={watermarkText === preset.text ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => applyPreset(preset)}
+                          className="text-xs"
+                        >
+                          {preset.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="watermarkText">Watermark Text</Label>
                     <Input

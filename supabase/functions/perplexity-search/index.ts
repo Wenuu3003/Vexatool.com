@@ -3,16 +3,15 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const ALLOWED_ORIGINS = [
   "https://mypdfs.in",
-  "https://mypdfs.lovable.app",
-  "https://mrjefpimgfzzjwoidocf.lovable.app",
+  "https://www.mypdfs.in",
   "http://localhost:5173",
   "http://localhost:8080",
 ];
 
-const isLovableAppOrigin = (origin: string) => {
+const isAllowedOrigin = (origin: string) => {
   try {
     const url = new URL(origin);
-    return url.hostname.endsWith(".lovable.app") || url.hostname.endsWith(".lovableproject.com");
+    return url.hostname === "mypdfs.in" || url.hostname === "www.mypdfs.in";
   } catch {
     return false;
   }
@@ -20,7 +19,7 @@ const isLovableAppOrigin = (origin: string) => {
 
 const getCorsHeaders = (origin: string | null) => {
   const allowedOrigin =
-    origin && (ALLOWED_ORIGINS.includes(origin) || isLovableAppOrigin(origin))
+    origin && (ALLOWED_ORIGINS.includes(origin) || isAllowedOrigin(origin))
       ? origin
       : "*";
 

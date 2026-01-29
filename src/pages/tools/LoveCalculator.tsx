@@ -13,6 +13,7 @@ import { LoveCalculatorForm, type LoveFormData, type Gender } from "@/components
 import { LoveResultDisplay, type LoveResult } from "@/components/calculators/LoveResultDisplay";
 import { AgeCalculatorForm } from "@/components/calculators/AgeCalculatorForm";
 import { AgeResultDisplay, type AgeResult } from "@/components/calculators/AgeResultDisplay";
+import { AgeWishesDisplay } from "@/components/calculators/AgeWishesDisplay";
 import { calculateLoveCompatibility, getLoveMessage } from "@/lib/loveCalculator";
 import { calculateAge } from "@/lib/ageCalculator";
 
@@ -56,6 +57,13 @@ const translations: Record<Language, Record<string, any>> = {
     totalDays: "Total Days",
     totalWeeks: "Total Weeks",
     totalHours: "Total Hours",
+    birthdayWishes: "Birthday Wishes",
+    motivationTips: "Life Wisdom",
+    advanceBirthday: "Advance Birthday Wishes",
+    belatedBirthday: "Belated Birthday Wishes",
+    presentBirthday: "Happy Birthday Today!",
+    daysLeft: "days until your birthday!",
+    ageBasedAdvice: "Age-based life advice",
     messages: {
       perfect: "A match made in heaven! Your bond is extraordinary! 💕",
       great: "You two share an amazing connection! Keep nurturing it! 💖",
@@ -101,6 +109,13 @@ const translations: Record<Language, Record<string, any>> = {
     totalDays: "Adventures",
     totalWeeks: "Weekends",
     totalHours: "Coffee Hours",
+    birthdayWishes: "Birthday Magic ✨",
+    motivationTips: "Life Hacks 🚀",
+    advanceBirthday: "Pre-Party Vibes",
+    belatedBirthday: "Fashionably Late Wishes",
+    presentBirthday: "IT'S YOUR DAY! 🎉",
+    daysLeft: "sleeps until your party!",
+    ageBasedAdvice: "Wisdom for your journey",
     messages: {
       perfect: "OMG! You two are basically soulmates! Wedding bells incoming! 🔔💍",
       great: "Wow! The universe ships you two SO hard! 🚀💕",
@@ -146,6 +161,13 @@ const translations: Record<Language, Record<string, any>> = {
     totalDays: "कुल दिन",
     totalWeeks: "कुल सप्ताह",
     totalHours: "कुल घंटे",
+    birthdayWishes: "जन्मदिन की शुभकामनाएं",
+    motivationTips: "जीवन ज्ञान",
+    advanceBirthday: "अग्रिम जन्मदिन की शुभकामनाएं",
+    belatedBirthday: "विलंबित जन्मदिन की शुभकामनाएं",
+    presentBirthday: "आज आपका जन्मदिन है!",
+    daysLeft: "दिन बाकी आपके जन्मदिन में!",
+    ageBasedAdvice: "आयु के अनुसार सलाह",
     messages: {
       perfect: "स्वर्ग में बना जोड़ा! आपका बंधन अद्भुत है! 💕",
       great: "आप दोनों में गहरा कनेक्शन है! इसे संभालें! 💖",
@@ -191,6 +213,13 @@ const translations: Record<Language, Record<string, any>> = {
     totalDays: "మొత్తం రోజులు",
     totalWeeks: "మొత్తం వారాలు",
     totalHours: "మొత్తం గంటలు",
+    birthdayWishes: "పుట్టినరోజు శుభాకాంక్షలు",
+    motivationTips: "జీవిత జ్ఞానం",
+    advanceBirthday: "ముందస్తు పుట్టినరోజు శుభాకాంక్షలు",
+    belatedBirthday: "ఆలస్యమైన పుట్టినరోజు శుభాకాంక్షలు",
+    presentBirthday: "ఈ రోజు మీ పుట్టినరోజు!",
+    daysLeft: "రోజులు మీ పుట్టినరోజుకు!",
+    ageBasedAdvice: "వయసు ఆధారిత జీవిత సలహా",
     messages: {
       perfect: "స్వర్గంలో తయారైన జోడీ! మీ బంధం అద్భుతం! 💕",
       great: "మీ ఇద్దరి మధ్య అద్భుతమైన కనెక్షన్ ఉంది! 💖",
@@ -321,15 +350,18 @@ export default function LoveCalculator() {
   };
 
   const seoContent = {
-    toolName: "Love Calculator & Age Calculator",
-    whatIs: "Our Love Calculator is a fun entertainment tool that calculates love compatibility using a triple-scoring algorithm: name matching (45%), numerology life path analysis (30%), and zodiac sign compatibility (25%). By adding your Date of Birth, the algorithm considers astrological harmony for enhanced results. Our Age Calculator provides precise age calculations including years, months, days, total days lived, and a countdown to your next birthday. Both tools support photo uploads for personalized shareable cards perfect for Instagram Stories and WhatsApp Status.",
+    toolName: "Love Calculator & Age Calculator with Birthday Wishes",
+    whatIs: "Our Love Calculator is a fun entertainment tool that calculates love compatibility using a triple-scoring algorithm: name matching (45%), numerology life path analysis (30%), and zodiac sign compatibility (25%). Our Age Calculator provides precise age calculations with special features: automatic birthday wishes (Present, Advance, or Belated based on your birthday), age-based motivation tips for children, young adults, adults, and seniors. Both tools support Telugu and English languages with photo uploads for personalized shareable cards perfect for Instagram Stories and WhatsApp Status.",
     howToUse: [
       "For Love Calculator: Enter both names, select gender, and optionally add DOB for numerology & zodiac analysis.",
       "Upload photos (optional) to personalize your share cards with profile pictures.",
       "Click 'Calculate Love' to see your compatibility percentage with detailed breakdown.",
-      "For Age Calculator: Enter your name (optional), date of birth, and optionally select a target date.",
+      "For Age Calculator: Select your preferred language (English or Telugu) from the dropdown.",
+      "Enter your name (optional), date of birth, and optionally select a target date.",
       "Upload your photo to create personalized birthday share cards.",
       "View your exact age, total days lived, birth day, and birthday countdown.",
+      "If it's your birthday, receive present wishes! If approaching, get advance wishes! If passed, get belated wishes!",
+      "Read personalized motivation tips based on your age group (child, young, adult, senior).",
       "Share fun results on Instagram Stories (9:16) or WhatsApp Status (1:1) using the share buttons!",
     ],
     features: [
@@ -341,9 +373,11 @@ export default function LoveCalculator() {
       "Precise age calculation in years, months, and days",
       "Total days, weeks, and hours lived statistics",
       "Next birthday countdown feature",
+      "Automatic Birthday Wishes: Present, Advance (within 7 days), or Belated",
+      "Age-based Motivation Tips: Child (<18), Young (18-30), Adult (30-50), Senior (50+)",
       "Multi-language support (English, Hindi, Telugu, Fun English)",
+      "Confetti celebration on your birthday with celebration sounds!",
       "100% client-side processing - no data sent to servers",
-      "Confetti celebration for 90%+ compatibility scores!",
     ],
     safetyNote: "Absolutely! Both tools run entirely in your browser. No personal data, names, photos, or birth dates are collected, stored, or transmitted to any server. The Love Calculator is purely for entertainment and fun with friends and family. Photos are processed locally and never uploaded anywhere.",
     faqs: [
@@ -354,6 +388,18 @@ export default function LoveCalculator() {
       {
         question: "How does the zodiac compatibility feature work?",
         answer: "When you enter birth dates, the calculator identifies your zodiac signs and checks element compatibility. Fire signs (Aries, Leo, Sagittarius) match well with Air signs (Gemini, Libra, Aquarius), while Earth signs (Taurus, Virgo, Capricorn) pair with Water signs (Cancer, Scorpio, Pisces). Same-element matches also score high!",
+      },
+      {
+        question: "How does the Age Calculator detect my birthday?",
+        answer: "The Age Calculator compares your birth date with the current date. If today is your birthday, you get 'Present Birthday Wishes' with confetti! If your birthday is within 7 days, you receive 'Advance Birthday Wishes'. If it passed within the last week, you get heartfelt 'Belated Birthday Wishes'.",
+      },
+      {
+        question: "What are the age-based motivation tips?",
+        answer: "Based on your age, you receive personalized life wisdom: Children (<18) get advice about dreaming big and learning; Young adults (18-30) receive career and financial tips; Adults (30-50) get family and investment guidance; Seniors (50+) receive wisdom about enjoying life and sharing knowledge.",
+      },
+      {
+        question: "Can I use this calculator in Telugu language?",
+        answer: "Yes! The Age Calculator fully supports Telugu (తెలుగు). Switch language using the dropdown at the top. All birthday wishes, motivation tips, labels, and messages display in Telugu. This makes it perfect for sharing with Telugu-speaking friends and family!",
       },
       {
         question: "Can I share my results on Instagram and WhatsApp?",
@@ -369,7 +415,7 @@ export default function LoveCalculator() {
       },
       {
         question: "Is the Age Calculator free to use?",
-        answer: "Yes, both the Age Calculator and Love Calculator are completely free to use with no hidden charges, subscriptions, or account registration required. All features including photo uploads and shareable cards are free!",
+        answer: "Yes, both the Age Calculator and Love Calculator are completely free to use with no hidden charges, subscriptions, or account registration required. All features including photo uploads, birthday wishes, motivation tips, and shareable cards are free!",
       },
       {
         question: "Can I calculate my age on a past or future date?",
@@ -534,26 +580,44 @@ export default function LoveCalculator() {
               />
 
               {ageResult && (
-                <AgeResultDisplay
-                  result={ageResult}
-                  birthDate={birthDate}
-                  photo={agePhoto}
-                  name={ageName}
-                  onShare={handleShareAge}
-                  translations={{
-                    yourAge: t.yourAge,
-                    years: t.years,
-                    months: t.months,
-                    days: t.days,
-                    nextBirthday: t.nextBirthday,
-                    daysUntil: t.daysUntil,
-                    bornOn: t.bornOn,
-                    shareResult: t.shareResult,
-                    totalDays: t.totalDays,
-                    totalWeeks: t.totalWeeks,
-                    totalHours: t.totalHours,
-                  }}
-                />
+                <>
+                  <AgeResultDisplay
+                    result={ageResult}
+                    birthDate={birthDate}
+                    photo={agePhoto}
+                    name={ageName}
+                    onShare={handleShareAge}
+                    translations={{
+                      yourAge: t.yourAge,
+                      years: t.years,
+                      months: t.months,
+                      days: t.days,
+                      nextBirthday: t.nextBirthday,
+                      daysUntil: t.daysUntil,
+                      bornOn: t.bornOn,
+                      shareResult: t.shareResult,
+                      totalDays: t.totalDays,
+                      totalWeeks: t.totalWeeks,
+                      totalHours: t.totalHours,
+                    }}
+                  />
+                  
+                  {/* Birthday Wishes & Motivation Tips */}
+                  <AgeWishesDisplay
+                    years={ageResult.years}
+                    daysUntilBirthday={ageResult.daysUntilBirthday}
+                    language={language === "te" ? "te" : "en"}
+                    translations={{
+                      birthdayWishes: t.birthdayWishes,
+                      motivationTips: t.motivationTips,
+                      advanceBirthday: t.advanceBirthday,
+                      belatedBirthday: t.belatedBirthday,
+                      presentBirthday: t.presentBirthday,
+                      daysLeft: t.daysLeft,
+                      ageBasedAdvice: t.ageBasedAdvice,
+                    }}
+                  />
+                </>
               )}
             </TabsContent>
           </Tabs>

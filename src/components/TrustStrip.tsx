@@ -27,7 +27,7 @@ export const TrustStrip = () => {
               <h3 className="font-semibold text-foreground text-sm md:text-base">
                 {benefit.title}
               </h3>
-              <p className="text-xs md:text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-primary">
                 {benefit.description}
               </p>
             </div>)}

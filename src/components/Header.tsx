@@ -44,7 +44,7 @@ export const Header = () => {
   return <>
       <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border" role="banner">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16 bg-tool-sign">
+          <div className="h-16 flex-row flex items-center justify-between rounded shadow-md opacity-100 bg-[#ef8abd]">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5" aria-label="Mypdfs Home - Free Online PDF Tools">
               <img src="/favicon.png" alt="Mypdfs logo" className="w-9 h-9 rounded-xl shadow-sm" width={36} height={36} />

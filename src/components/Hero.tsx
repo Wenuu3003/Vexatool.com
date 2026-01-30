@@ -17,19 +17,19 @@ export const Hero = () => {
           
           {/* Feature badges */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card text-foreground rounded-full text-sm font-medium shadow-sm border border-border">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card rounded-full text-sm font-medium shadow-sm border border-border text-tool-edit">
               <FileText className="w-4 h-4 text-primary" />
               PDF Tools
             </span>
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card text-foreground rounded-full text-sm font-medium shadow-sm border border-border">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card rounded-full text-sm font-medium shadow-sm border border-border text-tool-edit">
               <Image className="w-4 h-4 text-secondary" />
               Image Tools
             </span>
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card text-foreground rounded-full text-sm font-medium shadow-sm border border-border">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card rounded-full text-sm font-medium shadow-sm border border-border text-tool-edit">
               <Cpu className="w-4 h-4 text-primary" />
               AI Powered
             </span>
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card text-foreground rounded-full text-sm font-medium shadow-sm border border-border">
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 bg-card rounded-full text-sm font-medium shadow-sm border border-border text-tool-edit">
               <Calculator className="w-4 h-4 text-secondary" />
               Calculators
             </span>
@@ -44,25 +44,25 @@ export const Hero = () => {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Shield className="w-6 h-6 text-primary" />
                 </div>
-                <span className="text-sm font-medium text-foreground">Secure & Private</span>
+                <span className="text-sm font-medium text-tool-sign">Secure & Private</span>
               </div>
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
                   <Zap className="w-6 h-6 text-secondary" />
                 </div>
-                <span className="text-sm font-medium text-foreground">Instant Processing</span>
+                <span className="text-sm font-medium text-tool-sign">Instant Processing</span>
               </div>
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <UserX className="w-6 h-6 text-primary" />
                 </div>
-                <span className="text-sm font-medium text-foreground">No Signup Required</span>
+                <span className="text-sm font-medium text-tool-sign">No Signup Required</span>
               </div>
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center">
                   <Gift className="w-6 h-6 text-secondary" />
                 </div>
-                <span className="text-sm font-medium text-foreground">100% Free</span>
+                <span className="text-sm font-medium text-tool-sign">100% Free</span>
               </div>
             </div>
           </div>

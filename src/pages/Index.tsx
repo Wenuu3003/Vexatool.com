@@ -118,15 +118,17 @@ const Index = () => {
             fallback={
               <section 
                 id="tools-grid-placeholder"
-                className="py-12 md:py-16 bg-background" 
+                className="py-12 md:py-20 bg-background" 
                 aria-hidden="true"
-                style={{ minHeight: '2000px' }}
               >
                 <div className="container mx-auto px-4">
-                  <div className="h-8 w-64 mx-auto rounded-md loading-skeleton" />
-                  <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {Array.from({ length: 32 }).map((_, i) => (
-                      <div key={i} className="h-40 rounded-xl loading-skeleton" />
+                  <div className="text-center mb-10">
+                    <div className="h-10 w-64 mx-auto rounded-lg bg-muted animate-pulse" />
+                    <div className="h-6 w-96 mx-auto mt-4 rounded-lg bg-muted animate-pulse" />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                      <div key={i} className="h-72 rounded-2xl bg-muted animate-pulse" />
                     ))}
                   </div>
                 </div>

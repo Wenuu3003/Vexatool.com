@@ -35,6 +35,32 @@ export const toolCategories = [
 export const toolsData: ToolData[] = [
   // AI Tools
   {
+    id: "ai-chat",
+    title: "AI Chat Assistant",
+    description: "Ask any question and get instant AI-powered answers. Your personal intelligent assistant for research, writing, coding, and problem-solving.",
+    shortDescription: "Ask any question and get instant AI-powered answers.",
+    icon: MessageSquare,
+    colorClass: "bg-gradient-to-br from-blue-500 to-indigo-600",
+    href: "/ai-chat",
+    category: "ai",
+    previewImage: "/previews/ai-chat-preview.webp",
+    features: ["Instant answers", "Multi-topic support", "Context awareness", "Code assistance"],
+    seoKeywords: ["AI chat", "chatbot", "AI assistant", "ask AI"]
+  },
+  {
+    id: "ai-search",
+    title: "AI Web Search",
+    description: "Search the web with AI and get cited sources. Get comprehensive answers with verified references from across the internet.",
+    shortDescription: "Search the web with AI and get cited sources.",
+    icon: ScanLine,
+    colorClass: "bg-gradient-to-br from-cyan-500 to-blue-600",
+    href: "/ai-search",
+    category: "ai",
+    previewImage: "/previews/ai-search-preview.webp",
+    features: ["Web search", "Cited sources", "Comprehensive answers", "Real-time data"],
+    seoKeywords: ["AI search", "web search", "AI search engine", "cited sources"]
+  },
+  {
     id: "ai-text-generator",
     title: "AI Text Generator",
     description: "Generate creative content, articles, and stories using AI. Perfect for writers, marketers, and content creators who need high-quality text quickly.",
@@ -725,6 +751,19 @@ export const toolsData: ToolData[] = [
     previewImage: "/previews/google-drive-to-pdf-preview.webp",
     features: ["Drive integration", "All file types", "Direct conversion", "Fast processing"],
     seoKeywords: ["Google Drive to PDF", "convert Drive", "Docs to PDF", "cloud converter"]
+  },
+  {
+    id: "bot-verifier",
+    title: "Bot Verifier",
+    description: "Verify if a website visitor is a real human or a bot. Protect your forms and content from automated spam and abuse.",
+    shortDescription: "Verify if a visitor is a real human or a bot.",
+    icon: ScanLine,
+    colorClass: "bg-gradient-to-br from-emerald-500 to-green-600",
+    href: "/bot-verifier",
+    category: "utility",
+    previewImage: "/previews/bot-verifier-preview.webp",
+    features: ["Human verification", "Bot detection", "Spam protection", "Easy integration"],
+    seoKeywords: ["bot verifier", "captcha", "human verification", "bot detection"]
   },
 ];
 

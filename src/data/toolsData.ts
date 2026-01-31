@@ -208,19 +208,6 @@ export const toolsData: ToolData[] = [
     seoKeywords: ["love calculator", "compatibility test", "zodiac compatibility", "age calculator"]
   },
   {
-    id: "age-calculator",
-    title: "Age Calculator",
-    description: "Calculate your exact age in years, months, days, hours, minutes and seconds. Get birthday countdown and motivation tips.",
-    shortDescription: "Calculate your exact age with birthday countdown.",
-    icon: Cake,
-    colorClass: "bg-gradient-to-br from-amber-500 to-orange-500",
-    href: "/age-calculator",
-    category: "calculator",
-    previewImage: "/previews/age-calculator-preview.webp",
-    features: ["Exact age", "Birthday countdown", "Life statistics", "Share cards"],
-    seoKeywords: ["age calculator", "birthday calculator", "exact age", "age in days"]
-  },
-  {
     id: "bmi-calculator",
     title: "BMI Calculator",
     description: "Calculate your Body Mass Index and get personalized health recommendations based on your height and weight.",

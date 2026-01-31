@@ -96,7 +96,7 @@ const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
 const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
 const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
 const LoveCalculator = lazy(() => import("./pages/tools/LoveCalculator"));
-
+const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
 // Utility Tools - additional
 const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
 const WordCounter = lazy(() => import("./pages/tools/WordCounter"));
@@ -154,8 +154,8 @@ const App = () => (
               <Route path="/youtube-generator" element={<YouTubeGenerator />} />
               <Route path="/whatsapp-analyzer" element={<WhatsAppAnalyzer />} />
               {/* Calculator Tools */}
-              {/* 301 Redirect: Age Calculator merged into Love Calculator */}
-              <Route path="/age-calculator" element={<Navigate to="/love-calculator" replace />} />
+              <Route path="/age-calculator" element={<AgeCalculator />} />
+              <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/emi-calculator" element={<EMICalculator />} />
               <Route path="/gst-calculator" element={<GSTCalculator />} />

@@ -307,13 +307,23 @@ export const routes: RouteConfig[] = [
     category: 'Calculator Tools'
   },
   { 
+    path: '/age-calculator', 
+    priority: 0.9, 
+    changefreq: 'weekly', 
+    includeInSitemap: true,
+    title: 'Age Calculator - Calculate Exact Age in Years, Months & Days | Mypdfs',
+    description: 'Free online age calculator. Calculate your exact age in years, months, days, hours. Birthday wishes in English & Telugu. Share on Instagram & WhatsApp.',
+    keywords: 'age calculator, birthday calculator, how old am I, age in days, telugu age calculator, birthday wishes, exact age calculator',
+    category: 'Calculator Tools'
+  },
+  { 
     path: '/love-calculator', 
     priority: 0.9, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Love Calculator ❤️ & Age Calculator – Free Compatibility Test with Zodiac & Share Cards | Mypdfs',
-    description: 'Free Love Calculator with zodiac compatibility & Age Calculator with personalized share cards. Upload photos, get Instagram & WhatsApp ready images. Fun & safe!',
-    keywords: 'love calculator, age calculator, love compatibility test, zodiac love calculator, instagram story maker, whatsapp status, birthday calculator, numerology',
+    title: 'Love Calculator ❤️ Free Compatibility Test with Zodiac & Share Cards | Mypdfs',
+    description: 'Free Love Calculator with zodiac compatibility. Upload photos, get Instagram & WhatsApp ready images. Fun & safe!',
+    keywords: 'love calculator, love compatibility test, zodiac love calculator, instagram story maker, whatsapp status, numerology',
     category: 'Calculator Tools'
   },
   {

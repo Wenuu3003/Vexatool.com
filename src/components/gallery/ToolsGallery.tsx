@@ -57,7 +57,7 @@ export const ToolsGallery = ({
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-10">
-          <h2 id="gallery-heading" className="text-3xl md:text-4xl font-bold mb-4 text-foreground bg-muted-foreground" itemProp="name">
+          <h2 id="gallery-heading" className="text-3xl md:text-4xl font-bold mb-4 bg-transparent text-fuchsia-700" itemProp="name">
             All Free Online Tools
           </h2>
           <p className="text-lg max-w-2xl mx-auto text-muted-foreground" itemProp="description">

@@ -4,10 +4,10 @@ export const Hero = () => {
       <div className="container mx-auto px-4">
         {/* Main Hero Content */}
         <div className="max-w-4xl mx-auto text-center bg-transparent">
-          <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+          <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-tool-edit">
             50+ Free Online Tools for{" "}
-            <span className="text-primary">PDFs</span>,{" "}
-            <span className="text-secondary">Images</span> & More
+            <span className="text-tool-sign">PDFs</span>,{" "}
+            <span className="text-lime-600">Images</span> & More
           </h1>
           
           <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed text-secondary">

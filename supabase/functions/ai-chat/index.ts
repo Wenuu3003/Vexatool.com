@@ -11,9 +11,59 @@ const MAX_MESSAGES = 50;
 const MAX_MESSAGE_LENGTH = 10000;
 const VALID_ROLES = ['user', 'assistant', 'system'];
 
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS_ANONYMOUS = 5; // 5 requests per minute for anonymous
+const RATE_LIMIT_MAX_REQUESTS_AUTHENTICATED = 30; // 30 requests per minute for authenticated
+
+// In-memory rate limit store (resets on cold start, acceptable for edge function)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
 interface ChatMessage {
   role: string;
   content: string;
+}
+
+function getClientIP(req: Request): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  const realIP = req.headers.get('x-real-ip');
+  if (realIP) {
+    return realIP;
+  }
+  return 'unknown';
+}
+
+function checkRateLimit(identifier: string, isAuthenticated: boolean): { allowed: boolean; remaining: number; resetIn: number } {
+  const now = Date.now();
+  const maxRequests = isAuthenticated ? RATE_LIMIT_MAX_REQUESTS_AUTHENTICATED : RATE_LIMIT_MAX_REQUESTS_ANONYMOUS;
+  
+  const existing = rateLimitStore.get(identifier);
+  
+  if (!existing || now > existing.resetTime) {
+    // Start new window
+    rateLimitStore.set(identifier, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true, remaining: maxRequests - 1, resetIn: RATE_LIMIT_WINDOW_MS };
+  }
+  
+  if (existing.count >= maxRequests) {
+    return { allowed: false, remaining: 0, resetIn: existing.resetTime - now };
+  }
+  
+  existing.count++;
+  return { allowed: true, remaining: maxRequests - existing.count, resetIn: existing.resetTime - now };
+}
+
+// Cleanup old entries periodically (prevent memory leak)
+function cleanupRateLimitStore() {
+  const now = Date.now();
+  for (const [key, value] of rateLimitStore.entries()) {
+    if (now > value.resetTime) {
+      rateLimitStore.delete(key);
+    }
+  }
 }
 
 function validateMessages(messages: unknown): { valid: boolean; error?: string } {
@@ -62,9 +112,15 @@ serve(async (req) => {
   }
 
   try {
-    // Optional authentication - log user if authenticated, allow anonymous access
+    // Cleanup old rate limit entries
+    cleanupRateLimitStore();
+
+    // Authentication check - supports both authenticated and anonymous access
+    // Anonymous access is intentionally allowed for public tools (Grammar, Text Generator, etc.)
     let userId = "anonymous";
+    let isAuthenticated = false;
     const authHeader = req.headers.get('Authorization');
+    const clientIP = getClientIP(req);
     
     if (authHeader && authHeader !== `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`) {
       try {
@@ -77,14 +133,39 @@ serve(async (req) => {
         const { data: { user } } = await supabaseClient.auth.getUser();
         if (user) {
           userId = user.id;
+          isAuthenticated = true;
         }
       } catch (authErr) {
-        // Authentication failed but we allow anonymous access
-        console.log("Auth check skipped for anonymous request");
+        // Authentication failed - continue as anonymous with rate limiting
+        console.log("Auth check failed, continuing as anonymous with rate limits");
       }
     }
 
-    console.log(`AI Chat request from: ${userId}`);
+    // Apply rate limiting
+    const rateLimitIdentifier = isAuthenticated ? `user:${userId}` : `ip:${clientIP}`;
+    const rateLimit = checkRateLimit(rateLimitIdentifier, isAuthenticated);
+    
+    if (!rateLimit.allowed) {
+      console.warn(`Rate limit exceeded for ${rateLimitIdentifier}`);
+      return new Response(
+        JSON.stringify({ 
+          error: "Rate limit exceeded. Please wait before making more requests.",
+          retryAfter: Math.ceil(rateLimit.resetIn / 1000)
+        }),
+        { 
+          status: 429, 
+          headers: { 
+            ...corsHeaders, 
+            "Content-Type": "application/json",
+            "Retry-After": String(Math.ceil(rateLimit.resetIn / 1000)),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetIn / 1000))
+          } 
+        }
+      );
+    }
+
+    console.log(`AI Chat request from: ${userId} (${isAuthenticated ? 'authenticated' : 'anonymous'}) [${clientIP}] - ${rateLimit.remaining} requests remaining`);
 
     // Parse and validate request body
     let body: { messages?: unknown; systemPrompt?: string };
@@ -148,7 +229,7 @@ If asked about using tools on the website, guide them to the appropriate tool.`;
 
     if (!response.ok) {
       if (response.status === 429) {
-        console.error("Rate limit exceeded");
+        console.error("Rate limit exceeded from AI gateway");
         return new Response(
           JSON.stringify({ error: "Rate limits exceeded, please try again later." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -176,7 +257,13 @@ If asked about using tools on the website, guide them to the appropriate tool.`;
 
     return new Response(
       JSON.stringify({ response: assistantResponse }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { 
+        headers: { 
+          ...corsHeaders, 
+          "Content-Type": "application/json",
+          "X-RateLimit-Remaining": String(rateLimit.remaining)
+        } 
+      }
     );
   } catch (error) {
     console.error("AI Chat error:", error);

@@ -3,7 +3,7 @@ export const Hero = () => {
   return <section className="py-16 md:py-28 bg-hero-gradient" aria-labelledby="hero-heading">
       <div className="container mx-auto px-4">
         {/* Main Hero Content */}
-        <div className="max-w-4xl mx-auto text-center bg-[#fff0fd]">
+        <div className="max-w-4xl mx-auto text-center bg-muted-foreground">
           <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
             50+ Free Online Tools for{" "}
             <span className="text-primary">PDFs</span>,{" "}
@@ -38,7 +38,7 @@ export const Hero = () => {
         
         {/* Trust indicators - Card style */}
         <div className="max-w-3xl mx-auto">
-          <div className="rounded-2xl p-6 shadow-md border border-border bg-amber-100">
+          <div className="rounded-2xl p-6 shadow-md border border-border bg-muted-foreground">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">

@@ -1,16 +1,1 @@
-project_id = "mrjefpimgfzzjwoidocf"
-
-[functions.ai-chat]
-verify_jwt = false
-
-[functions.perplexity-search]
-verify_jwt = true
-
-[functions.whatsapp-analyzer]
-verify_jwt = false
-
-[functions.india-postal]
-verify_jwt = false
-
-[functions.indexnow]
-verify_jwt = false
+project_id = "ywemvcleywohvrwuvhgc"

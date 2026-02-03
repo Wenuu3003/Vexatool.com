@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { FileText, Mail, Lock, Loader2, Check, X } from 'lucide-react';
+import { FileText, Mail, Lock, Loader2, Check, X, Apple } from 'lucide-react';
+import { lovable } from '@/integrations/lovable';
 
 // Password validation rules
 const validatePassword = (password: string) => {
@@ -221,6 +222,34 @@ const Auth = () => {
                 : "Already have an account? Login"}
             </button>
           </div>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full gap-2"
+            onClick={async () => {
+              const { error } = await lovable.auth.signInWithOAuth('apple', {
+                redirect_uri: window.location.origin,
+              });
+              if (error) {
+                toast({
+                  title: "Sign in failed",
+                  description: error.message,
+                  variant: "destructive",
+                });
+              }
+            }}
+          >
+            <Apple className="w-5 h-5" />
+            Sign in with Apple
+          </Button>
           <div className="mt-4 text-center">
             <button
               type="button"

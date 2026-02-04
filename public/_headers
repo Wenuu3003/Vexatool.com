@@ -36,8 +36,21 @@
 /index.html
   Cache-Control: no-cache, no-store, must-revalidate
 
+# Security headers for all pages
 /*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+
+# Auth page - Allow OAuth redirects (SAMEORIGIN for popup communication)
+/auth
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com https://appleid.cdn-apple.com; frame-src https://accounts.google.com https://appleid.apple.com; connect-src 'self' https://*.supabase.co https://accounts.google.com https://appleid.apple.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data: https:; font-src 'self' data:;
+
+# Other pages - Strict frame denial for clickjacking protection
+/
+  X-Frame-Options: DENY
+
+/tools/*
+  X-Frame-Options: SAMEORIGIN

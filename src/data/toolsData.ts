@@ -36,16 +36,16 @@ export const toolsData: ToolData[] = [
   // AI Tools
   {
     id: "ai-chat",
-    title: "AI Chat Assistant",
-    description: "Ask any question and get instant AI-powered answers. Your personal intelligent assistant for research, writing, coding, and problem-solving.",
-    shortDescription: "Ask any question and get instant AI-powered answers.",
+    title: "Free AI Chatbot",
+    description: "Chat with our intelligent AI assistant for instant answers. Get help with homework, coding, writing, research, and any question 24/7.",
+    shortDescription: "Free AI chatbot for instant answers to any question.",
     icon: MessageSquare,
     colorClass: "bg-gradient-to-br from-blue-500 to-indigo-600",
     href: "/ai-chat",
     category: "ai",
     previewImage: "/previews/ai-chat-preview.webp",
-    features: ["Instant answers", "Multi-topic support", "Context awareness", "Code assistance"],
-    seoKeywords: ["AI chat", "chatbot", "AI assistant", "ask AI"]
+    features: ["Instant smart answers", "Coding help", "Research assistance", "Creative writing", "24/7 availability"],
+    seoKeywords: ["free AI chatbot", "AI question answering", "smart AI assistant", "online chatbot", "AI conversation", "ask AI anything"]
   },
   {
     id: "ai-search",
@@ -410,16 +410,16 @@ export const toolsData: ToolData[] = [
   },
   {
     id: "edit-pdf",
-    title: "Edit PDF",
-    description: "Add text, images, shapes, and freehand annotations to PDF documents. Full editing capabilities.",
-    shortDescription: "Add text, images, shapes to a PDF document.",
+    title: "Free PDF Editor",
+    description: "Professional online PDF editor with OCR. Edit text, add images, annotate, fill forms, and modify scanned documents without software installation.",
+    shortDescription: "Edit PDFs online – text, images, OCR for scanned docs.",
     icon: FileEdit,
     colorClass: "bg-tool-edit",
     href: "/edit-pdf",
     category: "pdf-core",
     previewImage: "/previews/edit-pdf-preview.webp",
-    features: ["Text editing", "Image insertion", "Annotations", "Form filling"],
-    seoKeywords: ["edit PDF", "PDF editor", "modify PDF", "annotate PDF"]
+    features: ["Edit text directly", "OCR scanned PDFs", "Add images & logos", "Professional annotations", "No software needed"],
+    seoKeywords: ["free PDF editor", "edit PDF online", "PDF text editor", "OCR PDF editing", "modify PDF", "online PDF markup"]
   },
   {
     id: "sign-pdf",

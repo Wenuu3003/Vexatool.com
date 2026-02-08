@@ -1,7 +1,15 @@
-# Serve static files first (order matters - specific rules before wildcard)
-/ads.txt        /ads.txt        200
-/sitemap.xml    /sitemap.xml    200
-/robots.txt     /robots.txt     200
+# Static files - must be served directly (order matters - specific rules BEFORE wildcard)
+# These files bypass the SPA fallback completely
+
+# AdSense verification file (CRITICAL for Google AdSense approval)
+/ads.txt        /ads.txt        200!
+
+# SEO files
+/sitemap.xml    /sitemap.xml    200!
+/robots.txt     /robots.txt     200!
+
+# Other verification files
+/indexnow-key.txt    /indexnow-key.txt    200!
 
 # SPA fallback - all other routes go to index.html
 /*    /index.html   200

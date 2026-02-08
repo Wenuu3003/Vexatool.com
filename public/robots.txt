@@ -37,3 +37,6 @@ Sitemap: https://mypdfs.in/sitemap.xml
 # IndexNow key location
 Host: https://mypdfs.in
 IndexNow: https://mypdfs.in/indexnow-key.txt
+
+# adstxt location
+Adstxt: https://mypdfs.in/ads.txt

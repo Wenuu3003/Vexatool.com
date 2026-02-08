@@ -1,20 +1,33 @@
 # Robots.txt for Mypdfs
 # https://mypdfs.in
 
+# Allow all crawlers full access
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_functions/
+Disallow: /auth
+Disallow: /account
+
+# Google
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
 
+# Bing
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
+# Yahoo
 User-agent: Slurp
 Allow: /
 
+# DuckDuckGo
 User-agent: DuckDuckBot
 Allow: /
 
+# Social Media Crawlers
 User-agent: Twitterbot
 Allow: /
 
@@ -24,19 +37,21 @@ Allow: /
 User-agent: LinkedInBot
 Allow: /
 
-User-agent: *
+# AdSense crawler - must have full access
+User-agent: Mediapartners-Google
 Allow: /
-Disallow: /api/
-Disallow: /_functions/
-Disallow: /auth
-Disallow: /account
+
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: AdsBot-Google-Mobile
+Allow: /
 
 # Sitemap location
 Sitemap: https://mypdfs.in/sitemap.xml
 
-# IndexNow key location
+# Host declaration
 Host: https://mypdfs.in
-IndexNow: https://mypdfs.in/indexnow-key.txt
 
-# adstxt location
-Adstxt: https://mypdfs.in/ads.txt
+# ads.txt location for AdSense verification
+# Note: ads.txt must be accessible at https://mypdfs.in/ads.txt

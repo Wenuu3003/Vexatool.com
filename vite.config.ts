@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "robots.txt", "sitemap.xml"],
+      includeAssets: ["favicon.ico", "robots.txt", "sitemap.xml", "ads.txt", "indexnow-key.txt"],
       manifest: {
         name: "Mypdfs - Free Online PDF Tools",
         short_name: "Mypdfs",

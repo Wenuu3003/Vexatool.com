@@ -1,10 +1,29 @@
-# ads.txt - must be accessible for AdSense (no aggressive caching)
+# ===========================================
+# ads.txt - CRITICAL for Google AdSense
+# Must be accessible and properly typed
+# ===========================================
 /ads.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600, must-revalidate
+  X-Content-Type-Options: nosniff
+  Access-Control-Allow-Origin: *
+
+# ===========================================
+# Other SEO/verification files
+# ===========================================
+/robots.txt
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=86400
   X-Content-Type-Options: nosniff
 
+/sitemap.xml
+  Content-Type: application/xml; charset=utf-8
+  Cache-Control: public, max-age=86400
+  X-Content-Type-Options: nosniff
+
+# ===========================================
 # Cache static assets for 1 year
+# ===========================================
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
@@ -34,16 +53,23 @@
 /*.webp
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache service worker for a short time
+# ===========================================
+# Service worker
+# ===========================================
 /registerSW.js
   Cache-Control: public, max-age=3600
 
-# HTML files should not be cached
+# ===========================================
+# HTML files - no cache for SPA
+# ===========================================
 /index.html
   Cache-Control: no-cache, no-store, must-revalidate
 
+# ===========================================
+# Security headers for all routes
+# ===========================================
 /*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
+  X-Frame-Options: SAMEORIGIN
   X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin

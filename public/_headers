@@ -1,3 +1,9 @@
+# ads.txt - must be accessible for AdSense (no aggressive caching)
+/ads.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=86400
+  X-Content-Type-Options: nosniff
+
 # Cache static assets for 1 year
 /assets/*
   Cache-Control: public, max-age=31536000, immutable

@@ -109,28 +109,37 @@ const ImageToPDF = () => {
 
   const seoContent = {
     toolName: "Image to PDF Converter",
-    whatIs: "Image to PDF Converter is a free online tool that transforms your images into PDF documents. Whether you have JPG photos, PNG graphics, WebP images, or other formats, this tool combines them into a single, professional PDF file. It's perfect for creating photo albums, document scans, portfolios, or any collection of images that needs to be shared or archived as a PDF.",
+    whatIs: "The Image to PDF Converter is a free online tool that transforms your images into professional PDF documents. Whether you have JPG photographs, PNG graphics, WebP images, GIF animations, or other formats, this tool combines them into a single, well-organized PDF file. It is perfect for creating photo albums, digitizing paper documents from phone camera scans, building portfolios, compiling product catalogs, or any collection of images that needs to be shared or archived as a single PDF. Each image is embedded at full resolution with its original dimensions, ensuring no quality loss. The entire conversion process happens in your browser, so your personal photos, identity documents, and sensitive images are never uploaded to any server.",
     howToUse: [
-      "Click the upload area to select your image files.",
-      "Choose multiple images of any supported format (JPG, PNG, WebP, GIF, etc.).",
-      "Preview your selected images and remove any if needed.",
-      "Click 'Convert to PDF' to create your document.",
-      "Your PDF will download automatically with all images included."
+      "Click the upload area to select your image files from your device.",
+      "Choose multiple images of any supported format — JPG, PNG, WebP, GIF, BMP, and more.",
+      "Preview your selected images in the grid and remove any unwanted files.",
+      "Add more images in additional batches if needed — they accumulate in the list.",
+      "Click 'Convert to PDF' to create your document with all images.",
+      "Your PDF will download automatically with each image on its own page."
     ],
     features: [
-      "Support for all major image formats (JPG, PNG, WebP, GIF, and more)",
-      "Combine multiple images into one PDF",
-      "Automatic format conversion for unsupported types",
-      "Maintains original image quality and proportions",
-      "No file count or size limits",
-      "Secure client-side processing"
+      "Support for all major image formats including JPG, PNG, WebP, GIF, BMP, and TIFF.",
+      "Combine unlimited images into one organized PDF document.",
+      "Automatic format conversion for unsupported types — all images work seamlessly.",
+      "Maintains original image quality, resolution, and aspect ratio.",
+      "Visual preview grid shows thumbnails with easy one-click removal.",
+      "Batch upload support — add images from multiple folders incrementally.",
+      "Secure client-side processing — your images never leave your device.",
+      "Free to use with no registration, watermarks, or daily limits."
     ],
-    safetyNote: "All image processing happens directly in your browser. Your files are never uploaded to any server, ensuring complete privacy for your personal photos and documents. The conversion is performed locally, and only you have access to the resulting PDF.",
+    safetyNote: "All image processing happens directly in your browser using secure client-side technology. Your files are never uploaded to any server, ensuring complete privacy for your personal photos, identity documents, and sensitive images. The conversion is performed locally, and only you have access to the resulting PDF file.",
     faqs: [
-      { question: "What image formats are supported?", answer: "The tool supports JPG/JPEG, PNG, WebP, GIF, and most other common image formats. Unsupported formats are automatically converted to PNG before being added to the PDF." },
+      { question: "What image formats are supported?", answer: "The tool supports JPG/JPEG, PNG, WebP, GIF, BMP, TIFF, and most other common image formats. Unsupported formats are automatically converted to PNG before being added to the PDF." },
       { question: "What order will the images appear?", answer: "Images appear in the order you selected them. You can remove images and re-add them to change the order before conversion." },
-      { question: "Will image quality be reduced?", answer: "No, images are embedded in the PDF at their original quality. JPG and PNG files are directly embedded, while other formats are converted to PNG to preserve quality." },
-      { question: "Can I add images from different folders?", answer: "Yes! You can add images in multiple batches. Each time you select files, they're added to your existing selection." }
+      { question: "Will image quality be reduced?", answer: "No, images are embedded in the PDF at their original quality and resolution. JPG and PNG files are directly embedded, while other formats are converted to PNG to preserve quality." },
+      { question: "Can I add images from different folders?", answer: "Yes! You can add images in multiple batches. Each time you select files, they are added to your existing selection." },
+      { question: "Is there a limit on the number of images?", answer: "There is no artificial limit. You can add as many images as your browser memory allows. For very large collections (100+ high-resolution images), processing may take a moment." },
+      { question: "What is the page size of the resulting PDF?", answer: "Each page is sized to match the dimensions of the corresponding image, so every image fills its page completely without borders or cropping." },
+      { question: "Can I convert a single image to PDF?", answer: "Yes, the tool works with a single image as well as multiple images. Upload one image and convert it to a single-page PDF." },
+      { question: "Do I need to install any software?", answer: "No. This tool runs entirely in your web browser with no downloads, plugins, or installations required." },
+      { question: "Can I rearrange the image order after uploading?", answer: "Currently, you can remove images and re-upload them in the desired order. The images appear in the PDF in the sequence they are listed." },
+      { question: "Is this tool free to use?", answer: "Yes, completely free with no hidden charges, no account required, and no watermarks on the output PDF." }
     ]
   };
 

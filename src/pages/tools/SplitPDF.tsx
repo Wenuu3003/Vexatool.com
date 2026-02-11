@@ -178,39 +178,36 @@ const SplitPDF = () => {
 
       <ToolSEOContent
         toolName="Split PDF"
-        whatIs="PDF splitting allows you to extract specific pages or divide a large PDF document into smaller, more manageable files. This is particularly useful when you only need certain pages from a document, want to share specific sections with different recipients, or need to reduce file sizes for easier handling. Our free online PDF splitter gives you complete control over which pages to extract, supporting both single pages and custom page ranges."
+        whatIs="PDF splitting allows you to extract specific pages or divide a large PDF document into smaller, more manageable files. This is indispensable when you only need certain pages from a lengthy report, want to share specific sections with different recipients, or need to reduce file sizes for easier email attachment. Our free online PDF splitter at MyPDFs gives you complete control over which pages to extract — supporting single pages, custom ranges, and complex selections like '1-3, 5, 8-12'. The entire process runs securely in your browser, so your confidential documents never leave your device. Whether you are isolating a single chapter from a textbook, extracting an invoice from a financial statement, or pulling specific slides from a presentation PDF, this tool handles it instantly with zero quality loss."
         howToUse={[
           "Upload your PDF file by clicking the upload area or dragging and dropping.",
-          "Enter the page range you want to extract (e.g., '1-3, 5, 7-10' or leave empty for all pages).",
-          "Click 'Split & Download' to extract the specified pages.",
+          "View the total page count displayed after the file is analyzed.",
+          "Enter the page range you want to extract (e.g., '1-3, 5, 7-10') or leave empty for all pages.",
+          "Click 'Split & Download' to extract the specified pages into a new PDF.",
           "Your new PDF containing only the selected pages will download automatically."
         ]}
         features={[
-          "Extract single pages or custom page ranges from any PDF.",
-          "Support for complex page selections like '1-3, 5, 8-12'.",
-          "Maintains original quality and formatting of extracted pages.",
-          "Fast processing directly in your browser.",
+          "Extract single pages or custom page ranges from any PDF document.",
+          "Support for complex page selections like '1-3, 5, 8-12' for flexible extraction.",
+          "Maintains original quality, fonts, images, and formatting of extracted pages.",
+          "Automatic page count detection shows total pages before you split.",
+          "Fast processing directly in your browser — no server uploads required.",
           "No file size limits for splitting operations.",
-          "Free to use without registration."
+          "Works seamlessly on desktop, tablet, and mobile devices.",
+          "Free to use without registration, daily limits, or watermarks."
         ]}
-        safetyNote="Your PDF files are processed entirely within your web browser. No documents are uploaded to external servers, ensuring your sensitive information remains private and secure. The original file is never modified; you receive a new PDF with only your selected pages."
+        safetyNote="Your PDF files are processed entirely within your web browser using secure client-side technology. No documents are uploaded to external servers, ensuring your sensitive information remains private and secure. The original file is never modified — you receive a new PDF with only your selected pages."
         faqs={[
-          {
-            question: "How do I specify which pages to extract?",
-            answer: "Enter page numbers separated by commas, or use dashes for ranges. For example: '1-3, 5, 7-10' extracts pages 1, 2, 3, 5, 7, 8, 9, and 10."
-          },
-          {
-            question: "Can I split a PDF into multiple separate files?",
-            answer: "This tool extracts selected pages into one file. To create multiple separate files, run the split operation multiple times with different page ranges."
-          },
-          {
-            question: "Will splitting affect the quality of my PDF?",
-            answer: "No, the split operation preserves the exact original quality of your pages. Images, text, and formatting remain unchanged."
-          },
-          {
-            question: "Is there a limit on PDF file size?",
-            answer: "There is no strict file size limit, but very large files may take longer to process. For optimal performance, files under 100MB work best."
-          }
+          { question: "How do I specify which pages to extract?", answer: "Enter page numbers separated by commas, or use dashes for ranges. For example: '1-3, 5, 7-10' extracts pages 1, 2, 3, 5, 7, 8, 9, and 10." },
+          { question: "Can I split a PDF into multiple separate files?", answer: "This tool extracts selected pages into one file. To create multiple separate files, run the split operation multiple times with different page ranges." },
+          { question: "Will splitting affect the quality of my PDF?", answer: "No, the split operation preserves the exact original quality of your pages. Images, text, fonts, and formatting remain unchanged." },
+          { question: "Is there a limit on PDF file size?", answer: "There is no strict file size limit, but very large files may take longer to process. For optimal performance, files under 100MB work best." },
+          { question: "Can I split password-protected PDFs?", answer: "Password-protected PDFs need to be unlocked first. Use our Unlock PDF tool to remove protection, then split the document." },
+          { question: "Does splitting preserve bookmarks and links?", answer: "Bookmarks and internal links that reference pages within your selected range are preserved. Links to pages outside the extracted range may not function in the split document." },
+          { question: "Can I extract pages and merge them with another PDF?", answer: "Yes! First extract the pages you need using Split PDF, then use our Merge PDF tool to combine them with other documents." },
+          { question: "What happens if I enter an invalid page range?", answer: "The tool validates your input and shows an error message if the page range is invalid or references pages that do not exist in your PDF." },
+          { question: "Do I need to install any software?", answer: "No. This tool runs entirely in your web browser. No downloads, plugins, or installations are required." },
+          { question: "Can I use this on my mobile phone?", answer: "Yes, the tool is fully responsive and works on any smartphone or tablet with a modern browser." }
         ]}
       />
       </ToolLayout>

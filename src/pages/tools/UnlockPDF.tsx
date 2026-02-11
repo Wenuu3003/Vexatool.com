@@ -178,28 +178,37 @@ const UnlockPDF = () => {
 
   const seoContent = {
     toolName: "Unlock PDF",
-    whatIs: "Unlock PDF is a free online tool that removes password protection and restrictions from PDF documents. Whether your PDF requires a password to open or has restrictions preventing copying, printing, or editing, this tool can help. It automatically detects the type of protection on your PDF and guides you through the unlocking process.",
+    whatIs: "Unlock PDF is a free online tool that removes password protection and restrictions from PDF documents, giving you full access to open, copy, print, and edit your files. Whether your PDF requires a password to open or has restrictions preventing copying and printing, this tool can help — provided you have the authorization to do so. It automatically detects the type of protection on your PDF and displays a clear status indicator, then guides you through the appropriate unlocking process. The entire operation runs securely in your browser, so neither your documents nor your passwords are ever sent to any external server. This is invaluable when you have a legitimately owned document whose password you have but need a clean, unrestricted copy for archiving, printing, or sharing.",
     howToUse: [
-      "Upload your password-protected PDF file.",
-      "Wait for the tool to analyze the protection type.",
-      "If password-protected, enter the document password.",
-      "Click 'Unlock & Download' to remove protection.",
-      "Your unlocked PDF will download automatically."
+      "Upload your password-protected or restricted PDF file using the upload area.",
+      "Wait for the automatic protection analysis — the tool detects the type of security applied.",
+      "Review the status card: password-protected, restriction-only, or no protection detected.",
+      "If password-protected, enter the document password in the input field.",
+      "Click 'Unlock & Download' to remove protection and download the unlocked PDF.",
+      "Your unlocked PDF will download automatically, ready for unrestricted use."
     ],
     features: [
-      "Automatic detection of protection type",
-      "Remove password protection (with correct password)",
-      "Remove copy/print/edit restrictions",
-      "Clear status indicators for protection type",
-      "Fast processing with instant download",
-      "Works with any PDF file"
+      "Automatic detection of protection type — password, restrictions, or none.",
+      "Clear visual status cards showing the exact protection level of your PDF.",
+      "Remove password protection (with the correct password) for full access.",
+      "Remove copy, print, and edit restrictions without needing a password.",
+      "Fast client-side processing with instant download of the unlocked file.",
+      "Works with any PDF file regardless of the software used to create it.",
+      "No registration, account, or payment required.",
+      "Your passwords and files never leave your browser."
     ],
-    safetyNote: "Your PDF files are processed entirely in your browser. No files or passwords are sent to any server, ensuring complete privacy and security. The tool only works with PDFs where you have authorization to remove protection.",
+    safetyNote: "Your PDF files and passwords are processed entirely in your browser. No files or credentials are sent to any server, ensuring complete privacy and security. The tool only works with PDFs where you have authorization to remove protection. Always ensure you have the legal right to modify the document's protection settings.",
     faqs: [
-      { question: "Can I unlock a PDF without knowing the password?", answer: "No, if a PDF is password-protected to open, you need the correct password. The tool can remove restriction-only protection (like print/copy restrictions) without a password." },
-      { question: "What's the difference between password protection and restrictions?", answer: "Password protection requires a password to open the PDF. Restrictions prevent actions like copying, printing, or editing but allow the PDF to be opened. This tool handles both types." },
-      { question: "Is it legal to unlock PDFs?", answer: "You should only unlock PDFs that you own or have authorization to modify. Removing protection from copyrighted material without permission may violate copyright laws." },
-      { question: "Will unlocking affect my PDF content?", answer: "No, unlocking only removes the protection layer. Your PDF content, formatting, and quality remain completely unchanged." }
+      { question: "Can I unlock a PDF without knowing the password?", answer: "No, if a PDF is password-protected to open, you need the correct password. The tool can remove restriction-only protection (like print/copy/edit restrictions) without a password." },
+      { question: "What is the difference between password protection and restrictions?", answer: "Password protection requires a password to open the PDF at all. Restrictions prevent specific actions like copying text, printing, or editing, but allow the PDF to be opened and read. This tool handles both types." },
+      { question: "Is it legal to unlock PDFs?", answer: "You should only unlock PDFs that you own or have explicit authorization to modify. Removing protection from copyrighted material without permission may violate copyright laws in your jurisdiction." },
+      { question: "Will unlocking affect my PDF content?", answer: "No, unlocking only removes the protection layer. Your PDF content, formatting, images, and quality remain completely unchanged." },
+      { question: "What does the 'Restrictions Detected' status mean?", answer: "This means the PDF can be opened without a password but has limitations on copying, printing, or editing. Click 'Unlock & Download' to get a version with all restrictions removed." },
+      { question: "Can I unlock multiple PDFs at once?", answer: "The tool processes one file at a time. Simply repeat the process for each PDF you need to unlock." },
+      { question: "What if the tool says 'No Protection'?", answer: "If your PDF shows no protection, it is already fully accessible. You can still download it through the tool, which re-saves it as a clean copy." },
+      { question: "Does unlocking add any watermarks?", answer: "No. MyPDFs never adds watermarks, branding, or any modifications to your documents." },
+      { question: "Can I re-protect the PDF after unlocking?", answer: "Yes! Use our Protect PDF tool to add a new password to the unlocked document." },
+      { question: "Why does my password not work?", answer: "Ensure you are entering the exact password including correct capitalization and special characters. Some PDFs have separate owner and user passwords — try both if available." }
     ]
   };
 

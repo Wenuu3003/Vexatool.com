@@ -180,28 +180,37 @@ const SignPDF = () => {
 
   const seoContent = {
     toolName: "Sign PDF",
-    whatIs: "Sign PDF is a free online tool that allows you to add your signature to PDF documents easily. You can either draw your signature using your mouse, touchpad, or touchscreen, or type your name to create a styled signature. This is perfect for signing contracts, agreements, forms, and other documents without printing or scanning.",
+    whatIs: "Sign PDF is a free online tool that allows you to add your personal signature to PDF documents quickly and securely. Whether you need to sign a contract, authorize an agreement, approve a form, or endorse a document, this tool eliminates the need to print, hand-sign, scan, and re-upload. You can either draw your signature using your mouse, touchpad, or touchscreen, or type your name to create an elegant styled signature. The entire process happens within your browser — your documents and signatures are never uploaded to any server, making it safe for confidential contracts, legal paperwork, HR documents, and financial agreements. This is particularly valuable for remote workers, freelancers, and businesses that need to process signed documents quickly without access to a printer or scanner.",
     howToUse: [
       "Upload your PDF file by clicking the upload area or dragging and dropping.",
-      "Choose between 'Draw Signature' or 'Type Signature' mode.",
-      "For drawing: Use your mouse or finger to draw your signature on the canvas.",
-      "For typing: Enter your name in the text field to create a styled signature.",
-      "Click 'Download Signed PDF' to add the signature and download."
+      "Choose between 'Draw Signature' or 'Type Signature' mode based on your preference.",
+      "For drawing: Use your mouse, trackpad, or finger (on touch devices) to draw your signature on the canvas.",
+      "For typing: Enter your name in the text field to create a professionally styled italic signature.",
+      "Use the 'Clear' button to redo your signature if you are not satisfied with it.",
+      "Click 'Download Signed PDF' to add the signature to the last page and download the signed document."
     ],
     features: [
-      "Draw signatures with mouse, touchpad, or touchscreen",
-      "Type-to-signature with elegant italic styling",
-      "Touch-friendly for mobile and tablet devices",
-      "Clear and redraw functionality",
-      "Signature placed on the last page of the PDF",
-      "High-quality signature rendering"
+      "Draw signatures with mouse, touchpad, or touchscreen for a natural handwriting feel.",
+      "Type-to-signature with elegant italic styling for a professional look.",
+      "Touch-friendly interface optimized for mobile phones and tablets.",
+      "Clear and redraw functionality — redo your signature until it looks perfect.",
+      "Signature placed in the standard bottom-right corner of the last page.",
+      "High-quality signature rendering that looks crisp in print and on screen.",
+      "Works with any PDF file regardless of size or page count.",
+      "No account, registration, or payment required."
     ],
-    safetyNote: "Your PDF files and signatures are processed entirely in your browser. No documents or signature data are uploaded to any server, ensuring complete privacy for your sensitive documents. Your signature remains exclusively on your device.",
+    safetyNote: "Your PDF files and signatures are processed entirely in your browser. No documents, signature images, or personal data are uploaded to any server, ensuring complete privacy for your sensitive legal and financial documents. Your signature remains exclusively on your device and is never stored or transmitted.",
     faqs: [
-      { question: "Where will my signature appear on the PDF?", answer: "The signature is automatically placed in the bottom-right corner of the last page of your PDF, which is the standard location for signatures on most documents." },
-      { question: "Can I sign multiple pages?", answer: "Currently, the signature is added to the last page only. For signing multiple pages, you would need to process each section separately or use the tool multiple times." },
-      { question: "Is this a legally binding digital signature?", answer: "This tool adds a visual signature to your PDF. For legally binding digital signatures with cryptographic verification, specialized e-signature services may be required depending on your jurisdiction." },
-      { question: "Can I save my signature for future use?", answer: "Currently, signatures are created fresh each time. Your drawn or typed signature is not stored between sessions for your privacy." }
+      { question: "Where will my signature appear on the PDF?", answer: "The signature is automatically placed in the bottom-right corner of the last page of your PDF, which is the standard location for signatures on most business and legal documents." },
+      { question: "Can I sign multiple pages?", answer: "Currently, the signature is added to the last page only. For signing multiple pages, you can split the document, sign each section, and merge them back together." },
+      { question: "Is this a legally binding digital signature?", answer: "This tool adds a visual signature to your PDF. For legally binding digital signatures with cryptographic verification, specialized e-signature services with PKI infrastructure may be required depending on your jurisdiction and document type." },
+      { question: "Can I save my signature for future use?", answer: "Currently, signatures are created fresh each session for security. Your drawn or typed signature is not stored between sessions to protect your privacy." },
+      { question: "Does the signature work on mobile devices?", answer: "Yes! The drawing canvas is fully touch-optimized. You can draw your signature with your finger on any smartphone or tablet." },
+      { question: "Can I change the signature color or size?", answer: "Drawn signatures use black ink for maximum compatibility. Typed signatures use a professional dark blue italic style. The signature is automatically sized to fit appropriately on the page." },
+      { question: "Will the signed PDF have a watermark?", answer: "No. MyPDFs never adds watermarks, branding, or modifications to your documents beyond your requested signature." },
+      { question: "Can I sign a password-protected PDF?", answer: "You will need to unlock the PDF first using our Unlock PDF tool, then add your signature to the unprotected file." },
+      { question: "What file formats are supported?", answer: "This tool works with standard PDF files (.pdf). If you have a Word document, convert it to PDF first using our Word to PDF tool, then sign it." },
+      { question: "Is there a file size limit?", answer: "There is no strict limit, but very large files may take a moment longer to process. The tool works best with files under 100MB." }
     ]
   };
 

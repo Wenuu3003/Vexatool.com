@@ -7,6 +7,7 @@ import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner
 import { Helmet } from "react-helmet";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
 import { lazy, Suspense, useEffect, useState } from "react";
+import { HomepageContent } from "@/components/HomepageContent";
 
 const AIToolsBanner = lazy(() =>
   import("@/components/AIToolsBanner").then((m) => ({ default: m.AIToolsBanner }))
@@ -65,6 +66,43 @@ const Index = () => {
         <meta name="description" content="Edit, merge, compress and convert PDF files online for free. Professional document tools including QR code generator, calculators and AI utilities. No registration required." />
         <meta name="keywords" content="free PDF editor, PDF converter online, merge PDF files, compress PDF, PDF to Word converter, Word to PDF, image to PDF, QR code generator, document tools, online utilities" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        
+        {/* Organization Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "MyPDFs",
+            "url": "https://mypdfs.in",
+            "logo": "https://mypdfs.in/favicon.png",
+            "description": "Free online PDF editor, converter, and document tools. 50+ tools including merge, split, compress, convert PDFs, image tools, AI utilities, and calculators.",
+            "email": "mypdfs3003@gmail.com",
+            "sameAs": [
+              "https://x.com/Mypdfs5",
+              "https://t.me/mypdfs5"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "email": "mypdfs3003@gmail.com",
+              "contactType": "customer support",
+              "availableLanguage": ["English", "Hindi"]
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "MyPDFs",
+            "url": "https://mypdfs.in",
+            "description": "Free online PDF tools, image editors, AI utilities, and calculators. No signup required.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://mypdfs.in/?search={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
         <meta name="author" content="Mypdfs" />
         <meta name="publisher" content="Mypdfs" />
         <link rel="canonical" href={canonicalUrl} />
@@ -137,6 +175,9 @@ const Index = () => {
           >
             <ToolsGrid />
           </Suspense>
+          
+          {/* Rich Homepage Content for AdSense */}
+          <HomepageContent />
           
           {/* Homepage FAQ Section */}
           {showDeferredContent && (

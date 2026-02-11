@@ -69,7 +69,7 @@ const PrivacyPolicy = () => {
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-4xl font-bold text-foreground mb-8">Privacy Policy</h1>
-        <p className="text-muted-foreground mb-8">Last updated: January 2026</p>
+        <p className="text-muted-foreground mb-8">Last updated: February 2026</p>
 
         <div className="prose prose-lg max-w-none space-y-8">
           {/* Introduction */}
@@ -280,7 +280,7 @@ const PrivacyPolicy = () => {
             </p>
             <ul className="list-none mt-4 space-y-2 text-muted-foreground">
               <li>
-                <strong>Email:</strong> welovepdfs3003@gmail.com
+                <strong>Email:</strong> mypdfs3003@gmail.com
               </li>
               <li>
                 <strong>Website:</strong> mypdfs.in

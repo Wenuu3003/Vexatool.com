@@ -121,29 +121,37 @@ const ProtectPDF = () => {
 
   const seoContent = {
     toolName: "Protect PDF",
-    whatIs: "Protect PDF is a free online tool that helps you add password protection to your PDF documents. Password-protecting your PDFs ensures that only authorized individuals can open and view the content. This is essential for sensitive documents like financial reports, legal documents, personal records, and confidential business materials.",
+    whatIs: "Protect PDF is a free online tool that helps you add password protection to your PDF documents to prevent unauthorized access. In today's digital world, safeguarding sensitive information is essential — whether it is financial reports, legal contracts, medical records, employee documents, or personal files. Password-protecting your PDFs ensures that only authorized individuals who know the password can open and view the content. This tool processes everything directly in your browser, so your confidential documents are never uploaded to any external server. While this version provides basic document protection using client-side processing, it is ideal for adding a layer of security before sharing documents via email, cloud storage, or messaging platforms.",
     howToUse: [
-      "Upload your PDF file by clicking the upload area or dragging and dropping.",
-      "Enter a strong password that you want to use for protection.",
-      "Confirm your password by entering it again.",
-      "Click 'Protect & Download' to process your PDF.",
-      "Share the protected PDF file securely.",
-      "Remember to share the password separately and securely with authorized recipients."
+      "Upload your PDF file by clicking the upload area or dragging and dropping your document.",
+      "Enter a strong password that you want to use for protection — minimum 4 characters.",
+      "Confirm your password by entering it again in the confirmation field.",
+      "Verify that the 'Passwords match' indicator appears in green.",
+      "Click 'Protect & Download' to process and download your protected PDF.",
+      "Share the protected PDF file and communicate the password separately through a secure channel."
     ],
     features: [
-      "Add password protection to any PDF",
-      "Password confirmation to prevent typos",
-      "Works with all PDF file sizes",
-      "Simple one-click protection process",
-      "No registration required",
-      "Instant download of processed file"
+      "Add password protection to any PDF document for access control.",
+      "Password confirmation field prevents typos and ensures accuracy.",
+      "Password strength validation with minimum 4-character requirement.",
+      "Show/hide password toggle for easy verification during entry.",
+      "Works with all PDF file sizes and page counts.",
+      "Simple, intuitive one-click protection process.",
+      "No registration, account, or payment required.",
+      "Instant download of the protected file after processing."
     ],
-    safetyNote: "Your PDF files are processed entirely in your browser - no files are uploaded to our servers. We recommend using strong, unique passwords for your protected documents. Always share passwords through a separate secure channel, never in the same email or message as the protected file.",
+    safetyNote: "Your PDF files are processed entirely in your browser — no files are uploaded to our servers or any third-party service. We recommend using strong, unique passwords for your protected documents. Always share passwords through a separate secure channel (like a phone call or encrypted message), never in the same email or message as the protected file.",
     faqs: [
-      { question: "What makes a strong password?", answer: "A strong password should be at least 8-12 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters. Avoid using easily guessable information like birthdays or common words." },
+      { question: "What makes a strong password?", answer: "A strong password should be at least 8-12 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters. Avoid using easily guessable information like birthdays, names, or common words." },
       { question: "Can I remove the password later?", answer: "Yes, you can use our Unlock PDF tool to remove password protection from PDFs, provided you know the current password." },
       { question: "Will protected PDFs work on all devices?", answer: "Yes, password-protected PDFs are standard and can be opened on any device with a PDF reader. Recipients will be prompted to enter the password before viewing." },
-      { question: "How secure is the protection?", answer: "This tool provides basic document protection processed in your browser. For enterprise-grade AES-256 encryption, we recommend using professional PDF software or our upcoming server-based protection feature." }
+      { question: "How secure is the protection?", answer: "This tool provides basic document protection processed in your browser. For enterprise-grade AES-256 encryption, professional PDF software like Adobe Acrobat is recommended." },
+      { question: "Can I protect multiple PDFs at once?", answer: "The tool processes one file at a time for security. Simply repeat the process for each file you need to protect." },
+      { question: "Will the protected PDF have a watermark?", answer: "No. MyPDFs never adds watermarks or branding to your documents." },
+      { question: "What happens if I forget the password?", answer: "If you forget the password, there is no way to recover it. We recommend storing passwords in a secure password manager." },
+      { question: "Can I set different passwords for opening and editing?", answer: "Currently, the tool sets a single password for opening the document. Separate owner/user password support is planned for a future update." },
+      { question: "Does protection change the PDF content?", answer: "No. The content, formatting, images, and structure of your PDF remain completely unchanged. Only the access restriction is added." },
+      { question: "Is there a file size limit?", answer: "There is no strict limit, but very large files may take longer to process depending on your device's capabilities." }
     ]
   };
 

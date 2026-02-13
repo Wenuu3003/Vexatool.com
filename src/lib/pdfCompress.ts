@@ -3,7 +3,7 @@ import * as pdfjsLib from "pdfjs-dist";
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.mjs",
+  "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
 ).toString();
 
@@ -26,10 +26,13 @@ export async function compressPDF(
   const scale = quality < 40 ? 0.6 : quality < 60 ? 0.75 : quality < 80 ? 0.9 : 1.0;
   const jpegQuality = Math.max(0.1, quality / 100);
 
+  console.log("[CompressPDF] Starting compression, quality:", quality, "scale:", scale);
+
   // Load with pdfjs-dist for rendering
   const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(fileBuffer) });
   const pdfDoc = await loadingTask.promise;
   const numPages = pdfDoc.numPages;
+  console.log("[CompressPDF] Loaded PDF with", numPages, "pages");
 
   // Create new PDF with pdf-lib
   const newPdf = await PDFDocument.create();

@@ -10,10 +10,10 @@ import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 // Lazy load the heavy editor component
-const ProfessionalPDFEditor = lazy(() => 
-  import("@/components/pdf-editor/ProfessionalPDFEditor").then(m => ({ 
-    default: m.ProfessionalPDFEditor 
-  }))
+const ProfessionalPDFEditor = lazy(() =>
+  import("@/components/pdf-editor/ProfessionalPDFEditor").then((m) => ({
+    default: m.ProfessionalPDFEditor,
+  })),
 );
 
 const EditPDF = () => {
@@ -33,65 +33,70 @@ const EditPDF = () => {
     setFiles([]);
   }, []);
 
+  <Button variant="outline" size="sm" onClick={() => setShowOCR(!showOCR)}>
+    OCR
+  </Button>;
+
   // FAQ Schema for SEO
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
+    mainEntity: [
       {
         "@type": "Question",
-        "name": "Can I replace existing text in a PDF online?",
-        "acceptedAnswer": {
+        name: "Can I replace existing text in a PDF online?",
+        acceptedAnswer: {
           "@type": "Answer",
-          "text": "Yes, you can replace existing text in a PDF if it is text-based. Upload the PDF, select the text, delete it and type new text in the same position."
-        }
+          text: "Yes, you can replace existing text in a PDF if it is text-based. Upload the PDF, select the text, delete it and type new text in the same position.",
+        },
       },
       {
         "@type": "Question",
-        "name": "Can I edit scanned PDF files?",
-        "acceptedAnswer": {
+        name: "Can I edit scanned PDF files?",
+        acceptedAnswer: {
           "@type": "Answer",
-          "text": "Yes, scanned PDFs can be edited using OCR technology which converts scanned images into editable text."
-        }
+          text: "Yes, scanned PDFs can be edited using OCR technology which converts scanned images into editable text.",
+        },
       },
       {
         "@type": "Question",
-        "name": "Will the original PDF quality be preserved?",
-        "acceptedAnswer": {
+        name: "Will the original PDF quality be preserved?",
+        acceptedAnswer: {
           "@type": "Answer",
-          "text": "Yes, the editor preserves the original layout, clarity and formatting while editing."
-        }
+          text: "Yes, the editor preserves the original layout, clarity and formatting while editing.",
+        },
       },
       {
         "@type": "Question",
-        "name": "Is this PDF editor free and safe?",
-        "acceptedAnswer": {
+        name: "Is this PDF editor free and safe?",
+        acceptedAnswer: {
           "@type": "Answer",
-          "text": "Yes, this PDF editor is free to use and files are processed securely without permanent storage."
-        }
+          text: "Yes, this PDF editor is free to use and files are processed securely without permanent storage.",
+        },
       },
       {
         "@type": "Question",
-        "name": "How does OCR work for scanned PDFs?",
-        "acceptedAnswer": {
+        name: "How does OCR work for scanned PDFs?",
+        acceptedAnswer: {
           "@type": "Answer",
-          "text": "OCR (Optical Character Recognition) analyzes the scanned image and identifies text patterns, converting them into selectable and editable text that you can modify or replace."
-        }
+          text: "OCR (Optical Character Recognition) analyzes the scanned image and identifies text patterns, converting them into selectable and editable text that you can modify or replace.",
+        },
       },
       {
         "@type": "Question",
-        "name": "Can I add images and signatures to my PDF?",
-        "acceptedAnswer": {
+        name: "Can I add images and signatures to my PDF?",
+        acceptedAnswer: {
           "@type": "Answer",
-          "text": "Yes, you can add images, logos, and signatures to your PDF. Simply use the image tool to upload and position your graphics anywhere on the document."
-        }
-      }
-    ]
+          text: "Yes, you can add images, logos, and signatures to your PDF. Simply use the image tool to upload and position your graphics anywhere on the document.",
+        },
+      },
+    ],
   };
 
   const seoContent = {
     toolName: "Free Online PDF Editor with OCR",
-    whatIs: "The Mypdfs Professional PDF Editor is the most comprehensive free online tool for editing PDF documents directly in your browser – no software installation needed. Our advanced editor handles both regular text-based PDFs and scanned documents through integrated OCR (Optical Character Recognition) technology powered by Tesseract.js. Edit existing text, correct typos, update outdated information, add annotations, insert logos and images, apply professional watermarks, draw shapes, and highlight important content – all from one intuitive interface. Unlike basic PDF editors, our precision alignment engine ensures that when you replace text, the new content appears in exactly the right position, maintaining your document's professional appearance. Perfect for editing contracts, invoices, certificates, forms, letters, reports, and any PDF document that needs quick modifications. Your files are processed entirely on your device using secure client-side JavaScript, meaning sensitive documents like financial records, legal papers, medical forms, and confidential business materials never leave your computer.",
+    whatIs:
+      "The Mypdfs Professional PDF Editor is the most comprehensive free online tool for editing PDF documents directly in your browser – no software installation needed. Our advanced editor handles both regular text-based PDFs and scanned documents through integrated OCR (Optical Character Recognition) technology powered by Tesseract.js. Edit existing text, correct typos, update outdated information, add annotations, insert logos and images, apply professional watermarks, draw shapes, and highlight important content – all from one intuitive interface. Unlike basic PDF editors, our precision alignment engine ensures that when you replace text, the new content appears in exactly the right position, maintaining your document's professional appearance. Perfect for editing contracts, invoices, certificates, forms, letters, reports, and any PDF document that needs quick modifications. Your files are processed entirely on your device using secure client-side JavaScript, meaning sensitive documents like financial records, legal papers, medical forms, and confidential business materials never leave your computer.",
     howToUse: [
       "Click the upload area or drag-and-drop your PDF file onto the page to begin editing.",
       "The editor automatically detects whether your PDF contains selectable text or is a scanned image.",
@@ -103,7 +108,7 @@ const EditPDF = () => {
       "Apply text or image watermarks to single pages or entire documents (keyboard shortcut: W).",
       "Navigate between pages using the thumbnail sidebar; rotate, delete, duplicate, or reorder pages as needed.",
       "Undo mistakes with Ctrl+Z (Cmd+Z on Mac) and redo with Ctrl+Y (Cmd+Y on Mac) – up to 50 steps.",
-      "Click 'Download PDF' when finished to preview your edits and save the high-quality output file."
+      "Click 'Download PDF' when finished to preview your edits and save the high-quality output file.",
     ],
     features: [
       "Industry-leading OCR technology powered by Tesseract.js for editing scanned PDFs and image-based documents.",
@@ -122,36 +127,67 @@ const EditPDF = () => {
       "High-fidelity PDF export preserving original resolution, embedded fonts, and vector graphics.",
       "Responsive design optimized for desktops, tablets, and mobile devices.",
       "No watermarks added to your exported files – professional results every time.",
-      "100% secure local processing – your files never upload to any external server."
+      "100% secure local processing – your files never upload to any external server.",
     ],
-    safetyNote: "Every PDF you edit is processed entirely within your web browser using secure client-side JavaScript libraries. Your documents never leave your device and are not transmitted to any external server. We use industry-trusted libraries: PDF.js for rendering and pdf-lib for export. All file data is automatically cleared from browser memory when you close the editor or navigate away. We have no access to your documents and store no user data. This client-side approach provides enterprise-grade security without requiring registration, subscriptions, or personal information. Perfect for editing confidential contracts, financial statements, legal documents, medical records, and any sensitive files.",
+    safetyNote:
+      "Every PDF you edit is processed entirely within your web browser using secure client-side JavaScript libraries. Your documents never leave your device and are not transmitted to any external server. We use industry-trusted libraries: PDF.js for rendering and pdf-lib for export. All file data is automatically cleared from browser memory when you close the editor or navigate away. We have no access to your documents and store no user data. This client-side approach provides enterprise-grade security without requiring registration, subscriptions, or personal information. Perfect for editing confidential contracts, financial statements, legal documents, medical records, and any sensitive files.",
     faqs: [
-      { question: "Can I edit and replace existing text directly in a PDF?", answer: "Yes! For text-based PDFs with selectable text, click 'Extract PDF Text' to enable editing mode, then click any text block to select and modify it. Our precision alignment engine covers the original text and places your new text in the exact same position, preserving the document's professional layout." },
-      { question: "How do I edit scanned PDFs or image-based documents?", answer: "Scanned PDFs require OCR (Optical Character Recognition) to convert images into editable text. After uploading your scanned document, click 'Run OCR' in the right panel. The OCR engine analyzes each page, detects text regions, and makes them editable just like a regular PDF. OCR accuracy is highest for clear, well-scanned English documents." },
-      { question: "Will editing preserve my PDF's original quality and formatting?", answer: "Absolutely. Our editor uses pdf-lib for high-fidelity export, preserving the original DPI, embedded fonts, and vector graphics. Text replacements use our baseline alignment engine to match original line heights, spacing, and positioning exactly." },
-      { question: "Is this PDF editor really free with no hidden costs?", answer: "Yes, the Mypdfs PDF Editor is 100% free with no hidden fees, subscriptions, or premium tiers. We don't add watermarks to your exported files. The tool is free because all processing happens in your browser – we don't need expensive servers to handle your files." },
-      { question: "How does the text replacement alignment work technically?", answer: "When you edit text, the editor creates a white redaction patch over the original text and positions your replacement text using font-metric baseline alignment. This calculates the exact line height, character spacing, and position to ensure your new text appears in precisely the right location." },
-      { question: "Can I add my company logo, electronic signature, or custom watermark?", answer: "Yes! Use the Image tool (press I) to insert logos, photos, or scanned signatures anywhere on your document. For watermarks, use the Watermark tool (press W) to add text or image watermarks with adjustable opacity, position, rotation, and tiling options. Watermarks can be applied to single pages or all pages at once." },
-      { question: "What file types can I upload and download?", answer: "You can upload standard PDF files (.pdf). The edited document exports as a high-quality PDF file. For inserting images into your PDF, PNG, JPG, JPEG, and SVG formats are all supported." },
-      { question: "Does the PDF editor work on mobile phones and tablets?", answer: "Yes! Our editor features a fully responsive design that adapts to any screen size. While we recommend larger screens for complex editing tasks, basic operations like text editing, annotations, and page management work smoothly on tablets and smartphones." }
-    ]
+      {
+        question: "Can I edit and replace existing text directly in a PDF?",
+        answer:
+          "Yes! For text-based PDFs with selectable text, click 'Extract PDF Text' to enable editing mode, then click any text block to select and modify it. Our precision alignment engine covers the original text and places your new text in the exact same position, preserving the document's professional layout.",
+      },
+      {
+        question: "How do I edit scanned PDFs or image-based documents?",
+        answer:
+          "Scanned PDFs require OCR (Optical Character Recognition) to convert images into editable text. After uploading your scanned document, click 'Run OCR' in the right panel. The OCR engine analyzes each page, detects text regions, and makes them editable just like a regular PDF. OCR accuracy is highest for clear, well-scanned English documents.",
+      },
+      {
+        question: "Will editing preserve my PDF's original quality and formatting?",
+        answer:
+          "Absolutely. Our editor uses pdf-lib for high-fidelity export, preserving the original DPI, embedded fonts, and vector graphics. Text replacements use our baseline alignment engine to match original line heights, spacing, and positioning exactly.",
+      },
+      {
+        question: "Is this PDF editor really free with no hidden costs?",
+        answer:
+          "Yes, the Mypdfs PDF Editor is 100% free with no hidden fees, subscriptions, or premium tiers. We don't add watermarks to your exported files. The tool is free because all processing happens in your browser – we don't need expensive servers to handle your files.",
+      },
+      {
+        question: "How does the text replacement alignment work technically?",
+        answer:
+          "When you edit text, the editor creates a white redaction patch over the original text and positions your replacement text using font-metric baseline alignment. This calculates the exact line height, character spacing, and position to ensure your new text appears in precisely the right location.",
+      },
+      {
+        question: "Can I add my company logo, electronic signature, or custom watermark?",
+        answer:
+          "Yes! Use the Image tool (press I) to insert logos, photos, or scanned signatures anywhere on your document. For watermarks, use the Watermark tool (press W) to add text or image watermarks with adjustable opacity, position, rotation, and tiling options. Watermarks can be applied to single pages or all pages at once.",
+      },
+      {
+        question: "What file types can I upload and download?",
+        answer:
+          "You can upload standard PDF files (.pdf). The edited document exports as a high-quality PDF file. For inserting images into your PDF, PNG, JPG, JPEG, and SVG formats are all supported.",
+      },
+      {
+        question: "Does the PDF editor work on mobile phones and tablets?",
+        answer:
+          "Yes! Our editor features a fully responsive design that adapts to any screen size. While we recommend larger screens for complex editing tasks, basic operations like text editing, annotations, and page management work smoothly on tablets and smartphones.",
+      },
+    ],
   };
 
   return (
     <>
-      <CanonicalHead 
+      <CanonicalHead
         title="Edit PDF Online Free – Modify Text, Add Images, OCR Scanned Documents | Mypdfs"
         description="Free professional PDF editor with OCR technology. Edit text directly in PDFs, add images, watermarks, and signatures. Works with scanned documents. No signup required."
         keywords="edit PDF online, free PDF editor, modify PDF text, OCR PDF editor, add text to PDF, PDF annotation, scanned PDF editor, PDF markup tool, online PDF editing"
       />
-      
+
       {/* FAQ Schema */}
       <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(faqSchema)}
-        </script>
+        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
-      
+
       <ToolLayout
         title="Edit PDF Online – Replace Text, OCR Scanned PDFs"
         description="Free online PDF editor with OCR. Edit, replace, and add text to any PDF including scanned documents."
@@ -176,7 +212,7 @@ const EditPDF = () => {
                 multiple={false}
                 accept=".pdf"
               />
-              
+
               {/* Feature highlights */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
@@ -200,7 +236,7 @@ const EditPDF = () => {
                   <p className="text-xs text-muted-foreground">Text or image watermarks</p>
                 </div>
               </div>
-              
+
               {/* Additional info */}
               <div className="bg-muted/20 rounded-lg p-4 mt-4">
                 <h3 className="font-medium mb-2">Supported PDF Types</h3>
@@ -238,18 +274,17 @@ const EditPDF = () => {
               </div>
 
               {/* Editor */}
-              <Suspense fallback={
-                <div className="flex items-center justify-center h-[600px] bg-muted/30 rounded-lg">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-                    <p className="text-muted-foreground">Loading editor...</p>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center h-[600px] bg-muted/30 rounded-lg">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
+                      <p className="text-muted-foreground">Loading editor...</p>
+                    </div>
                   </div>
-                </div>
-              }>
-                <ProfessionalPDFEditor 
-                  file={files[0]} 
-                  onClose={handleClose}
-                />
+                }
+              >
+                <ProfessionalPDFEditor file={files[0]} onClose={handleClose} />
               </Suspense>
             </div>
           )}

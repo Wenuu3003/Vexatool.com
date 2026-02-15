@@ -32,7 +32,6 @@ const EditPDF = () => {
     setIsEditing(false);
     setFiles([]);
   }, []);
-
   <Button variant="outline" size="sm" onClick={() => setShowOCR(!showOCR)}>
     OCR
   </Button>;

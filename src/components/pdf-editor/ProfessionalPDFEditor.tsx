@@ -35,6 +35,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
+// High-res rendering scale for 4K quality PDF display
+const PDF_RENDER_SCALE = 3.0;
+
 interface ProfessionalPDFEditorProps {
   file: File;
   onClose: () => void;
@@ -113,7 +116,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           if (isCancelled) return;
           
           const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 1.5 });
+          const viewport = page.getViewport({ scale: PDF_RENDER_SCALE });
           
           const canvas = document.createElement('canvas');
           canvas.width = viewport.width;
@@ -316,14 +319,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       page: originalBlock.pageIndex,
       x: originalBlock.x,
       y: originalBlock.y,
-      width: Math.max(originalBlock.width, newText.length * 8),
+      width: Math.max(originalBlock.width, newText.length * (originalBlock.height * 0.6)),
       height: originalBlock.height,
       rotation: 0,
       opacity: 1,
       locked: false,
       zIndex: elements.length + 1,
       text: newText,
-      fontSize: Math.max(12, Math.round(originalBlock.height * 0.8)),
+      fontSize: Math.max(8, Math.round(originalBlock.height * 0.85)),
       fontFamily: 'Helvetica',
       fontWeight: 'normal',
       fontStyle: 'normal',
@@ -454,8 +457,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       pageNumber: pages.length + 1,
       rotation: 0,
       deleted: false,
-      width: 612 * 1.5,
-      height: 792 * 1.5,
+      width: 612 * PDF_RENDER_SCALE,
+      height: 792 * PDF_RENDER_SCALE,
       canvas: undefined,
     };
     setPages(prev => [...prev.slice(0, afterIndex + 1), newPage, ...prev.slice(afterIndex + 1)]);

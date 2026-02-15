@@ -88,24 +88,25 @@ export const useOCR = () => {
     try {
       const page = await pdfDocument.getPage(pageIndex + 1);
       const textContent = await page.getTextContent();
-      const viewport = page.getViewport({ scale: 1.5 });
+      // Must match the PDF_RENDER_SCALE used in ProfessionalPDFEditor
+      const renderScale = 3.0;
+      const viewport = page.getViewport({ scale: renderScale });
 
       const blocks: OCRTextBlock[] = [];
 
       textContent.items.forEach((item: any, index: number) => {
         if (item.str && item.str.trim()) {
-          // Transform coordinates from PDF space to canvas space
-          const tx = Tesseract.createWorker ? item.transform : item.transform;
-          const x = item.transform[4] * 1.5;
-          const y = viewport.height - (item.transform[5] * 1.5) - (item.height * 1.5);
+          // Transform coordinates from PDF space to canvas space using matching scale
+          const x = item.transform[4] * renderScale;
+          const y = viewport.height - (item.transform[5] * renderScale) - ((item.height || 12) * renderScale);
           
           blocks.push({
             id: `pdf-text-${pageIndex}-${index}`,
             text: item.str,
             x: x,
             y: y,
-            width: item.width * 1.5,
-            height: (item.height || 12) * 1.5,
+            width: item.width * renderScale,
+            height: (item.height || 12) * renderScale,
             confidence: 100, // Native PDF text has 100% confidence
             pageIndex,
           });

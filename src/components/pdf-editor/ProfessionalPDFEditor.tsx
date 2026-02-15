@@ -3,6 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { useToast } from '@/hooks/use-toast';
 import { useFileHistory } from '@/hooks/useFileHistory';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   AnyElement, 
   TextElement, 
@@ -28,6 +29,9 @@ import { OCRPanel } from './OCRPanel';
 import { TextSelectionLayer } from './TextSelectionLayer';
 import { useEditorHistory } from './useEditorHistory';
 import { useOCR, OCRTextBlock } from './useOCR';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { ScanText, PanelRightOpen, Layers } from 'lucide-react';
 
 // Set up the worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -46,7 +50,10 @@ interface ProfessionalPDFEditorProps {
 export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorProps) => {
   const { toast } = useToast();
   const { saveFileHistory } = useFileHistory();
+  const isMobile = useIsMobile();
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const [showMobilePanel, setShowMobilePanel] = useState(false);
+  const [showMobilePages, setShowMobilePages] = useState(false);
   
   // Core state
   const [pages, setPages] = useState<PageInfo[]>([]);
@@ -54,7 +61,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<Tool>('select');
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(isMobile ? 0.5 : 1);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showWatermarkDialog, setShowWatermarkDialog] = useState(false);
@@ -148,9 +155,19 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         
         setPdfType(type);
         
+        // Auto-extract text for text-based PDFs
+        if (type === 'text-based' || type === 'mixed') {
+          try {
+            await extractPDFText(pdf, 0);
+            setTextSelectionEnabled(true);
+          } catch (err) {
+            console.error('Auto text extraction failed:', err);
+          }
+        }
+        
         toast({
           title: 'PDF Loaded',
-          description: `${type === 'text-based' ? 'Text-based' : type === 'scanned' ? 'Scanned/Image' : 'Mixed'} PDF detected. ${pdf.numPages} page(s).`,
+          description: `${type === 'text-based' ? 'Text-based' : type === 'scanned' ? 'Scanned/Image' : 'Mixed'} PDF detected. ${pdf.numPages} page(s).${type !== 'scanned' ? ' Text auto-extracted.' : ' Use OCR to detect text.'}`,
         });
       } catch (error) {
         if (isCancelled) return;
@@ -230,7 +247,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     }
     
     try {
-      await performOCR(currentPageData.canvas, currentPage, 'eng');
+      await performOCR(currentPageData.canvas, currentPage, 'eng+hin');
       setTextSelectionEnabled(true);
       toast({
         title: 'OCR Complete',
@@ -820,8 +837,29 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     );
   }
 
+  const ocrPanelContent = (
+    <>
+      <div className="p-2">
+        <OCRPanel
+          pdfType={pdfType}
+          isProcessing={isOCRProcessing}
+          progress={ocrProgress}
+          textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
+          onRunOCR={handleRunOCR}
+          onExtractText={handleExtractText}
+          currentPage={currentPage}
+          totalPages={pages.filter(p => !p.deleted).length}
+        />
+      </div>
+      <PropertiesPanel
+        element={selectedElementData ?? null}
+        onUpdate={handleUpdateElement}
+      />
+    </>
+  );
+
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] min-h-[600px] border border-border rounded-lg overflow-hidden bg-background">
+    <div className="flex flex-col h-[calc(100vh-200px)] min-h-[400px] md:min-h-[600px] border border-border rounded-lg overflow-hidden bg-background">
       {/* Hidden file input for images */}
       <input
         ref={imageInputRef}
@@ -858,20 +896,68 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         eraserSettings={eraserSettings}
         onEraserSettingsChange={setEraserSettings}
       />
+
+      {/* Mobile floating action buttons */}
+      {isMobile && (
+        <div className="flex items-center gap-2 p-2 bg-card border-b border-border">
+          <Sheet open={showMobilePages} onOpenChange={setShowMobilePages}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5">
+                <Layers className="w-4 h-4" />
+                Pages
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[240px] p-0 overflow-y-auto">
+              <div className="pt-10">
+                <PageThumbnails
+                  pages={pages}
+                  currentPage={currentPage}
+                  onPageSelect={(p) => { setCurrentPage(p); setShowMobilePages(false); }}
+                  onRotatePage={handleRotatePage}
+                  onDeletePage={handleDeletePage}
+                  onDuplicatePage={handleDuplicatePage}
+                  onAddBlankPage={handleAddBlankPage}
+                  onReorderPages={handleReorderPages}
+                />
+              </div>
+            </SheetContent>
+          </Sheet>
+          
+          <Sheet open={showMobilePanel} onOpenChange={setShowMobilePanel}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5">
+                <ScanText className="w-4 h-4" />
+                OCR & Edit
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[280px] p-0 overflow-y-auto">
+              <div className="pt-10">
+                {ocrPanelContent}
+              </div>
+            </SheetContent>
+          </Sheet>
+          
+          <span className="text-xs text-muted-foreground ml-auto">
+            Page {currentPage + 1}/{pages.filter(p => !p.deleted).length}
+          </span>
+        </div>
+      )}
       
       {/* Main editor area */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Page thumbnails */}
-        <PageThumbnails
-          pages={pages}
-          currentPage={currentPage}
-          onPageSelect={setCurrentPage}
-          onRotatePage={handleRotatePage}
-          onDeletePage={handleDeletePage}
-          onDuplicatePage={handleDuplicatePage}
-          onAddBlankPage={handleAddBlankPage}
-          onReorderPages={handleReorderPages}
-        />
+        {/* Page thumbnails - desktop only */}
+        {!isMobile && (
+          <PageThumbnails
+            pages={pages}
+            currentPage={currentPage}
+            onPageSelect={setCurrentPage}
+            onRotatePage={handleRotatePage}
+            onDeletePage={handleDeletePage}
+            onDuplicatePage={handleDuplicatePage}
+            onAddBlankPage={handleAddBlankPage}
+            onReorderPages={handleReorderPages}
+          />
+        )}
         
         {/* Canvas with text selection layer */}
         <div className="flex-1 relative">
@@ -906,28 +992,12 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           )}
         </div>
         
-        {/* Properties panel with OCR */}
-        <div className="w-64 bg-card border-l border-border overflow-y-auto">
-          {/* OCR Panel */}
-          <div className="p-2">
-            <OCRPanel
-              pdfType={pdfType}
-              isProcessing={isOCRProcessing}
-              progress={ocrProgress}
-              textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
-              onRunOCR={handleRunOCR}
-              onExtractText={handleExtractText}
-              currentPage={currentPage}
-              totalPages={pages.filter(p => !p.deleted).length}
-            />
+        {/* Properties panel with OCR - desktop only */}
+        {!isMobile && (
+          <div className="w-64 bg-card border-l border-border overflow-y-auto">
+            {ocrPanelContent}
           </div>
-          
-          {/* Properties Panel */}
-          <PropertiesPanel
-            element={selectedElementData ?? null}
-            onUpdate={handleUpdateElement}
-          />
-        </div>
+        )}
       </div>
       
       {/* Watermark dialog */}

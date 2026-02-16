@@ -14,6 +14,12 @@ interface TextSelectionLayerProps {
   onTextReplace: (blockId: string, newText: string, originalBlock: OCRTextBlock) => void;
 }
 
+/**
+ * CRITICAL FIX: This layer is now rendered INSIDE the scaled container.
+ * It does NOT apply its own scale(zoom) transform.
+ * The parent container already handles zoom via CSS transform: scale(zoom).
+ * Text blocks use absolute positioning matching PDF render coordinates directly.
+ */
 export const TextSelectionLayer = memo(({
   textBlocks,
   currentPage,
@@ -61,10 +67,7 @@ export const TextSelectionLayer = memo(({
   if (!enabled || pageBlocks.length === 0) return null;
 
   return (
-    <div 
-      className="absolute inset-0 pointer-events-none"
-      style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}
-    >
+    <div className="absolute inset-0">
       {pageBlocks.map((block) => (
         <Popover 
           key={block.id} 

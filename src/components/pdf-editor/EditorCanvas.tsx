@@ -28,6 +28,8 @@ interface EditorCanvasProps {
   onUpdateElement: (id: string, updates: Partial<AnyElement>) => void;
   onElementsChange: (elements: AnyElement[]) => void;
   onZoomChange: (zoom: number) => void;
+  /** Render prop for text selection overlay inside the scaled container */
+  textOverlay?: React.ReactNode;
 }
 
 export const EditorCanvas = memo(({
@@ -44,6 +46,7 @@ export const EditorCanvas = memo(({
   onUpdateElement,
   onElementsChange,
   onZoomChange,
+  textOverlay,
 }: EditorCanvasProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -126,6 +129,11 @@ export const EditorCanvas = memo(({
     };
   }, [zoom, onZoomChange]);
 
+  /**
+   * CRITICAL FIX: Get mouse position in the UNSCALED coordinate system.
+   * The container uses CSS transform: scale(zoom), so we need to divide by zoom
+   * to get coordinates in the original PDF render space.
+   */
   const getMousePosition = useCallback((e: React.MouseEvent | React.TouchEvent): Point => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return { x: 0, y: 0 };
@@ -140,6 +148,9 @@ export const EditorCanvas = memo(({
       clientY = e.clientY;
     }
     
+    // Since container is scaled via CSS transform: scale(zoom),
+    // getBoundingClientRect() gives us the SCALED size.
+    // We divide by zoom to get unscaled coordinates.
     return {
       x: (clientX - rect.left) / zoom,
       y: (clientY - rect.top) / zoom,
@@ -215,7 +226,6 @@ export const EditorCanvas = memo(({
       if (el.type !== 'drawing' || el.page !== currentPage) return true;
       
       const drawEl = el as DrawingElement;
-      // Check if any point in the drawing is within eraser radius
       const hitPoint = drawEl.points.some(p => {
         const dx = (p.x + drawEl.x) - pos.x;
         const dy = (p.y + drawEl.y) - pos.y;
@@ -233,20 +243,17 @@ export const EditorCanvas = memo(({
   const handleCanvasMouseDown = useCallback((e: React.MouseEvent) => {
     const pos = getMousePosition(e);
     
-    // Pan tool
     if (activeTool === 'pan') {
       handlePanStart(e);
       return;
     }
 
-    // Eraser tool
     if (activeTool === 'eraser') {
       setIsDrawing(true);
       eraseAtPoint(pos);
       return;
     }
     
-    // Check if clicking on an element
     const target = e.target as HTMLElement;
     if (target.closest('.editor-element')) return;
     
@@ -296,7 +303,6 @@ export const EditorCanvas = memo(({
         strokeWidth: 2,
       });
     } else if (activeTool === 'redact') {
-      // Redact tool - create white/color patch to cover original text
       setShapeStart(pos);
       setTempRedact({
         id: `redact-${Date.now()}`,
@@ -310,7 +316,7 @@ export const EditorCanvas = memo(({
         opacity: 1,
         locked: false,
         zIndex: elements.length,
-        fillColor: '#FFFFFF', // White by default to cover scanned text
+        fillColor: '#FFFFFF',
       });
     } else if (['pen', 'highlight', 'underline', 'brush'].includes(activeTool)) {
       setIsDrawing(true);
@@ -335,7 +341,6 @@ export const EditorCanvas = memo(({
       });
     }
     
-    // Handle redact tool drag
     if (shapeStart && tempRedact) {
       const width = pos.x - shapeStart.x;
       const height = pos.y - shapeStart.y;
@@ -367,7 +372,6 @@ export const EditorCanvas = memo(({
       setShapeStart(null);
     }
     
-    // Handle redact tool completion
     if (tempRedact && shapeStart) {
       if (tempRedact.width > 5 || tempRedact.height > 5) {
         onAddElement(tempRedact);
@@ -412,7 +416,7 @@ export const EditorCanvas = memo(({
     
     setIsDrawing(false);
     setCurrentDrawing([]);
-  }, [activeTool, currentDrawing, currentPage, elements.length, isDrawing, onAddElement, onSelectElement, shapeStart, tempShape, brushSettings]);
+  }, [activeTool, currentDrawing, currentPage, elements.length, isDrawing, onAddElement, onSelectElement, shapeStart, tempShape, tempRedact, brushSettings]);
 
   // Touch handlers
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
@@ -548,11 +552,12 @@ export const EditorCanvas = memo(({
 
   useEffect(() => {
     if (isResizing) {
+      const endResize = () => setIsResizing(false);
       window.addEventListener('mousemove', handleResize);
-      window.addEventListener('mouseup', () => setIsResizing(false));
+      window.addEventListener('mouseup', endResize);
       return () => {
         window.removeEventListener('mousemove', handleResize);
-        window.removeEventListener('mouseup', () => setIsResizing(false));
+        window.removeEventListener('mouseup', endResize);
       };
     }
   }, [isResizing, handleResize]);
@@ -910,13 +915,20 @@ export const EditorCanvas = memo(({
       ref={scrollContainerRef}
       className="flex-1 overflow-auto bg-muted/30 p-4"
     >
+      {/* 
+        CRITICAL FIX: Use CSS transform: scale(zoom) with transformOrigin: top left.
+        This scales the entire page container uniformly. The inner content uses 
+        UNSCALED coordinates matching the PDF render space.
+        No double-scaling — elements layer does NOT have its own scale transform.
+      */}
       <div
         ref={containerRef}
         className="relative mx-auto bg-white shadow-lg select-none"
         style={{
-          width: currentPageData.width * zoom,
-          height: currentPageData.height * zoom,
-          transform: `rotate(${currentPageData.rotation}deg)`,
+          width: currentPageData.width,
+          height: currentPageData.height,
+          transform: `scale(${zoom}) rotate(${currentPageData.rotation}deg)`,
+          transformOrigin: 'top left',
           cursor: getCursor(),
         }}
         onMouseDown={handleCanvasMouseDown}
@@ -937,16 +949,16 @@ export const EditorCanvas = memo(({
           />
         )}
         
-        {/* Elements Layer */}
-        <div 
-          className="absolute inset-0" 
-          style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}
-        >
+        {/* Elements Layer - NO additional scale transform */}
+        <div className="absolute inset-0">
           {pageElements.map(renderElement)}
           {renderTempShape()}
           {renderTempRedact()}
           {renderCurrentDrawing()}
         </div>
+        
+        {/* Text selection overlay - rendered inside scaled container */}
+        {textOverlay}
       </div>
       {renderEraserCursor()}
     </div>

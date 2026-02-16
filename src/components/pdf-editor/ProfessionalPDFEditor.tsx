@@ -31,7 +31,8 @@ import { useEditorHistory } from './useEditorHistory';
 import { useOCR, OCRTextBlock } from './useOCR';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { ScanText, PanelRightOpen, Layers } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { ScanText, PanelRightOpen, Layers, AlertTriangle } from 'lucide-react';
 
 // Set up the worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -41,6 +42,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 
 // High-res rendering scale for 4K quality PDF display
 const PDF_RENDER_SCALE = 3.0;
+const MAX_FILE_SIZE_MB = 25;
 
 interface ProfessionalPDFEditorProps {
   file: File;
@@ -61,12 +63,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<Tool>('select');
-  const [zoom, setZoom] = useState(isMobile ? 0.5 : 1);
+  const [zoom, setZoom] = useState(isMobile ? 0.4 : 0.75);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showWatermarkDialog, setShowWatermarkDialog] = useState(false);
   const [showDownloadDialog, setShowDownloadDialog] = useState(false);
   const [pdfDocument, setPdfDocument] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
+  const [fileSizeError, setFileSizeError] = useState(false);
   
   // OCR and text selection state
   const [pdfType, setPdfType] = useState<'text-based' | 'scanned' | 'mixed' | null>(null);
@@ -102,24 +106,43 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     setPages
   );
 
-  // Load PDF on mount - run only once when file changes
+  // File size check
   useEffect(() => {
+    const sizeMB = file.size / (1024 * 1024);
+    if (sizeMB > MAX_FILE_SIZE_MB) {
+      setFileSizeError(true);
+      setIsLoading(false);
+      toast({
+        title: 'File too large',
+        description: `Maximum file size is ${MAX_FILE_SIZE_MB}MB. Your file is ${sizeMB.toFixed(1)}MB.`,
+        variant: 'destructive',
+      });
+    }
+  }, [file, toast]);
+
+  // Load PDF on mount
+  useEffect(() => {
+    if (fileSizeError) return;
     let isCancelled = false;
     
     const loadPDF = async () => {
       setIsLoading(true);
+      setLoadProgress(5);
       try {
         const arrayBuffer = await file.arrayBuffer();
         if (isCancelled) return;
+        setLoadProgress(15);
         
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
         if (isCancelled) return;
+        setLoadProgress(25);
         
         setPdfDocument(pdf);
         
         const loadedPages: PageInfo[] = [];
+        const totalPages = pdf.numPages;
         
-        for (let i = 1; i <= pdf.numPages; i++) {
+        for (let i = 1; i <= totalPages; i++) {
           if (isCancelled) return;
           
           const page = await pdf.getPage(i);
@@ -143,11 +166,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             width: viewport.width,
             height: viewport.height,
           });
+          
+          setLoadProgress(25 + Math.round((i / totalPages) * 60));
         }
         
         if (isCancelled) return;
         
         setPages(loadedPages);
+        setLoadProgress(90);
         
         // Detect PDF type
         const type = await detectPDFType(pdf, 0);
@@ -165,16 +191,18 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           }
         }
         
+        setLoadProgress(100);
+        
         toast({
           title: 'PDF Loaded',
-          description: `${type === 'text-based' ? 'Text-based' : type === 'scanned' ? 'Scanned/Image' : 'Mixed'} PDF detected. ${pdf.numPages} page(s).${type !== 'scanned' ? ' Text auto-extracted.' : ' Use OCR to detect text.'}`,
+          description: `${type === 'text-based' ? 'Text-based' : type === 'scanned' ? 'Scanned/Image' : 'Mixed'} PDF detected. ${totalPages} page(s).${type !== 'scanned' ? ' Text auto-extracted for editing.' : ' Use OCR to detect text.'}`,
         });
       } catch (error) {
         if (isCancelled) return;
         console.error('Error loading PDF:', error);
         toast({
           title: 'Error',
-          description: 'Failed to load PDF file',
+          description: 'Failed to load PDF file. The file may be corrupted or password-protected.',
           variant: 'destructive',
         });
       } finally {
@@ -190,7 +218,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       isCancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [file]);
+  }, [file, fileSizeError]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -212,7 +240,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         }
       }
       
-      // Tool shortcuts
       if (!e.ctrlKey && !e.metaKey && !document.activeElement?.closest('input, textarea')) {
         switch (e.key.toLowerCase()) {
           case 'v': setActiveTool('select'); break;
@@ -247,7 +274,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     }
     
     try {
-      await performOCR(currentPageData.canvas, currentPage, 'eng+hin');
+      // Support English + Telugu
+      await performOCR(currentPageData.canvas, currentPage, 'eng+tel');
       setTextSelectionEnabled(true);
       toast({
         title: 'OCR Complete',
@@ -286,7 +314,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     const block = textBlocks.find(b => b.id === blockId);
     if (!block) return;
     
-    // Add a white redact element to cover the deleted text
     const redactElement: RedactElement = {
       id: `redact-${Date.now()}`,
       type: 'redact',
@@ -313,7 +340,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   }, [textBlocks, elements.length, saveToHistory, toast]);
 
   const handleTextReplace = useCallback((blockId: string, newText: string, originalBlock: OCRTextBlock) => {
-    // First, cover the original text with a white redact
     const redactElement: RedactElement = {
       id: `redact-${Date.now()}`,
       type: 'redact',
@@ -329,7 +355,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       fillColor: '#FFFFFF',
     };
     
-    // Then add new text at the same position
     const textElement: TextElement = {
       id: `text-${Date.now()}`,
       type: 'text',
@@ -497,7 +522,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     const files = e.target.files;
     if (!files?.length) return;
     
-    const file = files[0];
+    const imgFile = files[0];
     const reader = new FileReader();
     
     reader.onload = (event) => {
@@ -530,7 +555,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       img.src = event.target?.result as string;
     };
     
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(imgFile);
     e.target.value = '';
   }, [currentPage, elements.length, handleAddElement]);
 
@@ -554,7 +579,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     }
   }, []);
 
-  // Show download preview dialog
   const handleShowDownloadDialog = useCallback(() => {
     setShowDownloadDialog(true);
   }, []);
@@ -571,7 +595,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       const pdfDoc = await PDFDocument.load(arrayBuffer);
       const pdfPages = pdfDoc.getPages();
       
-      // Embed fonts
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const timesFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
       const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
@@ -584,7 +607,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         'Courier': courierFont,
       };
       
-      // Process each page
       for (let i = 0; i < pdfPages.length; i++) {
         const pageInfo = pages[i];
         if (!pageInfo || pageInfo.deleted) continue;
@@ -592,19 +614,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         const page = pdfPages[i];
         const { width: pageWidth, height: pageHeight } = page.getSize();
         
-        // Apply rotation
         if (pageInfo.rotation !== 0) {
           page.setRotation({ angle: pageInfo.rotation, type: 'degrees' } as any);
         }
         
-        // Get elements for this page
         const pageElements = elements.filter(el => 
           el.page === i || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all')
         );
         
-        // Scale factor from editor canvas-space (PDF.js viewport at scale 1.5)
-        // to PDF user space (pdf-lib points). Since `pageInfo.width/height` are
-        // stored from `page.getViewport({ scale: 1.5 })`, we must scale back down.
         const scaleFactor = pageWidth / pageInfo.width;
         
         for (const element of pageElements) {
@@ -650,10 +667,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             
             if (shapeEl.shapeType === 'rectangle') {
               page.drawRectangle({
-                x,
-                y,
-                width,
-                height,
+                x, y, width, height,
                 borderColor: rgb(sr, sg, sb),
                 borderWidth: shapeEl.strokeWidth,
                 opacity: shapeEl.opacity,
@@ -694,8 +708,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               const y = pageHeight - (imgEl.y * scaleFactor) - (imgEl.height * scaleFactor);
               
               page.drawImage(image, {
-                x,
-                y,
+                x, y,
                 width: imgEl.width * scaleFactor,
                 height: imgEl.height * scaleFactor,
                 opacity: imgEl.opacity,
@@ -719,8 +732,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
                 for (let tx = 0; tx < pageWidth; tx += textWidth + 100) {
                   for (let ty = 0; ty < pageHeight; ty += fontSize * 3) {
                     page.drawText(wmEl.text, {
-                      x: tx,
-                      y: ty,
+                      x: tx, y: ty,
                       size: fontSize,
                       font,
                       color: rgb(r, g, b_val),
@@ -734,8 +746,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
                 const y = pageHeight / 2;
                 
                 page.drawText(wmEl.text, {
-                  x,
-                  y,
+                  x, y,
                   size: fontSize,
                   font,
                   color: rgb(r, g, b_val),
@@ -781,8 +792,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             const y = pageHeight - (redactEl.y * scaleFactor) - (redactEl.height * scaleFactor);
             
             page.drawRectangle({
-              x,
-              y,
+              x, y,
               width: redactEl.width * scaleFactor,
               height: redactEl.height * scaleFactor,
               color: rgb(fr, fg, fb),
@@ -792,7 +802,6 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         }
       }
       
-      // Save and download
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
@@ -822,16 +831,32 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
 
   const selectedElementData = elements.find(el => el.id === selectedElement);
   
-  // Filter out deleted text blocks
   const visibleTextBlocks = textBlocks.filter(b => !deletedTextBlocks.has(b.id));
+
+  // File size error
+  if (fileSizeError) {
+    return (
+      <div className="flex items-center justify-center h-[400px] bg-muted/30 rounded-lg">
+        <div className="text-center space-y-4">
+          <AlertTriangle className="w-12 h-12 text-destructive mx-auto" />
+          <h3 className="text-lg font-semibold">File Too Large</h3>
+          <p className="text-muted-foreground">
+            Maximum file size is {MAX_FILE_SIZE_MB}MB. Your file is {(file.size / (1024 * 1024)).toFixed(1)}MB.
+          </p>
+          <Button onClick={onClose}>Go Back</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[600px] bg-muted/30 rounded-lg">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading PDF...</p>
-          <p className="text-sm text-muted-foreground">This may take a moment for large files</p>
+        <div className="text-center space-y-4 w-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+          <p className="text-muted-foreground font-medium">Loading PDF...</p>
+          <Progress value={loadProgress} className="h-2" />
+          <p className="text-sm text-muted-foreground">{loadProgress}% complete</p>
         </div>
       </div>
     );
@@ -959,8 +984,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           />
         )}
         
-        {/* Canvas with text selection layer */}
-        <div className="flex-1 relative">
+        {/* Canvas with text selection layer rendered inside */}
+        <div className="flex-1 relative overflow-hidden">
           <EditorCanvas
             pages={pages}
             currentPage={currentPage}
@@ -975,21 +1000,19 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             onUpdateElement={handleUpdateElement}
             onElementsChange={setElements}
             onZoomChange={setZoom}
+            textOverlay={
+              textSelectionEnabled ? (
+                <TextSelectionLayer
+                  textBlocks={visibleTextBlocks}
+                  currentPage={currentPage}
+                  zoom={zoom}
+                  enabled={textSelectionEnabled && activeTool === 'select'}
+                  onTextDelete={handleTextDelete}
+                  onTextReplace={handleTextReplace}
+                />
+              ) : null
+            }
           />
-          
-          {/* Text selection overlay */}
-          {textSelectionEnabled && (
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <TextSelectionLayer
-                textBlocks={visibleTextBlocks}
-                currentPage={currentPage}
-                zoom={zoom}
-                enabled={textSelectionEnabled && activeTool === 'select'}
-                onTextDelete={handleTextDelete}
-                onTextReplace={handleTextReplace}
-              />
-            </div>
-          )}
         </div>
         
         {/* Properties panel with OCR - desktop only */}

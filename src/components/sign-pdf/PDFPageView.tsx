@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import type { SignatureObject, PageDimensions } from "./types";
+import { SIGNATURE_FONTS } from "./types";
 import { Lock, Unlock, X, Move } from "lucide-react";
 
 interface PDFPageViewProps {
@@ -181,13 +182,13 @@ const PDFPageView = ({
             {sig.type === 'type' && sig.text && (
               <div className="w-full h-full flex items-center justify-center pointer-events-none">
                 <span
-                  className="italic"
-                  style={{
-                    fontSize: `${Math.max(12, sig.height * pageDims.height * zoom * 0.5)}px`,
-                    color: 'rgb(0, 0, 128)',
-                    fontFamily: 'Times New Roman, serif',
-                    whiteSpace: 'nowrap',
-                  }}
+                    className={sig.fontStyle ? SIGNATURE_FONTS[sig.fontStyle].className : 'italic'}
+                    style={{
+                      fontSize: `${Math.max(12, sig.height * pageDims.height * zoom * 0.5)}px`,
+                      color: 'rgb(0, 0, 128)',
+                      fontFamily: sig.fontStyle ? SIGNATURE_FONTS[sig.fontStyle].fontFamily : "'Times New Roman', serif",
+                      whiteSpace: 'nowrap',
+                    }}
                 >
                   {sig.text}
                 </span>

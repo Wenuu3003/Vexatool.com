@@ -14,7 +14,8 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import * as pdfjsLib from "pdfjs-dist";
 import SignatureCanvas from "@/components/sign-pdf/SignatureCanvas";
 import PDFPageView from "@/components/sign-pdf/PDFPageView";
-import type { SignatureObject, PageDimensions } from "@/components/sign-pdf/types";
+import type { SignatureObject, PageDimensions, SignatureFontStyle } from "@/components/sign-pdf/types";
+import { SIGNATURE_FONTS } from "@/components/sign-pdf/types";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -26,6 +27,7 @@ const SignPDF = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [signatureType, setSignatureType] = useState<"draw" | "type">("draw");
   const [typedSignature, setTypedSignature] = useState("");
+  const [fontStyle, setFontStyle] = useState<SignatureFontStyle>("script");
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [numPages, setNumPages] = useState(0);
@@ -82,6 +84,7 @@ const SignPDF = () => {
       type: signatureType,
       dataUrl: signatureType === "draw" ? signatureDataUrl! : undefined,
       text: signatureType === "type" ? typedSignature : undefined,
+      fontStyle: signatureType === "type" ? fontStyle : undefined,
       pageIndex,
       x: Math.max(0, Math.min(1 - sigWidth, xRatio - sigWidth / 2)),
       y: Math.max(0, Math.min(1 - sigHeight, yRatio - sigHeight / 2)),
@@ -263,11 +266,31 @@ const SignPDF = () => {
                         value={typedSignature}
                         onChange={(e) => setTypedSignature(e.target.value)}
                         placeholder="Your name..."
-                        className="text-xl italic"
+                        className="text-xl"
                       />
+                      <div className="flex gap-2">
+                        {(Object.entries(SIGNATURE_FONTS) as [SignatureFontStyle, typeof SIGNATURE_FONTS[SignatureFontStyle]][]).map(([key, font]) => (
+                          <button
+                            key={key}
+                            onClick={() => setFontStyle(key)}
+                            className={`flex-1 px-3 py-2 rounded border text-sm transition-colors ${
+                              fontStyle === key
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border bg-card text-muted-foreground hover:bg-muted'
+                            }`}
+                          >
+                            <span style={{ fontFamily: font.fontFamily }} className={font.className}>
+                              {font.label}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
                       {typedSignature && (
                         <div className="p-4 bg-muted/30 rounded text-center">
-                          <span className="text-2xl italic text-foreground" style={{ fontFamily: 'Times New Roman, serif' }}>
+                          <span
+                            className={`text-2xl text-foreground ${SIGNATURE_FONTS[fontStyle].className}`}
+                            style={{ fontFamily: SIGNATURE_FONTS[fontStyle].fontFamily }}
+                          >
                             {typedSignature}
                           </span>
                         </div>

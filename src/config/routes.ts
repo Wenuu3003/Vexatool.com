@@ -360,12 +360,12 @@ export const routes: RouteConfig[] = [
   },
   { 
     path: '/image-resizer', 
-    priority: 0.8, 
+    priority: 0.9, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Image Resizer - Resize Images Online Free | Mypdfs',
-    description: 'Resize images to any dimension online. Free image resizer for social media, web, print. Maintain aspect ratio or custom size.',
-    keywords: 'image resizer, resize image, change image size, photo resizer, picture resizer, resize photo online',
+    title: 'Image Resizer – Resize to 20KB, WhatsApp DP, Aadhaar & Passport Photo India | Mypdfs',
+    description: 'Resize image to 20KB or 50KB for Govt Job Form, UPSC, SSC. WhatsApp DP 192x192px, Aadhaar photo 200x200px, Passport Photo India. Free, fast, secure.',
+    keywords: 'image resizer, resize image to 20kb, whatsapp dp resize, aadhaar photo size, passport size photo india, govt job form photo, resize photo to 50kb, compress image to 20kb',
     category: 'Image Tools'
   },
   { 

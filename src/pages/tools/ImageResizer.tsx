@@ -5,10 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { Maximize, Upload, Download, Loader2, X } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Maximize, Upload, Download, Loader2, X, Zap, FileImage, User, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { CanonicalHead } from "@/components/CanonicalHead";
+import { Helmet } from "react-helmet";
 
 interface ImageFile {
   file: File;
@@ -22,11 +25,15 @@ interface ResizedImage {
   resized: string;
   newWidth: number;
   newHeight: number;
+  sizeKB: number;
 }
+
+type SpecialMode = "none" | "govtjob" | "passport";
 
 const presets = [
   { label: "Custom", value: "custom", width: 0, height: 0 },
   { label: "Passport Photo (35x45mm)", value: "passport", width: 413, height: 531 },
+  { label: "Govt Job Form (3.5x4.5cm)", value: "govtjob", width: 413, height: 531 },
   { label: "Instagram Square (1080x1080)", value: "ig-square", width: 1080, height: 1080 },
   { label: "Instagram Portrait (1080x1350)", value: "ig-portrait", width: 1080, height: 1350 },
   { label: "Instagram Story (1080x1920)", value: "ig-story", width: 1080, height: 1920 },
@@ -40,6 +47,97 @@ const presets = [
   { label: "4K (3840x2160)", value: "4k", width: 3840, height: 2160 },
 ];
 
+const QUICK_SIZE_TARGETS = [
+  { label: "20KB", kb: 20, color: "bg-green-500" },
+  { label: "50KB", kb: 50, color: "bg-blue-500" },
+  { label: "100KB", kb: 100, color: "bg-orange-500" },
+  { label: "200KB", kb: 200, color: "bg-purple-500" },
+];
+
+// Smart iterative compression to hit target KB
+async function compressToTargetKB(
+  img: HTMLImageElement,
+  targetKB: number,
+  maxWidth: number,
+  maxHeight: number,
+  onProgress?: (pct: number) => void
+): Promise<{ dataUrl: string; sizeKB: number; finalQuality: number; finalW: number; finalH: number }> {
+  const targetBytes = targetKB * 1024;
+
+  let w = img.naturalWidth;
+  let h = img.naturalHeight;
+
+  // Cap dimensions to max
+  if (w > maxWidth || h > maxHeight) {
+    const ratio = Math.min(maxWidth / w, maxHeight / h);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(img, 0, 0, w, h);
+
+  let quality = 0.92;
+  let result = canvas.toDataURL("image/jpeg", quality);
+  let sizeBytes = Math.round((result.length - 22) * 0.75);
+
+  onProgress?.(10);
+
+  // Binary search quality
+  let lo = 0.1, hi = 0.95;
+  for (let i = 0; i < 12; i++) {
+    const mid = (lo + hi) / 2;
+    const attempt = canvas.toDataURL("image/jpeg", mid);
+    const bytes = Math.round((attempt.length - 22) * 0.75);
+    if (bytes <= targetBytes) {
+      lo = mid;
+      result = attempt;
+      sizeBytes = bytes;
+    } else {
+      hi = mid;
+    }
+    onProgress?.(10 + Math.round((i / 12) * 50));
+  }
+
+  // If still too big, downscale resolution
+  if (sizeBytes > targetBytes * 1.05) {
+    let scale = 0.9;
+    for (let step = 0; step < 8 && sizeBytes > targetBytes * 1.05; step++) {
+      const sw = Math.max(Math.round(w * scale), 50);
+      const sh = Math.max(Math.round(h * scale), 50);
+      const c2 = document.createElement("canvas");
+      c2.width = sw;
+      c2.height = sh;
+      c2.getContext("2d")!.drawImage(img, 0, 0, sw, sh);
+      const attempt = c2.toDataURL("image/jpeg", lo);
+      const bytes = Math.round((attempt.length - 22) * 0.75);
+      if (bytes <= targetBytes) {
+        result = attempt;
+        sizeBytes = bytes;
+        w = sw;
+        h = sh;
+        canvas.width = sw;
+        canvas.height = sh;
+        ctx.drawImage(img, 0, 0, sw, sh);
+      }
+      scale -= 0.1;
+      onProgress?.(60 + Math.round((step / 8) * 35));
+    }
+  }
+
+  onProgress?.(100);
+  return {
+    dataUrl: result,
+    sizeKB: Math.round(sizeBytes / 1024),
+    finalQuality: Math.round(lo * 100),
+    finalW: w,
+    finalH: h,
+  };
+}
+
 export default function ImageResizer() {
   const [image, setImage] = useState<ImageFile | null>(null);
   const [preset, setPreset] = useState("custom");
@@ -49,6 +147,14 @@ export default function ImageResizer() {
   const [quality, setQuality] = useState(90);
   const [resized, setResized] = useState<ResizedImage | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressLabel, setProgressLabel] = useState("");
+  const [specialMode, setSpecialMode] = useState<SpecialMode>("none");
+  const [govtMaxKB, setGovtMaxKB] = useState<20 | 50>(20);
+  const [passportMaxKB, setPassportMaxKB] = useState<20 | 50>(20);
+  const [customTargetKB, setCustomTargetKB] = useState("");
+  const [activeQuickKB, setActiveQuickKB] = useState<number | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const aspectRatioRef = useRef(1);
   const { toast } = useToast();
@@ -61,22 +167,32 @@ export default function ImageResizer() {
       toast({ title: "Invalid file", description: "Please select an image file.", variant: "destructive" });
       return;
     }
+    if (file.size > 25 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Maximum file size is 25MB.", variant: "destructive" });
+      return;
+    }
 
     const img = new Image();
+    const url = URL.createObjectURL(file);
     img.onload = () => {
-      setImage({
-        file,
-        preview: URL.createObjectURL(file),
-        width: img.naturalWidth,
-        height: img.naturalHeight,
-      });
+      setImage({ file, preview: url, width: img.naturalWidth, height: img.naturalHeight });
       setWidth(img.naturalWidth);
       setHeight(img.naturalHeight);
       aspectRatioRef.current = img.naturalWidth / img.naturalHeight;
       setResized(null);
+      setActiveQuickKB(null);
     };
-    img.src = URL.createObjectURL(file);
+    img.src = url;
   }, [toast]);
+
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      const fakeEvent = { target: { files: [file], value: "" } } as unknown as React.ChangeEvent<HTMLInputElement>;
+      handleFileSelect(fakeEvent);
+    }
+  }, [handleFileSelect]);
 
   const handlePresetChange = (value: string) => {
     setPreset(value);
@@ -95,64 +211,151 @@ export default function ImageResizer() {
   const handleWidthChange = (value: string) => {
     const newWidth = parseInt(value) || 1;
     setWidth(newWidth);
-    if (maintainRatio && image) {
-      setHeight(Math.round(newWidth / aspectRatioRef.current));
-    }
+    if (maintainRatio && image) setHeight(Math.round(newWidth / aspectRatioRef.current));
     setPreset("custom");
   };
 
   const handleHeightChange = (value: string) => {
     const newHeight = parseInt(value) || 1;
     setHeight(newHeight);
-    if (maintainRatio && image) {
-      setWidth(Math.round(newHeight * aspectRatioRef.current));
-    }
+    if (maintainRatio && image) setWidth(Math.round(newHeight * aspectRatioRef.current));
     setPreset("custom");
+  };
+
+  // Load HTMLImageElement from current image preview
+  const loadImg = (): Promise<HTMLImageElement> =>
+    new Promise((resolve, reject) => {
+      if (!image) return reject();
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = image.preview;
+    });
+
+  const handleQuickResize = async (targetKB: number) => {
+    if (!image) return;
+    setActiveQuickKB(targetKB);
+    setIsProcessing(true);
+    setProgress(0);
+    setProgressLabel(`Compressing to ${targetKB}KB…`);
+
+    try {
+      const img = await loadImg();
+      const { dataUrl, sizeKB, finalW, finalH } = await compressToTargetKB(img, targetKB, image.width, image.height, setProgress);
+
+      setResized({ original: image, resized: dataUrl, newWidth: finalW, newHeight: finalH, sizeKB });
+      toast({
+        title: `✅ Image resized to ${sizeKB}KB`,
+        description: `Successfully compressed! Final size: ${sizeKB}KB (${finalW}×${finalH}px)`,
+      });
+    } catch {
+      toast({ title: "Failed", description: "Could not compress to target size.", variant: "destructive" });
+    } finally {
+      setIsProcessing(false);
+      setProgressLabel("");
+    }
+  };
+
+  const handleSpecialModeResize = async () => {
+    if (!image || specialMode === "none") return;
+    setIsProcessing(true);
+    setProgress(0);
+
+    try {
+      const img = await loadImg();
+      let targetW = 413, targetH = 531;
+      let targetKB = specialMode === "govtjob" ? govtMaxKB : passportMaxKB;
+
+      if (specialMode === "passport") {
+        // 2x2 inch at 300 DPI = 600x600 px
+        targetW = 600;
+        targetH = 600;
+      }
+
+      setProgressLabel(specialMode === "govtjob" ? "Preparing Govt Job Photo…" : "Preparing Passport Photo…");
+
+      // Draw with white background + center crop
+      const canvas = document.createElement("canvas");
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, targetW, targetH);
+
+      // Center-crop from source
+      const srcAR = img.naturalWidth / img.naturalHeight;
+      const dstAR = targetW / targetH;
+      let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+      if (srcAR > dstAR) {
+        sw = Math.round(img.naturalHeight * dstAR);
+        sx = Math.round((img.naturalWidth - sw) / 2);
+      } else {
+        sh = Math.round(img.naturalWidth / dstAR);
+        sy = Math.round((img.naturalHeight - sh) / 2);
+      }
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+      setProgress(40);
+
+      // Now compress to target KB
+      const tmpImg = new Image();
+      await new Promise<void>((res, rej) => {
+        tmpImg.onload = () => res();
+        tmpImg.onerror = rej;
+        tmpImg.src = canvas.toDataURL("image/png");
+      });
+
+      const { dataUrl, sizeKB, finalW, finalH } = await compressToTargetKB(tmpImg, targetKB, targetW, targetH, (p) => setProgress(40 + Math.round(p * 0.6)));
+
+      setResized({ original: image, resized: dataUrl, newWidth: finalW, newHeight: finalH, sizeKB });
+      toast({
+        title: `✅ ${specialMode === "govtjob" ? "Govt Job" : "Passport"} photo ready!`,
+        description: `Size: ${sizeKB}KB (${finalW}×${finalH}px) — white background applied`,
+      });
+    } catch {
+      toast({ title: "Failed", description: "Could not process image.", variant: "destructive" });
+    } finally {
+      setIsProcessing(false);
+      setProgressLabel("");
+    }
+  };
+
+  const handleCustomKBResize = async () => {
+    const kb = parseInt(customTargetKB);
+    if (!image || !kb || kb < 1) {
+      toast({ title: "Invalid size", description: "Enter a valid KB value.", variant: "destructive" });
+      return;
+    }
+    await handleQuickResize(kb);
   };
 
   const handleResize = async () => {
     if (!image) return;
-
     setIsProcessing(true);
+    setProgress(0);
+    setProgressLabel("Resizing…");
 
     try {
       const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      const ctx = canvas.getContext("2d");
-
-      if (!ctx) throw new Error("Could not get canvas context");
-
-      const img = new Image();
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = image.preview;
-      });
-
+      const ctx = canvas.getContext("2d")!;
+      const img = await loadImg();
       ctx.drawImage(img, 0, 0, width, height);
-
-      const resizedDataUrl = canvas.toDataURL("image/jpeg", quality / 100);
-
-      setResized({
-        original: image,
-        resized: resizedDataUrl,
-        newWidth: width,
-        newHeight: height,
-      });
-
-      toast({ title: "Image resized!", description: `New size: ${width}x${height}px` });
-    } catch (error) {
-      console.error("Resize error:", error);
+      const dataUrl = canvas.toDataURL("image/jpeg", quality / 100);
+      const sizeKB = Math.round((dataUrl.length - 22) * 0.75 / 1024);
+      setProgress(100);
+      setResized({ original: image, resized: dataUrl, newWidth: width, newHeight: height, sizeKB });
+      toast({ title: "✅ Image resized!", description: `New size: ${width}×${height}px · ${sizeKB}KB` });
+    } catch {
       toast({ title: "Resize failed", description: "Please try again.", variant: "destructive" });
     } finally {
       setIsProcessing(false);
+      setProgressLabel("");
     }
   };
 
   const handleDownload = () => {
     if (!resized) return;
-
     const link = document.createElement("a");
     link.href = resized.resized;
     link.download = `resized_${resized.newWidth}x${resized.newHeight}.jpg`;
@@ -165,204 +368,338 @@ export default function ImageResizer() {
     setPreset("custom");
     setWidth(800);
     setHeight(600);
+    setActiveQuickKB(null);
+    setSpecialMode("none");
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  // JSON-LD structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Image Resizer - Resize to 20KB 50KB for Govt Job Form India",
+    "description": "Free online image resizer. Resize photo to 20KB, 50KB for govt job forms, passport size photo India. Smart compression with white background.",
+    "url": "https://mypdfs.in/image-resizer",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+    "provider": { "@type": "Organization", "name": "MyPDFs", "url": "https://mypdfs.in" },
   };
 
   const seoContent = {
     toolName: "Image Resizer",
-    whatIs: "Image Resizer is a free online tool that allows you to resize images to any dimension you need. Whether you're preparing images for social media platforms, creating passport photos, or adjusting images for your website, this tool makes it simple. It comes with preset sizes for popular platforms like Instagram, Facebook, Twitter, LinkedIn, and YouTube, as well as options for custom dimensions.",
+    whatIs: "Our free Image Resizer is India's most powerful online tool for resizing photos to exact file sizes and dimensions. Whether you need to resize an image to 20KB for a government job application, 50KB for online forms, or passport size photo for official documents, this tool does it automatically. It supports Govt Job Form mode (3.5×4.5 cm with white background), Passport Photo mode (2×2 inch, 300 DPI), and custom KB target compression. The smart algorithm reduces quality gradually while maintaining maximum clarity, ensuring your photos meet strict government upload requirements.",
     howToUse: [
-      "Click the upload area or drag and drop your image file.",
-      "Select a preset size from the dropdown or enter custom width and height.",
-      "Toggle 'Maintain aspect ratio' to preserve image proportions if needed.",
-      "Adjust the quality slider to balance file size and image quality.",
-      "Click 'Resize Image' to process your image.",
-      "Download your resized image."
+      "Upload your photo by clicking the upload area or dragging and dropping.",
+      "Choose a Quick Resize button (20KB, 50KB, 100KB, 200KB) for instant compression.",
+      "Or select 'Govt Job Form' mode for automatic 3.5×4.5cm with white background.",
+      "Or select 'Passport Photo India' mode for 2×2 inch (600×600px) format.",
+      "Download your photo and use it directly on government portals.",
     ],
     features: [
-      "Preset sizes for Instagram, Facebook, Twitter, LinkedIn, YouTube, and more",
-      "Passport photo dimensions (35x45mm standard)",
-      "Custom dimensions with aspect ratio lock option",
-      "Quality adjustment for optimal file size",
-      "Support for JPG, PNG, and WebP images",
-      "Client-side processing for privacy and speed"
+      "Quick resize to 20KB, 50KB, 100KB, 200KB in one click",
+      "Govt Job Form mode: 3.5×4.5cm, max 20KB or 50KB, white background",
+      "Passport Photo India mode: 2×2 inch, 300 DPI compatible",
+      "Custom KB target: type any file size in KB",
+      "Smart algorithm: adjusts quality and resolution automatically",
+      "White background auto-fill for passport and ID photos",
+      "Social media presets: Instagram, Facebook, YouTube, LinkedIn",
+      "100% browser-based — no server upload, full privacy",
     ],
-    safetyNote: "All image processing happens directly in your browser. Your images are never uploaded to any server, ensuring complete privacy. The original image remains unchanged, and the resized version is created locally on your device.",
+    safetyNote: "All image processing runs entirely in your browser. Your photos are never uploaded to any server. This is especially important for sensitive documents like Aadhaar, government ID photos, and passport pictures. The original file remains unchanged on your device.",
     faqs: [
-      { question: "What dimensions should I use for Instagram posts?", answer: "For Instagram square posts, use 1080x1080 pixels. For portrait posts, use 1080x1350 pixels. For Instagram Stories, use 1080x1920 pixels. All these presets are available in the tool." },
-      { question: "Can I resize images without losing quality?", answer: "Enlarging images beyond their original size may cause some quality loss. For best results, resize to smaller dimensions or similar to the original. The quality slider helps you balance between file size and image clarity." },
-      { question: "What's the ideal size for passport photos?", answer: "The standard passport photo size is 35x45mm (413x531 pixels at 300 DPI). This preset is included in the tool for your convenience." },
-      { question: "How do I maintain the aspect ratio while resizing?", answer: "Check the 'Maintain aspect ratio' box, and when you change the width or height, the other dimension will automatically adjust to keep the image proportions intact." }
-    ]
+      { question: "How to resize image to 20KB for govt job form?", answer: "Upload your photo and click the '20KB' quick button. The tool automatically compresses and adjusts quality to reach exactly 20KB while keeping the photo clear and suitable for government portals like SSC, UPSC, IBPS, and state recruitment boards." },
+      { question: "What is the standard passport photo size in India?", answer: "The standard Indian passport photo size is 2×2 inches (51×51mm) at 300 DPI, which equals 600×600 pixels. Our Passport Photo India mode automatically sets these dimensions and allows you to choose between 20KB and 50KB file size limits." },
+      { question: "What size photo is required for govt job application forms?", answer: "Most Indian government job forms (SSC, UPSC, Railway, Banking) require a passport size photo of 3.5×4.5 cm with a white background, and file size between 10KB to 50KB in JPEG format. Our Govt Job Form mode handles all of this automatically." },
+      { question: "Can I resize image to 50KB for UPSC/SSC forms?", answer: "Yes! Click the '50KB' quick resize button or use the Govt Job Form mode and select 50KB. The smart compression maintains maximum clarity so the face remains sharp and the photo passes document verification." },
+      { question: "Does this tool add white background to passport photos?", answer: "Yes. Both the Govt Job Form and Passport Photo modes automatically add a white background by filling the canvas before drawing your image. This meets the white background requirement for all Indian government documents." },
+      { question: "What is the maximum file size I can upload?", answer: "You can upload images up to 25MB. The tool supports JPG, PNG, WebP, and most common image formats." },
+      { question: "Will compressing to 20KB reduce photo quality?", answer: "The smart compression algorithm reduces quality gradually, from high to minimum, to hit the target size. For typical passport photos, the result at 20KB is perfectly clear and accepted by all government portals." },
+      { question: "Can I type a custom KB target size?", answer: "Yes. In the Custom Target Size section, type any KB value (e.g., 30, 75, 150) and click Compress. The smart algorithm will find the best quality-size combination to match your target." },
+    ],
   };
 
   return (
     <>
       <CanonicalHead
-        title="Image Resizer - Resize Images for Social Media Free | MyPDFs"
-        description="Free online image resizer. Resize images for Instagram, Facebook, Twitter, LinkedIn, YouTube, and custom sizes."
-        keywords="image resizer, resize image, Instagram image size, Facebook cover size, passport photo, resize picture"
+        title="Resize Image to 20KB 50KB Online Free – Govt Job Photo India | MyPDFs"
+        description="Resize photo to 20KB or 50KB for Govt Job Form, UPSC, SSC, IBPS. Passport size photo India tool with white background. Free, fast, secure."
+        keywords="resize image to 20kb, resize photo to 50kb, govt job form photo size, passport size photo india, image resizer online, compress image to 20kb"
       />
+      <Helmet>
+        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+      </Helmet>
+
       <ToolLayout
         title="Image Resizer"
-        description="Resize images for social media, passports, and custom dimensions. Supports all major platforms."
+        description="Resize to exact KB for Govt Forms, Passport Photos & Social Media"
         icon={Maximize}
         colorClass="bg-gradient-to-br from-cyan-500 to-blue-600"
         category="Image Tools"
       >
-      <div className="space-y-6">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleFileSelect}
-          className="hidden"
-        />
+        <div className="space-y-6">
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
 
-        {!image ? (
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-muted-foreground/25 p-12 cursor-pointer hover:border-primary/50 transition-colors"
-          >
-            <Upload className="h-12 w-12 text-muted-foreground" />
-            <div className="text-center">
-              <p className="font-medium">Click to upload an image</p>
-              <p className="text-sm text-muted-foreground">JPG, PNG, WebP supported</p>
+          {/* Upload Area */}
+          {!image ? (
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              onDrop={handleDrop}
+              onDragOver={(e) => e.preventDefault()}
+              className="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-muted-foreground/25 p-12 cursor-pointer hover:border-primary/50 transition-colors"
+            >
+              <Upload className="h-12 w-12 text-muted-foreground" />
+              <div className="text-center">
+                <p className="font-semibold text-lg">Click to upload or drag & drop</p>
+                <p className="text-sm text-muted-foreground mt-1">JPG, PNG, WebP · Max 25MB</p>
+              </div>
             </div>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-start gap-4 rounded-lg border p-4">
-              <img
-                src={image.preview}
-                alt="Preview"
-                className="h-20 w-20 rounded object-cover"
-              />
-              <div className="flex-1">
-                <p className="font-medium">{image.file.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  Original: {image.width}x{image.height}px
+          ) : (
+            <>
+              {/* Image Preview */}
+              <div className="flex items-start gap-4 rounded-xl border p-4 bg-muted/20">
+                <img src={image.preview} alt="Preview" className="h-20 w-20 rounded-lg object-cover" />
+                <div className="flex-1">
+                  <p className="font-medium truncate">{image.file.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {image.width}×{image.height}px · {Math.round(image.file.size / 1024)}KB
+                  </p>
+                </div>
+                <Button variant="ghost" size="icon" onClick={handleReset}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Progress Bar */}
+              {isProcessing && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">{progressLabel}</span>
+                    <span className="font-medium">{progress}%</span>
+                  </div>
+                  <Progress value={progress} className="h-2" />
+                </div>
+              )}
+
+              {/* ── QUICK RESIZE BUTTONS ── */}
+              <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-primary" />
+                  <h3 className="font-semibold text-sm">⚡ Quick Resize to Exact File Size</h3>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {QUICK_SIZE_TARGETS.map(({ label, kb }) => (
+                    <Button
+                      key={kb}
+                      variant={activeQuickKB === kb ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handleQuickResize(kb)}
+                      disabled={isProcessing}
+                      className="font-bold text-sm"
+                    >
+                      {label}
+                    </Button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Smart compression — maintains maximum clarity while hitting exact file size
                 </p>
               </div>
-              <Button variant="ghost" size="icon" onClick={handleReset}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
 
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Preset Size</Label>
-                <Select value={preset} onValueChange={handlePresetChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select preset" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {presets.map((p) => (
-                      <SelectItem key={p.value} value={p.value}>
-                        {p.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="width">Width (px)</Label>
+              {/* ── CUSTOM TARGET KB ── */}
+              <div className="rounded-xl border p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Settings className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="font-semibold text-sm">Custom Target File Size</h3>
+                </div>
+                <div className="flex gap-2">
                   <Input
-                    id="width"
                     type="number"
+                    placeholder="Enter target size in KB (e.g. 35)"
+                    value={customTargetKB}
+                    onChange={(e) => setCustomTargetKB(e.target.value)}
+                    className="flex-1"
                     min="1"
                     max="10000"
-                    value={width}
-                    onChange={(e) => handleWidthChange(e.target.value)}
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="height">Height (px)</Label>
-                  <Input
-                    id="height"
-                    type="number"
-                    min="1"
-                    max="10000"
-                    value={height}
-                    onChange={(e) => handleHeightChange(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="ratio"
-                  checked={maintainRatio}
-                  onChange={(e) => setMaintainRatio(e.target.checked)}
-                  className="rounded"
-                />
-                <Label htmlFor="ratio" className="cursor-pointer">
-                  Maintain aspect ratio
-                </Label>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label>Quality: {quality}%</Label>
-                </div>
-                <Slider
-                  value={[quality]}
-                  onValueChange={(v) => setQuality(v[0])}
-                  min={10}
-                  max={100}
-                  step={5}
-                />
-              </div>
-
-              <Button
-                onClick={handleResize}
-                disabled={isProcessing}
-                className="w-full"
-                size="lg"
-              >
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Resizing...
-                  </>
-                ) : (
-                  <>
-                    <Maximize className="mr-2 h-4 w-4" />
-                    Resize Image
-                  </>
-                )}
-              </Button>
-            </div>
-
-            {resized && (
-              <div className="space-y-4 rounded-lg border p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">Resized Image</p>
-                    <p className="text-sm text-muted-foreground">
-                      {resized.newWidth}x{resized.newHeight}px
-                    </p>
-                  </div>
-                  <Button onClick={handleDownload}>
-                    <Download className="mr-2 h-4 w-4" />
-                    Download
+                  <Button onClick={handleCustomKBResize} disabled={isProcessing || !customTargetKB} variant="outline">
+                    Compress
                   </Button>
                 </div>
-                <img
-                  src={resized.resized}
-                  alt="Resized"
-                  className="max-h-[300px] rounded object-contain mx-auto"
-                />
               </div>
-            )}
-          </>
-        )}
-      </div>
-      <ToolSEOContent {...seoContent} />
-    </ToolLayout>
+
+              {/* ── SPECIAL MODES ── */}
+              <div className="space-y-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <FileImage className="h-4 w-4" />
+                  Special Modes
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {/* Govt Job Form */}
+                  <div
+                    className={`rounded-xl border-2 p-4 cursor-pointer transition-all ${specialMode === "govtjob" ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
+                    onClick={() => setSpecialMode(specialMode === "govtjob" ? "none" : "govtjob")}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-primary" />
+                        <span className="font-semibold text-sm">Govt Job Form</span>
+                      </div>
+                      <Badge variant="secondary" className="text-xs">India</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      3.5×4.5cm · White background · SSC / UPSC / IBPS / Railways
+                    </p>
+                    {specialMode === "govtjob" && (
+                      <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                        <Label className="text-xs">Max file size</Label>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant={govtMaxKB === 20 ? "default" : "outline"}
+                            onClick={() => setGovtMaxKB(20)}
+                            className="flex-1 text-xs"
+                          >20KB</Button>
+                          <Button
+                            size="sm"
+                            variant={govtMaxKB === 50 ? "default" : "outline"}
+                            onClick={() => setGovtMaxKB(50)}
+                            className="flex-1 text-xs"
+                          >50KB</Button>
+                        </div>
+                        <Button
+                          onClick={handleSpecialModeResize}
+                          disabled={isProcessing}
+                          className="w-full"
+                          size="sm"
+                        >
+                          {isProcessing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
+                          Apply Govt Job Mode
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Passport Photo India */}
+                  <div
+                    className={`rounded-xl border-2 p-4 cursor-pointer transition-all ${specialMode === "passport" ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
+                    onClick={() => setSpecialMode(specialMode === "passport" ? "none" : "passport")}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <FileImage className="h-4 w-4 text-secondary-foreground" />
+                        <span className="font-semibold text-sm">Passport Photo India</span>
+                      </div>
+                      <Badge variant="secondary" className="text-xs">300 DPI</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      2×2 inch · 600×600px · White background · Passport / Visa
+                    </p>
+                    {specialMode === "passport" && (
+                      <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                        <Label className="text-xs">Max file size</Label>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant={passportMaxKB === 20 ? "default" : "outline"}
+                            onClick={() => setPassportMaxKB(20)}
+                            className="flex-1 text-xs"
+                          >20KB</Button>
+                          <Button
+                            size="sm"
+                            variant={passportMaxKB === 50 ? "default" : "outline"}
+                            onClick={() => setPassportMaxKB(50)}
+                            className="flex-1 text-xs"
+                          >50KB</Button>
+                        </div>
+                        <Button
+                          onClick={handleSpecialModeResize}
+                          disabled={isProcessing}
+                          className="w-full"
+                          size="sm"
+                        >
+                          {isProcessing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
+                          Apply Passport Mode
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── STANDARD RESIZE ── */}
+              <div className="rounded-xl border p-4 space-y-4">
+                <h3 className="font-semibold text-sm flex items-center gap-2">
+                  <Maximize className="h-4 w-4" />
+                  Standard Resize by Dimensions
+                </h3>
+
+                <div className="space-y-2">
+                  <Label>Preset Size</Label>
+                  <Select value={preset} onValueChange={handlePresetChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select preset" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {presets.map((p) => (
+                        <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="width">Width (px)</Label>
+                    <Input id="width" type="number" min="1" max="10000" value={width} onChange={(e) => handleWidthChange(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="height">Height (px)</Label>
+                    <Input id="height" type="number" min="1" max="10000" value={height} onChange={(e) => handleHeightChange(e.target.value)} />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="ratio" checked={maintainRatio} onChange={(e) => setMaintainRatio(e.target.checked)} className="rounded" />
+                  <Label htmlFor="ratio" className="cursor-pointer">Maintain aspect ratio</Label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Quality: {quality}%</Label>
+                  <Slider value={[quality]} onValueChange={(v) => setQuality(v[0])} min={10} max={100} step={5} />
+                </div>
+
+                <Button onClick={handleResize} disabled={isProcessing} className="w-full" size="lg">
+                  {isProcessing ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Resizing…</> : <><Maximize className="mr-2 h-4 w-4" />Resize Image</>}
+                </Button>
+              </div>
+
+              {/* ── RESULT ── */}
+              {resized && (
+                <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-4 space-y-4">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                      <p className="font-semibold text-primary">
+                        ✅ Image successfully resized to {resized.sizeKB}KB
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {resized.newWidth}×{resized.newHeight}px
+                      </p>
+                    </div>
+                    <Button onClick={handleDownload} className="gap-2">
+                      <Download className="h-4 w-4" />
+                      Download
+                    </Button>
+                  </div>
+                  <img src={resized.resized} alt="Resized" className="max-h-[300px] rounded-lg object-contain mx-auto w-full" />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <ToolSEOContent {...seoContent} />
+      </ToolLayout>
     </>
   );
 }

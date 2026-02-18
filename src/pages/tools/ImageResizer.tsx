@@ -28,7 +28,7 @@ interface ResizedImage {
   sizeKB: number;
 }
 
-type SpecialMode = "none" | "govtjob" | "passport";
+type SpecialMode = "none" | "govtjob" | "passport" | "whatsapp" | "aadhaar";
 
 const presets = [
   { label: "Custom", value: "custom", width: 0, height: 0 },
@@ -152,6 +152,8 @@ export default function ImageResizer() {
   const [specialMode, setSpecialMode] = useState<SpecialMode>("none");
   const [govtMaxKB, setGovtMaxKB] = useState<20 | 50>(20);
   const [passportMaxKB, setPassportMaxKB] = useState<20 | 50>(20);
+  const [whatsappMaxKB, setWhatsappMaxKB] = useState<20 | 50>(20);
+  const [aadhaarMaxKB, setAadhaarMaxKB] = useState<20 | 50>(20);
   const [customTargetKB, setCustomTargetKB] = useState("");
   const [activeQuickKB, setActiveQuickKB] = useState<number | null>(null);
 
@@ -261,30 +263,30 @@ export default function ImageResizer() {
     setIsProcessing(true);
     setProgress(0);
 
+    const modeConfig: Record<string, { w: number; h: number; kb: number; label: string }> = {
+      govtjob:  { w: 413, h: 531, kb: govtMaxKB,      label: "Govt Job" },
+      passport: { w: 600, h: 600, kb: passportMaxKB,  label: "Passport" },
+      whatsapp: { w: 192, h: 192, kb: whatsappMaxKB,  label: "WhatsApp DP" },
+      aadhaar:  { w: 200, h: 200, kb: aadhaarMaxKB,   label: "Aadhaar Photo" },
+    };
+
+    const cfg = modeConfig[specialMode];
+    if (!cfg) { setIsProcessing(false); return; }
+
     try {
       const img = await loadImg();
-      let targetW = 413, targetH = 531;
-      let targetKB = specialMode === "govtjob" ? govtMaxKB : passportMaxKB;
+      setProgressLabel(`Preparing ${cfg.label} photo…`);
 
-      if (specialMode === "passport") {
-        // 2x2 inch at 300 DPI = 600x600 px
-        targetW = 600;
-        targetH = 600;
-      }
-
-      setProgressLabel(specialMode === "govtjob" ? "Preparing Govt Job Photo…" : "Preparing Passport Photo…");
-
-      // Draw with white background + center crop
       const canvas = document.createElement("canvas");
-      canvas.width = targetW;
-      canvas.height = targetH;
+      canvas.width = cfg.w;
+      canvas.height = cfg.h;
       const ctx = canvas.getContext("2d")!;
       ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, targetW, targetH);
+      ctx.fillRect(0, 0, cfg.w, cfg.h);
 
       // Center-crop from source
       const srcAR = img.naturalWidth / img.naturalHeight;
-      const dstAR = targetW / targetH;
+      const dstAR = cfg.w / cfg.h;
       let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
       if (srcAR > dstAR) {
         sw = Math.round(img.naturalHeight * dstAR);
@@ -293,10 +295,9 @@ export default function ImageResizer() {
         sh = Math.round(img.naturalWidth / dstAR);
         sy = Math.round((img.naturalHeight - sh) / 2);
       }
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, targetW, targetH);
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cfg.w, cfg.h);
       setProgress(40);
 
-      // Now compress to target KB
       const tmpImg = new Image();
       await new Promise<void>((res, rej) => {
         tmpImg.onload = () => res();
@@ -304,11 +305,11 @@ export default function ImageResizer() {
         tmpImg.src = canvas.toDataURL("image/png");
       });
 
-      const { dataUrl, sizeKB, finalW, finalH } = await compressToTargetKB(tmpImg, targetKB, targetW, targetH, (p) => setProgress(40 + Math.round(p * 0.6)));
+      const { dataUrl, sizeKB, finalW, finalH } = await compressToTargetKB(tmpImg, cfg.kb, cfg.w, cfg.h, (p) => setProgress(40 + Math.round(p * 0.6)));
 
       setResized({ original: image, resized: dataUrl, newWidth: finalW, newHeight: finalH, sizeKB });
       toast({
-        title: `✅ ${specialMode === "govtjob" ? "Govt Job" : "Passport"} photo ready!`,
+        title: `✅ ${cfg.label} photo ready!`,
         description: `Size: ${sizeKB}KB (${finalW}×${finalH}px) — white background applied`,
       });
     } catch {
@@ -387,34 +388,35 @@ export default function ImageResizer() {
   };
 
   const seoContent = {
-    toolName: "Image Resizer",
-    whatIs: "Our free Image Resizer is India's most powerful online tool for resizing photos to exact file sizes and dimensions. Whether you need to resize an image to 20KB for a government job application, 50KB for online forms, or passport size photo for official documents, this tool does it automatically. It supports Govt Job Form mode (3.5×4.5 cm with white background), Passport Photo mode (2×2 inch, 300 DPI), and custom KB target compression. The smart algorithm reduces quality gradually while maintaining maximum clarity, ensuring your photos meet strict government upload requirements.",
+    toolName: "Image Resizer – Resize to 20KB 50KB, WhatsApp DP, Aadhaar & Passport Photo India",
+    whatIs: "Our free Image Resizer is India's most powerful online tool for resizing photos to exact file sizes and dimensions. Resize an image to 20KB for a government job application, 50KB for online forms, or WhatsApp DP size (192×192px) in one click. It also supports Aadhaar photo (200×200px), Passport Photo (2×2 inch, 300 DPI), and Govt Job Form mode (3.5×4.5 cm with white background). The smart algorithm reduces quality gradually while maintaining maximum clarity — your photos will pass all government portal verifications.",
     howToUse: [
       "Upload your photo by clicking the upload area or dragging and dropping.",
       "Choose a Quick Resize button (20KB, 50KB, 100KB, 200KB) for instant compression.",
-      "Or select 'Govt Job Form' mode for automatic 3.5×4.5cm with white background.",
-      "Or select 'Passport Photo India' mode for 2×2 inch (600×600px) format.",
-      "Download your photo and use it directly on government portals.",
+      "Or select 'WhatsApp DP' mode for a 192×192px profile picture under 20KB.",
+      "Or select 'Aadhaar Photo' mode for 200×200px white background ID photo.",
+      "Or select 'Govt Job Form' mode for 3.5×4.5cm with white background (SSC/UPSC/IBPS).",
+      "Download your photo and use it directly on government portals or social apps.",
     ],
     features: [
       "Quick resize to 20KB, 50KB, 100KB, 200KB in one click",
+      "WhatsApp DP mode: 192×192px, under 20KB, optimized for display",
+      "Aadhaar Photo mode: 200×200px, white background, perfect for UIDAI upload",
       "Govt Job Form mode: 3.5×4.5cm, max 20KB or 50KB, white background",
       "Passport Photo India mode: 2×2 inch, 300 DPI compatible",
       "Custom KB target: type any file size in KB",
       "Smart algorithm: adjusts quality and resolution automatically",
-      "White background auto-fill for passport and ID photos",
-      "Social media presets: Instagram, Facebook, YouTube, LinkedIn",
-      "100% browser-based — no server upload, full privacy",
+      "100% browser-based — no server upload, full privacy for Aadhaar & ID photos",
     ],
-    safetyNote: "All image processing runs entirely in your browser. Your photos are never uploaded to any server. This is especially important for sensitive documents like Aadhaar, government ID photos, and passport pictures. The original file remains unchanged on your device.",
+    safetyNote: "All image processing runs entirely in your browser. Your photos are never uploaded to any server. This is especially important for sensitive documents like Aadhaar card photos, PAN card, government ID photos, and passport pictures. The original file remains unchanged on your device.",
     faqs: [
       { question: "How to resize image to 20KB for govt job form?", answer: "Upload your photo and click the '20KB' quick button. The tool automatically compresses and adjusts quality to reach exactly 20KB while keeping the photo clear and suitable for government portals like SSC, UPSC, IBPS, and state recruitment boards." },
-      { question: "What is the standard passport photo size in India?", answer: "The standard Indian passport photo size is 2×2 inches (51×51mm) at 300 DPI, which equals 600×600 pixels. Our Passport Photo India mode automatically sets these dimensions and allows you to choose between 20KB and 50KB file size limits." },
+      { question: "How to resize photo for WhatsApp DP?", answer: "Select the 'WhatsApp DP' mode and click 'Apply WhatsApp DP Mode'. The tool crops and resizes your image to 192×192px and compresses it under 20KB for the perfect profile picture." },
+      { question: "What size photo is needed for Aadhaar card update?", answer: "Aadhaar / UIDAI requires a passport-size photo with white background, typically 200×200px. Select 'Aadhaar Photo' mode and the tool automatically applies the correct size, white background, and 20KB/50KB limit." },
+      { question: "What is the standard passport photo size in India?", answer: "The standard Indian passport photo size is 2×2 inches (51×51mm) at 300 DPI, which equals 600×600 pixels. Our Passport Photo India mode automatically sets these dimensions." },
       { question: "What size photo is required for govt job application forms?", answer: "Most Indian government job forms (SSC, UPSC, Railway, Banking) require a passport size photo of 3.5×4.5 cm with a white background, and file size between 10KB to 50KB in JPEG format. Our Govt Job Form mode handles all of this automatically." },
-      { question: "Can I resize image to 50KB for UPSC/SSC forms?", answer: "Yes! Click the '50KB' quick resize button or use the Govt Job Form mode and select 50KB. The smart compression maintains maximum clarity so the face remains sharp and the photo passes document verification." },
-      { question: "Does this tool add white background to passport photos?", answer: "Yes. Both the Govt Job Form and Passport Photo modes automatically add a white background by filling the canvas before drawing your image. This meets the white background requirement for all Indian government documents." },
-      { question: "What is the maximum file size I can upload?", answer: "You can upload images up to 25MB. The tool supports JPG, PNG, WebP, and most common image formats." },
-      { question: "Will compressing to 20KB reduce photo quality?", answer: "The smart compression algorithm reduces quality gradually, from high to minimum, to hit the target size. For typical passport photos, the result at 20KB is perfectly clear and accepted by all government portals." },
+      { question: "Does this tool add white background to photos?", answer: "Yes. WhatsApp DP, Aadhaar Photo, Govt Job Form, and Passport Photo modes all automatically add a white background, meeting the requirement for all Indian government documents." },
+      { question: "Will compressing to 20KB reduce photo quality?", answer: "The smart compression algorithm reduces quality gradually, from high to minimum, to hit the target size. For typical passport and ID photos, the result at 20KB is perfectly clear and accepted by all government portals." },
       { question: "Can I type a custom KB target size?", answer: "Yes. In the Custom Target Size section, type any KB value (e.g., 30, 75, 150) and click Compress. The smart algorithm will find the best quality-size combination to match your target." },
     ],
   };
@@ -422,9 +424,9 @@ export default function ImageResizer() {
   return (
     <>
       <CanonicalHead
-        title="Resize Image to 20KB 50KB Online Free – Govt Job Photo India | MyPDFs"
-        description="Resize photo to 20KB or 50KB for Govt Job Form, UPSC, SSC, IBPS. Passport size photo India tool with white background. Free, fast, secure."
-        keywords="resize image to 20kb, resize photo to 50kb, govt job form photo size, passport size photo india, image resizer online, compress image to 20kb"
+        title="Image Resizer – Resize to 20KB, WhatsApp DP, Aadhaar & Passport Photo India | Mypdfs"
+        description="Resize image to 20KB or 50KB for Govt Job Form, UPSC, SSC. WhatsApp DP 192×192px, Aadhaar photo 200×200px. Free, fast, browser-based."
+        keywords="resize image to 20kb, whatsapp dp resize, aadhaar photo size, passport size photo india, govt job form photo, compress image to 20kb, resize photo online free"
       />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
@@ -620,6 +622,65 @@ export default function ImageResizer() {
                         >
                           {isProcessing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
                           Apply Passport Mode
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  {/* WhatsApp DP */}
+                  <div
+                    className={`rounded-xl border-2 p-4 cursor-pointer transition-all ${specialMode === "whatsapp" ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
+                    onClick={() => setSpecialMode(specialMode === "whatsapp" ? "none" : "whatsapp")}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">💬</span>
+                        <span className="font-semibold text-sm">WhatsApp DP</span>
+                      </div>
+                      <Badge variant="secondary" className="text-xs">192×192</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      192×192px · Under 20KB · Profile picture optimized
+                    </p>
+                    {specialMode === "whatsapp" && (
+                      <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                        <Label className="text-xs">Max file size</Label>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant={whatsappMaxKB === 20 ? "default" : "outline"} onClick={() => setWhatsappMaxKB(20)} className="flex-1 text-xs">20KB</Button>
+                          <Button size="sm" variant={whatsappMaxKB === 50 ? "default" : "outline"} onClick={() => setWhatsappMaxKB(50)} className="flex-1 text-xs">50KB</Button>
+                        </div>
+                        <Button onClick={handleSpecialModeResize} disabled={isProcessing} className="w-full" size="sm">
+                          {isProcessing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
+                          Apply WhatsApp DP Mode
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Aadhaar Photo */}
+                  <div
+                    className={`rounded-xl border-2 p-4 cursor-pointer transition-all ${specialMode === "aadhaar" ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`}
+                    onClick={() => setSpecialMode(specialMode === "aadhaar" ? "none" : "aadhaar")}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">🪪</span>
+                        <span className="font-semibold text-sm">Aadhaar Photo</span>
+                      </div>
+                      <Badge variant="secondary" className="text-xs">India ID</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      200×200px · White background · Aadhaar / PAN card upload
+                    </p>
+                    {specialMode === "aadhaar" && (
+                      <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+                        <Label className="text-xs">Max file size</Label>
+                        <div className="flex gap-2">
+                          <Button size="sm" variant={aadhaarMaxKB === 20 ? "default" : "outline"} onClick={() => setAadhaarMaxKB(20)} className="flex-1 text-xs">20KB</Button>
+                          <Button size="sm" variant={aadhaarMaxKB === 50 ? "default" : "outline"} onClick={() => setAadhaarMaxKB(50)} className="flex-1 text-xs">50KB</Button>
+                        </div>
+                        <Button onClick={handleSpecialModeResize} disabled={isProcessing} className="w-full" size="sm">
+                          {isProcessing ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : null}
+                          Apply Aadhaar Mode
                         </Button>
                       </div>
                     )}

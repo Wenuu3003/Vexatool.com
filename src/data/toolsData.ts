@@ -1,4 +1,4 @@
-import { 
+ఏమండీ import { 
   Layers, Scissors, FileDown, FileType2, FileEdit, PenTool, Droplets, 
   RotateCw, Unlock, Lock, LayoutGrid, Wrench, Image, QrCode, ScanLine, 
   Code, Presentation, Table, Calculator, Coins, BarChart3, Cloud, 
@@ -150,7 +150,7 @@ export const toolsData: ToolData[] = [
     href: "/image-resizer",
     category: "image",
     previewImage: "/previews/image-resizer-preview.webp",
-    features: ["Preset sizes", "Custom dimensions", "Aspect ratio lock", "Batch resize"],
+    features: ["Preset sizes", "Custom dimensions", "Axact KB for Govt Forms", "Batch resize"],
     seoKeywords: ["image resizer", "resize photo", "photo resizer", "image dimensions"]
   },
   {

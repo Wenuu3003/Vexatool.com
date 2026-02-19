@@ -90,6 +90,10 @@ const WhatsAppAnalyzer = lazy(() => import("./pages/tools/WhatsAppAnalyzer"));
 // Image Tools - additional
 const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
 const ImageFormatConverter = lazy(() => import("./pages/tools/ImageFormatConverter"));
+const WhatsAppDPResizer = lazy(() => import("./pages/tools/WhatsAppDPResizer"));
+const AadhaarPhotoResizer = lazy(() => import("./pages/tools/AadhaarPhotoResizer"));
+const GovtJobPhotoResizer = lazy(() => import("./pages/tools/GovtJobPhotoResizer"));
+const PassportPhotoResizer = lazy(() => import("./pages/tools/PassportPhotoResizer"));
 
 // Calculator Tools
 const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
@@ -163,6 +167,10 @@ const App = () => (
               {/* Image Tools */}
               <Route path="/image-resizer" element={<ImageResizer />} />
               <Route path="/image-format-converter" element={<ImageFormatConverter />} />
+              <Route path="/whatsapp-dp-resize" element={<WhatsAppDPResizer />} />
+              <Route path="/aadhaar-photo-resize" element={<AadhaarPhotoResizer />} />
+              <Route path="/govt-job-photo-resize" element={<GovtJobPhotoResizer />} />
+              <Route path="/passport-photo-resize" element={<PassportPhotoResizer />} />
               {/* Utility Tools */}
               <Route path="/unit-converter" element={<UnitConverter />} />
               <Route path="/pincode-generator" element={<PinCodeGenerator />} />

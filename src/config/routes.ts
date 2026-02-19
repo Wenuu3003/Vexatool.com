@@ -368,8 +368,48 @@ export const routes: RouteConfig[] = [
     keywords: 'image resizer, resize image to 20kb, whatsapp dp resize, aadhaar photo size, passport size photo india, govt job form photo, resize photo to 50kb, compress image to 20kb',
     category: 'Image Tools'
   },
+  {
+    path: '/whatsapp-dp-resize',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'WhatsApp DP Resize Online Free – 192x192px Under 20KB | Mypdfs',
+    description: 'Resize photo for WhatsApp DP online free. Get perfect 192x192px WhatsApp profile picture under 20KB. Instant download, no signup required.',
+    keywords: 'whatsapp dp resize, whatsapp profile photo size, resize photo for whatsapp, whatsapp dp 192x192, whatsapp dp maker free',
+    category: 'Image Tools'
+  },
+  {
+    path: '/aadhaar-photo-resize',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'Aadhaar Card Photo Size Online Free – 200x200px | Mypdfs',
+    description: 'Resize photo for Aadhaar card online free. Get correct 200x200px Aadhaar photo size under 50KB with white background. Instant, no signup.',
+    keywords: 'aadhaar photo size, aadhaar card photo resize, aadhaar photo online, resize photo for aadhaar, aadhaar enrollment photo size',
+    category: 'Image Tools'
+  },
+  {
+    path: '/govt-job-photo-resize',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'Govt Job Form Photo Resize – 3.5x4.5cm, 20KB Free | Mypdfs',
+    description: 'Resize photo for government job application form online. Get 3.5x4.5cm photo under 20KB for SSC, UPSC, IBPS, Railway exams. Free, instant.',
+    keywords: 'govt job form photo size, resize photo for government form, SSC photo size, UPSC photo requirement, IBPS photo resize, railway exam photo size',
+    category: 'Image Tools'
+  },
+  {
+    path: '/passport-photo-resize',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'Passport Size Photo Online Free India – 2x2 inch 300 DPI | Mypdfs',
+    description: 'Create passport size photo online free. Perfect 2x2 inch (51x51mm) passport photo at 300 DPI with white background. For Indian passport, visa.',
+    keywords: 'passport size photo online, passport photo maker india, 2x2 passport photo free, passport photo 300 dpi, make passport photo online, indian passport photo size',
+    category: 'Image Tools'
+  },
   { 
-    path: '/image-format-converter', 
+    path: '/image-format-converter',
     priority: 0.8, 
     changefreq: 'weekly', 
     includeInSitemap: true,

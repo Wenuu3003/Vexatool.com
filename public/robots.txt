@@ -50,8 +50,8 @@ Allow: /
 # Sitemap location
 Sitemap: https://mypdfs.in/sitemap.xml
 
-# Host declaration
-Host: https://mypdfs.in
+# Host-declaration
+Allow: /
 
 # ads.txt location for AdSense verification
 # Note: ads.txt must be accessible at https://mypdfs.in/ads.txt

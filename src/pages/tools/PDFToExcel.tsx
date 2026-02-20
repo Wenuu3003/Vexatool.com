@@ -272,13 +272,13 @@ const PDFToExcel = () => {
   return (
     <>
       <CanonicalHead 
-        title="PDF to Excel Converter Online – Batch Processing & Secure | Mypdfs"
-        description="Convert PDF to Excel online with batch processing. Extract tables from multiple PDFs at once. Free and secure."
-        keywords="PDF to Excel, PDF to XLS, batch PDF convert, extract PDF tables, PDF to spreadsheet"
+        title="Convert PDF to Excel Online Free – Fast & Accurate | MyPDFs"
+        description="Free PDF to Excel converter online. Extract tables from PDF to editable Excel spreadsheets instantly. Batch processing, no signup, 100% secure."
+        keywords="PDF to Excel online, convert PDF to Excel free, free PDF to XLS converter, extract tables from PDF, PDF to spreadsheet, PDF to Excel India"
       />
       <ToolLayout
-        title="PDF to Excel"
-        description="Convert PDF tables and data to Excel spreadsheets"
+        title="PDF to Excel Converter Online Free"
+        description="Extract tables and data from PDF documents into editable Excel spreadsheets — free, fast & accurate"
         icon={Table}
         colorClass="bg-green-500"
       >

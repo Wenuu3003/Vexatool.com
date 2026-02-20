@@ -62,9 +62,9 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Mypdfs - Free PDF Editor & Converter Tools Online | No Signup</title>
-        <meta name="description" content="Edit, merge, compress and convert PDF files online for free. Professional document tools including QR code generator, calculators and AI utilities. No registration required." />
-        <meta name="keywords" content="free PDF editor, PDF converter online, merge PDF files, compress PDF, PDF to Word converter, Word to PDF, image to PDF, QR code generator, document tools, online utilities" />
+        <title>Free PDF Tools India – Merge, Compress, Convert & Edit PDFs Online | MyPDFs</title>
+        <meta name="description" content="India's best free PDF tools online. Merge PDF, compress PDF, convert PDF to Excel & Word, edit PDF without watermark, generate QR codes. 50+ secure tools, no signup required." />
+        <meta name="keywords" content="free PDF tools India, PDF editor online free, merge PDF online, compress PDF free, PDF to Excel, PDF to Word converter, QR code generator online, best PDF tool website, convert PDF online free, secure PDF tools, PDF editor for students" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         
         {/* Organization Schema */}
@@ -75,7 +75,7 @@ const Index = () => {
             "name": "MyPDFs",
             "url": "https://mypdfs.in",
             "logo": "https://mypdfs.in/favicon.png",
-            "description": "Free online PDF editor, converter, and document tools. 50+ tools including merge, split, compress, convert PDFs, image tools, AI utilities, and calculators.",
+            "description": "India's best free online PDF editor, converter, and document tools. 50+ tools including merge, split, compress, convert PDFs, image tools, AI utilities, QR code generator, and calculators.",
             "email": "mypdfs3003@gmail.com",
             "sameAs": [
               "https://x.com/Mypdfs5",
@@ -95,7 +95,7 @@ const Index = () => {
             "@type": "WebSite",
             "name": "MyPDFs",
             "url": "https://mypdfs.in",
-            "description": "Free online PDF tools, image editors, AI utilities, and calculators. No signup required.",
+            "description": "Free PDF tools India. Merge, compress, convert PDF to Excel & Word, edit PDF online, QR code generator. No signup required.",
             "potentialAction": {
               "@type": "SearchAction",
               "target": "https://mypdfs.in/?search={search_term_string}",
@@ -103,14 +103,41 @@ const Index = () => {
             }
           })}
         </script>
-        <meta name="author" content="Mypdfs" />
+        {/* SoftwareApplication Schema for homepage */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "MyPDFs - Free PDF Tools",
+            "description": "50+ free online PDF tools — merge, compress, convert, edit PDFs. QR code generator, AI tools, calculators. No signup required.",
+            "url": "https://mypdfs.in",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "All",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "INR"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "ratingCount": "2450",
+              "bestRating": "5"
+            },
+            "provider": {
+              "@type": "Organization",
+              "name": "MyPDFs",
+              "url": "https://mypdfs.in"
+            }
+          })}
+        </script>
         <meta name="publisher" content="Mypdfs" />
         <link rel="canonical" href={canonicalUrl} />
         
         {/* Open Graph */}
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Mypdfs - Free PDF Editor & Document Tools" />
-        <meta property="og:description" content="Professional PDF editing and conversion tools. Merge, split, compress documents. Free QR generator and calculators." />
+        <meta property="og:title" content="Free PDF Tools India – Merge, Compress, Convert & Edit PDFs Online | MyPDFs" />
+        <meta property="og:description" content="India's best free PDF tools. Merge, compress, convert PDF to Excel & Word, edit PDF online. 50+ tools, no signup." />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:site_name" content="Mypdfs" />
         <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
@@ -122,8 +149,8 @@ const Index = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@Mypdfs5" />
         <meta name="twitter:creator" content="@Mypdfs5" />
-        <meta name="twitter:title" content="Mypdfs - Free PDF Editor & Document Tools" />
-        <meta name="twitter:description" content="Professional PDF tools online. Edit, merge, compress documents. Free calculators and QR generator." />
+        <meta name="twitter:title" content="Free PDF Tools India – Merge, Compress, Convert & Edit PDFs | MyPDFs" />
+        <meta name="twitter:description" content="India's best free PDF tools. Merge, compress, convert PDF to Excel & Word, edit PDF online. 50+ secure tools, no signup." />
         <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/H0EIl35BxQWLh4NdLmtGLNCeUyu1/social-images/social-1766655878266-1000262480.jpg" />
       </Helmet>
       

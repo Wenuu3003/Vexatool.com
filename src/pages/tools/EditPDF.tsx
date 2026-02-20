@@ -140,9 +140,9 @@ const EditPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Edit PDF Online Free – Modify Text, Add Images, OCR Scanned Documents | Mypdfs"
-        description="Free professional PDF editor with OCR technology. Edit text directly in PDFs, add images, watermarks, and signatures. Works with scanned documents. No signup required."
-        keywords="edit PDF online, free PDF editor, modify PDF text, OCR PDF editor, add text to PDF, PDF annotation, scanned PDF editor, PDF markup tool, online PDF editing"
+        title="PDF Editor Online Free – Edit PDF Without Watermark | MyPDFs"
+        description="Free online PDF editor India. Edit text, add images, OCR scanned documents. No watermark, no signup. Best free PDF editing tool for students & professionals."
+        keywords="PDF editor online free, edit PDF without watermark, online PDF editor India, free PDF editing tool, modify PDF text, OCR PDF editor, PDF editor for students, best free PDF editor"
       />
       
       {/* FAQ Schema */}
@@ -153,8 +153,8 @@ const EditPDF = () => {
       </Helmet>
       
       <ToolLayout
-        title="Edit PDF Online – Replace Text, OCR Scanned PDFs"
-        description="Free online PDF editor with OCR. Edit, replace, and add text to any PDF including scanned documents."
+        title="PDF Editor Online Free – No Watermark"
+        description="Edit text, add images, OCR scanned documents. Free online PDF editor for students & professionals."
         icon={FileEdit}
         colorClass="bg-tool-edit"
       >

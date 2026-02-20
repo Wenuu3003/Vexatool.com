@@ -89,13 +89,13 @@ const CompressPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Compress PDF Online Free - Reduce PDF File Size | Mypdfs"
-        description="Free online PDF compressor. Reduce PDF file size while maintaining quality. Compress large PDFs instantly."
-        keywords="compress PDF, reduce PDF size, PDF compressor, shrink PDF, optimize PDF, free PDF compression"
+        title="Compress PDF Free Online – Reduce PDF File Size Instantly | MyPDFs"
+        description="Free PDF compressor online. Reduce PDF file size by up to 90% while maintaining quality. Adjustable compression, no signup, instant download."
+        keywords="compress PDF free, reduce PDF size online, PDF compressor free, shrink PDF, optimize PDF, free PDF compression, compress PDF India, reduce PDF file size"
       />
       <ToolLayout
-        title="Compress PDF"
-        description="Reduce the file size of your PDF documents"
+        title="Compress PDF Free Online"
+        description="Reduce PDF file size by up to 90% while maintaining quality — instant, secure, no signup"
         icon={FileDown}
         colorClass="bg-tool-compress"
       >

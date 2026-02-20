@@ -5,14 +5,14 @@ export const Hero = () => {
         {/* Main Hero Content */}
         <div className="max-w-4xl mx-auto text-center bg-transparent">
           <h1 id="hero-heading" className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-tool-edit">
-            50+ Free Online Tools for{" "}
-            <span className="text-tool-sign">PDFs</span>,{" "}
-            <span className="text-lime-600">Images</span> & More
+            Free PDF Tools in India –{" "}
+            <span className="text-tool-sign">Merge</span>,{" "}
+            <span className="text-lime-600">Compress</span>, Convert & Edit PDFs Online
           </h1>
           
           <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed text-secondary">
-            Edit, compress, merge, convert PDFs. Resize images, generate QR codes, use AI tools and calculators. 
-            All 100% free, no registration required—processed securely in your browser.
+            Best free PDF tool website for students, professionals & businesses. Edit, compress, merge, convert PDFs. 
+            Generate QR codes, use AI tools & calculators. 50+ secure tools — no signup, no watermarks, processed in your browser.
           </p>
           
           {/* Feature badges */}

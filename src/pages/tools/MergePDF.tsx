@@ -68,13 +68,13 @@ const MergePDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Merge PDF Files Online Free - Combine PDFs | Mypdfs"
-        description="Free online PDF merger. Combine multiple PDF files into one document. Easy to use, no registration required."
-        keywords="merge PDF, combine PDF, join PDF files, PDF merger, free PDF combine, online PDF merger"
+        title="Merge PDF Online Free – Combine Multiple PDFs Into One | MyPDFs"
+        description="Free online PDF merger. Combine multiple PDF files into one document instantly. No signup, no watermarks, 100% secure browser-based processing."
+        keywords="merge PDF online, combine PDF free, join PDF files, PDF merger online, free PDF combine, merge PDF India, combine multiple PDFs"
       />
       <ToolLayout
-        title="Merge PDF"
-        description="Combine multiple PDF files into one document"
+        title="Merge PDF Online Free"
+        description="Combine multiple PDF files into one document — fast, free, no signup required"
         icon={Layers}
         colorClass="bg-tool-merge"
       >

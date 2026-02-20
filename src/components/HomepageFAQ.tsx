@@ -1,29 +1,35 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Helmet } from "react-helmet";
 const faqs = [{
-  question: "Is Mypdfs really free to use?",
-  answer: "Yes! All 50+ tools on Mypdfs are completely free with no hidden charges, no premium tiers, and no registration required. We are supported by non-intrusive advertisements."
+  question: "Is MyPDFs really free to use?",
+  answer: "Yes! All 50+ tools on MyPDFs are completely free with no hidden charges, no premium tiers, and no registration required. Whether you need to merge PDF, compress PDF, convert PDF to Excel, or generate QR codes — everything is free and unlimited."
 }, {
-  question: "Are my files safe and private?",
-  answer: "Absolutely. Most of our tools process files directly in your browser using client-side JavaScript, meaning your files never leave your device. For tools requiring server processing, files are encrypted during transfer and automatically deleted immediately after processing."
+  question: "Are my files safe and private on MyPDFs?",
+  answer: "Absolutely. Most tools process files directly in your browser using client-side JavaScript, meaning your files never leave your device. This is especially important for sensitive Indian documents like Aadhaar cards, PAN cards, salary slips, and legal agreements. No server uploads needed."
 }, {
   question: "Do I need to create an account?",
-  answer: "No, you don't need to create an account to use any of our tools. Simply visit the tool page, upload your file, and download the result. Account creation is optional and provides additional features like file history."
+  answer: "No account, registration, or login is required. Simply visit any tool page, upload your file, and download the result. All 50+ tools work without signup — completely anonymous and free."
 }, {
-  question: "What types of tools does Mypdfs offer?",
-  answer: "Mypdfs offers 50+ free tools including: PDF editing (merge, split, compress, convert, rotate, protect), image tools (compress, resize, format convert, background removal), AI-powered tools (chat, text generator, resume builder, grammar checker), calculators (EMI, GST, BMI, age), and utilities (QR code generator/scanner, currency converter, unit converter, PIN code finder)."
+  question: "What PDF tools does MyPDFs offer?",
+  answer: "MyPDFs offers 50+ free tools including: PDF editing (merge, split, compress, convert, rotate, protect, sign, watermark, unlock), PDF converters (PDF to Excel, PDF to Word, Word to PDF, Image to PDF), image tools (compress, resize, background removal), AI tools (chat, resume builder, grammar checker), QR code generator, and calculators (EMI, GST, BMI, age calculator)."
 }, {
-  question: "Can I use Mypdfs tools on mobile devices?",
-  answer: "Yes! All our tools are fully responsive and work perfectly on smartphones, tablets, and desktop computers. No app installation needed - just use your web browser."
+  question: "Can I use MyPDFs on my mobile phone?",
+  answer: "Yes! All tools are fully responsive and work perfectly on smartphones, tablets, and desktop computers. No app installation needed — just open mypdfs.in in your mobile browser. Optimized for Indian networks and budget devices."
 }, {
-  question: "How do I merge multiple PDF files?",
-  answer: "Use our Merge PDF tool - upload multiple PDF files, drag to arrange them in your preferred order, then click 'Merge' to combine them into a single PDF. Download your merged document instantly."
+  question: "How do I merge multiple PDF files online?",
+  answer: "Use our free Merge PDF tool — upload up to 20 PDF files, arrange them in your preferred order, then click 'Merge & Download'. Your combined PDF downloads instantly. No signup, no watermarks, completely free."
 }, {
-  question: "Can I convert PDF to Word for free?",
-  answer: "Yes! Our PDF to Word converter is 100% free. Upload your PDF file, and we'll convert it to an editable Word document (.docx) that preserves the original formatting as much as possible."
+  question: "Can I convert PDF to Excel for free?",
+  answer: "Yes! Our PDF to Excel converter extracts tables and data from PDF files into editable Excel spreadsheets (.xlsx). It supports batch processing for multiple files. 100% free with no daily limits."
+}, {
+  question: "Is the PDF editor really free without watermarks?",
+  answer: "Yes, our PDF editor is completely free and never adds watermarks to your edited documents. Edit text, add images, insert signatures, and annotate PDFs — all without any branding on the output."
+}, {
+  question: "Can I generate QR codes for UPI payments?",
+  answer: "Yes! Our free QR code generator supports URLs, WhatsApp links, UPI payment links, contact details, and plain text. You can add your brand logo, customize colors, and download in PNG or SVG format."
 }, {
   question: "Is there a file size limit?",
-  answer: "There are no artificial file size limits imposed by us. However, very large files may take longer to process depending on your device's capabilities and internet speed. For best results, we recommend files under 100MB."
+  answer: "There are no artificial file size limits. Since processing happens in your browser, performance depends on your device. For best results, we recommend files under 100MB. Our tools work well even on budget smartphones."
 }];
 
 // Generate FAQPage schema for homepage only

@@ -18,71 +18,71 @@ interface RelatedTool {
 
 // Tool relationships mapping
 const toolRelationships: Record<string, string[]> = {
-  // PDF Tools
-  "/merge-pdf": ["/split-pdf", "/compress-pdf", "/organize-pdf", "/pdf-to-word"],
-  "/split-pdf": ["/merge-pdf", "/organize-pdf", "/pdf-to-image", "/compress-pdf"],
-  "/compress-pdf": ["/merge-pdf", "/compress-image", "/file-compressor", "/pdf-to-jpg"],
-  "/pdf-to-word": ["/word-to-pdf", "/pdf-to-excel", "/edit-pdf", "/pdf-to-html"],
-  "/edit-pdf": ["/sign-pdf", "/watermark-pdf", "/pdf-to-word", "/protect-pdf"],
-  "/sign-pdf": ["/edit-pdf", "/watermark-pdf", "/protect-pdf", "/pdf-to-image"],
-  "/watermark-pdf": ["/edit-pdf", "/sign-pdf", "/protect-pdf", "/merge-pdf"],
-  "/rotate-pdf": ["/organize-pdf", "/split-pdf", "/merge-pdf", "/compress-pdf"],
-  "/unlock-pdf": ["/protect-pdf", "/edit-pdf", "/compress-pdf", "/pdf-to-word"],
-  "/protect-pdf": ["/unlock-pdf", "/watermark-pdf", "/sign-pdf", "/edit-pdf"],
-  "/organize-pdf": ["/rotate-pdf", "/split-pdf", "/merge-pdf", "/pdf-to-image"],
-  "/repair-pdf": ["/compress-pdf", "/unlock-pdf", "/merge-pdf", "/pdf-to-word"],
-  "/pdf-to-image": ["/pdf-to-jpg", "/pdf-to-png", "/image-to-pdf", "/compress-image"],
-  "/pdf-to-jpg": ["/pdf-to-png", "/pdf-to-image", "/jpg-to-pdf", "/compress-image"],
-  "/pdf-to-png": ["/pdf-to-jpg", "/pdf-to-image", "/png-to-pdf", "/background-remover"],
-  "/pdf-to-html": ["/html-to-pdf", "/pdf-to-word", "/pdf-to-excel", "/edit-pdf"],
-  "/pdf-to-powerpoint": ["/ppt-to-pdf", "/pdf-to-word", "/pdf-to-excel", "/pdf-to-image"],
-  "/pdf-to-excel": ["/excel-to-pdf", "/pdf-to-word", "/word-to-excel", "/pdf-to-powerpoint"],
+  // PDF Tools - 5+ links each
+  "/merge-pdf": ["/split-pdf", "/compress-pdf", "/organize-pdf", "/pdf-to-word", "/edit-pdf"],
+  "/split-pdf": ["/merge-pdf", "/organize-pdf", "/pdf-to-image", "/compress-pdf", "/rotate-pdf"],
+  "/compress-pdf": ["/merge-pdf", "/compress-image", "/file-compressor", "/pdf-to-jpg", "/edit-pdf"],
+  "/pdf-to-word": ["/word-to-pdf", "/pdf-to-excel", "/edit-pdf", "/pdf-to-html", "/compress-pdf"],
+  "/edit-pdf": ["/sign-pdf", "/watermark-pdf", "/pdf-to-word", "/protect-pdf", "/merge-pdf"],
+  "/sign-pdf": ["/edit-pdf", "/watermark-pdf", "/protect-pdf", "/pdf-to-image", "/merge-pdf"],
+  "/watermark-pdf": ["/edit-pdf", "/sign-pdf", "/protect-pdf", "/merge-pdf", "/compress-pdf"],
+  "/rotate-pdf": ["/organize-pdf", "/split-pdf", "/merge-pdf", "/compress-pdf", "/edit-pdf"],
+  "/unlock-pdf": ["/protect-pdf", "/edit-pdf", "/compress-pdf", "/pdf-to-word", "/merge-pdf"],
+  "/protect-pdf": ["/unlock-pdf", "/watermark-pdf", "/sign-pdf", "/edit-pdf", "/merge-pdf"],
+  "/organize-pdf": ["/rotate-pdf", "/split-pdf", "/merge-pdf", "/pdf-to-image", "/compress-pdf"],
+  "/repair-pdf": ["/compress-pdf", "/unlock-pdf", "/merge-pdf", "/pdf-to-word", "/edit-pdf"],
+  "/pdf-to-image": ["/pdf-to-jpg", "/pdf-to-png", "/image-to-pdf", "/compress-image", "/pdf-to-word"],
+  "/pdf-to-jpg": ["/pdf-to-png", "/pdf-to-image", "/jpg-to-pdf", "/compress-image", "/image-to-pdf"],
+  "/pdf-to-png": ["/pdf-to-jpg", "/pdf-to-image", "/png-to-pdf", "/background-remover", "/compress-image"],
+  "/pdf-to-html": ["/html-to-pdf", "/pdf-to-word", "/pdf-to-excel", "/edit-pdf", "/pdf-to-powerpoint"],
+  "/pdf-to-powerpoint": ["/ppt-to-pdf", "/pdf-to-word", "/pdf-to-excel", "/pdf-to-image", "/pdf-to-html"],
+  "/pdf-to-excel": ["/excel-to-pdf", "/pdf-to-word", "/word-to-excel", "/pdf-to-powerpoint", "/compress-pdf"],
   
   // Convert to PDF
-  "/word-to-pdf": ["/pdf-to-word", "/excel-to-pdf", "/ppt-to-pdf", "/html-to-pdf"],
-  "/excel-to-pdf": ["/pdf-to-excel", "/word-to-pdf", "/word-to-excel", "/excel-to-word"],
-  "/ppt-to-pdf": ["/pdf-to-powerpoint", "/word-to-pdf", "/image-to-pdf", "/google-drive-to-pdf"],
-  "/html-to-pdf": ["/pdf-to-html", "/word-to-pdf", "/image-to-pdf", "/seo-tool"],
-  "/image-to-pdf": ["/jpg-to-pdf", "/png-to-pdf", "/pdf-to-image", "/compress-image"],
-  "/jpg-to-pdf": ["/png-to-pdf", "/image-to-pdf", "/pdf-to-jpg", "/compress-image"],
-  "/png-to-pdf": ["/jpg-to-pdf", "/image-to-pdf", "/pdf-to-png", "/background-remover"],
-  "/google-drive-to-pdf": ["/word-to-pdf", "/excel-to-pdf", "/ppt-to-pdf", "/compress-pdf"],
-  "/word-to-excel": ["/excel-to-word", "/word-to-pdf", "/pdf-to-excel", "/pdf-to-word"],
-  "/excel-to-word": ["/word-to-excel", "/excel-to-pdf", "/word-to-pdf", "/pdf-to-word"],
+  "/word-to-pdf": ["/pdf-to-word", "/excel-to-pdf", "/ppt-to-pdf", "/html-to-pdf", "/image-to-pdf"],
+  "/excel-to-pdf": ["/pdf-to-excel", "/word-to-pdf", "/word-to-excel", "/excel-to-word", "/compress-pdf"],
+  "/ppt-to-pdf": ["/pdf-to-powerpoint", "/word-to-pdf", "/image-to-pdf", "/google-drive-to-pdf", "/compress-pdf"],
+  "/html-to-pdf": ["/pdf-to-html", "/word-to-pdf", "/image-to-pdf", "/seo-tool", "/compress-pdf"],
+  "/image-to-pdf": ["/jpg-to-pdf", "/png-to-pdf", "/pdf-to-image", "/compress-image", "/merge-pdf"],
+  "/jpg-to-pdf": ["/png-to-pdf", "/image-to-pdf", "/pdf-to-jpg", "/compress-image", "/merge-pdf"],
+  "/png-to-pdf": ["/jpg-to-pdf", "/image-to-pdf", "/pdf-to-png", "/background-remover", "/compress-image"],
+  "/google-drive-to-pdf": ["/word-to-pdf", "/excel-to-pdf", "/ppt-to-pdf", "/compress-pdf", "/merge-pdf"],
+  "/word-to-excel": ["/excel-to-word", "/word-to-pdf", "/pdf-to-excel", "/pdf-to-word", "/compress-pdf"],
+  "/excel-to-word": ["/word-to-excel", "/excel-to-pdf", "/word-to-pdf", "/pdf-to-word", "/compress-pdf"],
   
   // Image Tools
-  "/compress-image": ["/image-resizer", "/image-format-converter", "/compress-pdf", "/file-compressor"],
-  "/image-resizer": ["/compress-image", "/image-format-converter", "/background-remover", "/image-to-pdf"],
-  "/image-format-converter": ["/compress-image", "/image-resizer", "/jpg-to-pdf", "/png-to-pdf"],
-  "/background-remover": ["/compress-image", "/image-resizer", "/image-format-converter", "/png-to-pdf"],
-  "/file-compressor": ["/compress-image", "/compress-pdf", "/image-resizer", "/merge-pdf"],
+  "/compress-image": ["/image-resizer", "/image-format-converter", "/compress-pdf", "/file-compressor", "/background-remover"],
+  "/image-resizer": ["/compress-image", "/image-format-converter", "/background-remover", "/image-to-pdf", "/compress-pdf"],
+  "/image-format-converter": ["/compress-image", "/image-resizer", "/jpg-to-pdf", "/png-to-pdf", "/background-remover"],
+  "/background-remover": ["/compress-image", "/image-resizer", "/image-format-converter", "/png-to-pdf", "/image-to-pdf"],
+  "/file-compressor": ["/compress-image", "/compress-pdf", "/image-resizer", "/merge-pdf", "/image-format-converter"],
   
   // AI Tools
-  "/ai-chat": ["/ai-search", "/ai-text-generator", "/ai-grammar-tool", "/ai-resume-builder"],
-  "/ai-search": ["/ai-chat", "/seo-tool", "/ai-text-generator", "/hashtag-generator"],
-  "/ai-text-generator": ["/ai-grammar-tool", "/ai-chat", "/youtube-generator", "/hashtag-generator"],
-  "/ai-grammar-tool": ["/ai-text-generator", "/word-counter", "/ai-chat", "/ai-resume-builder"],
-  "/ai-resume-builder": ["/ai-text-generator", "/ai-grammar-tool", "/word-to-pdf", "/ai-chat"],
-  "/hashtag-generator": ["/youtube-generator", "/ai-text-generator", "/seo-tool", "/ai-search"],
-  "/youtube-generator": ["/hashtag-generator", "/ai-text-generator", "/seo-tool", "/ai-search"],
-  "/whatsapp-analyzer": ["/ai-chat", "/word-counter", "/ai-text-generator", "/ai-grammar-tool"],
-  "/word-counter": ["/ai-grammar-tool", "/ai-text-generator", "/seo-tool", "/whatsapp-analyzer"],
+  "/ai-chat": ["/ai-search", "/ai-text-generator", "/ai-grammar-tool", "/ai-resume-builder", "/word-counter"],
+  "/ai-search": ["/ai-chat", "/seo-tool", "/ai-text-generator", "/hashtag-generator", "/ai-grammar-tool"],
+  "/ai-text-generator": ["/ai-grammar-tool", "/ai-chat", "/youtube-generator", "/hashtag-generator", "/word-counter"],
+  "/ai-grammar-tool": ["/ai-text-generator", "/word-counter", "/ai-chat", "/ai-resume-builder", "/ai-search"],
+  "/ai-resume-builder": ["/ai-text-generator", "/ai-grammar-tool", "/word-to-pdf", "/ai-chat", "/word-counter"],
+  "/hashtag-generator": ["/youtube-generator", "/ai-text-generator", "/seo-tool", "/ai-search", "/ai-chat"],
+  "/youtube-generator": ["/hashtag-generator", "/ai-text-generator", "/seo-tool", "/ai-search", "/ai-chat"],
+  "/whatsapp-analyzer": ["/ai-chat", "/word-counter", "/ai-text-generator", "/ai-grammar-tool", "/ai-search"],
+  "/word-counter": ["/ai-grammar-tool", "/ai-text-generator", "/seo-tool", "/whatsapp-analyzer", "/ai-chat"],
   
   // Calculator Tools
-  "/calculator": ["/gst-calculator", "/emi-calculator", "/unit-converter", "/currency-converter"],
-  "/age-calculator": ["/love-calculator", "/bmi-calculator", "/calculator", "/emi-calculator"],
-  "/love-calculator": ["/age-calculator", "/bmi-calculator", "/calculator", "/emi-calculator"],
-  "/bmi-calculator": ["/age-calculator", "/love-calculator", "/calculator", "/unit-converter"],
-  "/emi-calculator": ["/gst-calculator", "/calculator", "/currency-converter", "/age-calculator"],
-  "/gst-calculator": ["/emi-calculator", "/calculator", "/currency-converter", "/unit-converter"],
-  "/unit-converter": ["/currency-converter", "/calculator", "/bmi-calculator", "/gst-calculator"],
-  "/currency-converter": ["/unit-converter", "/calculator", "/gst-calculator", "/emi-calculator"],
+  "/calculator": ["/gst-calculator", "/emi-calculator", "/unit-converter", "/currency-converter", "/bmi-calculator"],
+  "/age-calculator": ["/love-calculator", "/bmi-calculator", "/calculator", "/emi-calculator", "/unit-converter"],
+  "/love-calculator": ["/age-calculator", "/bmi-calculator", "/calculator", "/emi-calculator", "/qr-code-generator"],
+  "/bmi-calculator": ["/age-calculator", "/love-calculator", "/calculator", "/unit-converter", "/emi-calculator"],
+  "/emi-calculator": ["/gst-calculator", "/calculator", "/currency-converter", "/age-calculator", "/unit-converter"],
+  "/gst-calculator": ["/emi-calculator", "/calculator", "/currency-converter", "/unit-converter", "/age-calculator"],
+  "/unit-converter": ["/currency-converter", "/calculator", "/bmi-calculator", "/gst-calculator", "/emi-calculator"],
+  "/currency-converter": ["/unit-converter", "/calculator", "/gst-calculator", "/emi-calculator", "/age-calculator"],
   
   // Utility Tools
-  "/qr-code-generator": ["/qr-code-scanner", "/image-to-pdf", "/compress-image", "/image-resizer"],
-  "/qr-code-scanner": ["/qr-code-generator", "/image-format-converter", "/compress-image", "/background-remover"],
-  "/seo-tool": ["/youtube-generator", "/hashtag-generator", "/word-counter", "/ai-text-generator"],
-  "/pincode-generator": ["/calculator", "/gst-calculator", "/currency-converter", "/unit-converter"],
+  "/qr-code-generator": ["/qr-code-scanner", "/image-to-pdf", "/compress-image", "/image-resizer", "/ai-chat"],
+  "/qr-code-scanner": ["/qr-code-generator", "/image-format-converter", "/compress-image", "/background-remover", "/image-resizer"],
+  "/seo-tool": ["/youtube-generator", "/hashtag-generator", "/word-counter", "/ai-text-generator", "/ai-search"],
+  "/pincode-generator": ["/calculator", "/gst-calculator", "/currency-converter", "/unit-converter", "/emi-calculator"],
 };
 
 // Tool metadata
@@ -160,7 +160,7 @@ interface RelatedToolsProps {
   maxTools?: number;
 }
 
-export const RelatedTools = ({ currentPath, className = "", maxTools = 4 }: RelatedToolsProps) => {
+export const RelatedTools = ({ currentPath, className = "", maxTools = 5 }: RelatedToolsProps) => {
   const relatedPaths = toolRelationships[currentPath] || [];
   
   if (relatedPaths.length === 0) return null;
@@ -178,7 +178,7 @@ export const RelatedTools = ({ currentPath, className = "", maxTools = 4 }: Rela
   return (
     <section className={cn("mt-8 pt-8 border-t border-border", className)}>
       <h2 className="text-xl font-bold text-foreground mb-4">Related Tools You Might Like</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         {relatedTools.map((tool) => (
           <Link
             key={tool.path}

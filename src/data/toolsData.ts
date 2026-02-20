@@ -1,4 +1,4 @@
-ఏమండీ import { 
+import { 
   Layers, Scissors, FileDown, FileType2, FileEdit, PenTool, Droplets, 
   RotateCw, Unlock, Lock, LayoutGrid, Wrench, Image, QrCode, ScanLine, 
   Code, Presentation, Table, Calculator, Coins, BarChart3, Cloud, 

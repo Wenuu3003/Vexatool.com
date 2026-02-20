@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/((?!api|_next|sitemap\\.xml|robots\\.txt|ads\\.txt|indexnow-key\\.txt|mypdfs-indexnow-2026-keyfebae9ddeb146034246804dfa1c1adac5b5\\.txt|.*\\..*).*)",
+      "source": "/((?!api|_next|sitemap\\.xml|robots\\.txt|ads\\.txt|indexnow-key\\.txt|.*\\..*).*)",
       "destination": "/index.html"
     }
   ],

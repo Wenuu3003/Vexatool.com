@@ -10,7 +10,6 @@
 
 # Other verification files
 /indexnow-key.txt    /indexnow-key.txt    200!
-/mypdfs-indexnow-2026-keyfebae9ddeb146034246804dfa1c1adac5b5.txt    /mypdfs-indexnow-2026-keyfebae9ddeb146034246804dfa1c1adac5b5.txt    200!
 
 # SPA fallback - all other routes go to index.html
 /*    /index.html   200

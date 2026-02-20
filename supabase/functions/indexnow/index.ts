@@ -5,7 +5,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const INDEXNOW_KEY = "mypdfs-indexnow-2026-key";
+const INDEXNOW_KEY = "mypdfs-indexnow-2026-keyfebae9ddeb146034246804dfa1c1adac5b5";
 const SITE_HOST = "mypdfs.in";
 
 // Rate limiting configuration
@@ -317,7 +317,7 @@ serve(async (req) => {
     const indexNowPayload = {
       host: SITE_HOST,
       key: INDEXNOW_KEY,
-      keyLocation: `https://${SITE_HOST}/indexnow-key.txt`,
+keyLocation: `https://${SITE_HOST}/indexnow-key.txt`,
       urlList: limitedUrls
     };
 

@@ -12,6 +12,7 @@ export interface RouteConfig {
 
 // Blog post slugs for sitemap
 export const blogPosts = [
+  'how-to-merge-pdf-files-online-complete-guide',
   'love-age-calculator-complete-guide',
   'age-calculator-birthday-planning',
   'qr-code-generator-complete-guide',

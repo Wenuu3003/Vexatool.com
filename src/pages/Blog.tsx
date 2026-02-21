@@ -14,7 +14,15 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
-  // Featured: Love & Age Calculator (high visibility for viral traffic)
+  // Featured: Authority article on PDF merging
+  {
+    slug: "how-to-merge-pdf-files-online-complete-guide",
+    title: "How to Merge PDF Files Online (Complete Step-by-Step Guide)",
+    excerpt: "Everything you need to know about combining multiple PDF files into one document — step-by-step instructions, privacy tips, common mistakes, and expert advice for better PDF management.",
+    date: "2026-02-20",
+    readTime: "18 min read",
+  },
+  // Love & Age Calculator (high visibility for viral traffic)
   {
     slug: "love-age-calculator-complete-guide",
     title: "Love Calculator & Age Calculator: Complete Guide with Zodiac Compatibility & Social Sharing",

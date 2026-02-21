@@ -1,4 +1,5 @@
 import React from "react";
+import { mergePdfBlogContent } from "./mergePdfBlogContent";
 
 interface BlogPostContent {
   title: string;
@@ -9,6 +10,7 @@ interface BlogPostContent {
 }
 
 export const newBlogPosts: Record<string, BlogPostContent> = {
+  "how-to-merge-pdf-files-online-complete-guide": mergePdfBlogContent,
   "qr-code-generator-complete-guide": {
     title: "QR Code Generator: Complete Guide to Creating Custom QR Codes in 2026",
     date: "2026-01-24",

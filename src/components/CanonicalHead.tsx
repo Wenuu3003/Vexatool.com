@@ -9,15 +9,10 @@ interface CanonicalHeadProps {
   ogType?: string;
 }
 
-const DEFAULT_OG_IMAGE = "https://mypdfs.in/og-image.png";
-const SITE_NAME = "MyPDFs";
-const TWITTER_HANDLE = "@Mypdfs5";
+const DEFAULT_OG_IMAGE = "https://vexatool.com/og-image.png";
+const SITE_NAME = "VexaTool";
+const TWITTER_HANDLE = "@VexaTool";
 
-/**
- * Reusable component for adding canonical URLs, SEO meta tags, 
- * Open Graph, and Twitter Card tags to pages.
- * Uses the production domain (mypdfs.in) for all canonical URLs.
- */
 export const CanonicalHead = ({ 
   title, 
   description, 
@@ -30,13 +25,11 @@ export const CanonicalHead = ({
   
   return (
     <Helmet>
-      {/* Basic SEO */}
       <title>{title}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       <link rel="canonical" href={canonicalUrl} />
       
-      {/* Open Graph */}
       <meta property="og:type" content={ogType} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:title" content={title} />
@@ -47,7 +40,6 @@ export const CanonicalHead = ({
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:locale" content="en_US" />
       
-      {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content={TWITTER_HANDLE} />
       <meta name="twitter:creator" content={TWITTER_HANDLE} />

@@ -3,27 +3,32 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { CookieConsent } from "./components/CookieConsent";
 import { AdSenseLoader } from "./components/AdSenseLoader";
 import { GoogleAnalyticsScript, useGoogleAnalytics } from "./components/GoogleAnalytics";
 
-// Analytics tracker component that uses the hook
 const AnalyticsTracker = () => {
   useGoogleAnalytics();
   return null;
 };
 
-// Eagerly load Index for fast initial render
 import Index from "./pages/Index";
 
-// Lazy load all other pages for better code splitting
+// Pages
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Account = lazy(() => import("./pages/Account"));
 
-// PDF Tools - lazy loaded
+// Category Pages
+const PDFTools = lazy(() => import("./pages/categories/PDFTools"));
+const ImageTools = lazy(() => import("./pages/categories/ImageTools"));
+const CalculatorTools = lazy(() => import("./pages/categories/CalculatorTools"));
+const QRTools = lazy(() => import("./pages/categories/QRTools"));
+const UtilityTools = lazy(() => import("./pages/categories/UtilityTools"));
+
+// PDF Tools
 const MergePDF = lazy(() => import("./pages/tools/MergePDF"));
 const SplitPDF = lazy(() => import("./pages/tools/SplitPDF"));
 const CompressPDF = lazy(() => import("./pages/tools/CompressPDF"));
@@ -43,75 +48,51 @@ const PDFToHTML = lazy(() => import("./pages/tools/PDFToHTML"));
 const PDFToPowerPoint = lazy(() => import("./pages/tools/PDFToPowerPoint"));
 const PDFToExcel = lazy(() => import("./pages/tools/PDFToExcel"));
 
-// Image Tools - lazy loaded
+// Image Tools
 const ImageToPDF = lazy(() => import("./pages/tools/ImageToPDF"));
 const JPGToPDF = lazy(() => import("./pages/tools/JPGToPDF"));
 const PNGToPDF = lazy(() => import("./pages/tools/PNGToPDF"));
 const CompressImage = lazy(() => import("./pages/tools/CompressImage"));
 const FileCompressor = lazy(() => import("./pages/tools/FileCompressor"));
 const BackgroundRemover = lazy(() => import("./pages/tools/BackgroundRemover"));
+const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
+const ImageFormatConverter = lazy(() => import("./pages/tools/ImageFormatConverter"));
 
-// Document Converters - lazy loaded
+// Document Converters
 const WordToPDF = lazy(() => import("./pages/tools/WordToPDF"));
 const WordToExcel = lazy(() => import("./pages/tools/WordToExcel"));
 const ExcelToWord = lazy(() => import("./pages/tools/ExcelToWord"));
 const HTMLToPDF = lazy(() => import("./pages/tools/HTMLToPDF"));
 const PPTToPDF = lazy(() => import("./pages/tools/PPTToPDF"));
 const ExcelToPDF = lazy(() => import("./pages/tools/ExcelToPDF"));
-const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
 
-// Blog Pages - lazy loaded
+// Blog Pages
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 
-// Legal Pages - lazy loaded
+// Legal Pages
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const Contact = lazy(() => import("./pages/Contact"));
-// Utility Tools - lazy loaded
+const Disclaimer = lazy(() => import("./pages/Disclaimer"));
+
+// Utility Tools
 const QRCodeGenerator = lazy(() => import("./pages/tools/QRCodeGenerator"));
 const QRCodeScanner = lazy(() => import("./pages/tools/QRCodeScanner"));
-const Calculator = lazy(() => import("./pages/tools/Calculator"));
-
-const CurrencyConverter = lazy(() => import("./pages/tools/CurrencyConverter"));
-const SEOTool = lazy(() => import("./pages/tools/SEOTool"));
-
-// AI Tools - lazy loaded
-const AIChat = lazy(() => import("./pages/tools/AIChat"));
-const AISearch = lazy(() => import("./pages/tools/AISearch"));
-const AITextGenerator = lazy(() => import("./pages/tools/AITextGenerator"));
-const AIGrammarTool = lazy(() => import("./pages/tools/AIGrammarTool"));
-const AIResumeBuilder = lazy(() => import("./pages/tools/AIResumeBuilder"));
-const HashtagGenerator = lazy(() => import("./pages/tools/HashtagGenerator"));
-const YouTubeGenerator = lazy(() => import("./pages/tools/YouTubeGenerator"));
-const WhatsAppAnalyzer = lazy(() => import("./pages/tools/WhatsAppAnalyzer"));
-
-// Image Tools - additional
-const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
-const ImageFormatConverter = lazy(() => import("./pages/tools/ImageFormatConverter"));
-const WhatsAppDPResizer = lazy(() => import("./pages/tools/WhatsAppDPResizer"));
-const AadhaarPhotoResizer = lazy(() => import("./pages/tools/AadhaarPhotoResizer"));
-const GovtJobPhotoResizer = lazy(() => import("./pages/tools/GovtJobPhotoResizer"));
-const PassportPhotoResizer = lazy(() => import("./pages/tools/PassportPhotoResizer"));
-
-// Calculator Tools
-const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
-const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
-const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
-const LoveCalculator = lazy(() => import("./pages/tools/LoveCalculator"));
-const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
-// Utility Tools - additional
 const UnitConverter = lazy(() => import("./pages/tools/UnitConverter"));
 const WordCounter = lazy(() => import("./pages/tools/WordCounter"));
 const PinCodeGenerator = lazy(() => import("./pages/tools/PinCodeGenerator"));
 
-// Admin Tools
-const BotVerifier = lazy(() => import("./pages/tools/BotVerifier"));
+// Calculator Tools
+const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
+const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
+const LoveCalculator = lazy(() => import("./pages/tools/LoveCalculator"));
+const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
+const PercentageCalculator = lazy(() => import("./pages/tools/PercentageCalculator"));
 
 const queryClient = new QueryClient();
 
-// Loading fallback component
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -133,6 +114,12 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
+              {/* Category Pages */}
+              <Route path="/pdf-tools" element={<PDFTools />} />
+              <Route path="/image-tools" element={<ImageTools />} />
+              <Route path="/calculator-tools" element={<CalculatorTools />} />
+              <Route path="/qr-tools" element={<QRTools />} />
+              <Route path="/utility-tools" element={<UtilityTools />} />
               {/* Blog */}
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
@@ -141,36 +128,19 @@ const App = () => (
               <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/contact" element={<Contact />} />
-              {/* Utility Tools */}
+              <Route path="/disclaimer" element={<Disclaimer />} />
+              {/* QR Tools */}
               <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
               <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
-              <Route path="/currency-converter" element={<CurrencyConverter />} />
-              <Route path="/seo-tool" element={<SEOTool />} />
-              
-              <Route path="/calculator" element={<Calculator />} />
-              {/* AI Tools */}
-              <Route path="/ai-chat" element={<AIChat />} />
-              <Route path="/ai-search" element={<AISearch />} />
-              <Route path="/ai-text-generator" element={<AITextGenerator />} />
-              <Route path="/ai-grammar-tool" element={<AIGrammarTool />} />
-              <Route path="/ai-resume-builder" element={<AIResumeBuilder />} />
-              <Route path="/hashtag-generator" element={<HashtagGenerator />} />
-              <Route path="/youtube-generator" element={<YouTubeGenerator />} />
-              <Route path="/whatsapp-analyzer" element={<WhatsAppAnalyzer />} />
               {/* Calculator Tools */}
               <Route path="/age-calculator" element={<AgeCalculator />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />
-              <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/emi-calculator" element={<EMICalculator />} />
-              <Route path="/gst-calculator" element={<GSTCalculator />} />
               <Route path="/love-calculator" element={<LoveCalculator />} />
+              <Route path="/percentage-calculator" element={<PercentageCalculator />} />
               {/* Image Tools */}
               <Route path="/image-resizer" element={<ImageResizer />} />
               <Route path="/image-format-converter" element={<ImageFormatConverter />} />
-              <Route path="/whatsapp-dp-resize" element={<WhatsAppDPResizer />} />
-              <Route path="/aadhaar-photo-resize" element={<AadhaarPhotoResizer />} />
-              <Route path="/govt-job-photo-resize" element={<GovtJobPhotoResizer />} />
-              <Route path="/passport-photo-resize" element={<PassportPhotoResizer />} />
               {/* Utility Tools */}
               <Route path="/unit-converter" element={<UnitConverter />} />
               <Route path="/pincode-generator" element={<PinCodeGenerator />} />
@@ -208,9 +178,6 @@ const App = () => (
               <Route path="/html-to-pdf" element={<HTMLToPDF />} />
               <Route path="/ppt-to-pdf" element={<PPTToPDF />} />
               <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
-              <Route path="/google-drive-to-pdf" element={<GoogleDriveToPDF />} />
-              {/* Admin Tools */}
-              <Route path="/bot-verifier" element={<BotVerifier />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

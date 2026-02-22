@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 
-const BASE_URL = "https://mypdfs.in";
+const BASE_URL = "https://vexatool.com";
 
 export const useCanonicalUrl = () => {
   const location = useLocation();

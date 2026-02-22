@@ -1,7 +1,6 @@
-# Robots.txt for Mypdfs
-# https://mypdfs.in
+# Robots.txt for VexaTool
+# https://vexatool.com
 
-# Allow all crawlers full access
 User-agent: *
 Allow: /
 Disallow: /api/
@@ -9,35 +8,14 @@ Disallow: /_functions/
 Disallow: /auth
 Disallow: /account
 
-# Google
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
 
-# Bing
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
-# Yahoo
-User-agent: Slurp
-Allow: /
-
-# DuckDuckGo
-User-agent: DuckDuckBot
-Allow: /
-
-# Social Media Crawlers
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-# AdSense crawler - must have full access
 User-agent: Mediapartners-Google
 Allow: /
 
@@ -47,11 +25,4 @@ Allow: /
 User-agent: AdsBot-Google-Mobile
 Allow: /
 
-# Sitemap location
-Sitemap: https://mypdfs.in/sitemap.xml
-
-# Host-declaration
-Allow: /
-
-# ads.txt location for AdSense verification
-# Note: ads.txt must be accessible at https://mypdfs.in/ads.txt
+Sitemap: https://vexatool.com/sitemap.xml

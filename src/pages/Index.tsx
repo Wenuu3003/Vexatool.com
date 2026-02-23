@@ -28,6 +28,295 @@ const Index = () => {
   return (
     <>
       <Helmet>
+        import { Header } from "@/components/Header";
+import { QuickAccessBar } from "@/components/QuickAccessBar";
+import { TrustStrip } from "@/components/TrustStrip";
+import { Footer } from "@/components/Footer";
+import { Helmet } from "react-helmet";
+import { Suspense, lazy } from "react";
+
+const ToolGrid = lazy(() => import("@/components/ToolGrid"));
+const HomepageFAQ = lazy(() => import("@/components/HomepageFAQ"));
+
+const Index = () => {
+  return (
+    <>
+      <Helmet>
+        <title>All-in-One Free Online Tools | VexaTool</title>
+        <meta
+          name="description"
+          content="Free online PDF editor, image tools, QR code generator and calculators. Fast, secure and mobile-friendly."
+        />
+      </Helmet>
+
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <QuickAccessBar />
+
+        <main className="flex-1">
+
+          {/* 🔥 MODERN HERO SECTION */}
+          <section className="py-24 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 text-white text-center">
+            <div className="max-w-6xl mx-auto px-6">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                All-in-One Free Online Tools
+              </h1>
+              <p className="text-lg md:text-xl opacity-90 mb-10">
+                PDF Editor, Image Tools, QR Generator & Calculators — Fast,
+                Secure & 100% Free.
+              </p>
+
+              <div className="flex flex-col md:flex-row justify-center gap-4">
+                <a
+                  href="#tools"
+                  className="bg-white text-indigo-700 px-8 py-3 rounded-xl font-semibold hover:scale-105 transition"
+                >
+                  Explore Tools
+                </a>
+
+                <a
+                  href="#features"
+                  className="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-indigo-700 transition"
+                >
+                  Learn More
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <TrustStrip />
+
+          {/* 🔥 WHY CHOOSE US */}
+          <section id="features" className="py-20 bg-white text-center">
+            <div className="max-w-6xl mx-auto px-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-12">
+                Why Choose VexaTool?
+              </h2>
+
+              <div className="grid md:grid-cols-4 gap-8">
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">⚡</div>
+                  <h3 className="font-semibold mb-2">Lightning Fast</h3>
+                  <p className="text-gray-600 text-sm">
+                    Instant browser-based processing.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">🔒</div>
+                  <h3 className="font-semibold mb-2">Secure & Private</h3>
+                  <p className="text-gray-600 text-sm">
+                    Files auto-deleted after processing.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">📱</div>
+                  <h3 className="font-semibold mb-2">Mobile Friendly</h3>
+                  <p className="text-gray-600 text-sm">
+                    Works smoothly on all devices.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">💯</div>
+                  <h3 className="font-semibold mb-2">100% Free</h3>
+                  <p className="text-gray-600 text-sm">
+                    No signup required. Unlimited access.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 🔥 TOOLS GRID */}
+          <section id="tools" className="py-20">
+            <div className="max-w-7xl mx-auto px-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                All Free Online Tools
+              </h2>
+
+              <Suspense fallback={<div className="text-center">Loading tools...</div>}>
+                <ToolGrid />
+              </Suspense>
+            </div>
+          </section>
+
+          {/* 🔥 FINAL CTA */}
+          <section className="py-20 bg-indigo-600 text-white text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready to Get Started?
+            </h2>
+            <p className="mb-8 opacity-90">
+              Use powerful tools instantly — no login required.
+            </p>
+
+            <a
+              href="#tools"
+              className="bg-white text-indigo-700 px-8 py-3 rounded-xl font-semibold hover:scale-105 transition"
+            >
+              Start Now
+            </a>
+          </section>
+
+          {/* 🔥 FAQ */}
+          <Suspense fallback={null}>
+            <HomepageFAQ />
+          </Suspense>
+
+        </main>
+
+        <Footer />
+      </div>
+    </>
+  );
+};
+
+export default Index;import { Header } from "@/components/Header";
+import { QuickAccessBar } from "@/components/QuickAccessBar";
+import { TrustStrip } from "@/components/TrustStrip";
+import { Footer } from "@/components/Footer";
+import { Helmet } from "react-helmet";
+import { Suspense, lazy } from "react";
+
+const ToolGrid = lazy(() => import("@/components/ToolGrid"));
+const HomepageFAQ = lazy(() => import("@/components/HomepageFAQ"));
+
+const Index = () => {
+  return (
+    <>
+      <Helmet>
+        <title>All-in-One Free Online Tools | VexaTool</title>
+        <meta
+          name="description"
+          content="Free online PDF editor, image tools, QR code generator and calculators. Fast, secure and mobile-friendly."
+        />
+      </Helmet>
+
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <QuickAccessBar />
+
+        <main className="flex-1">
+
+          {/* 🔥 MODERN HERO SECTION */}
+          <section className="py-24 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 text-white text-center">
+            <div className="max-w-6xl mx-auto px-6">
+              <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                All-in-One Free Online Tools
+              </h1>
+              <p className="text-lg md:text-xl opacity-90 mb-10">
+                PDF Editor, Image Tools, QR Generator & Calculators — Fast,
+                Secure & 100% Free.
+              </p>
+
+              <div className="flex flex-col md:flex-row justify-center gap-4">
+                <a
+                  href="#tools"
+                  className="bg-white text-indigo-700 px-8 py-3 rounded-xl font-semibold hover:scale-105 transition"
+                >
+                  Explore Tools
+                </a>
+
+                <a
+                  href="#features"
+                  className="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-indigo-700 transition"
+                >
+                  Learn More
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <TrustStrip />
+
+          {/* 🔥 WHY CHOOSE US */}
+          <section id="features" className="py-20 bg-white text-center">
+            <div className="max-w-6xl mx-auto px-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-12">
+                Why Choose VexaTool?
+              </h2>
+
+              <div className="grid md:grid-cols-4 gap-8">
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">⚡</div>
+                  <h3 className="font-semibold mb-2">Lightning Fast</h3>
+                  <p className="text-gray-600 text-sm">
+                    Instant browser-based processing.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">🔒</div>
+                  <h3 className="font-semibold mb-2">Secure & Private</h3>
+                  <p className="text-gray-600 text-sm">
+                    Files auto-deleted after processing.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">📱</div>
+                  <h3 className="font-semibold mb-2">Mobile Friendly</h3>
+                  <p className="text-gray-600 text-sm">
+                    Works smoothly on all devices.
+                  </p>
+                </div>
+
+                <div className="p-6 bg-gray-50 rounded-2xl shadow hover:shadow-xl transition">
+                  <div className="text-4xl mb-4">💯</div>
+                  <h3 className="font-semibold mb-2">100% Free</h3>
+                  <p className="text-gray-600 text-sm">
+                    No signup required. Unlimited access.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* 🔥 TOOLS GRID */}
+          <section id="tools" className="py-20">
+            <div className="max-w-7xl mx-auto px-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+                All Free Online Tools
+              </h2>
+
+              <Suspense fallback={<div className="text-center">Loading tools...</div>}>
+                <ToolGrid />
+              </Suspense>
+            </div>
+          </section>
+
+          {/* 🔥 FINAL CTA */}
+          <section className="py-20 bg-indigo-600 text-white text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready to Get Started?
+            </h2>
+            <p className="mb-8 opacity-90">
+              Use powerful tools instantly — no login required.
+            </p>
+
+            <a
+              href="#tools"
+              className="bg-white text-indigo-700 px-8 py-3 rounded-xl font-semibold hover:scale-105 transition"
+            >
+              Start Now
+            </a>
+          </section>
+
+          {/* 🔥 FAQ */}
+          <Suspense fallback={null}>
+            <HomepageFAQ />
+          </Suspense>
+
+        </main>
+
+        <Footer />
+      </div>
+    </>
+  );
+};
+
+export default Index;
         <title>All-in-One Free Online Tools | PDF, QR & Calculator Tools – VexaTool</title>
         <meta name="description" content="VexaTool provides secure and free online PDF editor, QR code generator, image tools and calculators. Fast, easy and mobile-friendly tools for everyone." />
         <meta name="keywords" content="free online tools, PDF editor, QR code generator, image tools, calculator, merge PDF, compress PDF, VexaTool" />

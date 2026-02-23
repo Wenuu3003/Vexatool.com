@@ -73,6 +73,9 @@ export const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-2">
+            <Button size="sm" className="bg-[hsl(142,71%,45%)] hover:bg-[hsl(142,71%,40%)] text-white" onClick={() => handleNavigation("/pdf-tools")}>
+              Explore Tools
+            </Button>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

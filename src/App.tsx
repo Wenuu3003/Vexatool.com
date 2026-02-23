@@ -88,7 +88,7 @@ const PinCodeGenerator = lazy(() => import("./pages/tools/PinCodeGenerator"));
 const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
 const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
 const LoveCalculator = lazy(() => import("./pages/tools/LoveCalculator"));
-const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
+
 const PercentageCalculator = lazy(() => import("./pages/tools/PercentageCalculator"));
 
 const queryClient = new QueryClient();
@@ -133,7 +133,7 @@ const App = () => (
               <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
               <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
               {/* Calculator Tools */}
-              <Route path="/age-calculator" element={<AgeCalculator />} />
+              
               <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/emi-calculator" element={<EMICalculator />} />
               <Route path="/love-calculator" element={<LoveCalculator />} />

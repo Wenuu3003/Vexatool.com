@@ -86,7 +86,7 @@ const categories: Category[] = [
     tools: [
       { name: "Love & Age Calculator", href: "/love-calculator", icon: Heart, badge: "popular" },
       { name: "BMI Calculator", href: "/bmi-calculator", icon: Scale },
-      { name: "Age Calculator", href: "/age-calculator", icon: Cake },
+      
       { name: "Percentage Calculator", href: "/percentage-calculator", icon: Percent, badge: "new" },
       { name: "EMI Calculator", href: "/emi-calculator", icon: Percent },
     ],

@@ -271,19 +271,6 @@ export const toolsData: ToolData[] = [
     seoKeywords: ["BMI calculator", "body mass index", "weight calculator", "health calculator"]
   },
   {
-    id: "age-calculator",
-    title: "Age Calculator",
-    description: "Calculate your exact age in years, months, and days. Get birthday wishes and fun age facts.",
-    shortDescription: "Calculate your exact age in years, months, days.",
-    icon: Cake,
-    colorClass: "bg-gradient-to-br from-violet-500 to-purple-600",
-    href: "/age-calculator",
-    category: "calculator",
-    previewImage: "/previews/age-calculator-preview.webp",
-    features: ["Exact age", "Birthday wishes", "Age in days", "Fun facts"],
-    seoKeywords: ["age calculator", "birthday calculator", "how old am I", "exact age"]
-  },
-  {
     id: "percentage-calculator",
     title: "Percentage Calculator",
     description: "Calculate percentages quickly. Find percentage of a number, percentage change, increase or decrease, and more.",

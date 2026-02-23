@@ -26,8 +26,7 @@ const Index = () => {
   }, []);
   
   return (
-    <>
-      <Helmet>
+   
         import { Header } from "@/components/Header";
 import { QuickAccessBar } from "@/components/QuickAccessBar";
 import { TrustStrip } from "@/components/TrustStrip";

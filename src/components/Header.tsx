@@ -48,7 +48,7 @@ export const Header = () => {
         <div className="h-16 flex-row flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5" aria-label="VexaTool Home - Free Online Tools">
-            <img src="/favicon.png" alt="VexaTool logo" className="w-9 h-9 rounded-xl shadow-sm" width={36} height={36} />
+            <img alt="VexaTool logo" className="w-9 h-9 rounded-xl shadow-sm border-destructive" width={36} height={36} src="/lovable-uploads/97cc1afe-04ea-4acc-a508-3956be412371.jpg" />
             <span className="text-xl font-bold text-foreground">
               Vexa<span className="text-primary">Tool</span>
             </span>
@@ -76,8 +76,8 @@ export const Header = () => {
             <Button size="sm" className="bg-[hsl(142,71%,45%)] hover:bg-[hsl(142,71%,40%)] text-white" onClick={() => handleNavigation("/pdf-tools")}>
               Explore Tools
             </Button>
-            {user ? (
-              <DropdownMenu>
+            {user ?
+            <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="gap-2">
                     <User className="w-4 h-4" />
@@ -90,9 +90,9 @@ export const Header = () => {
                     Sign out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
+              </DropdownMenu> :
+
+            <>
                 <Button variant="ghost" size="sm" className="text-foreground" onClick={() => handleNavigation("/auth")}>
                   Login
                 </Button>
@@ -100,7 +100,7 @@ export const Header = () => {
                   Sign up
                 </Button>
               </>
-            )}
+            }
           </div>
 
           {/* Mobile Menu Button */}
@@ -110,30 +110,30 @@ export const Header = () => {
         </div>
 
         {/* Desktop Mega Menu */}
-        {megaMenuOpen && (
-          <div className="hidden lg:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-xl animate-fade-in z-50">
+        {megaMenuOpen &&
+        <div className="hidden lg:block absolute left-0 right-0 top-16 bg-card border-b border-border shadow-xl animate-fade-in z-50">
             <div className="container mx-auto">
               <MegaMenu onNavigate={() => setMegaMenuOpen(false)} />
             </div>
           </div>
-        )}
+        }
       </div>
 
       {megaMenuOpen && <div className="fixed inset-0 top-16 bg-black/20 z-40 hidden lg:block pointer-events-auto" onClick={() => setMegaMenuOpen(false)} />}
     </header>
 
     {/* Mobile Navigation */}
-    {mobileMenuOpen && (
-      <div className="lg:hidden fixed inset-0 top-16 bg-card z-[60] overflow-y-auto animate-fade-in overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+    {mobileMenuOpen &&
+    <div className="lg:hidden fixed inset-0 top-16 bg-card z-[60] overflow-y-auto animate-fade-in overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
         <MobileMegaMenu onNavigate={closeMobileMenu} />
         <div className="p-4 border-t border-border">
-          {user ? (
-            <Button variant="outline" className="w-full gap-2" onClick={handleSignOut}>
+          {user ?
+        <Button variant="outline" className="w-full gap-2" onClick={handleSignOut}>
               <LogOut className="w-4 h-4" />
               Sign out
-            </Button>
-          ) : (
-            <div className="flex gap-2">
+            </Button> :
+
+        <div className="flex gap-2">
               <Button variant="outline" className="flex-1" onClick={() => handleNavigation("/auth")}>
                 Login
               </Button>
@@ -141,9 +141,9 @@ export const Header = () => {
                 Sign up
               </Button>
             </div>
-          )}
+        }
         </div>
       </div>
-    )}
+    }
   </>;
 };

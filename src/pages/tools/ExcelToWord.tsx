@@ -146,7 +146,7 @@ const ExcelToWord = () => {
   return (
     <>
       <CanonicalHead 
-        title="Excel to Word Converter Free Online - XLS CSV to DOC | Mypdfs"
+        title="Excel to Word Converter Free Online - XLS CSV to DOC | VexaTool"
         description="Free online Excel to Word converter. Convert XLS, XLSX, and CSV files to Word document format."
         keywords="excel to word, xls to doc, csv to word, spreadsheet to word, convert excel"
       />

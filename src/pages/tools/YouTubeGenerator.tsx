@@ -157,7 +157,7 @@ export default function YouTubeGenerator() {
   return (
     <>
       <CanonicalHead 
-        title="YouTube Title & Description Generator Free Online | MyPDFs"
+        title="YouTube Title & Description Generator Free Online | VexaTool"
         description="Free AI YouTube title and description generator. Create SEO-optimized titles, descriptions, and tags."
         keywords="YouTube title generator, YouTube description generator, YouTube SEO, video SEO, YouTube tags"
       />

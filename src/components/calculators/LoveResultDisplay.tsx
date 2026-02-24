@@ -164,7 +164,7 @@ export function LoveResultDisplay({
         },
         {
           title: `Love Calculator: ${name1} ❤️ ${name2}`,
-          text: `${name1} & ${name2} got ${resultData.percentage}% love compatibility! 💕 Try yours at mypdfs.in/love-calculator`,
+          text: `${name1} & ${name2} got ${resultData.percentage}% love compatibility! 💕 Try yours at vexatool.com/love-calculator`,
           fileName: `love-story-${name1}-${name2}.png`,
         }
       );
@@ -203,7 +203,7 @@ export function LoveResultDisplay({
         },
         {
           title: `Love Calculator: ${name1} ❤️ ${name2}`,
-          text: `${name1} & ${name2} got ${resultData.percentage}% love compatibility! 💚 Try yours at mypdfs.in/love-calculator`,
+          text: `${name1} & ${name2} got ${resultData.percentage}% love compatibility! 💚 Try yours at vexatool.com/love-calculator`,
           fileName: `love-whatsapp-${name1}-${name2}.png`,
         }
       );

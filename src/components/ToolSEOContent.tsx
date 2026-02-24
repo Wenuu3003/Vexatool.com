@@ -61,7 +61,7 @@ const ToolSEOContent = ({
       
       <section className="mt-12 space-y-8 text-foreground">
         <div className="border-t pt-8">
-          <h2 className="text-2xl font-bold mb-4">{toolName} Online – Free & Secure | MyPDFs</h2>
+          <h2 className="text-2xl font-bold mb-4">{toolName} Online – Free & Secure | VexaTool</h2>
           
           {/* What is section */}
           <div className="prose prose-gray dark:prose-invert max-w-none mb-6">

@@ -350,7 +350,7 @@ const QRCodeGenerator = () => {
   return (
     <>
       <CanonicalHead
-        title="Free QR Code Generator Online – Create QR Codes Instantly | MyPDFs"
+        title="Free QR Code Generator Online – Create QR Codes Instantly | VexaTool"
         description="Free QR code generator online. Create custom QR codes for URLs, WhatsApp, UPI payments & contacts. Add logos, customize colors. Best QR code generator India."
         keywords="QR code generator free, create QR code online, QR code for website, QR code generator India, free QR maker, QR code with logo, WhatsApp QR code, UPI QR code"
       />
@@ -690,7 +690,7 @@ const QRCodeGenerator = () => {
 
         <ToolSEOContent
           toolName="Free QR Code Generator Online"
-          whatIs="QR (Quick Response) codes are two-dimensional barcodes that can store various types of information including URLs, text, WhatsApp links, UPI payment details, contact information, and more. Our free QR code generator creates custom codes instantly that can be scanned by any smartphone camera. Perfect for business cards, restaurant menus, UPI payment collection, WhatsApp business links, product packaging, event tickets, and digital marketing campaigns. Whether you need a simple URL QR code, a WhatsApp direct message QR, a contact vCard QR, or a UPI payment QR code — MyPDFs generates them all for free, with logo support and color customization. Used by thousands of small businesses and professionals across India."
+          whatIs="QR (Quick Response) codes are two-dimensional barcodes that can store various types of information including URLs, text, WhatsApp links, UPI payment details, contact information, and more. Our free QR code generator creates custom codes instantly that can be scanned by any smartphone camera. Perfect for business cards, restaurant menus, UPI payment collection, WhatsApp business links, product packaging, event tickets, and digital marketing campaigns. Whether you need a simple URL QR code, a WhatsApp direct message QR, a contact vCard QR, or a UPI payment QR code — VexaTool generates them all for free, with logo support and color customization. Used by thousands of small businesses and professionals across India."
           howToUse={[
             "Choose the type of content: URL/Text, Batch, Image, or Google Drive link.",
             "Enter your URL, text, WhatsApp link (wa.me/91XXXXXXXXXX), UPI link, or contact details.",

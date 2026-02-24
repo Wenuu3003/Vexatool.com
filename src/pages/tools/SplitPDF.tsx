@@ -122,7 +122,7 @@ const SplitPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Split PDF Online Free - Extract Pages from PDF | Mypdfs"
+        title="Split PDF Online Free - Extract Pages from PDF | VexaTool"
         description="Free online PDF splitter. Extract specific pages from PDF files. Split PDFs into multiple documents easily."
         keywords="split PDF, extract PDF pages, PDF splitter, divide PDF, separate PDF pages, free PDF split"
       />
@@ -178,7 +178,7 @@ const SplitPDF = () => {
 
       <ToolSEOContent
         toolName="Split PDF"
-        whatIs="PDF splitting allows you to extract specific pages or divide a large PDF document into smaller, more manageable files. This is indispensable when you only need certain pages from a lengthy report, want to share specific sections with different recipients, or need to reduce file sizes for easier email attachment. Our free online PDF splitter at MyPDFs gives you complete control over which pages to extract — supporting single pages, custom ranges, and complex selections like '1-3, 5, 8-12'. The entire process runs securely in your browser, so your confidential documents never leave your device. Whether you are isolating a single chapter from a textbook, extracting an invoice from a financial statement, or pulling specific slides from a presentation PDF, this tool handles it instantly with zero quality loss."
+        whatIs="PDF splitting allows you to extract specific pages or divide a large PDF document into smaller, more manageable files. This is indispensable when you only need certain pages from a lengthy report, want to share specific sections with different recipients, or need to reduce file sizes for easier email attachment. Our free online PDF splitter at VexaTool gives you complete control over which pages to extract — supporting single pages, custom ranges, and complex selections like '1-3, 5, 8-12'. The entire process runs securely in your browser, so your confidential documents never leave your device. Whether you are isolating a single chapter from a textbook, extracting an invoice from a financial statement, or pulling specific slides from a presentation PDF, this tool handles it instantly with zero quality loss."
         howToUse={[
           "Upload your PDF file by clicking the upload area or dragging and dropping.",
           "View the total page count displayed after the file is analyzed.",

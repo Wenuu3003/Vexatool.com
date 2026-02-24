@@ -181,7 +181,7 @@ export default function ImageFormatConverter() {
   return (
     <>
       <CanonicalHead 
-        title="Image Format Converter - Convert PNG, JPG, WebP Free Online | MyPDFs"
+        title="Image Format Converter - Convert PNG, JPG, WebP Free Online | VexaTool"
         description="Free online image format converter. Convert images between PNG, JPG, and WebP formats. Batch convert."
         keywords="image converter, PNG to JPG, JPG to WebP, WebP to PNG, convert image format"
       />

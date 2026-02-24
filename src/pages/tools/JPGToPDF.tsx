@@ -92,7 +92,7 @@ const JPGToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="JPG to PDF Converter Free Online - Convert JPEG to PDF | Mypdfs"
+        title="JPG to PDF Converter Free Online - Convert JPEG to PDF | VexaTool"
         description="Free online JPG to PDF converter. Convert JPEG images to PDF documents instantly. Combine multiple JPG files."
         keywords="jpg to pdf, jpeg to pdf, convert jpg, photo to pdf, image to pdf, free jpg converter"
       />

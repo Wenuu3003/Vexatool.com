@@ -17,7 +17,7 @@ const WhatsAppDPResizer = () => {
   return (
     <>
       <CanonicalHead
-        title="WhatsApp DP Resize Online Free – 192x192px Under 20KB | Mypdfs"
+        title="WhatsApp DP Resize Online Free – 192x192px Under 20KB | VexaTool"
         description="Resize photo for WhatsApp DP online free. Get perfect 192x192px WhatsApp profile picture under 20KB. Instant download, no signup required."
         keywords="whatsapp dp resize, whatsapp profile photo size, resize photo for whatsapp, whatsapp dp 192x192, whatsapp dp maker free"
       />

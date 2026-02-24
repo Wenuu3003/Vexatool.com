@@ -94,7 +94,7 @@ const RotatePDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Rotate PDF Pages Online Free | Mypdfs"
+        title="Rotate PDF Pages Online Free | VexaTool"
         description="Free online PDF rotation tool. Rotate PDF pages 90, 180, or 270 degrees. Fix upside-down or sideways PDF pages."
         keywords="rotate PDF, turn PDF, flip PDF pages, PDF rotation, fix PDF orientation, free PDF rotate"
       />

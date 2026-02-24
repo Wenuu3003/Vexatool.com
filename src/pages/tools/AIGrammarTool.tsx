@@ -148,7 +148,7 @@ export default function AIGrammarTool() {
   return (
     <>
       <CanonicalHead
-        title="AI Grammar Checker & Text Rewriter Free Online | MyPDFs"
+        title="AI Grammar Checker & Text Rewriter Free Online | VexaTool"
         description="Free AI grammar checker and text rewriter. Fix spelling, punctuation, and grammar errors. Paraphrase instantly."
         keywords="grammar checker, AI grammar, text rewriter, paraphrase tool, fix grammar, spelling checker"
       />

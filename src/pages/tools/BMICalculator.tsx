@@ -108,7 +108,7 @@ export default function BMICalculator() {
   return (
     <>
       <CanonicalHead
-        title="BMI Calculator Free Online - Body Mass Index Calculator | MyPDFs"
+        title="BMI Calculator Free Online - Body Mass Index Calculator | VexaTool"
         description="Free BMI calculator. Calculate your Body Mass Index instantly. Check if you're underweight, normal, overweight or obese."
         keywords="BMI calculator, body mass index, weight calculator, health calculator, BMI chart, BMI check"
       />

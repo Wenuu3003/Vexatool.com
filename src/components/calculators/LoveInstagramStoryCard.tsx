@@ -301,7 +301,7 @@ export const LoveInstagramStoryCard = forwardRef<HTMLDivElement, LoveInstagramSt
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 text-xl text-white/60 mb-3">
               <Heart className="w-5 h-5" fill="currentColor" />
-              <span className="font-medium tracking-wide">mypdfs.in/love-calculator</span>
+              <span className="font-medium tracking-wide">vexatool.com/love-calculator</span>
               <Heart className="w-5 h-5" fill="currentColor" />
             </div>
             <p className="text-sm text-white/40">For fun & entertainment only</p>

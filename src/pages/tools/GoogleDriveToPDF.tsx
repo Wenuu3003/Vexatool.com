@@ -111,7 +111,7 @@ const GoogleDriveToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Google Drive to PDF Converter Free | Mypdfs"
+        title="Google Drive to PDF Converter Free | VexaTool"
         description="Convert Google Drive files to PDF. Export Google Docs, Sheets, and Slides to PDF format easily."
         keywords="Google Drive to PDF, Google Docs to PDF, Google Sheets to PDF, Google Slides to PDF"
       />

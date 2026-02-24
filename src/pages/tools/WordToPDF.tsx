@@ -278,7 +278,7 @@ const WordToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Word to PDF Converter Free Online - DOC DOCX to PDF | Mypdfs"
+        title="Word to PDF Converter Free Online - DOC DOCX to PDF | VexaTool"
         description="Free online Word to PDF converter. Convert DOC, DOCX, RTF and TXT files to PDF format instantly."
         keywords="word to pdf, doc to pdf, docx to pdf, convert word, word converter, free word to pdf"
       />

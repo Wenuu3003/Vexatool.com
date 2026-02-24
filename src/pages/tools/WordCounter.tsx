@@ -121,7 +121,7 @@ Word Count Statistics:
   return (
     <>
       <CanonicalHead
-        title="Word Counter Free Online - Count Words, Characters & More | MyPDFs"
+        title="Word Counter Free Online - Count Words, Characters & More | VexaTool"
         description="Free online word counter tool. Count words, characters, sentences, paragraphs. Get reading time instantly."
         keywords="word counter, character counter, word count, text counter, free word counter, online word counter"
       />

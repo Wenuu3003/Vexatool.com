@@ -139,7 +139,7 @@ const PDFToPNG = () => {
   return (
     <>
       <CanonicalHead 
-        title="PDF to PNG Converter Free Online - Convert PDF to PNG | Mypdfs"
+        title="PDF to PNG Converter Free Online - Convert PDF to PNG | VexaTool"
         description="Free online PDF to PNG converter. Convert PDF pages to transparent PNG images. High-quality conversion."
         keywords="pdf to png, convert pdf to png, extract pdf pages, transparent png, free pdf converter"
       />

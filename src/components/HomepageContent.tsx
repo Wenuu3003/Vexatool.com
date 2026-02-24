@@ -7,27 +7,33 @@ export const HomepageContent = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto prose prose-lg dark:prose-invert">
           
-          {/* What is VexaTool */}
+          {/* Why Choose VexaTool */}
           <div className="mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-6">
-              What is VexaTool?
+              Why Choose VexaTool?
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              VexaTool is a free online tools platform that brings together everything you need for working with PDFs, images, QR codes, and everyday calculations. Instead of downloading multiple apps or paying for expensive subscriptions, you get access to a complete toolkit that runs directly in your web browser — fast, secure, and always available.
+              VexaTool is built on a simple principle: powerful document tools should be free, private, and accessible to everyone. Unlike most online tool platforms that upload your files to remote servers, limit free usage, or require account creation, VexaTool processes your documents directly in your web browser using client-side JavaScript. Your files literally never leave your device.
             </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Whether you need to <Link to="/merge-pdf" className="text-primary hover:underline">merge PDF files</Link>, <Link to="/compress-pdf" className="text-primary hover:underline">compress a large PDF</Link>, <Link to="/qr-code-generator" className="text-primary hover:underline">generate a QR code</Link>, or <Link to="/image-resizer" className="text-primary hover:underline">resize an image</Link>, each tool is designed to be straightforward and deliver results in seconds. No signup required, no hidden fees, no daily usage limits.
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              This approach means you can confidently work with sensitive materials — financial records, legal contracts, identification documents, medical reports — knowing they remain completely private. There are no server uploads, no cloud copies, and no data retention. The moment you close the browser tab, all processed data is gone.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              Every tool is designed for speed and simplicity. Whether you need to <Link to="/merge-pdf" className="text-primary hover:underline">merge PDF files</Link> for a college submission, <Link to="/compress-pdf" className="text-primary hover:underline">compress a large PDF</Link> for email, or <Link to="/qr-code-generator" className="text-primary hover:underline">generate a QR code</Link> for your business card, the workflow is the same: upload, process, download. No learning curve, no subscription, no hidden fees.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              VexaTool is fully responsive and works on any device — desktop, tablet, or smartphone. Whether you are on a high-end laptop or a budget Android phone, the experience is consistent and reliable. All tools load fast even on slower network connections, making them accessible to users everywhere.
+            </p>
+            <p className="text-muted-foreground leading-relaxed mb-4">
+              We believe in transparency. There are no artificial daily limits, no watermarks on output files, and no premium upgrade prompts blocking your workflow. Every feature available on VexaTool is truly free — today and always.
             </p>
           </div>
 
-          {/* Why VexaTool is Different */}
+          {/* Comparison table */}
           <div className="mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-6">
-              Why VexaTool is Different
+              How VexaTool Compares
             </h2>
-            <p className="text-muted-foreground leading-relaxed mb-6">
-              Most online tool platforms either limit free usage, require account creation, or upload your files to remote servers. VexaTool takes a fundamentally different approach — your files are processed directly in your browser using client-side JavaScript. This means your documents, images, and personal data never leave your device.
-            </p>
             <div className="overflow-x-auto not-prose mb-6">
               <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
                 <thead>
@@ -118,7 +124,7 @@ export const HomepageContent = () => {
               {[
                 { icon: FileText, title: "PDF Tools", desc: "Edit, merge, split, compress, convert, rotate, lock, and unlock PDF files.", href: "/pdf-tools" },
                 { icon: Image, title: "Image Tools", desc: "Resize, compress, convert images and remove backgrounds instantly.", href: "/image-tools" },
-                { icon: Calculator, title: "Calculators", desc: "BMI, EMI, age, love compatibility, and percentage calculators.", href: "/calculator-tools" },
+                { icon: Calculator, title: "Calculators", desc: "BMI, EMI, love compatibility, and percentage calculators.", href: "/calculator-tools" },
                 { icon: QrCode, title: "QR Tools", desc: "Generate custom QR codes and scan existing ones from camera or image.", href: "/qr-tools" },
               ].map((item, i) => (
                 <Link key={i} to={item.href} className="flex items-start gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">

@@ -17,7 +17,7 @@ const GovtJobPhotoResizer = () => {
   return (
     <>
       <CanonicalHead
-        title="Govt Job Form Photo Resize – 3.5x4.5cm, 20KB Free | Mypdfs"
+        title="Govt Job Form Photo Resize – 3.5x4.5cm, 20KB Free | VexaTool"
         description="Resize photo for government job application form online. Get 3.5x4.5cm photo under 20KB for SSC, UPSC, IBPS, Railway exams. Free, instant."
         keywords="govt job form photo size, resize photo for government form, SSC photo size, UPSC photo requirement, IBPS photo resize, railway exam photo size, government application photo"
       />

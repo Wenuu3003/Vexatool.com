@@ -146,7 +146,7 @@ const ImageToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Image to PDF Converter Free Online - JPG PNG to PDF | Mypdfs"
+        title="Image to PDF Converter Free Online - JPG PNG to PDF | VexaTool"
         description="Free online image to PDF converter. Convert JPG, PNG, GIF images to PDF. Combine multiple images."
         keywords="image to PDF, JPG to PDF, PNG to PDF, convert images, photo to PDF, free image converter"
       />

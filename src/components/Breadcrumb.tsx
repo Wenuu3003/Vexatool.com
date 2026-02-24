@@ -126,13 +126,13 @@ export const Breadcrumb = ({ items, className = "" }: BreadcrumbProps) => {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://mypdfs.in"
+        "item": "https://vexatool.com"
       },
       ...breadcrumbItems.map((item, index) => ({
         "@type": "ListItem",
         "position": index + 2,
         "name": item.name,
-        "item": `https://mypdfs.in${item.path}`
+        "item": `https://vexatool.com${item.path}`
       }))
     ]
   };

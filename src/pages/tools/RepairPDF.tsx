@@ -110,7 +110,7 @@ const RepairPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Repair Corrupted PDF Free Online | Mypdfs"
+        title="Repair Corrupted PDF Free Online | VexaTool"
         description="Free online PDF repair tool. Fix corrupted or damaged PDF files. Recover data from broken PDFs."
         keywords="repair PDF, fix corrupted PDF, recover PDF, damaged PDF, PDF repair tool, free PDF fix"
       />

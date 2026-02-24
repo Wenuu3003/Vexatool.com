@@ -68,7 +68,7 @@ const MergePDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Merge PDF Online Free – Combine Multiple PDFs Into One | MyPDFs"
+        title="Merge PDF Online Free – Combine Multiple PDFs Into One | VexaTool"
         description="Free online PDF merger. Combine multiple PDF files into one document instantly. No signup, no watermarks, 100% secure browser-based processing. Best free PDF merge tool in India."
         keywords="merge PDF online, combine PDF free, join PDF files, PDF merger online, free PDF combine, merge PDF India, combine multiple PDFs, how to merge PDF without software, secure PDF merging, best PDF merger online"
       />
@@ -108,9 +108,9 @@ const MergePDF = () => {
 
       <ToolSEOContent
         toolName="Merge PDF"
-        whatIs="PDF merging is the process of combining two or more separate PDF documents into a single, unified file. It's one of the most common document tasks — whether you're a student bundling assignment pages for a college portal, a professional compiling reports for a client presentation, or a job seeker combining your resume, cover letter, and certificates into one clean attachment. The concept is straightforward: your original files remain unchanged in content, but they're stitched together page by page into one downloadable PDF. Our free Merge PDF tool at MyPDFs.in handles this entire process directly inside your web browser. Your files are never uploaded to any external server — the merging happens locally using client-side JavaScript, which means sensitive documents like Aadhaar cards, PAN cards, salary slips, contracts, and medical records stay completely private on your device. There's no registration, no daily usage limit, and no watermark added to your output. You get a clean, professional merged document every single time. Unlike desktop software that requires installation and often costs ₹1,500 or more per month, MyPDFs works on any device with a browser — phones, tablets, laptops, Chromebooks — without downloading anything. Whether you're using a budget smartphone on a 3G connection or a high-end laptop with broadband, the experience is the same: fast, reliable, and completely free."
+        whatIs="PDF merging is the process of combining two or more separate PDF documents into a single, unified file. It's one of the most common document tasks — whether you're a student bundling assignment pages for a college portal, a professional compiling reports for a client presentation, or a job seeker combining your resume, cover letter, and certificates into one clean attachment. The concept is straightforward: your original files remain unchanged in content, but they're stitched together page by page into one downloadable PDF. Our free Merge PDF tool at VexaTool handles this entire process directly inside your web browser. Your files are never uploaded to any external server — the merging happens locally using client-side JavaScript, which means sensitive documents like Aadhaar cards, PAN cards, salary slips, contracts, and medical records stay completely private on your device. There's no registration, no daily usage limit, and no watermark added to your output. You get a clean, professional merged document every single time. Unlike desktop software that requires installation and often costs ₹1,500 or more per month, VexaTool works on any device with a browser — phones, tablets, laptops, Chromebooks — without downloading anything. Whether you're using a budget smartphone on a 3G connection or a high-end laptop with broadband, the experience is the same: fast, reliable, and completely free."
         howToUse={[
-          "Open the Merge PDF tool on MyPDFs.in — no account creation or login needed.",
+          "Open the Merge PDF tool on VexaTool — no account creation or login needed.",
           "Click the upload area or drag and drop your PDF files. You can add up to 20 files at once.",
           "Review the file list and rearrange them in your preferred order. The merged PDF will follow this exact sequence.",
           "Click the 'Merge & Download' button. Processing happens instantly in your browser.",
@@ -127,7 +127,7 @@ const MergePDF = () => {
           "Drag-and-drop file ordering lets you control the exact page sequence before merging.",
           "Unlimited daily usage — merge as many times as you need without hitting daily caps or cooldown periods."
         ]}
-        safetyNote="Your privacy is our foundational principle. The entire PDF merging process runs locally inside your web browser using secure client-side JavaScript. Your documents are never uploaded to any server, never stored on any cloud, and never accessible to anyone — including us. Once you close the browser tab, all processed data is gone. This approach makes MyPDFs one of the safest options for merging sensitive documents like identification cards, financial statements, legal agreements, and medical records. We follow GDPR-compliant practices and maintain a transparent privacy policy that explains exactly how every tool works."
+        safetyNote="Your privacy is our foundational principle. The entire PDF merging process runs locally inside your web browser using secure client-side JavaScript. Your documents are never uploaded to any server, never stored on any cloud, and never accessible to anyone — including us. Once you close the browser tab, all processed data is gone. This approach makes VexaTool one of the safest options for merging sensitive documents like identification cards, financial statements, legal agreements, and medical records. We follow GDPR-compliant practices and maintain a transparent privacy policy that explains exactly how every tool works."
         faqs={[
           {
             question: "How many PDF files can I merge at once?",
@@ -147,7 +147,7 @@ const MergePDF = () => {
           },
           {
             question: "Can I merge PDFs on my phone or tablet?",
-            answer: "Absolutely. MyPDFs is fully responsive and works on any smartphone or tablet browser — Chrome, Safari, Firefox, Samsung Internet. Just open the tool, select files from your phone's storage, and merge. No app installation required."
+            answer: "Absolutely. VexaTool is fully responsive and works on any smartphone or tablet browser — Chrome, Safari, Firefox, Samsung Internet. Just open the tool, select files from your phone's storage, and merge. No app installation required."
           },
           {
             question: "Do I need to create an account to merge PDFs?",
@@ -155,11 +155,11 @@ const MergePDF = () => {
           },
           {
             question: "Will there be a watermark on the merged PDF?",
-            answer: "Never. Unlike many other online PDF tools that add watermarks or branding to free-tier output, MyPDFs never modifies your document. The merged PDF is clean and professional — exactly what you'd expect from a premium tool."
+            answer: "Never. Unlike many other online PDF tools that add watermarks or branding to free-tier output, VexaTool never modifies your document. The merged PDF is clean and professional — exactly what you'd expect from a premium tool."
           },
           {
             question: "Are my files safe during the merge process?",
-            answer: "Yes. All processing happens locally in your web browser using client-side JavaScript. Your files are never sent to any server, never stored anywhere, and never accessible to anyone. This makes MyPDFs one of the most private PDF merge tools available online."
+            answer: "Yes. All processing happens locally in your web browser using client-side JavaScript. Your files are never sent to any server, never stored anywhere, and never accessible to anyone. This makes VexaTool one of the most private PDF merge tools available online."
           },
           {
             question: "Can I merge password-protected PDFs?",

@@ -129,7 +129,7 @@ export default function AITextGenerator() {
   return (
     <>
       <CanonicalHead 
-        title="AI Text Generator Free Online - Create Content Instantly | MyPDFs"
+        title="AI Text Generator Free Online - Create Content Instantly | VexaTool"
         description="Free AI text generator for blog posts, social media, emails. Create high-quality content with AI."
         keywords="AI text generator, content generator, blog writer, AI writer, text creator"
       />

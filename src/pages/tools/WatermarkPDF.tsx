@@ -288,7 +288,7 @@ const WatermarkPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Add Watermark to PDF Free Online | Text & Image Watermarks | Mypdfs"
+        title="Add Watermark to PDF Free Online | Text & Image Watermarks | VexaTool"
         description="Free online PDF watermark tool. Add text or image watermarks to protect your PDF documents."
         keywords="watermark PDF, add watermark, PDF stamp, protect PDF, text watermark, image watermark, logo watermark"
       />

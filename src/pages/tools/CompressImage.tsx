@@ -174,7 +174,7 @@ const CompressImage = () => {
   return (
     <>
       <CanonicalHead
-        title="Compress Images Online Free - Reduce JPG, PNG, WebP Size | Mypdfs"
+        title="Compress Images Online Free - Reduce JPG, PNG, WebP Size | VexaTool"
         description="Free online image compressor. Reduce JPG, PNG, and WebP file sizes up to 90% while maintaining quality."
         keywords="image compressor, compress images, reduce image size, JPG compressor, PNG compressor, WebP compressor"
       />

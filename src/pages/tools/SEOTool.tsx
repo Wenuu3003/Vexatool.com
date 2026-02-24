@@ -207,7 +207,7 @@ const SEOTool = () => {
   return (
     <>
       <CanonicalHead 
-        title="SEO Analyzer Free Online - Website & YouTube SEO | Mypdfs"
+        title="SEO Analyzer Free Online - Website & YouTube SEO | VexaTool"
         description="Free SEO analyzer for websites and YouTube videos. Get actionable recommendations to improve rankings."
         keywords="SEO analyzer, SEO checker, website SEO, YouTube SEO, free SEO tool, SEO audit"
       />

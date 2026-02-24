@@ -390,7 +390,7 @@ const ExcelToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Excel to PDF Converter – Batch Processing & Clean Sheets | Mypdfs"
+        title="Excel to PDF Converter – Batch Processing & Clean Sheets | VexaTool"
         description="Convert Excel to PDF online with batch processing and clean sheet options. Supports XLS, XLSX, and CSV."
         keywords="Excel to PDF, XLS to PDF, XLSX to PDF, CSV to PDF, batch Excel convert, spreadsheet to PDF"
       />

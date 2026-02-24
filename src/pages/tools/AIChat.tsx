@@ -197,7 +197,7 @@ const AIChat = () => {
     return (
       <>
         <CanonicalHead
-          title="Free AI Chatbot Online – Ask Questions, Get Smart Answers Instantly | Mypdfs"
+          title="Free AI Chatbot Online – Ask Questions, Get Smart Answers Instantly | VexaTool"
           description="Chat with our free AI assistant to get instant answers, research help, coding support, and creative writing assistance. No login required for basic questions."
           keywords="free AI chatbot, AI question answering, smart AI assistant, ask AI online, AI chat free, online chatbot, AI helper, AI conversation"
         />
@@ -231,7 +231,7 @@ const AIChat = () => {
   return (
     <>
       <CanonicalHead
-        title="Free AI Chatbot Online – Ask Questions, Get Smart Answers Instantly | Mypdfs"
+        title="Free AI Chatbot Online – Ask Questions, Get Smart Answers Instantly | VexaTool"
         description="Chat with our free AI assistant to get instant answers, research help, coding support, and creative writing assistance. No login required for basic questions."
         keywords="free AI chatbot, AI question answering, smart AI assistant, ask AI online, AI chat free, online chatbot, AI helper, AI conversation"
       />

@@ -135,7 +135,7 @@ export default function HashtagGenerator() {
   return (
     <>
       <CanonicalHead
-        title="Hashtag Generator Free Online - Social Media Hashtags | MyPDFs"
+        title="Hashtag Generator Free Online - Social Media Hashtags | VexaTool"
         description="Free AI hashtag generator for Instagram, TikTok, Twitter, LinkedIn, and YouTube. Generate trending hashtags."
         keywords="hashtag generator, Instagram hashtags, TikTok hashtags, Twitter hashtags, social media hashtags"
       />

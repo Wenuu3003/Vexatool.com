@@ -99,7 +99,7 @@ const BotVerifier = () => {
   return (
     <>
       <Helmet>
-        <title>Bot IP Verifier - Verify Googlebot & Bingbot IPs | MyPDFs</title>
+        <title>Bot IP Verifier - Verify Googlebot & Bingbot IPs | VexaTool</title>
         <meta
           name="description"
           content="Verify if an IP address belongs to a legitimate Googlebot or Bingbot crawler using reverse DNS lookup verification."

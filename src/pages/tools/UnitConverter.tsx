@@ -211,7 +211,7 @@ export default function UnitConverter() {
   return (
     <>
       <CanonicalHead
-        title="Unit Converter Free Online - Length, Weight, Temperature | MyPDFs"
+        title="Unit Converter Free Online - Length, Weight, Temperature | VexaTool"
         description="Free unit converter for length, weight, temperature, area, volume, speed, time and data. Convert between metric and imperial."
         keywords="unit converter, length converter, weight converter, temperature converter, metric converter"
       />

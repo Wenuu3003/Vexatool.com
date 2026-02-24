@@ -154,7 +154,7 @@ const PDFToPowerPoint = () => {
   return (
     <>
       <CanonicalHead 
-        title="PDF to PowerPoint Converter Free Online | Mypdfs"
+        title="PDF to PowerPoint Converter Free Online | VexaTool"
         description="Free PDF to PowerPoint converter. Convert PDF documents to presentation slides instantly. 100% private."
         keywords="PDF to PowerPoint, PDF to PPT, convert PDF to slides, PDF to presentation, free PDF to PPT"
       />

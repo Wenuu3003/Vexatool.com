@@ -14,7 +14,7 @@ interface ToolsSchemaMarkupProps {
  * - Breadcrumb navigation
  * - Organization data
  */
-export const ToolsSchemaMarkup = ({ baseUrl = "https://mypdfs.in" }: ToolsSchemaMarkupProps) => {
+export const ToolsSchemaMarkup = ({ baseUrl = "https://vexatool.com" }: ToolsSchemaMarkupProps) => {
   // ItemList schema for the tools collection
   const itemListSchema = {
     "@context": "https://schema.org",
@@ -74,11 +74,11 @@ export const ToolsSchemaMarkup = ({ baseUrl = "https://mypdfs.in" }: ToolsSchema
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Mypdfs",
+    "name": "VexaTool",
     "url": baseUrl,
     "logo": `${baseUrl}/favicon.png`,
     "sameAs": [
-      "https://twitter.com/Mypdfs5"
+      "https://twitter.com/VexaTool"
     ],
     "description": "Free online PDF editor, converter, and utility tools. No signup required."
   };
@@ -87,7 +87,7 @@ export const ToolsSchemaMarkup = ({ baseUrl = "https://mypdfs.in" }: ToolsSchema
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Mypdfs",
+    "name": "VexaTool",
     "url": baseUrl,
     "potentialAction": {
       "@type": "SearchAction",
@@ -125,7 +125,7 @@ interface ToolDetailSchemaProps {
   baseUrl?: string;
 }
 
-export const ToolDetailSchema = ({ toolId, baseUrl = "https://mypdfs.in" }: ToolDetailSchemaProps) => {
+export const ToolDetailSchema = ({ toolId, baseUrl = "https://vexatool.com" }: ToolDetailSchemaProps) => {
   const tool = toolsData.find(t => t.id === toolId);
   
   if (!tool) return null;
@@ -143,7 +143,7 @@ export const ToolDetailSchema = ({ toolId, baseUrl = "https://mypdfs.in" }: Tool
     "softwareVersion": "1.0",
     "author": {
       "@type": "Organization",
-      "name": "Mypdfs",
+      "name": "VexaTool",
       "url": baseUrl
     },
     "offers": {

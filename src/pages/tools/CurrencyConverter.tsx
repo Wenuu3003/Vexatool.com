@@ -146,7 +146,7 @@ const CurrencyConverter = () => {
   return (
     <>
       <CanonicalHead
-        title="Currency Converter Free Online - Exchange Rates | Mypdfs"
+        title="Currency Converter Free Online - Exchange Rates | VexaTool"
         description="Free currency converter with real-time exchange rates. Convert between USD, EUR, GBP, and 15+ world currencies."
         keywords="currency converter, exchange rate, money converter, forex, USD to EUR, free currency calculator"
       />

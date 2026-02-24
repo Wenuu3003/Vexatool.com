@@ -236,7 +236,7 @@ const Calculator = () => {
   return (
     <>
       <CanonicalHead
-        title="Online Scientific Calculator Free - Advanced Calculator | Mypdfs"
+        title="Online Scientific Calculator Free - Advanced Calculator | VexaTool"
         description="Free online scientific calculator with history, keyboard support, and advanced functions. Perform basic and scientific calculations with ease."
         keywords="calculator, online calculator, free calculator, math calculator, scientific calculator, advanced calculator"
       />

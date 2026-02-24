@@ -169,7 +169,7 @@ const FileCompressor = () => {
   return (
     <>
       <CanonicalHead 
-        title="File Compressor Free Online - Compress Images PDF Files | Mypdfs"
+        title="File Compressor Free Online - Compress Images PDF Files | VexaTool"
         description="Free online file compressor. Compress images, PDFs and other files to reduce size with quality control."
         keywords="file compressor, compress files, reduce file size, image compression, pdf compression"
       />

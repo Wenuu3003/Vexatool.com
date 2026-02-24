@@ -140,7 +140,7 @@ const EditPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="PDF Editor Online Free – Edit PDF Without Watermark | MyPDFs"
+        title="PDF Editor Online Free – Edit PDF Without Watermark | VexaTool"
         description="Free online PDF editor India. Edit text, add images, OCR scanned documents. No watermark, no signup. Best free PDF editing tool for students & professionals."
         keywords="PDF editor online free, edit PDF without watermark, online PDF editor India, free PDF editing tool, modify PDF text, OCR PDF editor, PDF editor for students, best free PDF editor"
       />

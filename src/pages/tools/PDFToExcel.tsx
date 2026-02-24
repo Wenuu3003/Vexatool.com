@@ -272,7 +272,7 @@ const PDFToExcel = () => {
   return (
     <>
       <CanonicalHead 
-        title="Convert PDF to Excel Online Free – Fast & Accurate | MyPDFs"
+        title="Convert PDF to Excel Online Free – Fast & Accurate | VexaTool"
         description="Free PDF to Excel converter online. Extract tables from PDF to editable Excel spreadsheets instantly. Batch processing, no signup, 100% secure."
         keywords="PDF to Excel online, convert PDF to Excel free, free PDF to XLS converter, extract tables from PDF, PDF to spreadsheet, PDF to Excel India"
       />

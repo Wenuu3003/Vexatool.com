@@ -17,7 +17,7 @@ const AadhaarPhotoResizer = () => {
   return (
     <>
       <CanonicalHead
-        title="Aadhaar Card Photo Size Online Free – 200x200px | Mypdfs"
+        title="Aadhaar Card Photo Size Online Free – 200x200px | VexaTool"
         description="Resize photo for Aadhaar card online free. Get correct 200x200px Aadhaar photo size under 50KB with white background. Instant, no signup."
         keywords="aadhaar photo size, aadhaar card photo resize, aadhaar photo online, resize photo for aadhaar, aadhaar enrollment photo size"
       />

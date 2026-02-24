@@ -123,7 +123,7 @@ const OrganizePDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Organize PDF Pages Free Online - Reorder PDF | Mypdfs"
+        title="Organize PDF Pages Free Online - Reorder PDF | VexaTool"
         description="Free online PDF organizer. Reorder, rearrange, and reorganize PDF pages with drag and drop."
         keywords="organize PDF, reorder PDF pages, rearrange PDF, PDF page order, sort PDF pages, free PDF organizer"
       />

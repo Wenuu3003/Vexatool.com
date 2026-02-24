@@ -435,7 +435,7 @@ const PinCodeGenerator = () => {
         <meta name="keywords" content="india pin code, pin code finder, pincode search, postal code india, post office pin code, village pin code, city pin code, state wise pin code, district pin code, area pin code, 6 digit pin code, india post, postal index number" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="googlebot" content="index, follow" />
-        <meta name="author" content="MyPDFs.in" />
+        <meta name="author" content="VexaTool" />
         <link rel="canonical" href={canonicalUrl} />
         
         {/* Open Graph */}
@@ -443,19 +443,19 @@ const PinCodeGenerator = () => {
         <meta property="og:description" content="Free PIN code search tool with live India Post data. Find village, city, district PIN codes instantly. Works offline too!" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="MyPDFs.in" />
+        <meta property="og:site_name" content="VexaTool" />
         <meta property="og:locale" content="en_IN" />
-        <meta property="og:image" content="https://mypdfs.in/og-pincode.png" />
+        <meta property="og:image" content="https://vexatool.com/og-image.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content="India PIN Code Finder Tool" />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:site" content="@mypdfs_in" />
+        <meta name="twitter:site" content="@VexaTool" />
         <meta name="twitter:title" content="India PIN Code Finder 2026 | Free Online Tool" />
         <meta name="twitter:description" content="Search any Indian PIN code by village, city or district. Live India Post data with offline mode." />
-        <meta name="twitter:image" content="https://mypdfs.in/og-pincode.png" />
+        <meta name="twitter:image" content="https://vexatool.com/og-image.png" />
         
         <meta name="theme-color" content="#ff2d95" />
         <meta httpEquiv="Content-Language" content="en-IN" />
@@ -488,8 +488,8 @@ const PinCodeGenerator = () => {
             },
             "provider": {
               "@type": "Organization",
-              "name": "MyPDFs.in",
-              "url": "https://mypdfs.in"
+              "name": "VexaTool",
+              "url": "https://vexatool.com"
             },
             "featureList": [
               "Search PIN codes by village, city, district, state",
@@ -515,7 +515,7 @@ const PinCodeGenerator = () => {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://mypdfs.in"
+                "item": "https://vexatool.com"
               },
               {
                 "@type": "ListItem",

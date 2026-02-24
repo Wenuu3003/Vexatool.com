@@ -311,7 +311,7 @@ export default function LoveCalculator() {
 
   const handleShareLove = async () => {
     if (!loveResult) return;
-    const text = `❤️ Love Calculator Result ❤️\n${loveForm.name1} + ${loveForm.name2} = ${loveResult.percentage}% Compatible!\n📊 Name Match: ${loveResult.nameMatchScore}% | Numerology: ${loveResult.numerologyScore}%\n${loveResult.message}\n\nTry it: https://mypdfs.in/love-calculator`;
+    const text = `❤️ Love Calculator Result ❤️\n${loveForm.name1} + ${loveForm.name2} = ${loveResult.percentage}% Compatible!\n📊 Name Match: ${loveResult.nameMatchScore}% | Numerology: ${loveResult.numerologyScore}%\n${loveResult.message}\n\nTry it: https://vexatool.com/love-calculator`;
 
     try {
       await navigator.clipboard.writeText(text);
@@ -339,7 +339,7 @@ export default function LoveCalculator() {
 
   const handleShareAge = async () => {
     if (!ageResult) return;
-    const text = `🎂 Age Calculator Result 🎂\nI am ${ageResult.years} years, ${ageResult.months} months, and ${ageResult.days} days old!\n📅 Total: ${ageResult.totalDays.toLocaleString()} days lived!\n${ageResult.daysUntilBirthday} days until my next birthday! 🎉\n\nCalculate yours: https://mypdfs.in/love-calculator`;
+    const text = `🎂 Age Calculator Result 🎂\nI am ${ageResult.years} years, ${ageResult.months} months, and ${ageResult.days} days old!\n📅 Total: ${ageResult.totalDays.toLocaleString()} days lived!\n${ageResult.daysUntilBirthday} days until my next birthday! 🎉\n\nCalculate yours: https://vexatool.com/love-calculator`;
 
     try {
       await navigator.clipboard.writeText(text);

@@ -80,7 +80,7 @@ export const BacklinkCTA = ({ currentTool }: BacklinkCTAProps) => {
           <Link to="/currency-converter" className="text-primary hover:underline">Currency Converter</Link>, or{" "}
           <Link to="/emi-calculator" className="text-primary hover:underline">EMI Calculator</Link>.
           All tools are{" "}
-          <Link to="/" className="text-primary hover:underline font-medium">free at Mypdfs.in</Link>.
+          <Link to="/" className="text-primary hover:underline font-medium">free at VexaTool</Link>.
         </p>
       </div>
     </div>

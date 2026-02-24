@@ -250,7 +250,7 @@ const WhatsAppAnalyzer = () => {
   return (
     <>
       <Helmet>
-        <title>AI WhatsApp Chat Truth Analyzer - Free Relationship Analysis | MyPDFs</title>
+        <title>AI WhatsApp Chat Truth Analyzer - Free Relationship Analysis | VexaTool</title>
         <meta name="description" content="Analyze your WhatsApp chats with AI! Discover hidden truths, interest levels, emotional tones, and get fun verdicts. Love, friendship & roast modes available." />
         <meta name="keywords" content="WhatsApp analyzer, chat analysis, relationship analyzer, AI chat analyzer, who texts first, interest level, WhatsApp truth, Telugu chat analyzer" />
         <meta property="og:title" content="AI WhatsApp Chat Truth Analyzer - Free Relationship Analysis" />

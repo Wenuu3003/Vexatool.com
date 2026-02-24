@@ -89,7 +89,7 @@ const CompressPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Compress PDF Free Online – Reduce PDF File Size Instantly | MyPDFs"
+        title="Compress PDF Free Online – Reduce PDF File Size Instantly | VexaTool"
         description="Free PDF compressor online. Reduce PDF file size by up to 90% while maintaining quality. Adjustable compression, no signup, instant download."
         keywords="compress PDF free, reduce PDF size online, PDF compressor free, shrink PDF, optimize PDF, free PDF compression, compress PDF India, reduce PDF file size"
       />
@@ -164,7 +164,7 @@ const CompressPDF = () => {
 
         <ToolSEOContent
           toolName="Compress PDF"
-          whatIs="PDF compression is the process of reducing the file size of a PDF document while maintaining its visual quality and readability. Large PDF files create real problems — they are difficult to share via email (most providers cap attachments at 25MB), slow to upload to government portals and job application systems, and consume excessive storage space on your device. Our free online PDF compressor at MyPDFs uses advanced optimization algorithms to shrink your PDF files by up to 90%, depending on content type. The tool works directly in your browser, meaning your sensitive financial reports, legal contracts, and personal documents are never uploaded to any external server. Whether you need to compress a single scanned document or optimize a batch of image-heavy presentations, this tool delivers fast, reliable results with an adjustable quality slider so you control the balance between file size and visual fidelity."
+          whatIs="PDF compression is the process of reducing the file size of a PDF document while maintaining its visual quality and readability. Large PDF files create real problems — they are difficult to share via email (most providers cap attachments at 25MB), slow to upload to government portals and job application systems, and consume excessive storage space on your device. Our free online PDF compressor at VexaTool uses advanced optimization algorithms to shrink your PDF files by up to 90%, depending on content type. The tool works directly in your browser, meaning your sensitive financial reports, legal contracts, and personal documents are never uploaded to any external server. Whether you need to compress a single scanned document or optimize a batch of image-heavy presentations, this tool delivers fast, reliable results with an adjustable quality slider so you control the balance between file size and visual fidelity."
           howToUse={[
             "Upload your PDF file by clicking the upload area or dragging and dropping your document.",
             "Adjust the compression level slider — move left for maximum compression (smaller file) or right for maximum quality.",

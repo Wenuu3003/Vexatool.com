@@ -108,7 +108,7 @@ export async function createExcelFromData(
   const { sheetName = 'Extracted Data', preserveFormatting = true } = options;
   
   const workbook = new ExcelJS.Workbook();
-  workbook.creator = 'Mypdfs';
+  workbook.creator = 'VexaTool';
   workbook.created = new Date();
   
   const worksheet = workbook.addWorksheet(sheetName);

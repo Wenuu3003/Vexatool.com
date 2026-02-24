@@ -119,7 +119,7 @@ const PNGToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="PNG to PDF Converter Free Online - Convert PNG to PDF | Mypdfs"
+        title="PNG to PDF Converter Free Online - Convert PNG to PDF | VexaTool"
         description="Free online PNG to PDF converter. Convert PNG images to PDF documents instantly. Combine multiple PNG files."
         keywords="png to pdf, convert png, image to pdf, transparent image to pdf, free png converter"
       />

@@ -370,7 +370,7 @@ export default function AIResumeBuilder() {
   return (
     <>
       <CanonicalHead 
-        title="AI Resume Builder Free Online - Create ATS-Friendly Resumes | MyPDFs"
+        title="AI Resume Builder Free Online - Create ATS-Friendly Resumes | VexaTool"
         description="Free AI resume builder with 7 professional templates. Import existing resumes, save drafts, download PDF or Word. ATS-optimized, no signup required."
         keywords="resume builder, CV maker, professional resume, ATS resume, free resume, resume templates, ai resume, job application, career, pdf resume"
       />

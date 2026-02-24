@@ -17,7 +17,7 @@ const PassportPhotoResizer = () => {
   return (
     <>
       <CanonicalHead
-        title="Passport Size Photo Online Free India – 2x2 inch 300 DPI | Mypdfs"
+        title="Passport Size Photo Online Free India – 2x2 inch 300 DPI | VexaTool"
         description="Create passport size photo online free. Perfect 2x2 inch (51x51mm) passport photo at 300 DPI with white background. Suitable for Indian passport, visa applications."
         keywords="passport size photo online, passport photo maker india, 2x2 passport photo free, passport photo 300 dpi, make passport photo online, indian passport photo size"
       />

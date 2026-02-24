@@ -12,8 +12,8 @@ import { WatermarkElement, FONT_FAMILIES, COLORS } from './types';
 
 // Branded watermark presets
 const WATERMARK_PRESETS = [
-  { label: "Powered by Mypdfs", text: "Powered by Mypdfs", position: "center" as const, opacity: 0.25, fontSize: 32, rotation: 0 },
-  { label: "Mypdfs.in", text: "mypdfs.in", position: "diagonal" as const, opacity: 0.3, fontSize: 36, rotation: 45 },
+  { label: "Powered by VexaTool", text: "Powered by VexaTool", position: "center" as const, opacity: 0.25, fontSize: 32, rotation: 0 },
+  { label: "VexaTool.com", text: "vexatool.com", position: "diagonal" as const, opacity: 0.3, fontSize: 36, rotation: 45 },
   { label: "Confidential", text: "CONFIDENTIAL", position: "diagonal" as const, opacity: 0.3, fontSize: 48, rotation: 45 },
   { label: "Draft", text: "DRAFT", position: "center" as const, opacity: 0.25, fontSize: 60, rotation: 0 },
 ];
@@ -34,7 +34,7 @@ export const WatermarkDialog = ({
   totalPages,
 }: WatermarkDialogProps) => {
   const [watermarkType, setWatermarkType] = useState<'text' | 'image'>('text');
-  const [text, setText] = useState('Powered by Mypdfs');
+  const [text, setText] = useState('Powered by VexaTool');
   const [fontSize, setFontSize] = useState(32);
   const [fontFamily, setFontFamily] = useState('Helvetica');
   const [color, setColor] = useState('#CCCCCC');

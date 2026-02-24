@@ -74,7 +74,7 @@ export function AgeResultDisplay({
         },
         {
           title: `I'm ${result.years} years old! 🎂`,
-          text: `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 🎂 Check your age at mypdfs.in/love-calculator`,
+          text: `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 🎂 Check your age at vexatool.com/love-calculator`,
           fileName: `age-story-${result.years}years.png`,
         }
       );
@@ -113,7 +113,7 @@ export function AgeResultDisplay({
         },
         {
           title: `I'm ${result.years} years old! 🎂`,
-          text: `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 💚 Check your age at mypdfs.in/love-calculator`,
+          text: `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 💚 Check your age at vexatool.com/love-calculator`,
           fileName: `age-whatsapp-${result.years}years.png`,
         }
       );

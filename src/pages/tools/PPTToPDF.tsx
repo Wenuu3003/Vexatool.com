@@ -411,7 +411,7 @@ const PPTToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="PowerPoint to PDF Converter Free Online | Mypdfs"
+        title="PowerPoint to PDF Converter Free Online | VexaTool"
         description="Free PowerPoint to PDF converter. Convert PPT and PPTX presentations to PDF instantly. 100% private."
         keywords="PowerPoint to PDF, PPT to PDF, PPTX to PDF, convert presentation, free PPT converter"
       />

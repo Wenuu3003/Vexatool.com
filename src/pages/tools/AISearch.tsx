@@ -139,7 +139,7 @@ const AISearch = () => {
     return (
       <>
         <CanonicalHead
-          title="AI Web Search Free Online - Real-time Search with Sources | MyPDFs"
+          title="AI Web Search Free Online - Real-time Search with Sources | VexaTool"
           description="Search the web with AI-powered answers and cited sources. Get accurate, real-time information."
           keywords="AI search, web search, cited sources, real-time search, AI answers"
         />
@@ -188,7 +188,7 @@ const AISearch = () => {
   return (
     <>
       <CanonicalHead
-        title="AI Web Search Free Online - Real-time Search with Sources | MyPDFs"
+        title="AI Web Search Free Online - Real-time Search with Sources | VexaTool"
         description="Search the web with AI-powered answers and cited sources. Get accurate, real-time information."
         keywords="AI search, web search, cited sources, real-time search, AI answers"
       />

@@ -231,7 +231,7 @@ const PDFToHTML = () => {
   return (
     <>
       <CanonicalHead 
-        title="PDF to HTML Converter Free Online - Convert PDF to Web Page | Mypdfs"
+        title="PDF to HTML Converter Free Online - Convert PDF to Web Page | VexaTool"
         description="Free online PDF to HTML converter. Convert PDF documents to HTML web pages. Create responsive HTML instantly."
         keywords="pdf to html, convert pdf to html, pdf to web page, pdf converter, free html converter"
       />

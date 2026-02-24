@@ -147,7 +147,7 @@ const WordToExcel = () => {
   return (
     <>
       <CanonicalHead 
-        title="Word to Excel Converter Free Online - DOC to XLS CSV | Mypdfs"
+        title="Word to Excel Converter Free Online - DOC to XLS CSV | VexaTool"
         description="Free online Word to Excel converter. Convert DOC and DOCX files to Excel CSV format. Extract tables."
         keywords="word to excel, doc to xls, docx to csv, word to csv, convert word to excel"
       />

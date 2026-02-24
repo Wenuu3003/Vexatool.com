@@ -7,7 +7,7 @@ interface AuthorBioProps {
 }
 
 export const AuthorBio = ({
-  name = "MyPDFs Editorial Team",
+  name = "VexaTool Editorial Team",
   title = "Digital Tools Specialist & PDF Workflow Expert",
   bio = "With over a decade of experience in document management, workflow automation, and online productivity tools, our editorial team has helped thousands of users simplify their document workflows. From guiding students through competitive exam applications to advising businesses on secure document handling, we focus on practical solutions that save time and protect privacy. Our expertise spans PDF processing, image optimization, digital signatures, and browser-based tool development. Every guide we publish is tested, verified, and written to help real people solve real problems — without unnecessary jargon or filler."
 }: AuthorBioProps) => {

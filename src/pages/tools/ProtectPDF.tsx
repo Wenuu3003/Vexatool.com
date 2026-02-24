@@ -79,8 +79,8 @@ const ProtectPDF = () => {
       
       // Set document metadata to indicate protection intent
       pdfDoc.setTitle(pdfDoc.getTitle() || file.name.replace('.pdf', ''));
-      pdfDoc.setCreator('MyPDFs - Protected PDF');
-      pdfDoc.setProducer('MyPDFs PDF Protection Tool');
+      pdfDoc.setCreator('VexaTool - Protected PDF');
+      pdfDoc.setProducer('VexaTool PDF Protection Tool');
       
       // Save the PDF with encryption settings if available
       // Note: pdf-lib has limited encryption support - we use what's available
@@ -161,7 +161,7 @@ const ProtectPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Protect PDF with Password Free Online | Mypdfs"
+        title="Protect PDF with Password Free Online | VexaTool"
         description="Free online PDF protection tool. Add password protection to your PDF documents. Secure your PDFs."
         keywords="protect PDF, password PDF, encrypt PDF, secure PDF, PDF password protection, lock PDF"
       />

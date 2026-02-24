@@ -177,13 +177,13 @@ const AgeCalculator = () => {
   return (
     <>
       <Helmet>
-        <title>Age Calculator - Calculate Exact Age in Years, Months & Days | Mypdfs</title>
+        <title>Age Calculator - Calculate Exact Age in Years, Months & Days | VexaTool</title>
         <meta name="description" content="Free online age calculator. Calculate your exact age in years, months, days, hours. Birthday wishes in English & Telugu. Share on Instagram & WhatsApp. No signup required." />
         <meta name="keywords" content="age calculator, birthday calculator, how old am I, age in days, age in months, telugu age calculator, birthday wishes, exact age calculator" />
-        <link rel="canonical" href="https://mypdfs.in/age-calculator" />
-        <meta property="og:title" content="Age Calculator - Calculate Exact Age Free | Mypdfs" />
+        <link rel="canonical" href="https://vexatool.com/age-calculator" />
+        <meta property="og:title" content="Age Calculator - Calculate Exact Age Free | VexaTool" />
         <meta property="og:description" content="Calculate your exact age in years, months, days & hours. Get birthday wishes and life wisdom tips. Share beautiful cards on social media." />
-        <meta property="og:url" content="https://mypdfs.in/age-calculator" />
+        <meta property="og:url" content="https://vexatool.com/age-calculator" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>

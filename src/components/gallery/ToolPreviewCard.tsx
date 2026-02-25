@@ -102,7 +102,7 @@ export const ToolPreviewCard = ({ tool, index = 0, showPreview = true }: ToolPre
 
             {/* Hover Overlay with Live Preview Button */}
             <div className={cn(
-              "absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent",
+              "absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent",
               "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
               "flex items-end justify-center pb-4"
             )}>

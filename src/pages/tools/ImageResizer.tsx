@@ -380,11 +380,11 @@ export default function ImageResizer() {
     "@type": "WebApplication",
     "name": "Image Resizer - Resize to 20KB 50KB for Govt Job Form India",
     "description": "Free online image resizer. Resize photo to 20KB, 50KB for govt job forms, passport size photo India. Smart compression with white background.",
-    "url": "https://mypdfs.in/image-resizer",
+    "url": "https://vexatool.com/image-resizer",
     "applicationCategory": "MultimediaApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
-    "provider": { "@type": "Organization", "name": "MyPDFs", "url": "https://mypdfs.in" },
+    "provider": { "@type": "Organization", "name": "VexaTool", "url": "https://vexatool.com" },
   };
 
   const seoContent = {

@@ -269,7 +269,7 @@ export const LoveWhatsAppCard = forwardRef<HTMLDivElement, LoveWhatsAppCardProps
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 text-lg text-white/80">
               <Heart className="w-4 h-4" fill="currentColor" />
-              <span className="font-medium">mypdfs.in/love-calculator</span>
+              <span className="font-medium">vexatool.com/love-calculator</span>
               <Heart className="w-4 h-4" fill="currentColor" />
             </div>
             <p className="text-xs text-white/50 mt-1">For fun & entertainment only</p>

@@ -140,7 +140,7 @@ export const LoveShareCard = forwardRef<HTMLDivElement, LoveShareCardProps>(
           <div className="text-center pt-2 border-t border-white/20">
             <div className="flex items-center justify-center gap-2 text-xs opacity-80">
               <Heart className="w-3 h-3" fill="white" />
-              <span className="font-medium">mypdfs.in/love-calculator</span>
+              <span className="font-medium">vexatool.com/love-calculator</span>
             </div>
           </div>
         </div>

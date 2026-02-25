@@ -147,7 +147,7 @@ const ProtectPDF = () => {
       { question: "Will protected PDFs work on all devices?", answer: "Yes, password-protected PDFs are standard and can be opened on any device with a PDF reader. Recipients will be prompted to enter the password before viewing." },
       { question: "How secure is the protection?", answer: "This tool provides basic document protection processed in your browser. For enterprise-grade AES-256 encryption, professional PDF software like Adobe Acrobat is recommended." },
       { question: "Can I protect multiple PDFs at once?", answer: "The tool processes one file at a time for security. Simply repeat the process for each file you need to protect." },
-      { question: "Will the protected PDF have a watermark?", answer: "No. MyPDFs never adds watermarks or branding to your documents." },
+      { question: "Will the protected PDF have a watermark?", answer: "No. VexaTool never adds watermarks or branding to your documents." },
       { question: "What happens if I forget the password?", answer: "If you forget the password, there is no way to recover it. We recommend storing passwords in a secure password manager." },
       { question: "Can I set different passwords for opening and editing?", answer: "Currently, the tool sets a single password for opening the document. Separate owner/user password support is planned for a future update." },
       { question: "Does protection change the PDF content?", answer: "No. The content, formatting, images, and structure of your PDF remain completely unchanged. Only the access restriction is added." },

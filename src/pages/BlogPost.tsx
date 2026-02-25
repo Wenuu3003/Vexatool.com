@@ -164,11 +164,11 @@ const blogContent: Record<string, BlogPostContent> = {
           <li>Reformatting academic papers or articles</li>
         </ul>
 
-        <h2>Step-by-Step: Convert PDF to Word Using MyPDFs</h2>
+        <h2>Step-by-Step: Convert PDF to Word Using VexaTool</h2>
 
         <h3>Step 1: Upload Your PDF</h3>
         <p>
-          Navigate to the PDF to Word converter on MyPDFs. Click the upload button or drag and drop your PDF file. The
+          Navigate to the PDF to Word converter on VexaTool. Click the upload button or drag and drop your PDF file. The
           tool accepts PDFs of any size and complexity.
         </p>
 
@@ -227,7 +227,7 @@ const blogContent: Record<string, BlogPostContent> = {
 
         <h2>Privacy and Security</h2>
         <p>
-          When converting sensitive documents online, choose tools that prioritize privacy. MyPDFs processes files
+          When converting sensitive documents online, choose tools that prioritize privacy. VexaTool processes files
           securely and automatically deletes them after conversion. Never upload confidential documents to untrusted
           services.
         </p>
@@ -240,7 +240,7 @@ const blogContent: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Converting PDF to Word does not have to be complicated or expensive. Free online tools like MyPDFs make the
+          Converting PDF to Word does not have to be complicated or expensive. Free online tools like VexaTool make the
           process simple while maintaining document quality. Whether updating resumes, editing contracts, or modifying
           reports, PDF to Word conversion gives you full control over your document content.
         </p>
@@ -285,11 +285,11 @@ const blogContent: Record<string, BlogPostContent> = {
           authority. These signatures have the same legal effect as handwritten signatures in most jurisdictions.
         </p>
 
-        <h2>How to Sign PDFs Using MyPDFs</h2>
+        <h2>How to Sign PDFs Using VexaTool</h2>
 
         <h3>Step 1: Upload Your Document</h3>
         <p>
-          Open the Sign PDF tool on MyPDFs and upload the document requiring signature. The tool displays your PDF with
+          Open the Sign PDF tool on VexaTool and upload the document requiring signature. The tool displays your PDF with
           all pages visible for signature placement.
         </p>
 
@@ -363,7 +363,7 @@ const blogContent: Record<string, BlogPostContent> = {
         <p>
           Digital signatures have made document signing faster, more convenient, and environmentally friendly. Whether
           you need simple e-signatures for everyday documents or advanced signatures for important contracts, tools like
-          MyPDFs make the process straightforward. Start signing your PDFs digitally today and experience the efficiency
+          VexaTool make the process straightforward. Start signing your PDFs digitally today and experience the efficiency
           of paperless document workflows.
         </p>
       </div>
@@ -523,11 +523,11 @@ const blogContent: Record<string, BlogPostContent> = {
           <li>Merging application documents (resume, cover letter, certificates)</li>
         </ul>
 
-        <h2>How to Merge PDFs Using MyPDFs</h2>
+        <h2>How to Merge PDFs Using VexaTool</h2>
 
         <h3>Step 1: Upload Your Files</h3>
         <p>
-          Navigate to the Merge PDF tool on MyPDFs. You can upload multiple PDF files by clicking the upload button or
+          Navigate to the Merge PDF tool on VexaTool. You can upload multiple PDF files by clicking the upload button or
           dragging and dropping files directly into the browser. The tool supports uploading numerous files at once.
         </p>
 
@@ -567,13 +567,13 @@ const blogContent: Record<string, BlogPostContent> = {
         <h2>Maintaining Quality When Merging</h2>
         <p>
           A good PDF merger preserves the original quality of each document. Text remains searchable, images retain
-          their resolution, and interactive elements like links and bookmarks stay functional. MyPDFs merge tool
+          their resolution, and interactive elements like links and bookmarks stay functional. VexaTool merge tool
           maintains full document fidelity throughout the process.
         </p>
 
         <h2>Security Considerations</h2>
         <p>
-          When merging sensitive documents, security matters. MyPDFs processes files securely and automatically deletes
+          When merging sensitive documents, security matters. VexaTool processes files securely and automatically deletes
           them after merging. For confidential documents, consider adding password protection to the final merged file
           using the Protect PDF tool.
         </p>
@@ -595,7 +595,7 @@ const blogContent: Record<string, BlogPostContent> = {
         <h2>Conclusion</h2>
         <p>
           Merging PDFs does not have to be complicated. With the right tools and techniques, you can combine documents
-          quickly while maintaining quality. MyPDFs makes the process simple, secure, and completely free. Start merging
+          quickly while maintaining quality. VexaTool makes the process simple, secure, and completely free. Start merging
           your PDFs today and experience streamlined document management.
         </p>
       </div>
@@ -671,7 +671,7 @@ const blogContent: Record<string, BlogPostContent> = {
 
         <h3>Online Tools</h3>
         <p>
-          Browser-based tools like MyPDFs Compress Image offer convenient compression without software installation.
+          Browser-based tools like VexaTool Compress Image offer convenient compression without software installation.
           Simply upload images, choose compression settings, and download optimized files. These tools are perfect for
           quick tasks and occasional use.
         </p>
@@ -730,7 +730,7 @@ const blogContent: Record<string, BlogPostContent> = {
         <p>
           Effective image compression balances file size reduction with quality preservation. By understanding formats,
           using appropriate settings, and following best practices, you can optimize images for any purpose. Start
-          compressing your images today with MyPDFs and enjoy faster websites, easier sharing, and efficient storage.
+          compressing your images today with VexaTool and enjoy faster websites, easier sharing, and efficient storage.
         </p>
       </div>
     ),
@@ -778,7 +778,7 @@ const blogContent: Record<string, BlogPostContent> = {
 
         <h2>How to Password Protect a PDF</h2>
 
-        <h3>Using MyPDFs Protect PDF Tool</h3>
+        <h3>Using VexaTool Protect PDF Tool</h3>
         <p>
           The Protect PDF tool makes adding security simple. Upload your PDF, choose a strong password, select your
           protection options, and download the secured file. The process takes seconds and requires no software
@@ -871,7 +871,7 @@ const blogContent: Record<string, BlogPostContent> = {
         <h2>Conclusion</h2>
         <p>
           PDF security is essential for protecting sensitive information in the digital age. By understanding available
-          options and following best practices, you can secure your documents effectively. Use MyPDFs security tools to
+          options and following best practices, you can secure your documents effectively. Use VexaTool security tools to
           add password protection, set permissions, and keep your PDFs safe from unauthorized access.
         </p>
       </div>

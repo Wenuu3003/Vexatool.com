@@ -26,7 +26,7 @@ const WhatsAppDPResizer = () => {
         data={{
           name: "WhatsApp DP Resizer",
           description: "Resize any photo to perfect WhatsApp DP size (192x192px) under 20KB instantly. Free, fast, no signup.",
-          url: "https://mypdfs.in/whatsapp-dp-resize",
+          url: "https://vexatool.com/whatsapp-dp-resize",
           applicationCategory: "MultimediaApplication",
         }}
       />

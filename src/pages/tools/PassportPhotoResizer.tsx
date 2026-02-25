@@ -26,7 +26,7 @@ const PassportPhotoResizer = () => {
         data={{
           name: "Passport Size Photo Maker India",
           description: "Create perfect 2x2 inch passport size photos at 300 DPI with white background for Indian passport and visa applications. Free online tool.",
-          url: "https://mypdfs.in/passport-photo-resize",
+          url: "https://vexatool.com/passport-photo-resize",
           applicationCategory: "MultimediaApplication",
         }}
       />

@@ -281,7 +281,7 @@ export const AgeInstagramStoryCard = forwardRef<HTMLDivElement, AgeInstagramStor
           <div className="text-center">
             <div className="flex items-center justify-center gap-3 text-xl text-white/60 mb-3">
               <Cake className="w-5 h-5" />
-              <span className="font-medium tracking-wide">mypdfs.in/love-calculator</span>
+              <span className="font-medium tracking-wide">vexatool.com/love-calculator</span>
               <Cake className="w-5 h-5" />
             </div>
             <p className="text-sm text-white/40">For fun & entertainment only</p>

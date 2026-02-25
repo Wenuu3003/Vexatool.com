@@ -197,7 +197,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const defaultSystemPrompt = `You are a helpful AI assistant for Mypdfs, a website with various online tools.
+    const defaultSystemPrompt = `You are a helpful AI assistant for VexaTool, a website with various online tools.
 You help users with:
 - PDF tools (merge, split, compress, convert, edit, sign, watermark, rotate, unlock, protect, organize, repair)
 - QR code generation and scanning

@@ -241,16 +241,16 @@ const Blog = () => {
   return (
     <>
       <Helmet>
-        <title>Document Tips & Tutorials - PDF Guides for 2026 | Mypdfs Blog</title>
+        <title>Document Tips & Tutorials - PDF Guides for 2026 | VexaTool Blog</title>
         <meta name="description" content="Learn professional PDF editing techniques, document conversion tips, and productivity guides. Expert tutorials for managing digital documents effectively." />
         <meta name="keywords" content="PDF tutorials, document editing guide, file conversion tips, PDF compression guide, digital document management, productivity tips" />
-        <link rel="canonical" href="https://mypdfs.in/blog" />
-        <meta property="og:title" content="Document Tips & Tutorials | Mypdfs Blog" />
+        <link rel="canonical" href="https://vexatool.com/blog" />
+        <meta property="og:title" content="Document Tips & Tutorials | VexaTool Blog" />
         <meta property="og:description" content="Expert tutorials for PDF editing, document conversion, and digital productivity. Learn professional techniques for free." />
-        <meta property="og:url" content="https://mypdfs.in/blog" />
+        <meta property="og:url" content="https://vexatool.com/blog" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Document Tips & Tutorials | Mypdfs Blog" />
+        <meta name="twitter:title" content="Document Tips & Tutorials | VexaTool Blog" />
         <meta name="twitter:description" content="Expert tutorials for PDF editing, document conversion, and digital productivity." />
         <meta name="robots" content="index, follow" />
       </Helmet>

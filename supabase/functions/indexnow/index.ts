@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const INDEXNOW_KEY = "58b54417ff684284a45803b3a6855462";
-const SITE_HOST = "mypdfs.in";
+const SITE_HOST = "vexatool.com";
 
 // Rate limiting configuration
 const RATE_LIMIT = 10; // Max requests per window
@@ -305,7 +305,7 @@ serve(async (req) => {
 
     if (urlsToSubmit.length === 0) {
       return new Response(
-        JSON.stringify({ error: "No valid URLs provided. URLs must be from mypdfs.in domain." }),
+        JSON.stringify({ error: "No valid URLs provided. URLs must be from vexatool.com domain." }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

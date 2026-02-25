@@ -121,14 +121,14 @@ const WhatsAppAnalyzer = () => {
       return;
     }
     
-    const shareText = `🔥 WhatsApp Chat Truth Revealed!\n\n${result.analysis.verdict}\n\nVibes: ${result.analysis.overallVibes} ✨\n\n${result.personA}: ${result.analysis.personAInterest}% interest\n${result.personB}: ${result.analysis.personBInterest}% interest\n\nAnalyze yours at https://mypdfs.in/whatsapp-analyzer`;
+    const shareText = `🔥 WhatsApp Chat Truth Revealed!\n\n${result.analysis.verdict}\n\nVibes: ${result.analysis.overallVibes} ✨\n\n${result.personA}: ${result.analysis.personAInterest}% interest\n${result.personB}: ${result.analysis.personBInterest}% interest\n\nAnalyze yours at https://vexatool.com/whatsapp-analyzer`;
     
     try {
       if (navigator.share && navigator.canShare && navigator.canShare({ text: shareText })) {
         await navigator.share({
           title: "WhatsApp Chat Analysis",
           text: shareText,
-          url: "https://mypdfs.in/whatsapp-analyzer"
+          url: "https://vexatool.com/whatsapp-analyzer"
         });
         toast.success("Shared successfully! 🎉");
       } else {
@@ -257,14 +257,14 @@ const WhatsAppAnalyzer = () => {
         <meta property="og:description" content="Discover the truth hidden in your WhatsApp chats! AI-powered analysis for love, friendship & fun roasts." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://mypdfs.in/whatsapp-analyzer" />
+        <link rel="canonical" href="https://vexatool.com/whatsapp-analyzer" />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": "AI WhatsApp Chat Truth Analyzer",
             "description": "AI-powered WhatsApp chat analysis tool for fun relationship insights",
-            "url": "https://mypdfs.in/whatsapp-analyzer",
+            "url": "https://vexatool.com/whatsapp-analyzer",
             "applicationCategory": "EntertainmentApplication",
             "operatingSystem": "All",
             "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -456,7 +456,7 @@ Example format:
                 
                 {/* Watermark */}
                 <div className="pt-2 text-white/60 text-xs">
-                  mypdfs.in/whatsapp-analyzer 🔥
+                  vexatool.com/whatsapp-analyzer 🔥
                 </div>
               </div>
             </div>

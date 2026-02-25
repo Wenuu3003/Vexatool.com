@@ -2,8 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const ALLOWED_ORIGINS = [
-  "https://mypdfs.in",
-  "https://www.mypdfs.in",
+  "https://vexatool.com",
+  "https://www.vexatool.com",
   "http://localhost:5173",
   "http://localhost:8080",
 ];
@@ -11,7 +11,7 @@ const ALLOWED_ORIGINS = [
 const isAllowedOrigin = (origin: string) => {
   try {
     const url = new URL(origin);
-    return url.hostname === "mypdfs.in" || url.hostname === "www.mypdfs.in";
+    return url.hostname === "vexatool.com" || url.hostname === "www.vexatool.com";
   } catch {
     return false;
   }

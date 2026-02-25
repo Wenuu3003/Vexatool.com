@@ -109,7 +109,7 @@ serve(async (req) => {
         signal: controller.signal,
         headers: {
           "Accept": "application/json",
-          "User-Agent": "MyPDFs-PinCode-Tool/1.0",
+          "User-Agent": "VexaTool-PinCode-Tool/1.0",
         },
       });
     } catch (fetchError) {

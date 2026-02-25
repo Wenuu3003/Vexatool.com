@@ -28,7 +28,7 @@ const path = require('path');
 
 // Configuration
 const CONFIG = {
-  baseUrl: process.env.BASE_URL || 'https://mypdfs.in',
+  baseUrl: process.env.BASE_URL || 'https://vexatool.com',
   outputDir: path.join(__dirname, '../public/previews'),
   tempDir: path.join(__dirname, '../temp-screenshots'),
   viewport: { width: 1280, height: 800 },

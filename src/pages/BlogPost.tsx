@@ -907,7 +907,7 @@ const blogContent: Record<string, BlogPostContent> = {
 
         <h3>1. Use Online PDF Compression Tools</h3>
         <p>
-          Online tools like MyPDFs Compress PDF offer a convenient way to reduce file sizes without installing software.
+          Online tools like VexaTool Compress PDF offer a convenient way to reduce file sizes without installing software.
           These browser-based solutions use advanced compression algorithms that intelligently reduce file size while
           preserving document quality. Simply upload your PDF, select your preferred compression level, and download the
           optimized file.
@@ -956,7 +956,7 @@ const blogContent: Record<string, BlogPostContent> = {
         <h2>Conclusion</h2>
         <p>
           Compressing PDFs does not have to mean sacrificing quality. By using the right tools and techniques, you can
-          significantly reduce file sizes while maintaining document integrity. Online tools like MyPDFs make this
+          significantly reduce file sizes while maintaining document integrity. Online tools like VexaTool make this
           process simple and accessible, allowing you to compress PDFs directly in your browser without installing any
           software. Start optimizing your PDFs today and enjoy faster sharing, easier storage, and improved document
           management.
@@ -1059,11 +1059,11 @@ const blogContent: Record<string, BlogPostContent> = {
           Look for tools that use HTTPS encryption and have clear privacy policies.
         </p>
 
-        <h2>MyPDFs: A Comprehensive Solution</h2>
+        <h2>VexaTool: A Comprehensive Solution</h2>
         <p>
-          MyPDFs offers a complete suite of free PDF tools accessible directly from your browser. With no registration
+          VexaTool offers a complete suite of free PDF tools accessible directly from your browser. With no registration
           required and automatic file deletion for privacy, it provides all the essential PDF functionality in one
-          convenient location. From compression to conversion, merging to splitting, MyPDFs handles all your document
+          convenient location. From compression to conversion, merging to splitting, VexaTool handles all your document
           needs efficiently and securely.
         </p>
 
@@ -1091,25 +1091,25 @@ const BlogPost = () => {
   return (
     <>
       <Helmet>
-        <title>{post.title} | MyPDFs Blog</title>
+        <title>{post.title} | VexaTool Blog</title>
         <meta
           name="description"
           content={`${post.title}. Expert tips, step-by-step guides, and best practices for PDF management.`}
         />
-        <link rel="canonical" href={`https://mypdfs.in/blog/${slug}`} />
-        <meta property="og:title" content={`${post.title} | MyPDFs`} />
+        <link rel="canonical" href={`https://vexatool.com/blog/${slug}`} />
+        <meta property="og:title" content={`${post.title} | VexaTool`} />
         <meta
           property="og:description"
           content={`${post.title}. Expert tips and comprehensive guides for PDF management.`}
         />
-        <meta property="og:url" content={`https://mypdfs.in/blog/${slug}`} />
+        <meta property="og:url" content={`https://vexatool.com/blog/${slug}`} />
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${post.title} | MyPDFs`} />
+        <meta name="twitter:title" content={`${post.title} | VexaTool`} />
         <meta name="twitter:description" content={`${post.title}. Expert tips and guides for PDF management.`} />
         <meta name="robots" content="index, follow" />
         <meta name="article:published_time" content={post.date} />
-        <meta name="author" content="MyPDFs Team" />
+        <meta name="author" content="VexaTool Team" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

@@ -26,7 +26,7 @@ const GovtJobPhotoResizer = () => {
         data={{
           name: "Govt Job Form Photo Resizer",
           description: "Resize photo for government job forms to 3.5x4.5cm under 20KB. Suitable for SSC, UPSC, IBPS, Railway, Bank exams. Free online tool.",
-          url: "https://mypdfs.in/govt-job-photo-resize",
+          url: "https://vexatool.com/govt-job-photo-resize",
           applicationCategory: "MultimediaApplication",
         }}
       />

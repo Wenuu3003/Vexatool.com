@@ -18,7 +18,7 @@ interface StructuredDataProps {
 }
 
 export const StructuredData = ({ type, data }: StructuredDataProps) => {
-  const baseUrl = "https://mypdfs.in";
+  const baseUrl = "https://vexatool.com";
   
   const generateSchema = () => {
     if (type === "WebApplication") {
@@ -37,7 +37,7 @@ export const StructuredData = ({ type, data }: StructuredDataProps) => {
         },
         "provider": {
           "@type": "Organization",
-          "name": "Mypdfs",
+          "name": "VexaTool",
           "url": baseUrl
         },
         "browserRequirements": "Requires JavaScript. Requires HTML5.",

@@ -206,7 +206,7 @@ const UnlockPDF = () => {
       { question: "What does the 'Restrictions Detected' status mean?", answer: "This means the PDF can be opened without a password but has limitations on copying, printing, or editing. Click 'Unlock & Download' to get a version with all restrictions removed." },
       { question: "Can I unlock multiple PDFs at once?", answer: "The tool processes one file at a time. Simply repeat the process for each PDF you need to unlock." },
       { question: "What if the tool says 'No Protection'?", answer: "If your PDF shows no protection, it is already fully accessible. You can still download it through the tool, which re-saves it as a clean copy." },
-      { question: "Does unlocking add any watermarks?", answer: "No. MyPDFs never adds watermarks, branding, or any modifications to your documents." },
+      { question: "Does unlocking add any watermarks?", answer: "No. VexaTool never adds watermarks, branding, or any modifications to your documents." },
       { question: "Can I re-protect the PDF after unlocking?", answer: "Yes! Use our Protect PDF tool to add a new password to the unlocked document." },
       { question: "Why does my password not work?", answer: "Ensure you are entering the exact password including correct capitalization and special characters. Some PDFs have separate owner and user passwords — try both if available." }
     ]

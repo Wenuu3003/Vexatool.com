@@ -11,8 +11,8 @@ export const Hero = () => {
           </h1>
           
           <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed text-muted-foreground">
-            Merge, edit, compress, split and convert PDFs online. 
-            100% free, no signup required, privacy-focused tools.
+            Merge, edit, compress and convert PDFs in seconds.{" "}
+            No signup required. 100% privacy-focused tools.
           </p>
           
           <Link
@@ -29,8 +29,8 @@ export const Hero = () => {
             {[
               { icon: Lock, label: "No File Stored" },
               { icon: Shield, label: "100% Secure Processing" },
-              { icon: Smartphone, label: "Mobile Friendly" },
-              { icon: Zap, label: "Fast & Lightweight" },
+              { icon: Smartphone, label: "Works on Mobile" },
+              { icon: Zap, label: "Instant Results" },
             ].map((item) => (
               <div key={item.label} className="flex flex-col items-center text-center gap-2">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">

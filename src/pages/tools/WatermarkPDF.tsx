@@ -19,8 +19,8 @@ type WatermarkPosition = "center" | "top-left" | "top-right" | "bottom-left" | "
 
 // Preset watermark options
 const WATERMARK_PRESETS = [
-  { label: "Powered by Mypdfs", text: "Powered by Mypdfs", position: "bottom-right" as WatermarkPosition, opacity: 25, fontSize: 24, rotation: 0 },
-  { label: "Mypdfs.in", text: "mypdfs.in", position: "bottom-right" as WatermarkPosition, opacity: 30, fontSize: 28, rotation: 0 },
+  { label: "Powered by VexaTool", text: "Powered by VexaTool", position: "bottom-right" as WatermarkPosition, opacity: 25, fontSize: 24, rotation: 0 },
+  { label: "VexaTool.com", text: "vexatool.com", position: "bottom-right" as WatermarkPosition, opacity: 30, fontSize: 28, rotation: 0 },
   { label: "Confidential", text: "CONFIDENTIAL", position: "center" as WatermarkPosition, opacity: 30, fontSize: 48, rotation: -45 },
   { label: "Draft", text: "DRAFT", position: "center" as WatermarkPosition, opacity: 25, fontSize: 60, rotation: -45 },
   { label: "Sample", text: "SAMPLE", position: "tile" as WatermarkPosition, opacity: 20, fontSize: 36, rotation: -30 },
@@ -30,7 +30,7 @@ const WatermarkPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [watermarkType, setWatermarkType] = useState<"text" | "image">("text");
-  const [watermarkText, setWatermarkText] = useState("Powered by Mypdfs");
+  const [watermarkText, setWatermarkText] = useState("Powered by VexaTool");
   const [opacity, setOpacity] = useState([25]);
   const [rotation, setRotation] = useState<number>(0);
   const [position, setPosition] = useState<WatermarkPosition>("bottom-right");

@@ -148,13 +148,13 @@ const AgeCalculator = () => {
   const handleShare = () => {
     if (!result) return;
     
-    const shareText = `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 🎂\n\nThat's ${result.totalDays.toLocaleString()} days or ${result.totalHours.toLocaleString()} hours of life!\n\nCalculate your age at: https://mypdfs.in/age-calculator`;
+    const shareText = `I'm ${result.years} years, ${result.months} months, and ${result.days} days old! 🎂\n\nThat's ${result.totalDays.toLocaleString()} days or ${result.totalHours.toLocaleString()} hours of life!\n\nCalculate your age at: https://vexatool.com/age-calculator`;
     
     if (navigator.share) {
       navigator.share({
         title: "My Age - Age Calculator",
         text: shareText,
-        url: "https://mypdfs.in/age-calculator",
+        url: "https://vexatool.com/age-calculator",
       }).catch(() => {
         navigator.clipboard.writeText(shareText);
         toast.success("Copied to clipboard! 📋");

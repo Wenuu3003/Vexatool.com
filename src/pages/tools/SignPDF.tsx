@@ -202,7 +202,7 @@ const SignPDF = () => {
       { question: "Can I sign multiple pages?", answer: "Yes! Click on any page to add signatures. You can place multiple signatures across different pages." },
       { question: "Can I move my signature after placing it?", answer: "Yes, drag the signature to reposition it. Use the lock button to prevent accidental moves." },
       { question: "Does the signature work on mobile?", answer: "Yes! The drawing canvas and page interactions are fully touch-optimized." },
-      { question: "Will the signed PDF have a watermark?", answer: "No. MyPDFs never adds watermarks or branding to your documents." },
+      { question: "Will the signed PDF have a watermark?", answer: "No. VexaTool never adds watermarks or branding to your documents." },
       { question: "Is there a file size limit?", answer: "No strict limit, but files under 100MB work best." }
     ]
   };

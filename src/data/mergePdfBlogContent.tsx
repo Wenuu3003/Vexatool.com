@@ -69,14 +69,14 @@ export const mergePdfBlogContent = {
         Sometimes you simply want to keep related documents together. Medical reports from different labs, insurance papers, travel itineraries, or recipes from different websites — merging them into themed PDFs makes retrieval much easier.
       </p>
 
-      <h2>Step-by-Step Guide: How to Merge PDFs Online with MyPDFs</h2>
+      <h2>Step-by-Step Guide: How to Merge PDFs Online with VexaTool</h2>
       <p>
-        Let's walk through the process using the free <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDF tool on MyPDFs.in</Link>. The whole thing takes under a minute.
+        Let's walk through the process using the free <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDF tool on VexaTool</Link>. The whole thing takes under a minute.
       </p>
 
       <h3>Step 1 — Open the Merge PDF Tool</h3>
       <p>
-        Navigate to the Merge PDF page on MyPDFs.in. No account creation, no login prompt, no email verification — the tool is ready to use the moment the page loads.
+        Navigate to the Merge PDF page on VexaTool. No account creation, no login prompt, no email verification — the tool is ready to use the moment the page loads.
       </p>
 
       <h3>Step 2 — Upload Your PDF Files</h3>
@@ -128,7 +128,7 @@ export const mergePdfBlogContent = {
         <li>No installation required</li>
         <li>Always up to date — no software updates to manage</li>
         <li>Accessible from anywhere with an internet connection</li>
-        <li>Privacy depends on whether processing happens locally (MyPDFs processes in-browser) or on remote servers (many competitors upload your files)</li>
+        <li>Privacy depends on whether processing happens locally (VexaTool processes in-browser) or on remote servers (many competitors upload your files)</li>
       </ul>
 
       <h3>Offline Merging (Desktop Software)</h3>
@@ -141,7 +141,7 @@ export const mergePdfBlogContent = {
       </ul>
 
       <p>
-        For the vast majority of everyday merging tasks — job applications, assignments, invoices, reports — a browser-based tool like MyPDFs is faster, simpler, and more than capable. Desktop software only makes sense if you routinely handle files over 100 MB or need advanced features like Bates numbering.
+        For the vast majority of everyday merging tasks — job applications, assignments, invoices, reports — a browser-based tool like VexaTool is faster, simpler, and more than capable. Desktop software only makes sense if you routinely handle files over 100 MB or need advanced features like Bates numbering.
       </p>
 
       <h2>Security and Privacy: What to Watch Out For</h2>
@@ -152,7 +152,7 @@ export const mergePdfBlogContent = {
         Many popular PDF tools — including some well-known brands — upload your documents to their servers for processing. Your files travel across the internet, sit on a server you don't control, and are (supposedly) deleted after some time. For a restaurant menu PDF, that's probably fine. For your Aadhaar card, PAN details, salary slips, or a confidential business contract? Not ideal.
       </p>
       <p>
-        MyPDFs takes a different approach. The merge operation runs entirely inside your web browser using client-side JavaScript. Your files never leave your device. There's no upload, no server-side copy, and no data retention. The moment you close the tab, the processed data is gone.
+        VexaTool takes a different approach. The merge operation runs entirely inside your web browser using client-side JavaScript. Your files never leave your device. There's no upload, no server-side copy, and no data retention. The moment you close the tab, the processed data is gone.
       </p>
       <p>
         If you're evaluating any online tool — not just for PDFs — look for clear statements about local processing vs. server uploads. And when dealing with sensitive documents, always prefer tools that process locally.
@@ -200,17 +200,17 @@ export const mergePdfBlogContent = {
 
       <h3>Can I merge PDFs on my phone?</h3>
       <p>
-        Yes. MyPDFs works on any smartphone browser — Chrome, Safari, Firefox. Open the Merge PDF page, tap to upload files from your phone's storage, and merge. No app installation needed.
+        Yes. VexaTool works on any smartphone browser — Chrome, Safari, Firefox. Open the Merge PDF page, tap to upload files from your phone's storage, and merge. No app installation needed.
       </p>
 
       <h3>Is there a limit on how many files I can merge?</h3>
       <p>
-        MyPDFs supports up to 20 files per merge operation. If you have more, merge them in batches — combine the first 20, then merge the result with the next batch.
+        VexaTool supports up to 20 files per merge operation. If you have more, merge them in batches — combine the first 20, then merge the result with the next batch.
       </p>
 
       <h3>Will the merged PDF have watermarks?</h3>
       <p>
-        No. MyPDFs never adds watermarks, logos, or any branding to your documents. The output is clean and unaltered.
+        No. VexaTool never adds watermarks, logos, or any branding to your documents. The output is clean and unaltered.
       </p>
 
       <h3>Do I need to create an account?</h3>
@@ -240,7 +240,7 @@ export const mergePdfBlogContent = {
 
       <h3>Is online PDF merging safe for sensitive documents?</h3>
       <p>
-        It depends on the tool. MyPDFs processes files locally in your browser — nothing is uploaded to a server. For tools that upload files, exercise caution with sensitive content like ID cards, financial records, or legal agreements.
+        It depends on the tool. VexaTool processes files locally in your browser — nothing is uploaded to a server. For tools that upload files, exercise caution with sensitive content like ID cards, financial records, or legal agreements.
       </p>
 
       <h3>How long does merging take?</h3>
@@ -253,7 +253,7 @@ export const mergePdfBlogContent = {
         Merging PDFs is one of those tasks that sounds complicated until you actually do it. With a good browser-based tool, the entire process — from opening the page to downloading the result — takes less than a minute. No software licenses, no account signups, no waiting.
       </p>
       <p>
-        The key is choosing a tool that respects your privacy, doesn't add watermarks, and works reliably. MyPDFs checks all three boxes. Whether you're preparing job applications, organizing invoices for GST filing, compiling research papers, or bundling certificates for a government portal, the <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDF tool</Link> handles it cleanly.
+        The key is choosing a tool that respects your privacy, doesn't add watermarks, and works reliably. VexaTool checks all three boxes. Whether you're preparing job applications, organizing invoices for GST filing, compiling research papers, or bundling certificates for a government portal, the <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDF tool</Link> handles it cleanly.
       </p>
       <p>
         If you found this guide helpful, you might also want to explore our other PDF tools — <Link to="/compress-pdf" className="text-primary hover:underline">Compress PDF</Link> for reducing file sizes, <Link to="/pdf-to-word" className="text-primary hover:underline">PDF to Word</Link> for making documents editable, and <Link to="/split-pdf" className="text-primary hover:underline">Split PDF</Link> for extracting specific pages. They all work the same way: free, fast, and private.

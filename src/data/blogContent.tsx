@@ -60,11 +60,11 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           Direct followers to your social profiles instantly. Whether Instagram, LinkedIn, or YouTube, social QR codes make following your brand effortless at events, on packaging, or in print materials.
         </p>
 
-        <h2>How to Create QR Codes with Mypdfs</h2>
+        <h2>How to Create QR Codes with VexaTool</h2>
 
         <h3>Step 1: Choose Your Content Type</h3>
         <p>
-          Visit the Mypdfs QR Code Generator and select what you want to encode: URL, text, email, phone number, SMS, Wi-Fi credentials, or vCard. Each type has specific fields to fill.
+          Visit the VexaTool QR Code Generator and select what you want to encode: URL, text, email, phone number, SMS, Wi-Fi credentials, or vCard. Each type has specific fields to fill.
         </p>
 
         <h3>Step 2: Enter Your Information</h3>
@@ -143,7 +143,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          QR codes bridge the gap between physical and digital experiences. Whether for marketing, payments, or information sharing, they offer instant connectivity that benefits both creators and scanners. Start creating your custom QR codes today with Mypdfs and unlock new possibilities for engagement.
+          QR codes bridge the gap between physical and digital experiences. Whether for marketing, payments, or information sharing, they offer instant connectivity that benefits both creators and scanners. Start creating your custom QR codes today with VexaTool and unlock new possibilities for engagement.
         </p>
       </div>
     ),
@@ -176,7 +176,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           Choose ATS-friendly templates with clean layouts. Avoid tables, graphics, headers, and footers that confuse parsing software. Single-column designs with standard section headings work best across all ATS platforms.
         </p>
         <p>
-          The Mypdfs AI Resume Builder offers templates tested against major ATS systems, ensuring your resume reaches human eyes.
+          The VexaTool AI Resume Builder offers templates tested against major ATS systems, ensuring your resume reaches human eyes.
         </p>
 
         <h2>Tip 2: Customize for Each Application</h2>
@@ -258,7 +258,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          AI resume builders are not about replacing human judgment but enhancing it. They handle technical optimization while you focus on showcasing genuine achievements and personality. Start building your AI-optimized resume today with Mypdfs and accelerate your job search success.
+          AI resume builders are not about replacing human judgment but enhancing it. They handle technical optimization while you focus on showcasing genuine achievements and personality. Start building your AI-optimized resume today with VexaTool and accelerate your job search success.
         </p>
       </div>
     ),
@@ -291,7 +291,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           Modern AI analyzes images pixel by pixel, distinguishing foreground subjects from backgrounds. Machine learning models trained on millions of images recognize edges, hair, transparent objects, and complex shapes with remarkable accuracy.
         </p>
         <p>
-          Mypdfs uses advanced AI that handles challenging cases like jewelry reflections, fabric textures, and intricate product details that older tools struggled with.
+          VexaTool uses advanced AI that handles challenging cases like jewelry reflections, fabric textures, and intricate product details that older tools struggled with.
         </p>
 
         <h2>Step-by-Step Product Photo Processing</h2>
@@ -303,7 +303,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h3>Step 2: Upload to Background Remover</h3>
         <p>
-          Drag your product image into the Mypdfs Background Remover. Processing takes seconds even for high-resolution images. The AI automatically detects and removes the background.
+          Drag your product image into the VexaTool Background Remover. Processing takes seconds even for high-resolution images. The AI automatically detects and removes the background.
         </p>
 
         <h3>Step 3: Review and Refine</h3>
@@ -376,7 +376,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Professional product photography is no longer limited to those with studio budgets. AI background removal democratizes professional imagery, helping sellers of all sizes compete visually. Start transforming your product photos today with Mypdfs Background Remover and watch your conversion rates climb.
+          Professional product photography is no longer limited to those with studio budgets. AI background removal democratizes professional imagery, helping sellers of all sizes compete visually. Start transforming your product photos today with VexaTool Background Remover and watch your conversion rates climb.
         </p>
       </div>
     ),
@@ -418,7 +418,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           <li>n = Number of monthly installments (tenure in months)</li>
         </ul>
         <p>
-          The Mypdfs EMI Calculator handles this complex calculation instantly, showing detailed breakdowns of principal and interest over your loan tenure.
+          The VexaTool EMI Calculator handles this complex calculation instantly, showing detailed breakdowns of principal and interest over your loan tenure.
         </p>
 
         <h2>Factors Affecting Your EMI</h2>
@@ -500,7 +500,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the EMI Calculator Effectively</h2>
         <p>
-          Play with different scenarios on the Mypdfs EMI Calculator:
+          Play with different scenarios on the VexaTool EMI Calculator:
         </p>
         <ul>
           <li>Compare 15-year versus 20-year tenure</li>
@@ -511,7 +511,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          EMI calculation is fundamental to responsible borrowing. Understanding how principal, interest, and tenure interact helps you make informed decisions. Use the Mypdfs EMI Calculator to explore scenarios, plan budgets, and find the perfect balance between home ownership dreams and financial stability.
+          EMI calculation is fundamental to responsible borrowing. Understanding how principal, interest, and tenure interact helps you make informed decisions. Use the VexaTool EMI Calculator to explore scenarios, plan budgets, and find the perfect balance between home ownership dreams and financial stability.
         </p>
       </div>
     ),
@@ -622,7 +622,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the GST Calculator</h2>
         <p>
-          The Mypdfs GST Calculator handles all scenarios:
+          The VexaTool GST Calculator handles all scenarios:
         </p>
         <ul>
           <li>Calculate GST on base price</li>
@@ -642,7 +642,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          GST simplifies India's tax structure but requires accurate calculations for compliance. Whether invoicing customers, filing returns, or managing cash flow, precise GST computation is essential. Use the Mypdfs GST Calculator for instant, accurate calculations that keep your business compliant and competitive.
+          GST simplifies India's tax structure but requires accurate calculations for compliance. Whether invoicing customers, filing returns, or managing cash flow, precise GST computation is essential. Use the VexaTool GST Calculator for instant, accurate calculations that keep your business compliant and competitive.
         </p>
       </div>
     ),
@@ -691,7 +691,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h3>Step 2: Choose Quality Conversion Tool</h3>
         <p>
-          Use Mypdfs PDF to Word converter for accurate results. Our AI-powered engine analyzes document structure and preserves formatting intelligently.
+          Use VexaTool PDF to Word converter for accurate results. Our AI-powered engine analyzes document structure and preserves formatting intelligently.
         </p>
 
         <h3>Step 3: Review and Refine</h3>
@@ -736,7 +736,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Perfect PDF to Word conversion requires understanding document structures and appropriate tools. The Mypdfs converter handles most documents excellently, with minor manual refinement for complex layouts. Master these techniques to edit any PDF content efficiently.
+          Perfect PDF to Word conversion requires understanding document structures and appropriate tools. The VexaTool converter handles most documents excellently, with minor manual refinement for complex layouts. Master these techniques to edit any PDF content efficiently.
         </p>
       </div>
     ),
@@ -822,7 +822,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Tools for Image Optimization</h2>
         <p>
-          Mypdfs Image Compressor offers intelligent compression that analyzes each image individually. Unlike one-size-fits-all tools, it optimizes compression levels based on image content for maximum size reduction with minimal quality loss.
+          VexaTool Image Compressor offers intelligent compression that analyzes each image individually. Unlike one-size-fits-all tools, it optimizes compression levels based on image content for maximum size reduction with minimal quality loss.
         </p>
 
         <h2>Measuring Impact</h2>
@@ -832,7 +832,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Image optimization is low-hanging fruit for website performance. Properly compressed images maintain visual quality while dramatically reducing load times. Start optimizing your images today with Mypdfs and watch your Core Web Vitals improve.
+          Image optimization is low-hanging fruit for website performance. Properly compressed images maintain visual quality while dramatically reducing load times. Start optimizing your images today with VexaTool and watch your Core Web Vitals improve.
         </p>
       </div>
     ),
@@ -879,11 +879,11 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           Combine splitting with merging to reorganize documents. Extract chapters from multiple sources and combine into custom compilations.
         </p>
 
-        <h2>Using Mypdfs PDF Splitter</h2>
+        <h2>Using VexaTool PDF Splitter</h2>
 
         <h3>Step 1: Upload Your PDF</h3>
         <p>
-          Drag and drop your PDF into the Mypdfs Split PDF tool. The tool displays page thumbnails for easy selection.
+          Drag and drop your PDF into the VexaTool Split PDF tool. The tool displays page thumbnails for easy selection.
         </p>
 
         <h3>Step 2: Select Pages or Range</h3>
@@ -910,12 +910,12 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Maintaining Document Quality</h2>
         <p>
-          Mypdfs splitting preserves original quality. Links, bookmarks, and formatting remain intact. No compression or quality loss occurs during extraction.
+          VexaTool splitting preserves original quality. Links, bookmarks, and formatting remain intact. No compression or quality loss occurs during extraction.
         </p>
 
         <h2>Conclusion</h2>
         <p>
-          PDF splitting transforms unwieldy documents into manageable pieces. Whether extracting chapters, removing pages, or reorganizing content, proper splitting improves document usability. Try the Mypdfs PDF Splitter for precise, quality-preserving extraction.
+          PDF splitting transforms unwieldy documents into manageable pieces. Whether extracting chapters, removing pages, or reorganizing content, proper splitting improves document usability. Try the VexaTool PDF Splitter for precise, quality-preserving extraction.
         </p>
       </div>
     ),
@@ -942,7 +942,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           A Love Calculator is an entertaining online tool that generates compatibility percentages based on names and optional birth dates. While not scientifically proven to predict relationship success, love calculators have been popular for decades as a fun way to explore potential relationship chemistry with friends, crushes, or partners.
         </p>
         <p>
-          The concept of love calculators dates back to the early days of the internet when simple name-based algorithms created entertaining results. Modern love calculators like the Mypdfs Love Calculator have evolved significantly, now incorporating sophisticated algorithms that combine name pattern matching, numerology principles, and zodiac compatibility analysis to create more engaging and comprehensive results.
+          The concept of love calculators dates back to the early days of the internet when simple name-based algorithms created entertaining results. Modern love calculators like the VexaTool Love Calculator have evolved significantly, now incorporating sophisticated algorithms that combine name pattern matching, numerology principles, and zodiac compatibility analysis to create more engaging and comprehensive results.
         </p>
         <p>
           The key to enjoying love calculators is understanding they are meant purely for entertainment. Real relationships require communication, shared values, emotional intelligence, trust, and mutual effort. No algorithm, no matter how sophisticated, can predict true love or relationship success.
@@ -950,7 +950,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>How Does Our Love Calculator Work?</h2>
         <p>
-          The Mypdfs Love Calculator uses a proprietary triple-scoring algorithm that analyzes three key factors for a comprehensive compatibility score. This multi-factor approach creates more interesting and varied results compared to simple name-only calculators.
+          The VexaTool Love Calculator uses a proprietary triple-scoring algorithm that analyzes three key factors for a comprehensive compatibility score. This multi-factor approach creates more interesting and varied results compared to simple name-only calculators.
         </p>
 
         <h3>1. Name Matching Analysis (45% Weight)</h3>
@@ -1032,7 +1032,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           An Age Calculator determines your exact age from your birth date to any specified date. Unlike simple year subtraction, a proper age calculator accounts for months, days, and even considers leap years for precise calculations down to the exact day.
         </p>
         <p>
-          Age calculators serve both practical and fun purposes—from completing official forms requiring exact age to discovering fascinating facts about your life journey. The Mypdfs Age Calculator goes beyond basic calculations to provide a comprehensive view of your age in multiple formats.
+          Age calculators serve both practical and fun purposes—from completing official forms requiring exact age to discovering fascinating facts about your life journey. The VexaTool Age Calculator goes beyond basic calculations to provide a comprehensive view of your age in multiple formats.
         </p>
 
         <h2>Why Calculate Exact Age?</h2>
@@ -1050,7 +1050,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Features of Our Age Calculator</h2>
         <p>
-          The Mypdfs Age Calculator provides comprehensive age statistics with beautiful visualization:
+          The VexaTool Age Calculator provides comprehensive age statistics with beautiful visualization:
         </p>
         <ul>
           <li><strong>Years, Months, Days:</strong> Your exact age broken down into precise components with clear presentation</li>
@@ -1115,7 +1115,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Privacy and Safety</h2>
         <p>
-          The Mypdfs Love & Age Calculator runs entirely in your browser using client-side JavaScript. We do not collect, store, or transmit any personal information—including names, birth dates, and photos. Your data never leaves your device, ensuring complete privacy.
+          The VexaTool Love & Age Calculator runs entirely in your browser using client-side JavaScript. We do not collect, store, or transmit any personal information—including names, birth dates, and photos. Your data never leaves your device, ensuring complete privacy.
         </p>
         <p>
           Photos are processed locally using browser Canvas APIs and are never uploaded to any server. When you share cards, only the generated image is shared through your device's native sharing capabilities, not your original data or personal information.
@@ -1178,7 +1178,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Whether you are testing love compatibility for fun with friends or calculating your exact age for practical purposes, the Mypdfs Love & Age Calculator delivers entertainment and precision in a beautifully designed, privacy-respecting package. With zodiac compatibility analysis, personalized photo uploads, multi-language support, and professionally designed shareable cards for Instagram and WhatsApp, it is the perfect tool for curious minds and social media enthusiasts in 2026.
+          Whether you are testing love compatibility for fun with friends or calculating your exact age for practical purposes, the VexaTool Love & Age Calculator delivers entertainment and precision in a beautifully designed, privacy-respecting package. With zodiac compatibility analysis, personalized photo uploads, multi-language support, and professionally designed shareable cards for Instagram and WhatsApp, it is the perfect tool for curious minds and social media enthusiasts in 2026.
         </p>
         <p>
           Try the <a href="/love-calculator" className="text-primary hover:underline">Love & Age Calculator</a> now—add your photos, check your zodiac compatibility, explore your detailed age statistics, and do not forget to share your results with friends and family!
@@ -1212,7 +1212,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Understanding Different Age Formats</h2>
         <p>
-          The Mypdfs Age Calculator presents your age in multiple fascinating formats:
+          The VexaTool Age Calculator presents your age in multiple fascinating formats:
         </p>
 
         <h3>Years, Months, and Days</h3>
@@ -1353,7 +1353,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Age calculation goes beyond simple arithmetic. It connects us to milestones, legal rights, personal achievements, and precious memories. The Mypdfs Age Calculator transforms a simple number into a celebration of your unique journey, complete with beautiful shareable cards for Instagram and WhatsApp.
+          Age calculation goes beyond simple arithmetic. It connects us to milestones, legal rights, personal achievements, and precious memories. The VexaTool Age Calculator transforms a simple number into a celebration of your unique journey, complete with beautiful shareable cards for Instagram and WhatsApp.
         </p>
         <p>
           Try the <a href="/love-calculator" className="text-primary hover:underline">Age Calculator</a> today—discover fascinating facts about your life journey, countdown to your next birthday, and share your age story with the world!
@@ -1418,7 +1418,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the BMI Calculator</h2>
         <p>
-          Enter height and weight into the Mypdfs BMI Calculator for instant results. View your category, healthy weight range, and recommendations. Remember: BMI is one tool among many for health assessment.
+          Enter height and weight into the VexaTool BMI Calculator for instant results. View your category, healthy weight range, and recommendations. Remember: BMI is one tool among many for health assessment.
         </p>
 
         <h2>Conclusion</h2>
@@ -1464,7 +1464,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h3>Quality Settings</h3>
         <p>
-          For print documents, use high-quality settings that preserve image resolution. For web sharing, optimize for smaller file size with acceptable quality. The Mypdfs converter balances quality and size intelligently.
+          For print documents, use high-quality settings that preserve image resolution. For web sharing, optimize for smaller file size with acceptable quality. The VexaTool converter balances quality and size intelligently.
         </p>
 
         <h3>Preserve Hyperlinks</h3>
@@ -1537,7 +1537,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the Currency Converter</h2>
         <p>
-          The Mypdfs Currency Converter shows live mid-market rates for informed decisions. Compare against offered rates to ensure fair exchange. Track rate trends before major purchases.
+          The VexaTool Currency Converter shows live mid-market rates for informed decisions. Compare against offered rates to ensure fair exchange. Track rate trends before major purchases.
         </p>
 
         <h2>Money-Saving Tips</h2>
@@ -1603,14 +1603,14 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           Apply watermarks consistently across all pages. Center positioning or diagonal across works well. Avoid covering critical text or images.
         </p>
 
-        <h2>Adding Watermarks with Mypdfs</h2>
+        <h2>Adding Watermarks with VexaTool</h2>
         <p>
           Upload your PDF, choose text or image watermark, customize appearance, and download. Apply to all pages or select specific pages. Preview before finalizing for perfect placement.
         </p>
 
         <h2>Conclusion</h2>
         <p>
-          Watermarks provide visible protection for sensitive documents. Combined with passwords and encryption, they form comprehensive document security. Add professional watermarks easily with the Mypdfs Watermark tool.
+          Watermarks provide visible protection for sensitive documents. Combined with passwords and encryption, they form comprehensive document security. Add professional watermarks easily with the VexaTool Watermark tool.
         </p>
       </div>
     ),
@@ -1668,12 +1668,12 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the Image Resizer</h2>
         <p>
-          Upload images to Mypdfs Image Resizer, select target dimensions or preset social media sizes, and download optimized images. Batch processing handles multiple images efficiently.
+          Upload images to VexaTool Image Resizer, select target dimensions or preset social media sizes, and download optimized images. Batch processing handles multiple images efficiently.
         </p>
 
         <h2>Conclusion</h2>
         <p>
-          Right-sized images maximize social media impact. Use platform-specific dimensions for perfect display every time. The Mypdfs Image Resizer makes achieving perfect dimensions effortless.
+          Right-sized images maximize social media impact. Use platform-specific dimensions for perfect display every time. The VexaTool Image Resizer makes achieving perfect dimensions effortless.
         </p>
       </div>
     ),
@@ -1729,12 +1729,12 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the Unit Converter</h2>
         <p>
-          The Mypdfs Unit Converter handles dozens of measurement types with instant, accurate results. No memorization required—just select units and enter values.
+          The VexaTool Unit Converter handles dozens of measurement types with instant, accurate results. No memorization required—just select units and enter values.
         </p>
 
         <h2>Conclusion</h2>
         <p>
-          Unit conversion is essential for global communication and practical applications. Keep the Mypdfs Unit Converter bookmarked for instant access whenever conversion needs arise.
+          Unit conversion is essential for global communication and practical applications. Keep the VexaTool Unit Converter bookmarked for instant access whenever conversion needs arise.
         </p>
       </div>
     ),
@@ -1766,7 +1766,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conversion Process</h2>
         <ol>
-          <li>Upload PDF to Mypdfs PDF to Excel converter</li>
+          <li>Upload PDF to VexaTool PDF to Excel converter</li>
           <li>AI analyzes table structure automatically</li>
           <li>Download Excel file with extracted data</li>
           <li>Review and adjust any complex table areas</li>
@@ -1779,7 +1779,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          PDF to Excel conversion transforms static reports into dynamic, analyzable data. Save hours of manual entry while reducing errors. Try Mypdfs for accurate table extraction today.
+          PDF to Excel conversion transforms static reports into dynamic, analyzable data. Save hours of manual entry while reducing errors. Try VexaTool for accurate table extraction today.
         </p>
       </div>
     ),
@@ -1824,7 +1824,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the Word Counter</h2>
         <p>
-          The Mypdfs Word Counter provides instant word, character, sentence, and paragraph counts. Track reading time and character limits for various platforms. Real-time counting as you type.
+          The VexaTool Word Counter provides instant word, character, sentence, and paragraph counts. Track reading time and character limits for various platforms. Real-time counting as you type.
         </p>
 
         <h2>Beyond Word Count</h2>
@@ -1834,7 +1834,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Word count tools help meet platform requirements and optimize content length. Use Mypdfs Word Counter to ensure your content fits where it needs to go.
+          Word count tools help meet platform requirements and optimize content length. Use VexaTool Word Counter to ensure your content fits where it needs to go.
         </p>
       </div>
     ),
@@ -1879,12 +1879,12 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the PIN Code Finder</h2>
         <p>
-          The Mypdfs PIN Code tool searches by area name or PIN code. Find post office details, district, state, and delivery type. Verify addresses before shipping important packages.
+          The VexaTool PIN Code tool searches by area name or PIN code. Find post office details, district, state, and delivery type. Verify addresses before shipping important packages.
         </p>
 
         <h2>Conclusion</h2>
         <p>
-          Accurate PIN codes ensure delivery success. Use the Mypdfs PIN Code finder to verify addresses and understand India's comprehensive postal network.
+          Accurate PIN codes ensure delivery success. Use the VexaTool PIN Code finder to verify addresses and understand India's comprehensive postal network.
         </p>
       </div>
     ),
@@ -1933,7 +1933,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the Hashtag Generator</h2>
         <p>
-          Enter your topic in the Mypdfs Hashtag Generator. AI analyzes trends and suggests relevant, effective hashtags categorized by popularity and niche specificity.
+          Enter your topic in the VexaTool Hashtag Generator. AI analyzes trends and suggests relevant, effective hashtags categorized by popularity and niche specificity.
         </p>
 
         <h2>Hashtag Research Tips</h2>
@@ -1946,7 +1946,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          Smart hashtag strategy expands reach without paid promotion. Use the Mypdfs Hashtag Generator to discover effective tags and grow your social media presence organically.
+          Smart hashtag strategy expands reach without paid promotion. Use the VexaTool Hashtag Generator to discover effective tags and grow your social media presence organically.
         </p>
       </div>
     ),
@@ -1982,7 +1982,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Using the PDF to JPG Converter</h2>
         <ol>
-          <li>Upload PDF to Mypdfs</li>
+          <li>Upload PDF to VexaTool</li>
           <li>Select pages to convert (all or specific)</li>
           <li>Choose quality/DPI settings</li>
           <li>Download individual images or zip archive</li>
@@ -1995,7 +1995,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Conclusion</h2>
         <p>
-          PDF to JPG conversion expands document usability across platforms. The Mypdfs converter produces high-quality images with customizable settings for any purpose.
+          PDF to JPG conversion expands document usability across platforms. The VexaTool converter produces high-quality images with customizable settings for any purpose.
         </p>
       </div>
     ),

@@ -10,7 +10,7 @@ interface SocialShareProps {
 
 export const SocialShare = ({ title, url, description }: SocialShareProps) => {
   const shareUrl = url || (typeof window !== "undefined" ? window.location.href : "");
-  const shareText = description || `Check out ${title} - Free online tool at Mypdfs`;
+  const shareText = description || `Check out ${title} - Free online tool at VexaTool`;
 
   const shareLinks = [
     {

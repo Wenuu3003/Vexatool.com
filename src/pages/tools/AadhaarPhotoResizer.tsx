@@ -26,7 +26,7 @@ const AadhaarPhotoResizer = () => {
         data={{
           name: "Aadhaar Photo Resizer",
           description: "Resize any photo to correct Aadhaar card size (200x200px) under 50KB with white background. Free online tool.",
-          url: "https://mypdfs.in/aadhaar-photo-resize",
+          url: "https://vexatool.com/aadhaar-photo-resize",
           applicationCategory: "MultimediaApplication",
         }}
       />

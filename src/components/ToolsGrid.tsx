@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
-import { ExternalLink } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { toolsData } from "@/data/toolsData";
 import { cn } from "@/lib/utils";
+
+const FEATURED_TOOL_IDS = [
+  "merge-pdf",
+  "compress-pdf",
+  "split-pdf",
+  "pdf-to-word",
+  "word-to-pdf",
+  "edit-pdf",
+];
 
 interface ToolsGridProps {
   maxItems?: number;
@@ -9,25 +18,26 @@ interface ToolsGridProps {
   title?: string;
 }
 
-export const ToolsGrid = ({ maxItems, categoryFilter, title = "Popular PDF Tools" }: ToolsGridProps) => {
-  let tools = toolsData;
+export const ToolsGrid = ({
+  categoryFilter,
+  title = "Popular PDF Tools",
+}: ToolsGridProps) => {
+  let tools = FEATURED_TOOL_IDS
+    .map((id) => toolsData.find((t) => t.id === id))
+    .filter(Boolean) as typeof toolsData;
 
   if (categoryFilter) {
-    tools = tools.filter(t => t.category === categoryFilter);
-  }
-
-  if (maxItems) {
-    tools = tools.slice(0, maxItems);
+    tools = toolsData.filter((t) => t.category === categoryFilter).slice(0, 6);
   }
 
   return (
-    <section className="py-14 md:py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 text-foreground">
+    <section className="py-20 md:py-24" style={{ backgroundColor: "#f8fafc" }}>
+      <div className="container mx-auto px-4 max-w-5xl">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-foreground">
           {title}
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {tools.map((tool) => {
             const Icon = tool.icon;
             return (
@@ -35,28 +45,45 @@ export const ToolsGrid = ({ maxItems, categoryFilter, title = "Popular PDF Tools
                 key={tool.id}
                 to={tool.href}
                 className={cn(
-                  "group flex items-start gap-4 p-5 rounded-xl bg-card border border-border",
-                  "shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5"
+                  "group flex flex-col items-center text-center p-6 rounded-xl bg-white border border-border/60",
+                  "shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]",
+                  "hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all duration-200 hover:-translate-y-0.5"
                 )}
               >
-                <div className="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <Icon className="w-5 h-5 text-primary" />
+                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Icon className="w-7 h-7 text-primary" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-semibold text-foreground mb-1 leading-tight">
-                    {tool.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground line-clamp-1 mb-3">
-                    {tool.shortDescription}
-                  </p>
-                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    Open Tool
-                  </span>
-                </div>
+                <h3 className="text-base font-semibold text-foreground mb-1.5 leading-tight">
+                  {tool.title}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
+                  {tool.shortDescription}
+                </p>
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 text-sm font-medium text-primary",
+                    "px-5 py-2 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors"
+                  )}
+                >
+                  Open Tool
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
               </Link>
             );
           })}
+        </div>
+
+        <div className="flex justify-center mt-12">
+          <Link
+            to="/pdf-tools"
+            className={cn(
+              "inline-flex items-center gap-2 px-8 py-3 rounded-lg text-sm font-semibold",
+              "bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+            )}
+          >
+            View All Tools
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>

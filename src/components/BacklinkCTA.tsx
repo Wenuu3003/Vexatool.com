@@ -10,10 +10,10 @@ export const BacklinkCTA = ({ currentTool }: BacklinkCTAProps) => {
   const popularTools = [
     { name: "Merge PDF", path: "/merge-pdf", icon: "📄" },
     { name: "Compress PDF", path: "/compress-pdf", icon: "🗜️" },
-    { name: "AI Chat", path: "/ai-chat", icon: "🤖" },
     { name: "Image Compressor", path: "/compress-image", icon: "🖼️" },
     { name: "QR Generator", path: "/qr-code-generator", icon: "📱" },
     { name: "Word Counter", path: "/word-counter", icon: "✍️" },
+    { name: "Background Remover", path: "/background-remover", icon: "🎨" },
   ].filter(tool => !currentTool?.toLowerCase().includes(tool.name.toLowerCase().split(' ')[0]));
 
   return (
@@ -38,10 +38,10 @@ export const BacklinkCTA = ({ currentTool }: BacklinkCTAProps) => {
       <div className="text-center mb-6">
         <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
           <Sparkles className="w-5 h-5 text-primary" />
-          Explore 50+ Free Tools
+          Explore Free Tools
         </h3>
         <p className="text-muted-foreground max-w-lg mx-auto">
-          PDF converters, image editors, AI tools, calculators, and more. All free, all secure, all in your browser.
+          PDF converters, image editors, calculators, and more. All free, all secure, all in your browser.
         </p>
       </div>
 
@@ -75,7 +75,6 @@ export const BacklinkCTA = ({ currentTool }: BacklinkCTAProps) => {
       <div className="mt-6 pt-6 border-t border-border">
         <p className="text-xs text-muted-foreground text-center">
           Looking for more? Try our{" "}
-          <Link to="/ai-chat" className="text-primary hover:underline">AI Chat Assistant</Link>,{" "}
           <Link to="/background-remover" className="text-primary hover:underline">Background Remover</Link>,{" "}
           <Link to="/currency-converter" className="text-primary hover:underline">Currency Converter</Link>, or{" "}
           <Link to="/emi-calculator" className="text-primary hover:underline">EMI Calculator</Link>.

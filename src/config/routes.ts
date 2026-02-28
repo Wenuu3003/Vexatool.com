@@ -16,7 +16,6 @@ export const blogPosts = [
   'love-age-calculator-complete-guide',
   'age-calculator-birthday-planning',
   'qr-code-generator-complete-guide',
-  'ai-resume-builder-tips-get-hired',
   'background-remover-perfect-product-photos',
   'emi-calculator-home-loan-guide',
   'gst-calculator-business-guide',
@@ -32,9 +31,7 @@ export const blogPosts = [
   'pdf-to-excel-data-extraction',
   'word-counter-content-optimization',
   'pincode-finder-india-postal-guide',
-  'hashtag-generator-social-media-growth',
   'pdf-to-jpg-image-conversion',
-  'what-whatsapp-chat-reveals-about-relationship',
   'convert-pdf-to-word-free-guide',
   'digital-signature-guide',
   'pdf-accessibility-guide',
@@ -164,27 +161,7 @@ export const routes: RouteConfig[] = [
     keywords: 'currency converter, exchange rate, usd to inr, eur to inr, money converter, forex rates',
     category: 'Calculator Tools'
   },
-  { 
-    path: '/seo-tool', 
-    priority: 0.8, 
-    changefreq: 'weekly', 
-    includeInSitemap: true,
-    title: 'SEO Analyzer - Free Website SEO Checker & Audit Tool | VexaTool',
-    description: 'Free SEO analyzer tool. Check website SEO score, meta tags, keywords, page speed. Complete SEO audit for better Google ranking.',
-    keywords: 'seo analyzer, seo checker, website seo, seo audit, meta tag analyzer, seo tool free',
-    category: 'Utility Tools'
-  },
-  { 
-    path: '/tags-generator', 
-    priority: 0.8, 
-    changefreq: 'weekly', 
-    includeInSitemap: true,
-    title: 'Tags Generator - YouTube, Blog, SEO Tags Generator | VexaTool',
-    description: 'Generate SEO-optimized tags for YouTube videos, blogs, articles. Free tags generator for better search rankings.',
-    keywords: 'tags generator, youtube tags, seo tags, blog tags, keyword generator',
-    category: 'Utility Tools'
-  },
-  { 
+  {
     path: '/calculator', 
     priority: 0.8, 
     changefreq: 'weekly', 
@@ -653,26 +630,19 @@ export const toolUpdateDates: Record<string, string> = {
   '/': '2026-01-23',
   '/blog': '2026-01-23',
   '/edit-pdf': '2026-01-23', // Major update: Professional PDF Editor
-  '/watermark-pdf': '2026-01-23', // Added image/logo watermarks
+  '/watermark-pdf': '2026-01-23',
   '/sign-pdf': '2026-01-23', 
-  '/whatsapp-analyzer': '2026-01-23', // Fixed share/download
   '/merge-pdf': '2026-01-23',
   '/split-pdf': '2026-01-23',
   '/compress-pdf': '2026-01-23',
-  '/pdf-to-excel': '2026-01-23', // Added batch processing
-  '/excel-to-pdf': '2026-01-23', // Added batch processing
-  '/ai-resume-builder': '2026-01-23',
-  '/ai-chat': '2026-01-20',
-  '/ai-text-generator': '2026-01-20',
-  '/ai-grammar-tool': '2026-01-20',
+  '/pdf-to-excel': '2026-01-23',
+  '/excel-to-pdf': '2026-01-23',
   '/qr-code-generator': '2026-01-20',
   '/qr-code-scanner': '2026-01-20',
   '/background-remover': '2026-01-20',
   '/image-resizer': '2026-01-20',
   '/compress-image': '2026-01-20',
   '/pincode-generator': '2026-01-20',
-  '/youtube-generator': '2026-01-20',
-  '/hashtag-generator': '2026-01-20',
 };
 
 // Default lastmod date for routes without specific update dates

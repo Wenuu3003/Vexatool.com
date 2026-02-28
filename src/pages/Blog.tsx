@@ -46,13 +46,6 @@ const blogPosts: BlogPost[] = [
     readTime: "9 min read",
   },
   {
-    slug: "ai-resume-builder-tips-get-hired",
-    title: "AI Resume Builder: 10 Expert Tips to Get Hired Faster in 2026",
-    excerpt: "Master the art of resume building with AI. Discover proven strategies to create ATS-friendly resumes that land interviews and job offers.",
-    date: "2026-01-23",
-    readTime: "10 min read",
-  },
-  {
     slug: "background-remover-perfect-product-photos",
     title: "Background Remover: How to Create Perfect Product Photos for E-Commerce",
     excerpt: "Transform product photography with AI background removal. Professional tips for creating stunning product images that boost sales.",
@@ -158,13 +151,6 @@ const blogPosts: BlogPost[] = [
     readTime: "8 min read",
   },
   {
-    slug: "hashtag-generator-social-media-growth",
-    title: "Hashtag Generator: Boost Your Social Media Reach with Smart Tags",
-    excerpt: "Generate viral hashtags for Instagram, TikTok, and Twitter. Learn hashtag strategies that increase visibility and engagement.",
-    date: "2026-01-06",
-    readTime: "9 min read",
-  },
-  {
     slug: "pdf-to-jpg-image-conversion",
     title: "PDF to JPG: Convert Documents to High-Quality Images",
     excerpt: "Transform PDF pages into JPG images for presentations, social media, and web use. Quality settings and batch conversion tips.",
@@ -172,13 +158,6 @@ const blogPosts: BlogPost[] = [
     readTime: "6 min read",
   },
   // Existing posts
-  {
-    slug: "what-whatsapp-chat-reveals-about-relationship",
-    title: "What Your WhatsApp Chat Reveals About Your Relationship",
-    excerpt: "Discover hidden patterns in your WhatsApp conversations! Learn what texting habits, response times, and emoji usage say about your relationship dynamics and connection.",
-    date: "2026-01-06",
-    readTime: "8 min read",
-  },
   {
     slug: "convert-pdf-to-word-free-guide",
     title: "Convert PDF to Word Free: Ultimate Guide for 2026",

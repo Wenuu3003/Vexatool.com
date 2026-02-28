@@ -48,16 +48,9 @@ const categoryMap: Record<string, string> = {
   "image-format-converter": "Image Tools",
   "background-remover": "Image Tools",
   "file-compressor": "Image Tools",
-  // AI Tools
-  "ai-chat": "AI Tools",
-  "ai-search": "AI Tools",
-  "ai-text-generator": "AI Tools",
-  "ai-grammar-tool": "AI Tools",
-  "ai-resume-builder": "AI Tools",
-  "hashtag-generator": "AI Tools",
-  "youtube-generator": "AI Tools",
-  "whatsapp-analyzer": "AI Tools",
-  "word-counter": "AI Tools",
+  // Utility Tools
+  "word-counter": "Utility Tools",
+  "pincode-generator": "Utility Tools",
   // Calculator Tools
   "calculator": "Calculator Tools",
   "love-calculator": "Calculator Tools",
@@ -66,11 +59,9 @@ const categoryMap: Record<string, string> = {
   "gst-calculator": "Calculator Tools",
   "unit-converter": "Calculator Tools",
   "currency-converter": "Calculator Tools",
-  // Utility Tools
+  // QR Tools
   "qr-code-scanner": "QR Tools",
   "qr-code-generator": "QR Tools",
-  "seo-tool": "Utility Tools",
-  "pincode-generator": "Utility Tools",
 };
 
 // Convert path to readable name

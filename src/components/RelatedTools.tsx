@@ -4,7 +4,7 @@ import {
   Image, ImagePlus, Camera, Scissors, RotateCw, Lock, Unlock,
   Edit, Stamp, Shield, Wrench, FileImage, FileSpreadsheet,
   Presentation, Code, Sparkles, MessageSquare, Search, 
-  Calculator, Percent, Scale, Calendar, Heart, Hash, Youtube,
+  Calculator, Percent, Scale, Calendar, Heart,
   QrCode, ScanLine, Globe, IndianRupee, MapPin, Type
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,9 +16,9 @@ interface RelatedTool {
   colorClass: string;
 }
 
-// Tool relationships mapping
+// Tool relationships mapping (AI tools removed)
 const toolRelationships: Record<string, string[]> = {
-  // PDF Tools - 5+ links each
+  // PDF Tools
   "/merge-pdf": ["/split-pdf", "/compress-pdf", "/organize-pdf", "/pdf-to-word", "/edit-pdf"],
   "/split-pdf": ["/merge-pdf", "/organize-pdf", "/pdf-to-image", "/compress-pdf", "/rotate-pdf"],
   "/compress-pdf": ["/merge-pdf", "/compress-image", "/file-compressor", "/pdf-to-jpg", "/edit-pdf"],
@@ -42,7 +42,7 @@ const toolRelationships: Record<string, string[]> = {
   "/word-to-pdf": ["/pdf-to-word", "/excel-to-pdf", "/ppt-to-pdf", "/html-to-pdf", "/image-to-pdf"],
   "/excel-to-pdf": ["/pdf-to-excel", "/word-to-pdf", "/word-to-excel", "/excel-to-word", "/compress-pdf"],
   "/ppt-to-pdf": ["/pdf-to-powerpoint", "/word-to-pdf", "/image-to-pdf", "/google-drive-to-pdf", "/compress-pdf"],
-  "/html-to-pdf": ["/pdf-to-html", "/word-to-pdf", "/image-to-pdf", "/seo-tool", "/compress-pdf"],
+  "/html-to-pdf": ["/pdf-to-html", "/word-to-pdf", "/image-to-pdf", "/word-counter", "/compress-pdf"],
   "/image-to-pdf": ["/jpg-to-pdf", "/png-to-pdf", "/pdf-to-image", "/compress-image", "/merge-pdf"],
   "/jpg-to-pdf": ["/png-to-pdf", "/image-to-pdf", "/pdf-to-jpg", "/compress-image", "/merge-pdf"],
   "/png-to-pdf": ["/jpg-to-pdf", "/image-to-pdf", "/pdf-to-png", "/background-remover", "/compress-image"],
@@ -57,16 +57,8 @@ const toolRelationships: Record<string, string[]> = {
   "/background-remover": ["/compress-image", "/image-resizer", "/image-format-converter", "/png-to-pdf", "/image-to-pdf"],
   "/file-compressor": ["/compress-image", "/compress-pdf", "/image-resizer", "/merge-pdf", "/image-format-converter"],
   
-  // AI Tools
-  "/ai-chat": ["/ai-search", "/ai-text-generator", "/ai-grammar-tool", "/ai-resume-builder", "/word-counter"],
-  "/ai-search": ["/ai-chat", "/seo-tool", "/ai-text-generator", "/hashtag-generator", "/ai-grammar-tool"],
-  "/ai-text-generator": ["/ai-grammar-tool", "/ai-chat", "/youtube-generator", "/hashtag-generator", "/word-counter"],
-  "/ai-grammar-tool": ["/ai-text-generator", "/word-counter", "/ai-chat", "/ai-resume-builder", "/ai-search"],
-  "/ai-resume-builder": ["/ai-text-generator", "/ai-grammar-tool", "/word-to-pdf", "/ai-chat", "/word-counter"],
-  "/hashtag-generator": ["/youtube-generator", "/ai-text-generator", "/seo-tool", "/ai-search", "/ai-chat"],
-  "/youtube-generator": ["/hashtag-generator", "/ai-text-generator", "/seo-tool", "/ai-search", "/ai-chat"],
-  "/whatsapp-analyzer": ["/ai-chat", "/word-counter", "/ai-text-generator", "/ai-grammar-tool", "/ai-search"],
-  "/word-counter": ["/ai-grammar-tool", "/ai-text-generator", "/seo-tool", "/whatsapp-analyzer", "/ai-chat"],
+  // Word Counter & Utility
+  "/word-counter": ["/compress-pdf", "/word-to-pdf", "/pdf-to-word", "/edit-pdf", "/merge-pdf"],
   
   // Calculator Tools
   "/calculator": ["/gst-calculator", "/emi-calculator", "/unit-converter", "/currency-converter", "/bmi-calculator"],
@@ -79,9 +71,8 @@ const toolRelationships: Record<string, string[]> = {
   "/currency-converter": ["/unit-converter", "/calculator", "/gst-calculator", "/emi-calculator", "/age-calculator"],
   
   // Utility Tools
-  "/qr-code-generator": ["/qr-code-scanner", "/image-to-pdf", "/compress-image", "/image-resizer", "/ai-chat"],
+  "/qr-code-generator": ["/qr-code-scanner", "/image-to-pdf", "/compress-image", "/image-resizer", "/merge-pdf"],
   "/qr-code-scanner": ["/qr-code-generator", "/image-format-converter", "/compress-image", "/background-remover", "/image-resizer"],
-  "/seo-tool": ["/youtube-generator", "/hashtag-generator", "/word-counter", "/ai-text-generator", "/ai-search"],
   "/pincode-generator": ["/calculator", "/gst-calculator", "/currency-converter", "/unit-converter", "/emi-calculator"],
 };
 
@@ -126,15 +117,7 @@ const toolMeta: Record<string, { name: string; icon: React.ElementType; colorCla
   "/background-remover": { name: "Background Remover", icon: Sparkles, colorClass: "bg-pink-500" },
   "/file-compressor": { name: "File Compressor", icon: FileDown, colorClass: "bg-teal-500" },
   
-  // AI Tools
-  "/ai-chat": { name: "AI Chat", icon: MessageSquare, colorClass: "bg-violet-500" },
-  "/ai-search": { name: "AI Search", icon: Search, colorClass: "bg-blue-500" },
-  "/ai-text-generator": { name: "AI Text Generator", icon: Sparkles, colorClass: "bg-purple-500" },
-  "/ai-grammar-tool": { name: "AI Grammar Tool", icon: Type, colorClass: "bg-green-500" },
-  "/ai-resume-builder": { name: "AI Resume Builder", icon: FileText, colorClass: "bg-indigo-500" },
-  "/hashtag-generator": { name: "Hashtag Generator", icon: Hash, colorClass: "bg-pink-500" },
-  "/youtube-generator": { name: "YouTube Generator", icon: Youtube, colorClass: "bg-red-500" },
-  "/whatsapp-analyzer": { name: "WhatsApp Analyzer", icon: MessageSquare, colorClass: "bg-green-600" },
+  // Utility
   "/word-counter": { name: "Word Counter", icon: Type, colorClass: "bg-blue-600" },
   
   // Calculator Tools
@@ -150,7 +133,6 @@ const toolMeta: Record<string, { name: string; icon: React.ElementType; colorCla
   // Utility Tools
   "/qr-code-generator": { name: "QR Code Generator", icon: QrCode, colorClass: "bg-purple-600" },
   "/qr-code-scanner": { name: "QR Code Scanner", icon: ScanLine, colorClass: "bg-blue-600" },
-  "/seo-tool": { name: "SEO Tool", icon: Search, colorClass: "bg-orange-600" },
   "/pincode-generator": { name: "PIN Code Finder", icon: MapPin, colorClass: "bg-red-600" },
 };
 
@@ -171,7 +153,7 @@ export const RelatedTools = ({ currentPath, className = "", maxTools = 5 }: Rela
       path,
       ...toolMeta[path]
     }))
-    .filter(tool => tool.name); // Filter out undefined tools
+    .filter(tool => tool.name);
 
   if (relatedTools.length === 0) return null;
 
@@ -198,11 +180,10 @@ export const RelatedTools = ({ currentPath, className = "", maxTools = 5 }: Rela
         ))}
       </div>
       
-      {/* Internal Link Text for SEO */}
       <p className="mt-4 text-sm text-muted-foreground">
         Looking for more tools? Check out our{" "}
         <Link to="/#tools-grid" className="text-primary hover:underline">complete collection of free online tools</Link>
-        {" "}including PDF editors, image converters, AI assistants, and calculators.
+        {" "}including PDF editors, image converters, and calculators.
       </p>
     </section>
   );

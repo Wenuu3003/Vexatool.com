@@ -154,8 +154,8 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     date: "2026-01-26",
     readTime: "10 min read",
     relatedTools: [
-      { name: "AI Resume Builder", href: "/ai-resume-builder" },
       { name: "Word to PDF", href: "/word-to-pdf" },
+      { name: "PDF Editor", href: "/edit-pdf" },
     ],
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">
@@ -1791,7 +1791,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     readTime: "7 min read",
     relatedTools: [
       { name: "Word Counter", href: "/word-counter" },
-      { name: "AI Grammar Tool", href: "/ai-grammar-tool" },
+      { name: "PDF Editor", href: "/edit-pdf" },
     ],
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">
@@ -1895,8 +1895,8 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     date: "2026-01-06",
     readTime: "9 min read",
     relatedTools: [
-      { name: "Hashtag Generator", href: "/hashtag-generator" },
-      { name: "YouTube Generator", href: "/youtube-generator" },
+      { name: "QR Code Generator", href: "/qr-code-generator" },
+      { name: "Image Compressor", href: "/compress-image" },
     ],
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">

@@ -100,25 +100,6 @@ const blogContent: Record<string, BlogPostContent> = {
           part of their daily routine.
         </p>
 
-        <h2>Try Our WhatsApp Chat Analyzer!</h2>
-        <p>
-          Want to analyze your own chats? Our free{" "}
-          <a href="/whatsapp-analyzer" className="text-primary hover:underline">
-            AI WhatsApp Chat Truth Analyzer
-          </a>{" "}
-          provides entertaining insights into your conversations. Choose from Love Analysis, Friendship Analysis, or Fun
-          Roast Mode for hilarious results!
-        </p>
-
-        <h3>Features Include:</h3>
-        <ul>
-          <li>Interest level detection for both participants</li>
-          <li>Who texts first analysis</li>
-          <li>Emotional tone detection</li>
-          <li>Hidden intent revelations (for fun!)</li>
-          <li>Screenshot-worthy verdict cards</li>
-        </ul>
-
         <h2>Important Disclaimer</h2>
         <p>
           Chat analysis tools are designed for entertainment only! They cannot accurately predict relationship outcomes

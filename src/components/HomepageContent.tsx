@@ -45,20 +45,20 @@ export const HomepageContent = () => {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {[
-                    ["Price", "100% Free", "Freemium / Paid"],
-                    ["Account Required", "No", "Usually Yes"],
-                    ["Daily Usage Limit", "Unlimited", "2-5 per day"],
-                    ["File Processing", "In Browser (Local)", "Server Upload"],
-                    ["Privacy", "Files Stay on Device", "Files Uploaded to Cloud"],
-                    ["Watermarks", "Never", "Often in Free Tier"],
-                    ["Mobile Friendly", "Fully Responsive", "Varies"],
-                  ].map(([feature, us, them], i) => (
-                    <tr key={i}>
+                  ["Price", "100% Free", "Freemium / Paid"],
+                  ["Account Required", "No", "Usually Yes"],
+                  ["Daily Usage Limit", "Unlimited", "2-5 per day"],
+                  ["File Processing", "In Browser (Local)", "Server Upload"],
+                  ["Privacy", "Files Stay on Device", "Files Uploaded to Cloud"],
+                  ["Watermarks", "Never", "Often in Free Tier"],
+                  ["Mobile Friendly", "Fully Responsive", "Varies"]].
+                  map(([feature, us, them], i) =>
+                  <tr key={i}>
                       <td className="p-3 text-foreground">{feature}</td>
                       <td className="p-3 text-center text-primary font-medium">{us}</td>
                       <td className="p-3 text-center text-muted-foreground">{them}</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -74,19 +74,19 @@ export const HomepageContent = () => {
             </p>
             <div className="not-prose space-y-4 mb-6">
               {[
-                { title: "Browser-Based Processing", desc: "Most tools process files entirely within your web browser. Your files literally never leave your device." },
-                { title: "No File Storage", desc: "We do not store, cache, or retain any files you process. Once your task is complete, the output exists only on your device." },
-                { title: "HTTPS Encryption", desc: "All communication uses industry-standard HTTPS encryption, protecting your data during transit." },
-                { title: "No Third-Party Access", desc: "We never share, sell, or provide your files to any third party." },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 bg-card border border-border rounded-lg">
+              { title: "Browser-Based Processing", desc: "Most tools process files entirely within your web browser. Your files literally never leave your device." },
+              { title: "No File Storage", desc: "We do not store, cache, or retain any files you process. Once your task is complete, the output exists only on your device." },
+              { title: "HTTPS Encryption", desc: "All communication uses industry-standard HTTPS encryption, protecting your data during transit." },
+              { title: "No Third-Party Access", desc: "We never share, sell, or provide your files to any third party." }].
+              map((item, i) =>
+              <div key={i} className="flex items-start gap-3 p-4 bg-card border border-border rounded-lg">
                   <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <h4 className="font-semibold text-foreground text-sm">{item.title}</h4>
                     <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
                   </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -97,12 +97,12 @@ export const HomepageContent = () => {
             </h2>
             <div className="grid md:grid-cols-2 gap-6 not-prose">
               {[
-                { icon: FileText, title: "Students & Educators", desc: "Merge lecture notes, convert assignments to PDF, compress files for college portals, and calculate percentages for exam preparation." },
-                { icon: Globe, title: "Business Professionals", desc: "Edit contracts, merge financial reports, generate QR codes for business cards, and convert documents between formats." },
-                { icon: Image, title: "Content Creators", desc: "Resize and compress images for websites, remove backgrounds for product photos, and convert between image formats." },
-                { icon: Users, title: "Everyday Users", desc: "Calculate BMI, find PIN codes, count words in essays, create QR codes for sharing, and handle common document tasks." },
-              ].map((item, i) => (
-                <div key={i} className="bg-card border border-border rounded-xl p-5">
+              { icon: FileText, title: "Students & Educators", desc: "Merge lecture notes, convert assignments to PDF, compress files for college portals, and calculate percentages for exam preparation." },
+              { icon: Globe, title: "Business Professionals", desc: "Edit contracts, merge financial reports, generate QR codes for business cards, and convert documents between formats." },
+              { icon: Image, title: "Content Creators", desc: "Resize and compress images for websites, remove backgrounds for product photos, and convert between image formats." },
+              { icon: Users, title: "Everyday Users", desc: "Calculate BMI, find PIN codes, count words in essays, create QR codes for sharing, and handle common document tasks." }].
+              map((item, i) =>
+              <div key={i} className="bg-card border border-border rounded-xl p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <item.icon className="w-5 h-5 text-primary" />
@@ -111,7 +111,7 @@ export const HomepageContent = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -122,25 +122,25 @@ export const HomepageContent = () => {
             </h2>
             <div className="grid md:grid-cols-2 gap-4 not-prose">
               {[
-                { icon: FileText, title: "PDF Tools", desc: "Edit, merge, split, compress, convert, rotate, lock, and unlock PDF files.", href: "/pdf-tools" },
-                { icon: Image, title: "Image Tools", desc: "Resize, compress, convert images and remove backgrounds instantly.", href: "/image-tools" },
-                { icon: Calculator, title: "Calculators", desc: "BMI, EMI, love compatibility, and percentage calculators.", href: "/calculator-tools" },
-                { icon: QrCode, title: "QR Tools", desc: "Generate custom QR codes and scan existing ones from camera or image.", href: "/qr-tools" },
-              ].map((item, i) => (
-                <Link key={i} to={item.href} className="flex items-start gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <item.icon className="w-5 h-5 text-primary" />
+              { icon: FileText, title: "PDF Tools", desc: "Edit, merge, split, compress, convert, rotate, lock, and unlock PDF files.", href: "/pdf-tools" },
+              { icon: Image, title: "Image Tools", desc: "Resize, compress, convert images and remove backgrounds instantly.", href: "/image-tools" },
+              { icon: Calculator, title: "Calculators", desc: "BMI, EMI, love compatibility, and percentage calculators.", href: "/calculator-tools" },
+              { icon: QrCode, title: "QR Tools", desc: "Generate custom QR codes and scan existing ones from camera or image.", href: "/qr-tools" }].
+              map((item, i) =>
+              <Link key={i} to={item.href} className="flex items-start gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 text-transparent">
+                    <item.icon className="w-5 h-5 text-pink-500" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
                     <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
                   </div>
                 </Link>
-              ))}
+              )}
             </div>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };

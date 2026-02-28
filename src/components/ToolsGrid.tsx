@@ -4,13 +4,13 @@ import { toolsData } from "@/data/toolsData";
 import { cn } from "@/lib/utils";
 
 const FEATURED_TOOL_IDS = [
-  "merge-pdf",
-  "compress-pdf",
-  "split-pdf",
-  "pdf-to-word",
-  "word-to-pdf",
-  "edit-pdf",
-];
+"merge-pdf",
+"compress-pdf",
+"split-pdf",
+"pdf-to-word",
+"word-to-pdf",
+"edit-pdf"];
+
 
 interface ToolsGridProps {
   maxItems?: number;
@@ -20,11 +20,11 @@ interface ToolsGridProps {
 
 export const ToolsGrid = ({
   categoryFilter,
-  title = "Popular PDF Tools",
+  title = "Popular PDF Tools"
 }: ToolsGridProps) => {
-  let tools = FEATURED_TOOL_IDS
-    .map((id) => toolsData.find((t) => t.id === id))
-    .filter(Boolean) as typeof toolsData;
+  let tools = FEATURED_TOOL_IDS.
+  map((id) => toolsData.find((t) => t.id === id)).
+  filter(Boolean) as typeof toolsData;
 
   if (categoryFilter) {
     tools = toolsData.filter((t) => t.category === categoryFilter).slice(0, 6);
@@ -48,10 +48,10 @@ export const ToolsGrid = ({
                   "group flex flex-col items-center text-center p-6 rounded-xl bg-white border border-border/60",
                   "shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.03)]",
                   "hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all duration-200 hover:-translate-y-0.5"
-                )}
-              >
-                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                  <Icon className="w-7 h-7 text-primary" />
+                )}>
+
+                <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 bg-destructive-foreground">
+                  <Icon className="w-7 h-7 text-pink-800" />
                 </div>
                 <h3 className="text-base font-semibold text-foreground mb-1.5 leading-tight">
                   {tool.title}
@@ -63,13 +63,13 @@ export const ToolsGrid = ({
                   className={cn(
                     "inline-flex items-center gap-1.5 text-sm font-medium text-primary",
                     "px-5 py-2 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors"
-                  )}
-                >
+                  )}>
+
                   Open Tool
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
-              </Link>
-            );
+              </Link>);
+
           })}
         </div>
 
@@ -79,13 +79,13 @@ export const ToolsGrid = ({
             className={cn(
               "inline-flex items-center gap-2 px-8 py-3 rounded-lg text-sm font-semibold",
               "bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
-            )}
-          >
+            )}>
+
             View All Tools
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };

@@ -1,5 +1,5 @@
 import { Shield, Zap, Smartphone, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
+
 
 export const Hero = () => {
   return (
@@ -15,12 +15,15 @@ export const Hero = () => {
             No signup required. 100% privacy-focused tools.
           </p>
           
-          <Link
-            to="/pdf-tools"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-lg shadow-md hover:opacity-90 transition-opacity"
+          <button
+            onClick={() => {
+              const grid = document.getElementById('tools-grid');
+              if (grid) grid.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-lg shadow-md hover:opacity-90 transition-opacity cursor-pointer"
           >
-            Explore PDF Tools
-          </Link>
+            Explore All Tools
+          </button>
         </div>
 
         {/* Trust indicators */}

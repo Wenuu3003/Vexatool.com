@@ -1,4 +1,4 @@
-import { Shield, Zap, Globe, Users, CheckCircle, FileText, Image, Lock, QrCode, Calculator } from "lucide-react";
+import { Shield, Zap, Globe, Users, CheckCircle, FileText, Image } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const HomepageContent = () => {
@@ -115,30 +115,6 @@ export const HomepageContent = () => {
             </div>
           </div>
 
-          {/* Tool Categories */}
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-6">
-              Explore Our Tool Categories
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4 not-prose">
-              {[
-              { icon: FileText, title: "PDF Tools", desc: "Edit, merge, split, compress, convert, rotate, lock, and unlock PDF files.", href: "/pdf-tools" },
-              { icon: Image, title: "Image Tools", desc: "Resize, compress, convert images and remove backgrounds instantly.", href: "/image-tools" },
-              { icon: Calculator, title: "Calculators", desc: "BMI, EMI, love compatibility, and percentage calculators.", href: "/calculator-tools" },
-              { icon: QrCode, title: "QR Tools", desc: "Generate custom QR codes and scan existing ones from camera or image.", href: "/qr-tools" }].
-              map((item, i) =>
-              <Link key={i} to={item.href} className="flex items-start gap-3 p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 text-transparent">
-                    <item.icon className="w-5 h-5 text-pink-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground text-sm">{item.title}</h3>
-                    <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
-                  </div>
-                </Link>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </section>);

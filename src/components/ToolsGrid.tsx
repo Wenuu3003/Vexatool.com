@@ -31,7 +31,7 @@ export const ToolsGrid = ({
   }
 
   return (
-    <section className="py-20 md:py-24" style={{ backgroundColor: "#f8fafc" }}>
+    <section id="tools-grid" className="py-20 md:py-24" style={{ backgroundColor: "#f8fafc" }}>
       <div className="container mx-auto px-4 max-w-5xl">
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-foreground">
           {title}

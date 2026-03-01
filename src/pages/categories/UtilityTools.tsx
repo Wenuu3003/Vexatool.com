@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import { MapPin, AlignLeft } from "lucide-react";
 
 const tools = [
-  { name: "PIN Code Generator", href: "/pincode-generator", icon: MapPin, desc: "Find Indian PIN codes by state, district, city with post office details" },
-  { name: "Word Counter", href: "/word-counter", icon: AlignLeft, desc: "Count words, characters, sentences and estimate reading time" },
+  { name: "PIN Code Generator", href: "/pincode-generator", icon: MapPin, desc: "Find Indian PIN codes by state, district, city with post office details", gradient: "from-pink-500 to-purple-600" },
+  { name: "Word Counter", href: "/word-counter", icon: AlignLeft, desc: "Count words, characters, sentences and estimate reading time", gradient: "from-slate-500 to-gray-600" },
 ];
 
 const UtilityTools = () => {
@@ -45,8 +45,8 @@ const UtilityTools = () => {
           {tools.map((tool) => (
             <Link key={tool.href} to={tool.href} className="group p-6 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <tool.icon className="w-6 h-6 text-primary" />
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${tool.gradient} flex items-center justify-center`}>
+                  <tool.icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{tool.name}</h3>
               </div>

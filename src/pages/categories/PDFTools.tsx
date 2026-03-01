@@ -5,17 +5,17 @@ import { Link } from "react-router-dom";
 import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image } from "lucide-react";
 
 const tools = [
-  { name: "PDF Editor", href: "/edit-pdf", icon: FileEdit, desc: "Edit text, add images, annotate documents" },
-  { name: "Merge PDF", href: "/merge-pdf", icon: Layers, desc: "Combine multiple PDFs into one file" },
-  { name: "Split PDF", href: "/split-pdf", icon: Scissors, desc: "Separate pages into individual files" },
-  { name: "Compress PDF", href: "/compress-pdf", icon: FileDown, desc: "Reduce PDF file size while keeping quality" },
-  { name: "PDF to Word", href: "/pdf-to-word", icon: FileType2, desc: "Convert PDF to editable Word documents" },
-  { name: "Word to PDF", href: "/word-to-pdf", icon: FileText, desc: "Transform Word files into professional PDFs" },
-  { name: "Unlock PDF", href: "/unlock-pdf", icon: Unlock, desc: "Remove password restrictions from PDFs" },
-  { name: "Protect PDF", href: "/protect-pdf", icon: Lock, desc: "Add password protection to your PDFs" },
-  { name: "Rotate PDF", href: "/rotate-pdf", icon: RotateCw, desc: "Rotate pages to correct orientation" },
-  { name: "JPG to PDF", href: "/jpg-to-pdf", icon: Image, desc: "Convert JPG images to PDF format" },
-  { name: "PDF to JPG", href: "/pdf-to-jpg", icon: Image, desc: "Convert PDF pages to JPG images" },
+  { name: "PDF Editor", href: "/edit-pdf", icon: FileEdit, desc: "Edit text, add images, annotate documents", gradient: "from-blue-500 to-indigo-600" },
+  { name: "Merge PDF", href: "/merge-pdf", icon: Layers, desc: "Combine multiple PDFs into one file", gradient: "from-green-500 to-emerald-600" },
+  { name: "Split PDF", href: "/split-pdf", icon: Scissors, desc: "Separate pages into individual files", gradient: "from-orange-500 to-red-500" },
+  { name: "Compress PDF", href: "/compress-pdf", icon: FileDown, desc: "Reduce PDF file size while keeping quality", gradient: "from-purple-500 to-violet-600" },
+  { name: "PDF to Word", href: "/pdf-to-word", icon: FileType2, desc: "Convert PDF to editable Word documents", gradient: "from-blue-600 to-blue-700" },
+  { name: "Word to PDF", href: "/word-to-pdf", icon: FileText, desc: "Transform Word files into professional PDFs", gradient: "from-blue-500 to-cyan-500" },
+  { name: "Unlock PDF", href: "/unlock-pdf", icon: Unlock, desc: "Remove password restrictions from PDFs", gradient: "from-amber-500 to-orange-500" },
+  { name: "Protect PDF", href: "/protect-pdf", icon: Lock, desc: "Add password protection to your PDFs", gradient: "from-red-500 to-pink-500" },
+  { name: "Rotate PDF", href: "/rotate-pdf", icon: RotateCw, desc: "Rotate pages to correct orientation", gradient: "from-teal-500 to-green-500" },
+  { name: "JPG to PDF", href: "/jpg-to-pdf", icon: Image, desc: "Convert JPG images to PDF format", gradient: "from-amber-500 to-yellow-500" },
+  { name: "PDF to JPG", href: "/pdf-to-jpg", icon: Image, desc: "Convert PDF pages to JPG images", gradient: "from-pink-500 to-rose-500" },
 ];
 
 const PDFTools = () => {
@@ -66,8 +66,8 @@ const PDFTools = () => {
               className="group p-5 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200"
             >
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <tool.icon className="w-5 h-5 text-primary" />
+                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${tool.gradient} flex items-center justify-center`}>
+                  <tool.icon className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{tool.name}</h3>
               </div>

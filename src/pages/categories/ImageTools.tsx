@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 import { Crop, ImageDown, RefreshCw, Image, Eraser } from "lucide-react";
 
 const tools = [
-  { name: "Image Resize Tool", href: "/image-resizer", icon: Crop, desc: "Resize images to any custom or preset dimension" },
-  { name: "Image Compressor", href: "/compress-image", icon: ImageDown, desc: "Reduce image file size while maintaining quality" },
-  { name: "Image Converter", href: "/image-format-converter", icon: RefreshCw, desc: "Convert between JPG, PNG, WebP and more" },
-  { name: "Image to PDF", href: "/image-to-pdf", icon: Image, desc: "Convert images to PDF documents" },
-  { name: "Background Remover", href: "/background-remover", icon: Eraser, desc: "Remove backgrounds from any image" },
+  { name: "Image Resize Tool", href: "/image-resizer", icon: Crop, desc: "Resize images to any custom or preset dimension", gradient: "from-orange-500 to-amber-500" },
+  { name: "Image Compressor", href: "/compress-image", icon: ImageDown, desc: "Reduce image file size while maintaining quality", gradient: "from-teal-500 to-cyan-500" },
+  { name: "Image Converter", href: "/image-format-converter", icon: RefreshCw, desc: "Convert between JPG, PNG, WebP and more", gradient: "from-indigo-500 to-blue-500" },
+  { name: "Image to PDF", href: "/image-to-pdf", icon: Image, desc: "Convert images to PDF documents", gradient: "from-blue-500 to-violet-500" },
+  { name: "Background Remover", href: "/background-remover", icon: Eraser, desc: "Remove backgrounds from any image", gradient: "from-purple-500 to-pink-500" },
 ];
 
 const ImageTools = () => {
@@ -48,8 +48,8 @@ const ImageTools = () => {
           {tools.map((tool) => (
             <Link key={tool.href} to={tool.href} className="group p-5 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <tool.icon className="w-5 h-5 text-primary" />
+                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${tool.gradient} flex items-center justify-center`}>
+                  <tool.icon className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{tool.name}</h3>
               </div>

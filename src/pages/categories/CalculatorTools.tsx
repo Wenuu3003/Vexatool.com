@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 import { Heart, Scale, Cake, Percent } from "lucide-react";
 
 const tools = [
-  { name: "Love & Age Calculator", href: "/love-calculator", icon: Heart, desc: "Calculate love compatibility with zodiac and numerology" },
-  { name: "BMI Calculator", href: "/bmi-calculator", icon: Scale, desc: "Calculate your Body Mass Index with health recommendations" },
-  { name: "Age Calculator", href: "/age-calculator", icon: Cake, desc: "Calculate your exact age in years, months and days" },
-  { name: "Percentage Calculator", href: "/percentage-calculator", icon: Percent, desc: "Calculate percentages, changes, increases and decreases" },
-  { name: "EMI Calculator", href: "/emi-calculator", icon: Percent, desc: "Calculate loan EMI, interest and monthly payments" },
+  { name: "Love & Age Calculator", href: "/love-calculator", icon: Heart, desc: "Calculate love compatibility with zodiac and numerology", gradient: "from-pink-500 to-rose-500" },
+  { name: "BMI Calculator", href: "/bmi-calculator", icon: Scale, desc: "Calculate your Body Mass Index with health recommendations", gradient: "from-red-400 to-pink-500" },
+  { name: "Age Calculator", href: "/age-calculator", icon: Cake, desc: "Calculate your exact age in years, months and days", gradient: "from-violet-500 to-purple-600" },
+  { name: "Percentage Calculator", href: "/percentage-calculator", icon: Percent, desc: "Calculate percentages, changes, increases and decreases", gradient: "from-green-500 to-emerald-500" },
+  { name: "EMI Calculator", href: "/emi-calculator", icon: Percent, desc: "Calculate loan EMI, interest and monthly payments", gradient: "from-emerald-500 to-teal-500" },
 ];
 
 const CalculatorTools = () => {
@@ -48,8 +48,8 @@ const CalculatorTools = () => {
           {tools.map((tool) => (
             <Link key={tool.href} to={tool.href} className="group p-5 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <tool.icon className="w-5 h-5 text-primary" />
+                <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${tool.gradient} flex items-center justify-center`}>
+                  <tool.icon className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{tool.name}</h3>
               </div>

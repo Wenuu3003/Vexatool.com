@@ -32,7 +32,7 @@ export const ToolCard = ({
     transitionDelay: isVisible ? `${staggerDelay}s` : "0s",
     transitionProperty: "opacity, transform, box-shadow"
   }} aria-label={`${title} - ${description}`}>
-      <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105 ${colorClass}`}>
+      <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-105 ${colorClass}`}>
         <Icon className="w-7 h-7 text-white" aria-hidden="true" />
       </div>
       <h3 className="text-base font-semibold mb-2 transition-colors leading-tight text-foreground">

@@ -50,8 +50,8 @@ export const ToolsGrid = ({
                   "hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] transition-all duration-200 hover:-translate-y-0.5"
                 )}>
 
-                <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4 bg-destructive-foreground">
-                  <Icon className="w-7 h-7 text-pink-800" />
+                <div className={cn("w-14 h-14 rounded-full flex items-center justify-center mb-4", tool.colorClass)}>
+                  <Icon className="w-7 h-7 text-white" />
                 </div>
                 <h3 className="text-base font-semibold text-foreground mb-1.5 leading-tight">
                   {tool.title}

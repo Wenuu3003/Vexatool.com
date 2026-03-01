@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import { QrCode, ScanLine } from "lucide-react";
 
 const tools = [
-  { name: "QR Code Generator", href: "/qr-code-generator", icon: QrCode, desc: "Create custom QR codes with logos and colors for any URL, text, or data" },
-  { name: "QR Code Scanner", href: "/qr-code-scanner", icon: ScanLine, desc: "Scan QR codes from camera or uploaded images instantly" },
+  { name: "QR Code Generator", href: "/qr-code-generator", icon: QrCode, desc: "Create custom QR codes with logos and colors for any URL, text, or data", gradient: "from-blue-500 to-indigo-600" },
+  { name: "QR Code Scanner", href: "/qr-code-scanner", icon: ScanLine, desc: "Scan QR codes from camera or uploaded images instantly", gradient: "from-violet-500 to-purple-600" },
 ];
 
 const QRTools = () => {
@@ -46,8 +46,8 @@ const QRTools = () => {
           {tools.map((tool) => (
             <Link key={tool.href} to={tool.href} className="group p-6 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <tool.icon className="w-6 h-6 text-primary" />
+                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${tool.gradient} flex items-center justify-center`}>
+                  <tool.icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{tool.name}</h3>
               </div>

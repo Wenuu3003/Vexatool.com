@@ -90,6 +90,7 @@ const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
 const LoveCalculator = lazy(() => import("./pages/tools/LoveCalculator"));
 
 const PercentageCalculator = lazy(() => import("./pages/tools/PercentageCalculator"));
+const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
 
 const queryClient = new QueryClient();
 
@@ -138,6 +139,7 @@ const App = () => (
               <Route path="/emi-calculator" element={<EMICalculator />} />
               <Route path="/love-calculator" element={<LoveCalculator />} />
               <Route path="/percentage-calculator" element={<PercentageCalculator />} />
+              <Route path="/gst-calculator" element={<GSTCalculator />} />
               {/* Image Tools */}
               <Route path="/image-resizer" element={<ImageResizer />} />
               <Route path="/image-format-converter" element={<ImageFormatConverter />} />

@@ -56,26 +56,25 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
-            <Button variant="ghost" size="sm" className={cn("text-foreground hover:text-primary flex items-center gap-1 text-sm", megaMenuOpen && "bg-muted")} onClick={() => setMegaMenuOpen(!megaMenuOpen)} aria-expanded={megaMenuOpen} aria-label="Open all tools menu">
-              All Tools
-              <ChevronDown className={cn("w-4 h-4 transition-transform", megaMenuOpen && "rotate-180")} aria-hidden="true" />
-            </Button>
             <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/pdf-tools")}>
               PDF Tools
             </Button>
             <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/image-tools")}>
               Image Tools
             </Button>
+            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/calculator-tools")}>
+              Calculator Tools
+            </Button>
             <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/qr-tools")}>
               QR Tools
+            </Button>
+            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/blog")}>
+              Blog
             </Button>
           </nav>
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-2">
-            <Button size="sm" className="bg-[hsl(142,71%,45%)] hover:bg-[hsl(142,71%,40%)] text-white" onClick={() => handleNavigation("/pdf-tools")}>
-              Explore Tools
-            </Button>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

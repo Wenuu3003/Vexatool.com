@@ -295,6 +295,19 @@ export const toolsData: ToolData[] = [
     features: ["EMI calculation", "Amortization", "Interest breakdown", "Comparison"],
     seoKeywords: ["EMI calculator", "loan calculator", "mortgage calculator", "interest calculator"]
   },
+  {
+    id: "gst-calculator",
+    title: "GST Calculator",
+    description: "Calculate GST amount, net price, and gross price instantly. Supports all Indian GST rates with CGST, SGST, and IGST breakdowns.",
+    shortDescription: "Calculate GST amount, net and gross price instantly.",
+    icon: Percent,
+    colorClass: "bg-gradient-to-br from-orange-500 to-amber-500",
+    href: "/gst-calculator",
+    category: "calculator",
+    previewImage: "/previews/gst-calculator-preview.webp",
+    features: ["All GST rates", "CGST/SGST/IGST", "Inclusive/Exclusive", "Instant results"],
+    seoKeywords: ["GST calculator", "GST India", "CGST SGST calculator", "tax calculator"]
+  },
 
   // QR Tools
   {

@@ -10,6 +10,7 @@ const tools = [
   { name: "Age Calculator", href: "/age-calculator", icon: Cake, desc: "Calculate your exact age in years, months and days", gradient: "from-violet-500 to-purple-600" },
   { name: "Percentage Calculator", href: "/percentage-calculator", icon: Percent, desc: "Calculate percentages, changes, increases and decreases", gradient: "from-green-500 to-emerald-500" },
   { name: "EMI Calculator", href: "/emi-calculator", icon: Percent, desc: "Calculate loan EMI, interest and monthly payments", gradient: "from-emerald-500 to-teal-500" },
+  { name: "GST Calculator", href: "/gst-calculator", icon: Percent, desc: "Calculate GST amount, net and gross price instantly", gradient: "from-orange-500 to-amber-500" },
 ];
 
 const CalculatorTools = () => {

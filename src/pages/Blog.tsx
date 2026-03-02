@@ -14,6 +14,14 @@ interface BlogPost {
 }
 
 const blogPosts: BlogPost[] = [
+  // NEW: AdSense-safe humanity-focused article
+  {
+    slug: "digital-productivity-habits-that-save-time",
+    title: "10 Digital Productivity Habits That Actually Save You Hours Every Week",
+    excerpt: "Discover practical, science-backed strategies to manage digital documents, reduce screen fatigue, and reclaim your time. Real habits from real professionals — no fluff, no gimmicks.",
+    date: "2026-03-02",
+    readTime: "8 min read",
+  },
   // Featured: Authority article on PDF merging
   {
     slug: "how-to-merge-pdf-files-online-complete-guide",

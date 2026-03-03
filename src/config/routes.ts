@@ -12,9 +12,11 @@ export interface RouteConfig {
 
 // Blog post slugs for sitemap
 export const blogPosts = [
+  'digital-productivity-habits-that-save-time',
   'how-to-merge-pdf-files-online-complete-guide',
   'love-age-calculator-complete-guide',
   'age-calculator-birthday-planning',
+  'age-calculator-birthday-wishes-motivation',
   'qr-code-generator-complete-guide',
   'background-remover-perfect-product-photos',
   'emi-calculator-home-loan-guide',
@@ -32,14 +34,6 @@ export const blogPosts = [
   'word-counter-content-optimization',
   'pincode-finder-india-postal-guide',
   'pdf-to-jpg-image-conversion',
-  'convert-pdf-to-word-free-guide',
-  'digital-signature-guide',
-  'pdf-accessibility-guide',
-  'how-to-merge-pdfs-complete-guide',
-  'best-image-compression-tips',
-  'pdf-security-guide',
-  'compress-pdf-without-losing-quality',
-  'best-free-pdf-tools-online-2026',
 ];
 
 export const routes: RouteConfig[] = [
@@ -106,6 +100,68 @@ export const routes: RouteConfig[] = [
   },
   { path: '/auth', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
   { path: '/account', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
+  
+  // Category Pages
+  {
+    path: '/pdf-tools',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'PDF Tools - Free Online PDF Editor, Converter & More | VexaTool',
+    description: 'Free online PDF tools. Merge, split, compress, edit, convert PDFs. No signup required.',
+    keywords: 'pdf tools, pdf editor, pdf converter, merge pdf, split pdf',
+    category: 'Category'
+  },
+  {
+    path: '/image-tools',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'Image Tools - Compress, Resize, Convert Images Free | VexaTool',
+    description: 'Free online image tools. Compress, resize, convert, remove background from images.',
+    keywords: 'image tools, image compressor, image resizer, background remover',
+    category: 'Category'
+  },
+  {
+    path: '/calculator-tools',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'Calculator Tools - BMI, EMI, GST, Age Calculator | VexaTool',
+    description: 'Free online calculators. BMI, EMI, GST, age, love, percentage, currency calculators.',
+    keywords: 'calculator tools, bmi calculator, emi calculator, gst calculator',
+    category: 'Category'
+  },
+  {
+    path: '/qr-tools',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'QR Code Tools - Generate & Scan QR Codes Free | VexaTool',
+    description: 'Free QR code generator and scanner. Create custom QR codes with logos.',
+    keywords: 'qr code generator, qr code scanner, qr tools',
+    category: 'Category'
+  },
+  {
+    path: '/utility-tools',
+    priority: 0.9,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'Utility Tools - Word Counter, Unit Converter & More | VexaTool',
+    description: 'Free online utility tools. Word counter, unit converter, file compressor, pin code finder.',
+    keywords: 'utility tools, word counter, unit converter, file compressor',
+    category: 'Category'
+  },
+  {
+    path: '/disclaimer',
+    priority: 0.5,
+    changefreq: 'monthly',
+    includeInSitemap: true,
+    title: 'Disclaimer – VexaTool',
+    description: 'Disclaimer for VexaTool online tools and services.',
+    keywords: 'disclaimer, terms',
+    category: 'Legal'
+  },
   
   // Blog posts
   ...blogPosts.map(slug => ({
@@ -231,6 +287,16 @@ export const routes: RouteConfig[] = [
     title: 'Unit Converter - Length, Weight, Temperature Converter | VexaTool',
     description: 'Convert units of length, weight, temperature, area, volume. Free online unit converter. Metric to imperial, kg to lbs, cm to inches.',
     keywords: 'unit converter, length converter, weight converter, temperature converter, metric converter, kg to lbs',
+    category: 'Calculator Tools'
+  },
+  {
+    path: '/percentage-calculator',
+    priority: 0.8,
+    changefreq: 'weekly',
+    includeInSitemap: true,
+    title: 'Percentage Calculator - Calculate Percentages Free | VexaTool',
+    description: 'Free online percentage calculator. Calculate percentage of a number, percentage increase/decrease, and more.',
+    keywords: 'percentage calculator, calculate percentage, percent calculator, percentage increase',
     category: 'Calculator Tools'
   },
   { 

@@ -85,12 +85,23 @@ const WordCounter = lazy(() => import("./pages/tools/WordCounter"));
 const PinCodeGenerator = lazy(() => import("./pages/tools/PinCodeGenerator"));
 
 // Calculator Tools
+const Calculator = lazy(() => import("./pages/tools/Calculator"));
 const BMICalculator = lazy(() => import("./pages/tools/BMICalculator"));
 const EMICalculator = lazy(() => import("./pages/tools/EMICalculator"));
 const LoveCalculator = lazy(() => import("./pages/tools/LoveCalculator"));
-
+const AgeCalculator = lazy(() => import("./pages/tools/AgeCalculator"));
 const PercentageCalculator = lazy(() => import("./pages/tools/PercentageCalculator"));
 const GSTCalculator = lazy(() => import("./pages/tools/GSTCalculator"));
+const CurrencyConverter = lazy(() => import("./pages/tools/CurrencyConverter"));
+
+// Photo Resizers
+const WhatsAppDPResizer = lazy(() => import("./pages/tools/WhatsAppDPResizer"));
+const AadhaarPhotoResizer = lazy(() => import("./pages/tools/AadhaarPhotoResizer"));
+const GovtJobPhotoResizer = lazy(() => import("./pages/tools/GovtJobPhotoResizer"));
+const PassportPhotoResizer = lazy(() => import("./pages/tools/PassportPhotoResizer"));
+
+// Document Converters (additional)
+const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
 
 const queryClient = new QueryClient();
 
@@ -134,12 +145,14 @@ const App = () => (
               <Route path="/qr-code-scanner" element={<QRCodeScanner />} />
               <Route path="/qr-code-generator" element={<QRCodeGenerator />} />
               {/* Calculator Tools */}
-              
+              <Route path="/calculator" element={<Calculator />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/emi-calculator" element={<EMICalculator />} />
               <Route path="/love-calculator" element={<LoveCalculator />} />
+              <Route path="/age-calculator" element={<AgeCalculator />} />
               <Route path="/percentage-calculator" element={<PercentageCalculator />} />
               <Route path="/gst-calculator" element={<GSTCalculator />} />
+              <Route path="/currency-converter" element={<CurrencyConverter />} />
               {/* Image Tools */}
               <Route path="/image-resizer" element={<ImageResizer />} />
               <Route path="/image-format-converter" element={<ImageFormatConverter />} />
@@ -173,6 +186,10 @@ const App = () => (
               <Route path="/compress-image" element={<CompressImage />} />
               <Route path="/file-compressor" element={<FileCompressor />} />
               <Route path="/background-remover" element={<BackgroundRemover />} />
+              <Route path="/whatsapp-dp-resize" element={<WhatsAppDPResizer />} />
+              <Route path="/aadhaar-photo-resize" element={<AadhaarPhotoResizer />} />
+              <Route path="/govt-job-photo-resize" element={<GovtJobPhotoResizer />} />
+              <Route path="/passport-photo-resize" element={<PassportPhotoResizer />} />
               {/* Document Converters */}
               <Route path="/word-to-pdf" element={<WordToPDF />} />
               <Route path="/word-to-excel" element={<WordToExcel />} />
@@ -180,6 +197,7 @@ const App = () => (
               <Route path="/html-to-pdf" element={<HTMLToPDF />} />
               <Route path="/ppt-to-pdf" element={<PPTToPDF />} />
               <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
+              <Route path="/google-drive-to-pdf" element={<GoogleDriveToPDF />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

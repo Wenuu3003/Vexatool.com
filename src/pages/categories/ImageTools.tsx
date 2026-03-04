@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { Crop, ImageDown, RefreshCw, Image, Eraser } from "lucide-react";
+import { Crop, ImageDown, RefreshCw, Image, Eraser, FileDown, Smartphone, CreditCard, Briefcase, FileImage } from "lucide-react";
 
 const tools = [
   { name: "Image Resize Tool", href: "/image-resizer", icon: Crop, desc: "Resize images to any custom or preset dimension", gradient: "from-orange-500 to-amber-500" },
@@ -10,6 +10,11 @@ const tools = [
   { name: "Image Converter", href: "/image-format-converter", icon: RefreshCw, desc: "Convert between JPG, PNG, WebP and more", gradient: "from-indigo-500 to-blue-500" },
   { name: "Image to PDF", href: "/image-to-pdf", icon: Image, desc: "Convert images to PDF documents", gradient: "from-blue-500 to-violet-500" },
   { name: "Background Remover", href: "/background-remover", icon: Eraser, desc: "Remove backgrounds from any image", gradient: "from-purple-500 to-pink-500" },
+  { name: "File Compressor", href: "/file-compressor", icon: FileDown, desc: "Compress files to reduce size instantly", gradient: "from-sky-500 to-blue-500" },
+  { name: "WhatsApp DP Resizer", href: "/whatsapp-dp-resize", icon: Smartphone, desc: "Resize photos for WhatsApp profile picture", gradient: "from-green-500 to-emerald-500" },
+  { name: "Aadhaar Photo Resizer", href: "/aadhaar-photo-resize", icon: CreditCard, desc: "Resize photos for Aadhaar card requirements", gradient: "from-orange-500 to-red-500" },
+  { name: "Govt Job Photo Resizer", href: "/govt-job-photo-resize", icon: Briefcase, desc: "Resize photos for govt job applications", gradient: "from-blue-600 to-indigo-600" },
+  { name: "Passport Photo Resizer", href: "/passport-photo-resize", icon: FileImage, desc: "Resize photos to passport size specs", gradient: "from-red-500 to-rose-600" },
 ];
 
 const ImageTools = () => {

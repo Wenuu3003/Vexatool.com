@@ -2,15 +2,17 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { Heart, Scale, Cake, Percent } from "lucide-react";
+import { Heart, Scale, Cake, Percent, Calculator, DollarSign } from "lucide-react";
 
 const tools = [
-  { name: "Love & Age Calculator", href: "/love-calculator", icon: Heart, desc: "Calculate love compatibility with zodiac and numerology", gradient: "from-pink-500 to-rose-500" },
+  { name: "Scientific Calculator", href: "/calculator", icon: Calculator, desc: "Full-featured scientific calculator online", gradient: "from-blue-500 to-indigo-500" },
+  { name: "Love Calculator", href: "/love-calculator", icon: Heart, desc: "Calculate love compatibility with zodiac and numerology", gradient: "from-pink-500 to-rose-500" },
   { name: "BMI Calculator", href: "/bmi-calculator", icon: Scale, desc: "Calculate your Body Mass Index with health recommendations", gradient: "from-red-400 to-pink-500" },
   { name: "Age Calculator", href: "/age-calculator", icon: Cake, desc: "Calculate your exact age in years, months and days", gradient: "from-violet-500 to-purple-600" },
   { name: "Percentage Calculator", href: "/percentage-calculator", icon: Percent, desc: "Calculate percentages, changes, increases and decreases", gradient: "from-green-500 to-emerald-500" },
   { name: "EMI Calculator", href: "/emi-calculator", icon: Percent, desc: "Calculate loan EMI, interest and monthly payments", gradient: "from-emerald-500 to-teal-500" },
   { name: "GST Calculator", href: "/gst-calculator", icon: Percent, desc: "Calculate GST amount, net and gross price instantly", gradient: "from-orange-500 to-amber-500" },
+  { name: "Currency Converter", href: "/currency-converter", icon: DollarSign, desc: "Convert currencies with live exchange rates", gradient: "from-yellow-500 to-amber-600" },
 ];
 
 const CalculatorTools = () => {

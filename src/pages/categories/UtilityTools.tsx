@@ -2,11 +2,12 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { MapPin, AlignLeft } from "lucide-react";
+import { MapPin, AlignLeft, Ruler } from "lucide-react";
 
 const tools = [
   { name: "PIN Code Generator", href: "/pincode-generator", icon: MapPin, desc: "Find Indian PIN codes by state, district, city with post office details", gradient: "from-pink-500 to-purple-600" },
   { name: "Word Counter", href: "/word-counter", icon: AlignLeft, desc: "Count words, characters, sentences and estimate reading time", gradient: "from-slate-500 to-gray-600" },
+  { name: "Unit Converter", href: "/unit-converter", icon: Ruler, desc: "Convert between units of length, weight, temperature and more", gradient: "from-indigo-500 to-violet-500" },
 ];
 
 const UtilityTools = () => {

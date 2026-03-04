@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image } from "lucide-react";
+import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image, PenTool, Droplets, FolderSync, FileCheck, FileImage, Code } from "lucide-react";
 
 const tools = [
   { name: "PDF Editor", href: "/edit-pdf", icon: FileEdit, desc: "Edit text, add images, annotate documents", gradient: "from-blue-500 to-indigo-600" },
@@ -11,11 +11,19 @@ const tools = [
   { name: "Compress PDF", href: "/compress-pdf", icon: FileDown, desc: "Reduce PDF file size while keeping quality", gradient: "from-purple-500 to-violet-600" },
   { name: "PDF to Word", href: "/pdf-to-word", icon: FileType2, desc: "Convert PDF to editable Word documents", gradient: "from-blue-600 to-blue-700" },
   { name: "Word to PDF", href: "/word-to-pdf", icon: FileText, desc: "Transform Word files into professional PDFs", gradient: "from-blue-500 to-cyan-500" },
+  { name: "Sign PDF", href: "/sign-pdf", icon: PenTool, desc: "Add digital signatures to PDF documents", gradient: "from-indigo-500 to-purple-600" },
+  { name: "Watermark PDF", href: "/watermark-pdf", icon: Droplets, desc: "Add text or image watermarks to PDFs", gradient: "from-cyan-500 to-blue-500" },
   { name: "Unlock PDF", href: "/unlock-pdf", icon: Unlock, desc: "Remove password restrictions from PDFs", gradient: "from-amber-500 to-orange-500" },
   { name: "Protect PDF", href: "/protect-pdf", icon: Lock, desc: "Add password protection to your PDFs", gradient: "from-red-500 to-pink-500" },
   { name: "Rotate PDF", href: "/rotate-pdf", icon: RotateCw, desc: "Rotate pages to correct orientation", gradient: "from-teal-500 to-green-500" },
+  { name: "Organize PDF", href: "/organize-pdf", icon: FolderSync, desc: "Rearrange and reorder PDF pages", gradient: "from-lime-500 to-green-600" },
+  { name: "Repair PDF", href: "/repair-pdf", icon: FileCheck, desc: "Fix corrupted or damaged PDF files", gradient: "from-yellow-500 to-orange-500" },
   { name: "JPG to PDF", href: "/jpg-to-pdf", icon: Image, desc: "Convert JPG images to PDF format", gradient: "from-amber-500 to-yellow-500" },
+  { name: "PNG to PDF", href: "/png-to-pdf", icon: Image, desc: "Convert PNG images to PDF format", gradient: "from-green-500 to-teal-500" },
   { name: "PDF to JPG", href: "/pdf-to-jpg", icon: Image, desc: "Convert PDF pages to JPG images", gradient: "from-pink-500 to-rose-500" },
+  { name: "PDF to PNG", href: "/pdf-to-png", icon: Image, desc: "Convert PDF pages to PNG images", gradient: "from-emerald-500 to-green-600" },
+  { name: "PDF to Image", href: "/pdf-to-image", icon: FileImage, desc: "Convert PDF pages to various image formats", gradient: "from-violet-500 to-fuchsia-500" },
+  { name: "PDF to HTML", href: "/pdf-to-html", icon: Code, desc: "Convert PDF to HTML web pages", gradient: "from-sky-500 to-blue-600" },
 ];
 
 const PDFTools = () => {

@@ -4,7 +4,10 @@ import {
   Presentation, Table, Calculator, 
   ImageDown, FileText, FileSpreadsheet, Eraser, 
   Crop, RefreshCw, Heart, Percent, 
-  Scale, AlignLeft, MapPin, Cake, LucideIcon, Wrench
+  Scale, AlignLeft, MapPin, Cake, LucideIcon, Wrench,
+  PenTool, Droplets, FolderSync, Wrench as WrenchIcon, 
+  ImageIcon, Smartphone, CreditCard, Briefcase, FileCheck,
+  DollarSign, Ruler, Code, HardDrive, FileImage
 } from "lucide-react";
 
 export interface ToolData {
@@ -175,6 +178,110 @@ export const toolsData: ToolData[] = [
     features: ["High quality", "All pages", "DPI control", "Batch convert"],
     seoKeywords: ["PDF to JPG", "PDF to JPEG", "convert PDF to image", "PDF image"]
   },
+  {
+    id: "sign-pdf",
+    title: "Sign PDF",
+    description: "Add digital signatures to PDF documents. Draw, type, or upload your signature and place it anywhere on the document.",
+    shortDescription: "Add digital signatures to PDF documents.",
+    icon: PenTool,
+    colorClass: "bg-gradient-to-br from-indigo-500 to-purple-600",
+    href: "/sign-pdf",
+    category: "pdf",
+    previewImage: "/previews/sign-pdf-preview.webp",
+    features: ["Draw signature", "Type signature", "Upload signature", "Place anywhere"],
+    seoKeywords: ["sign PDF", "digital signature", "e-sign PDF", "PDF signature"]
+  },
+  {
+    id: "watermark-pdf",
+    title: "Watermark PDF",
+    description: "Add text or image watermarks to PDF documents. Customize opacity, rotation, position and tiling.",
+    shortDescription: "Add text or image watermarks to PDFs.",
+    icon: Droplets,
+    colorClass: "bg-gradient-to-br from-cyan-500 to-blue-500",
+    href: "/watermark-pdf",
+    category: "pdf",
+    previewImage: "/previews/watermark-pdf-preview.webp",
+    features: ["Text watermark", "Image watermark", "Opacity control", "Tile pattern"],
+    seoKeywords: ["watermark PDF", "add watermark", "PDF watermark", "stamp PDF"]
+  },
+  {
+    id: "organize-pdf",
+    title: "Organize PDF",
+    description: "Rearrange, delete, and organize PDF pages. Drag and drop pages to reorder your document.",
+    shortDescription: "Rearrange and organize PDF pages.",
+    icon: FolderSync,
+    colorClass: "bg-gradient-to-br from-lime-500 to-green-600",
+    href: "/organize-pdf",
+    category: "pdf",
+    previewImage: "/previews/organize-pdf-preview.webp",
+    features: ["Drag & drop", "Delete pages", "Reorder", "Preview"],
+    seoKeywords: ["organize PDF", "rearrange PDF pages", "reorder PDF", "PDF organizer"]
+  },
+  {
+    id: "repair-pdf",
+    title: "Repair PDF",
+    description: "Fix corrupted or damaged PDF files. Recover content from broken PDFs.",
+    shortDescription: "Fix corrupted or damaged PDF files.",
+    icon: FileCheck,
+    colorClass: "bg-gradient-to-br from-yellow-500 to-orange-500",
+    href: "/repair-pdf",
+    category: "pdf",
+    previewImage: "/previews/repair-pdf-preview.webp",
+    features: ["Fix corruption", "Recover content", "Batch repair", "Preview result"],
+    seoKeywords: ["repair PDF", "fix PDF", "recover PDF", "damaged PDF"]
+  },
+  {
+    id: "pdf-to-image",
+    title: "PDF to Image",
+    description: "Convert PDF pages to high-quality images in various formats including JPG, PNG, and WebP.",
+    shortDescription: "Convert PDF pages to images.",
+    icon: FileImage,
+    colorClass: "bg-gradient-to-br from-violet-500 to-fuchsia-500",
+    href: "/pdf-to-image",
+    category: "pdf",
+    previewImage: "/previews/pdf-to-image-preview.webp",
+    features: ["Multiple formats", "High quality", "All pages", "DPI control"],
+    seoKeywords: ["PDF to image", "convert PDF to image", "PDF to picture", "PDF image converter"]
+  },
+  {
+    id: "pdf-to-png",
+    title: "PDF to PNG",
+    description: "Convert PDF pages to PNG images with transparency support. High-quality lossless conversion.",
+    shortDescription: "Convert PDF pages to PNG images.",
+    icon: Image,
+    colorClass: "bg-gradient-to-br from-emerald-500 to-green-600",
+    href: "/pdf-to-png",
+    category: "pdf",
+    previewImage: "/previews/pdf-to-png-preview.webp",
+    features: ["Transparency", "Lossless", "High quality", "Batch convert"],
+    seoKeywords: ["PDF to PNG", "convert PDF to PNG", "PDF PNG converter", "PDF to transparent image"]
+  },
+  {
+    id: "pdf-to-html",
+    title: "PDF to HTML",
+    description: "Convert PDF documents to HTML web pages. Preserve layout and formatting for web publishing.",
+    shortDescription: "Convert PDF documents to HTML pages.",
+    icon: Code,
+    colorClass: "bg-gradient-to-br from-sky-500 to-blue-600",
+    href: "/pdf-to-html",
+    category: "pdf",
+    previewImage: "/previews/pdf-to-html-preview.webp",
+    features: ["Layout preserved", "CSS styling", "Responsive", "Clean code"],
+    seoKeywords: ["PDF to HTML", "convert PDF to HTML", "PDF HTML converter", "PDF to web page"]
+  },
+  {
+    id: "png-to-pdf",
+    title: "PNG to PDF",
+    description: "Convert PNG images to PDF documents. Combine multiple PNGs into one professional PDF.",
+    shortDescription: "Convert PNG images to PDF documents.",
+    icon: Image,
+    colorClass: "bg-gradient-to-br from-green-500 to-teal-500",
+    href: "/png-to-pdf",
+    category: "pdf",
+    previewImage: "/previews/png-to-pdf-preview.webp",
+    features: ["Multiple PNGs", "Page sizing", "Quality control", "Batch convert"],
+    seoKeywords: ["PNG to PDF", "convert PNG to PDF", "image to PDF", "PNG PDF converter"]
+  },
 
   // Image Tools
   {
@@ -242,6 +349,67 @@ export const toolsData: ToolData[] = [
     features: ["Transparent PNG", "Custom backgrounds", "High quality", "Instant results"],
     seoKeywords: ["background remover", "remove background", "transparent image", "bg remover"]
   },
+  {
+    id: "file-compressor",
+    title: "File Compressor",
+    description: "Compress files to reduce size. Supports images and documents with smart compression.",
+    shortDescription: "Compress files to reduce size instantly.",
+    icon: FileDown,
+    colorClass: "bg-gradient-to-br from-sky-500 to-blue-500",
+    href: "/file-compressor",
+    category: "image",
+    previewImage: "/previews/file-compressor-preview.webp",
+    features: ["Smart compression", "Multiple formats", "Batch process", "Quality control"],
+    seoKeywords: ["file compressor", "compress files", "reduce file size", "file compression"]
+  },
+  {
+    id: "whatsapp-dp-resize",
+    title: "WhatsApp DP Resizer",
+    description: "Resize images to perfect WhatsApp display picture dimensions. Crop and fit photos for WhatsApp profile.",
+    shortDescription: "Resize photos for WhatsApp profile picture.",
+    icon: Smartphone,
+    colorClass: "bg-gradient-to-br from-green-500 to-emerald-500",
+    href: "/whatsapp-dp-resize",
+    category: "image",
+    features: ["WhatsApp size", "Auto crop", "Quality control", "Preview"],
+    seoKeywords: ["WhatsApp DP resize", "WhatsApp profile picture size", "resize for WhatsApp", "DP maker"]
+  },
+  {
+    id: "aadhaar-photo-resize",
+    title: "Aadhaar Photo Resizer",
+    description: "Resize photos to exact Aadhaar card photo specifications. Meet official size and format requirements.",
+    shortDescription: "Resize photos for Aadhaar card requirements.",
+    icon: CreditCard,
+    colorClass: "bg-gradient-to-br from-orange-500 to-red-500",
+    href: "/aadhaar-photo-resize",
+    category: "image",
+    features: ["Aadhaar specs", "Auto crop", "Size validation", "Format conversion"],
+    seoKeywords: ["Aadhaar photo resize", "Aadhaar card photo size", "resize for Aadhaar", "Aadhaar photo dimensions"]
+  },
+  {
+    id: "govt-job-photo-resize",
+    title: "Govt Job Photo Resizer",
+    description: "Resize photos for government job applications. Meet SSC, UPSC, Railway, and other exam photo requirements.",
+    shortDescription: "Resize photos for govt job applications.",
+    icon: Briefcase,
+    colorClass: "bg-gradient-to-br from-blue-600 to-indigo-600",
+    href: "/govt-job-photo-resize",
+    category: "image",
+    features: ["Govt specs", "Multiple presets", "KB size control", "Format conversion"],
+    seoKeywords: ["govt job photo resize", "SSC photo size", "UPSC photo resize", "government exam photo"]
+  },
+  {
+    id: "passport-photo-resize",
+    title: "Passport Photo Resizer",
+    description: "Resize photos to passport size specifications. Meet international passport photo requirements.",
+    shortDescription: "Resize photos to passport size specs.",
+    icon: FileImage,
+    colorClass: "bg-gradient-to-br from-red-500 to-rose-600",
+    href: "/passport-photo-resize",
+    category: "image",
+    features: ["Passport specs", "Auto crop", "Background check", "Print layout"],
+    seoKeywords: ["passport photo resize", "passport size photo", "passport photo maker", "passport photo dimensions"]
+  },
 
   // Calculator Tools
   {
@@ -308,6 +476,45 @@ export const toolsData: ToolData[] = [
     features: ["All GST rates", "CGST/SGST/IGST", "Inclusive/Exclusive", "Instant results"],
     seoKeywords: ["GST calculator", "GST India", "CGST SGST calculator", "tax calculator"]
   },
+  {
+    id: "calculator",
+    title: "Scientific Calculator",
+    description: "Full-featured scientific calculator with basic and advanced math operations. Supports trigonometry, logarithms, and more.",
+    shortDescription: "Full-featured scientific calculator online.",
+    icon: Calculator,
+    colorClass: "bg-gradient-to-br from-blue-500 to-indigo-500",
+    href: "/calculator",
+    category: "calculator",
+    previewImage: "/previews/calculator-preview.webp",
+    features: ["Basic math", "Scientific functions", "History", "Keyboard support"],
+    seoKeywords: ["scientific calculator", "online calculator", "math calculator", "free calculator"]
+  },
+  {
+    id: "age-calculator",
+    title: "Age Calculator",
+    description: "Calculate your exact age in years, months, days, hours and minutes. Get birthday wishes and life statistics.",
+    shortDescription: "Calculate exact age in years, months and days.",
+    icon: Cake,
+    colorClass: "bg-gradient-to-br from-violet-500 to-purple-600",
+    href: "/age-calculator",
+    category: "calculator",
+    previewImage: "/previews/age-calculator-preview.webp",
+    features: ["Exact age", "Next birthday", "Life statistics", "Birthday wishes"],
+    seoKeywords: ["age calculator", "calculate age", "date of birth calculator", "exact age calculator"]
+  },
+  {
+    id: "currency-converter",
+    title: "Currency Converter",
+    description: "Convert between world currencies with live exchange rates. Supports 150+ currencies with real-time data.",
+    shortDescription: "Convert currencies with live exchange rates.",
+    icon: DollarSign,
+    colorClass: "bg-gradient-to-br from-yellow-500 to-amber-600",
+    href: "/currency-converter",
+    category: "calculator",
+    previewImage: "/previews/currency-converter-preview.webp",
+    features: ["Live rates", "150+ currencies", "Swap currencies", "History chart"],
+    seoKeywords: ["currency converter", "exchange rate", "money converter", "forex calculator"]
+  },
 
   // QR Tools
   {
@@ -364,6 +571,19 @@ export const toolsData: ToolData[] = [
     features: ["Word count", "Character count", "Reading time", "Keyword density"],
     seoKeywords: ["word counter", "character counter", "text analyzer", "word count tool"]
   },
+  {
+    id: "unit-converter",
+    title: "Unit Converter",
+    description: "Convert between units of length, weight, temperature, volume, speed and more. Comprehensive unit conversion tool.",
+    shortDescription: "Convert between units of measurement.",
+    icon: Ruler,
+    colorClass: "bg-gradient-to-br from-indigo-500 to-violet-500",
+    href: "/unit-converter",
+    category: "utility",
+    previewImage: "/previews/unit-converter-preview.webp",
+    features: ["Length", "Weight", "Temperature", "Volume"],
+    seoKeywords: ["unit converter", "convert units", "measurement converter", "unit conversion tool"]
+  },
 
   // Document Converters
   {
@@ -404,6 +624,71 @@ export const toolsData: ToolData[] = [
     previewImage: "/previews/pdf-to-powerpoint-preview.webp",
     features: ["Slide extraction", "Image preservation", "Text editing", "Batch convert"],
     seoKeywords: ["PDF to PowerPoint", "PDF to PPT", "convert PDF", "presentation converter"]
+  },
+  {
+    id: "word-to-excel",
+    title: "Word to Excel",
+    description: "Convert Word documents to Excel spreadsheets. Extract tables and data from DOCX to XLSX.",
+    shortDescription: "Convert Word documents to Excel spreadsheets.",
+    icon: Table,
+    colorClass: "bg-gradient-to-br from-blue-500 to-green-500",
+    href: "/word-to-excel",
+    category: "document",
+    previewImage: "/previews/word-to-excel-preview.webp",
+    features: ["Table extraction", "Data preservation", "Formatting", "Batch convert"],
+    seoKeywords: ["Word to Excel", "DOCX to XLSX", "convert Word to Excel", "Word Excel converter"]
+  },
+  {
+    id: "excel-to-word",
+    title: "Excel to Word",
+    description: "Convert Excel spreadsheets to Word documents. Preserve table formatting and data layout.",
+    shortDescription: "Convert Excel spreadsheets to Word documents.",
+    icon: FileText,
+    colorClass: "bg-gradient-to-br from-green-500 to-blue-500",
+    href: "/excel-to-word",
+    category: "document",
+    previewImage: "/previews/excel-to-word-preview.webp",
+    features: ["Table formatting", "Data layout", "Multiple sheets", "Batch convert"],
+    seoKeywords: ["Excel to Word", "XLSX to DOCX", "convert Excel to Word", "Excel Word converter"]
+  },
+  {
+    id: "ppt-to-pdf",
+    title: "PPT to PDF",
+    description: "Convert PowerPoint presentations to PDF documents. Preserve slides, animations preview, and formatting.",
+    shortDescription: "Convert PowerPoint presentations to PDF.",
+    icon: Presentation,
+    colorClass: "bg-gradient-to-br from-red-500 to-orange-500",
+    href: "/ppt-to-pdf",
+    category: "document",
+    previewImage: "/previews/ppt-to-pdf-preview.webp",
+    features: ["Slide preservation", "Formatting", "Fast conversion", "Batch convert"],
+    seoKeywords: ["PPT to PDF", "PowerPoint to PDF", "convert PPT", "presentation to PDF"]
+  },
+  {
+    id: "html-to-pdf",
+    title: "HTML to PDF",
+    description: "Convert HTML web pages to PDF documents. Capture full page content with styling and layout.",
+    shortDescription: "Convert HTML web pages to PDF documents.",
+    icon: Code,
+    colorClass: "bg-gradient-to-br from-cyan-500 to-teal-500",
+    href: "/html-to-pdf",
+    category: "document",
+    previewImage: "/previews/html-to-pdf-preview.webp",
+    features: ["Full page capture", "CSS styling", "Layout preservation", "Custom sizing"],
+    seoKeywords: ["HTML to PDF", "convert webpage to PDF", "HTML PDF converter", "web page to PDF"]
+  },
+  {
+    id: "google-drive-to-pdf",
+    title: "Google Drive to PDF",
+    description: "Convert Google Drive documents to PDF format. Access and convert your Google Docs, Sheets, and Slides.",
+    shortDescription: "Convert Google Drive files to PDF.",
+    icon: HardDrive,
+    colorClass: "bg-gradient-to-br from-yellow-500 to-green-500",
+    href: "/google-drive-to-pdf",
+    category: "document",
+    previewImage: "/previews/google-drive-to-pdf-preview.webp",
+    features: ["Google Docs", "Google Sheets", "Google Slides", "Direct conversion"],
+    seoKeywords: ["Google Drive to PDF", "convert Google Doc to PDF", "Google Sheets to PDF", "Drive PDF converter"]
   },
 ];
 

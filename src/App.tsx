@@ -124,6 +124,7 @@ const App = () => (
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/all-tools" element={<AllTools />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
               {/* Category Pages */}

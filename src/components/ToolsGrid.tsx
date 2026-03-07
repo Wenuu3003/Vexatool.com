@@ -75,7 +75,7 @@ export const ToolsGrid = ({
 
         <div className="flex justify-center mt-12">
           <Link
-            to="/pdf-tools"
+            to="/all-tools"
             className={cn(
               "inline-flex items-center gap-2 px-8 py-3 rounded-lg text-sm font-semibold",
               "bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"

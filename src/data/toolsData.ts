@@ -116,15 +116,15 @@ export const toolsData: ToolData[] = [
   {
     id: "unlock-pdf",
     title: "Unlock PDF",
-    description: "Remove PDF password security for freedom to use your PDFs. Unlock protected documents.",
-    shortDescription: "Remove PDF password security.",
+    description: "Remove PDF password protection instantly. Enter password, remove it, preview the unlocked PDF, and download — all in your browser.",
+    shortDescription: "Remove PDF password & preview unlocked file.",
     icon: Unlock,
     colorClass: "bg-gradient-to-br from-amber-500 to-orange-500",
     href: "/unlock-pdf",
     category: "pdf",
     previewImage: "/previews/unlock-pdf-preview.webp",
-    features: ["Password removal", "Batch unlock", "Secure process", "No data stored"],
-    seoKeywords: ["unlock PDF", "remove password", "PDF unlocker", "decrypt PDF"]
+    features: ["Password removal", "Live preview", "Restriction removal", "100% browser-based"],
+    seoKeywords: ["unlock PDF", "remove PDF password", "PDF unlocker", "decrypt PDF", "PDF password remover"]
   },
   {
     id: "protect-pdf",

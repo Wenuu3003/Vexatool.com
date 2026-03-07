@@ -102,6 +102,7 @@ const PassportPhotoResizer = lazy(() => import("./pages/tools/PassportPhotoResiz
 
 // Document Converters (additional)
 const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
+const AllTools = lazy(() => import("./pages/AllTools"));
 
 const queryClient = new QueryClient();
 

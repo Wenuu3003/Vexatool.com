@@ -102,6 +102,7 @@ const PassportPhotoResizer = lazy(() => import("./pages/tools/PassportPhotoResiz
 
 // Document Converters (additional)
 const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
+const AllTools = lazy(() => import("./pages/AllTools"));
 
 const queryClient = new QueryClient();
 
@@ -124,6 +125,7 @@ const App = () => (
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/all-tools" element={<AllTools />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
               {/* Category Pages */}

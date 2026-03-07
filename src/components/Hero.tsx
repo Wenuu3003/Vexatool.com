@@ -16,10 +16,10 @@ export const Hero = () => {
           </p>
           
           <Link
-            to="/blog"
+            to="/all-tools"
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-lg shadow-md hover:opacity-90 transition-opacity"
           >
-            Read Our Blog
+            Explore All Tools
           </Link>
         </div>
 

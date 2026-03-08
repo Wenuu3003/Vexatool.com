@@ -458,7 +458,7 @@ const UnlockPDF = () => {
                     <Button
                       size="lg"
                       onClick={handleUnlock}
-                      disabled={isProcessing || (protectionStatus === "password-protected" && !password.trim())}
+                      disabled={isProcessing || (protectionStatus === "password-protected" && password.length === 0)}
                       className="gap-2"
                     >
                       {isProcessing ? (

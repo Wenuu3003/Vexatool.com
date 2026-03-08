@@ -14,45 +14,34 @@
     <meta name="yandex-verification" content="01c799ac397852cf" />
     <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE" />
     <link rel="canonical" href="https://vexatool.com" />
+
+    <!-- Single preconnect for Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet" />
-    
+
     <!-- Hreflang -->
     <link rel="alternate" hreflang="en-IN" href="https://vexatool.com" />
     <link rel="alternate" hreflang="en" href="https://vexatool.com" />
     <link rel="alternate" hreflang="x-default" href="https://vexatool.com" />
-    
-    <!-- DNS Prefetch for faster loading -->
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    
-    <!-- Preconnect for critical resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Preload critical fonts to prevent layout shift -->
-    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiEyp8kv8JHgFVrJJfecnFHGPc.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLGT9Z1xlFd2JQEk.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLCz7Z1xlFd2JQEk.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="https://fonts.gstatic.com/s/poppins/v24/pxiByp8kv8JHgFVrLEj6Z1xlFd2JQEk.woff2" as="font" type="font/woff2" crossorigin>
-    
-    <!-- Critical CSS for above-the-fold content -->
+
+    <!-- Critical inline CSS for instant first paint -->
     <style>
       @font-face {
-        font-family: 'Poppins Fallback';
-        src: local('Arial');
-        size-adjust: 105%;
-        ascent-override: 105%;
-        descent-override: 35%;
-        line-gap-override: 10%;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2) format('woff2');
       }
-      body{margin:0;font-family:'Poppins','Poppins Fallback',system-ui,-apple-system,sans-serif;background:#f1f1f2}
+      body{margin:0;font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f8f9fb}
       #root{min-height:100vh}
-      .loading-skeleton{background:linear-gradient(90deg,#e0e0e0 25%,#f0f0f0 50%,#e0e0e0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-      @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-      #tools-grid-placeholder{min-height:2000px}
     </style>
+
+    <!-- Non-critical fonts loaded async -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&display=swap" />
+    </noscript>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -81,27 +70,23 @@
     <meta name="application-name" content="VexaTool" />
     <meta name="msapplication-TileColor" content="#2563eb" />
     <meta name="format-detection" content="telephone=no" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    
+
     <!-- PWA Apple Touch Icons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/pwa-192x192.png" />
     <link rel="mask-icon" href="/favicon.ico" color="#2563eb" />
-    
-    <!-- Geo Tags for Local SEO - India First -->
+
+    <!-- Geo Tags for Local SEO -->
     <meta name="geo.region" content="IN" />
     <meta name="geo.placename" content="India" />
     <meta name="geo.position" content="20.5937;78.9629" />
     <meta name="ICBM" content="20.5937, 78.9629" />
-    
-    <!-- Content Language -->
     <meta http-equiv="content-language" content="en-IN" />
-    
-    <!-- India-specific SEO -->
     <meta name="distribution" content="global" />
     <meta name="rating" content="general" />
     <meta name="revisit-after" content="7 days" />
-    <meta name="coverage" content="Worldwide" />
-    <meta name="target" content="all" />
+
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-3192107856471636">
 
     <!-- Structured Data - WebApplication -->
     <script type="application/ld+json">
@@ -181,27 +166,23 @@
       ]
     }
     </script>
-
-    <!-- Google AdSense -->
-    <meta name="google-adsense-account" content="ca-pub-3192107856471636">
-    <!-- Fonts with display swap for performance -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    </noscript>
-    
-    <!-- Microsoft Clarity tracking code -->
-    <script>
-      (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "uuq8g3kkog");
-    </script>
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Clarity & analytics deferred to after page load -->
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "uuq8g3kkog");
+        }, 3000);
+      });
+    </script>
   </body>
 </html>

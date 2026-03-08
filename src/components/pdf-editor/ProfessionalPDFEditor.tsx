@@ -920,7 +920,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] min-h-[400px] md:min-h-[600px] border border-border rounded-lg overflow-hidden bg-background">
+    <div 
+      ref={editorContainerRef}
+      className="flex flex-col h-[calc(100vh-200px)] min-h-[400px] md:min-h-[600px] border border-border rounded-lg overflow-hidden bg-background"
+    >
       {/* Hidden file input for images */}
       <input
         ref={imageInputRef}

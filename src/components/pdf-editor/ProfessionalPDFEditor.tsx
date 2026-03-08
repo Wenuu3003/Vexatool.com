@@ -367,6 +367,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       fillColor: '#FFFFFF',
     };
     
+    const replaceFontSize = Math.max(8, Math.round(originalBlock.height * 0.85));
     const textElement: TextElement = {
       id: `text-${Date.now()}`,
       type: 'text',
@@ -374,13 +375,13 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       x: originalBlock.x,
       y: originalBlock.y,
       width: Math.max(originalBlock.width, newText.length * (originalBlock.height * 0.6)),
-      height: originalBlock.height,
+      height: replaceFontSize, // match height to fontSize for lineHeight:1 alignment
       rotation: 0,
       opacity: 1,
       locked: false,
       zIndex: elements.length + 1,
       text: newText,
-      fontSize: Math.max(8, Math.round(originalBlock.height * 0.85)),
+      fontSize: replaceFontSize,
       fontFamily: 'Helvetica',
       fontWeight: 'normal',
       fontStyle: 'normal',

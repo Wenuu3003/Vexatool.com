@@ -260,6 +260,7 @@ export const EditorCanvas = memo(({
     onSelectElement(null);
     
     if (activeTool === 'text') {
+      const defaultFontSize = 16;
       const newElement: TextElement = {
         id: `text-${Date.now()}`,
         type: 'text',
@@ -267,13 +268,13 @@ export const EditorCanvas = memo(({
         x: pos.x,
         y: pos.y,
         width: 150,
-        height: 30,
+        height: defaultFontSize, // match height to fontSize for tight lineHeight:1
         rotation: 0,
         opacity: 1,
         locked: false,
         zIndex: elements.length,
         text: 'Click to edit',
-        fontSize: 16,
+        fontSize: defaultFontSize,
         fontFamily: 'Helvetica',
         fontWeight: 'normal',
         fontStyle: 'normal',

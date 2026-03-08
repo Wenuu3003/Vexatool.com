@@ -970,6 +970,7 @@ export const EditorCanvas = memo(({
         {/* Text selection overlay - rendered inside scaled container */}
         {textOverlay}
       </div>
+      </div>
       {renderEraserCursor()}
     </div>
   );

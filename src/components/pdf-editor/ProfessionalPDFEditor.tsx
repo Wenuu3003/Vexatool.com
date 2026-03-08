@@ -1024,7 +1024,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         )}
         
         {/* Canvas with text selection layer rendered inside */}
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative overflow-hidden min-w-0">
           <EditorCanvas
             pages={pages}
             currentPage={currentPage}

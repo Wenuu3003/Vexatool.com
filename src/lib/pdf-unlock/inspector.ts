@@ -45,13 +45,12 @@ export const openPdfDocument = async (
 ): Promise<pdfjsLib.PDFDocumentProxy> => {
   configurePdfWorker();
 
-  const { password, disableWorker = false, logger } = options;
+  const { password, logger } = options;
 
   const loadingTask = pdfjsLib.getDocument({
     data: data.slice(),
     password,
     useSystemFonts: true,
-    disableWorker,
   });
 
   try {

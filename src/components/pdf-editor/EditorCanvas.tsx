@@ -579,19 +579,32 @@ export const EditorCanvas = memo(({
     switch (element.type) {
       case 'text': {
         const textEl = element as TextElement;
+        // Use lineHeight:1 and no padding so the CSS text box tightly
+        // wraps the glyphs — this matches the pdf-lib export positioning.
+        const textStyle: React.CSSProperties = {
+          fontFamily: textEl.fontFamily,
+          fontSize: textEl.fontSize,
+          fontWeight: textEl.fontWeight,
+          fontStyle: textEl.fontStyle,
+          textDecoration: textEl.textDecoration,
+          color: textEl.color,
+          lineHeight: 1,
+          padding: 0,
+          margin: 0,
+        };
         return (
           <div
             key={element.id}
             className={`editor-element ${isSelected ? 'ring-2 ring-primary' : ''}`}
             style={{
               ...baseStyle,
-              fontFamily: textEl.fontFamily,
-              fontSize: textEl.fontSize,
-              fontWeight: textEl.fontWeight,
-              fontStyle: textEl.fontStyle,
-              textDecoration: textEl.textDecoration,
-              color: textEl.color,
+              ...textStyle,
               minWidth: 50,
+              // Override height to auto so it tracks fontSize tightly
+              height: 'auto',
+              minHeight: textEl.fontSize,
+              display: 'flex',
+              alignItems: 'flex-start',
             }}
             onMouseDown={(e) => handleElementMouseDown(e, element.id)}
             onDoubleClick={(e) => handleTextDoubleClick(e, element.id)}
@@ -605,15 +618,12 @@ export const EditorCanvas = memo(({
                 autoFocus
                 className="bg-transparent border-none outline-none w-full"
                 style={{
-                  fontFamily: textEl.fontFamily,
-                  fontSize: textEl.fontSize,
-                  fontWeight: textEl.fontWeight,
-                  fontStyle: textEl.fontStyle,
-                  color: textEl.color,
+                  ...textStyle,
+                  height: textEl.fontSize,
                 }}
               />
             ) : (
-              textEl.text
+              <span style={{ whiteSpace: 'pre' }}>{textEl.text}</span>
             )}
             {isSelected && !element.locked && (
               <div

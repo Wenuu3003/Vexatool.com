@@ -11,7 +11,7 @@ const trustItems = [
 export const Hero = () => {
   return (
     <section
-      className="relative py-24 md:py-32 lg:py-36 overflow-hidden"
+      className="relative py-16 sm:py-24 md:py-32 lg:py-36 overflow-hidden"
       aria-labelledby="hero-heading"
     >
       {/* Background */}
@@ -30,35 +30,35 @@ export const Hero = () => {
         <div className="max-w-2xl mx-auto text-center">
           <h1
             id="hero-heading"
-            className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold mb-5 leading-[1.15] tracking-tight text-foreground"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold mb-4 md:mb-5 leading-[1.15] tracking-tight text-foreground"
           >
             Free Online Tools for
             <br className="hidden sm:block" />
             {" "}PDF, Image & More
           </h1>
 
-          <p className="text-base md:text-lg max-w-lg mx-auto mb-10 leading-relaxed text-muted-foreground">
+          <p className="text-sm sm:text-base md:text-lg max-w-md mx-auto mb-8 md:mb-10 leading-relaxed text-muted-foreground">
             Merge, edit, compress and convert documents in seconds.
-            No signup. 100% private. Works in your browser.
+            No signup. 100% private.
           </p>
 
           <Link
             to="/all-tools"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all duration-200"
+            className="inline-flex items-center gap-2 px-7 py-3 sm:px-8 sm:py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl hover:bg-primary/90 transition-all duration-200"
           >
             Explore All Tools
           </Link>
         </div>
 
         {/* Trust indicators */}
-        <div className="max-w-xl mx-auto mt-16">
-          <div className="grid grid-cols-4 gap-3">
+        <div className="max-w-md mx-auto mt-12 md:mt-16">
+          <div className="grid grid-cols-4 gap-2 sm:gap-3">
             {trustItems.map((item) => (
-              <div key={item.label} className="flex flex-col items-center text-center gap-1.5">
-                <div className="w-10 h-10 rounded-lg bg-card/80 backdrop-blur-sm shadow-sm flex items-center justify-center">
-                  <item.icon className="w-5 h-5 text-primary" />
+              <div key={item.label} className="flex flex-col items-center text-center gap-1">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-card/80 backdrop-blur-sm shadow-sm flex items-center justify-center">
+                  <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
-                <span className="text-xs font-medium text-foreground/80">{item.label}</span>
+                <span className="text-[10px] sm:text-xs font-medium text-foreground/80 leading-tight">{item.label}</span>
               </div>
             ))}
           </div>

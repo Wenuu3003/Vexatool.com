@@ -104,6 +104,19 @@ const PassportPhotoResizer = lazy(() => import("./pages/tools/PassportPhotoResiz
 const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
 const AllTools = lazy(() => import("./pages/AllTools"));
 
+// Admin
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminTools = lazy(() => import("./pages/admin/AdminTools"));
+const AdminBlogs = lazy(() => import("./pages/admin/AdminBlogs"));
+const AdminFAQs = lazy(() => import("./pages/admin/AdminFAQs"));
+const AdminCategories = lazy(() => import("./pages/admin/AdminCategories"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminMessages = lazy(() => import("./pages/admin/AdminMessages"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+const AdminMedia = lazy(() => import("./pages/admin/AdminMedia"));
+
 const queryClient = new QueryClient();
 
 const PageLoader = () => (

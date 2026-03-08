@@ -174,6 +174,17 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         if (isCancelled) return;
         
         setPages(loadedPages);
+        
+        // Auto-fit to viewport on mobile after pages load
+        if (isMobile && loadedPages.length > 0) {
+          setTimeout(() => {
+            const firstPage = loadedPages[0];
+            const viewportWidth = window.innerWidth - 32; // account for padding
+            const fitZoom = Math.min(0.8, Math.max(0.2, viewportWidth / firstPage.width));
+            setZoom(fitZoom);
+          }, 100);
+        }
+        
         setLoadProgress(90);
         
         // Detect PDF type

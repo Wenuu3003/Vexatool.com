@@ -20,6 +20,7 @@ import Index from "./pages/Index";
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Account = lazy(() => import("./pages/Account"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 // Category Pages
 const PDFTools = lazy(() => import("./pages/categories/PDFTools"));
@@ -141,6 +142,7 @@ const App = () => (
               <Route path="/all-tools" element={<AllTools />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               {/* Admin Panel */}
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />

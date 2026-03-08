@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
+// Helper for tables not yet in auto-generated types
+const db = supabase as any;
+
 export const useAdmin = () => {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -16,7 +19,7 @@ export const useAdmin = () => {
       }
 
       try {
-        const { data, error } = await supabase.rpc("has_role", {
+        const { data, error } = await db.rpc("has_role", {
           _user_id: user.id,
           _role: "admin",
         });
@@ -37,7 +40,7 @@ export const useAdmin = () => {
   const setupFirstAdmin = async () => {
     if (!user) return false;
     try {
-      const { data, error } = await supabase.rpc("setup_first_admin");
+      const { data, error } = await db.rpc("setup_first_admin");
       if (error) throw error;
       if (data) {
         setIsAdmin(true);

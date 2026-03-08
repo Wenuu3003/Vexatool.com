@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wrench, FileText, HelpCircle, Mail, Users, FolderOpen, Eye, TrendingUp } from "lucide-react";
+import { Wrench, FileText, HelpCircle, Mail, Users, FolderOpen } from "lucide-react";
+
+const db = supabase as any;
 
 interface Stats {
   tools: number;
@@ -25,11 +27,11 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const [tools, blogs, faqs, categories, messages, profiles] = await Promise.all([
-          supabase.from("admin_tools").select("id, is_enabled", { count: "exact" }),
-          supabase.from("admin_blogs").select("id", { count: "exact" }),
-          supabase.from("admin_faqs").select("id", { count: "exact" }),
-          supabase.from("admin_categories").select("id", { count: "exact" }),
-          supabase.from("contact_messages").select("id, is_read", { count: "exact" }),
+          db.from("admin_tools").select("id, is_enabled", { count: "exact" }),
+          db.from("admin_blogs").select("id", { count: "exact" }),
+          db.from("admin_faqs").select("id", { count: "exact" }),
+          db.from("admin_categories").select("id", { count: "exact" }),
+          db.from("contact_messages").select("id, is_read", { count: "exact" }),
           supabase.from("profiles").select("id", { count: "exact" }),
         ]);
 

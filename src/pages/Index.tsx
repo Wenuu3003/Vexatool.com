@@ -24,7 +24,7 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Free Online PDF Tools – Secure, Fast & Easy | VexaTool</title>
+        <title>Free Online Tools – PDF, Image, QR & More | VexaTool</title>
         <meta name="description" content="VexaTool provides secure and free online PDF editor, QR code generator, image tools and calculators. Fast, easy and mobile-friendly tools for everyone." />
         <meta name="keywords" content="free online tools, PDF editor, QR code generator, image tools, calculator, merge PDF, compress PDF, VexaTool" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />

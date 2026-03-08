@@ -57,6 +57,39 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  const handleForgotPassword = async () => {
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      toast({
+        title: "Email Required",
+        description: "Enter your email first, then click Forgot password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await resetPassword(normalizedEmail);
+      if (error) {
+        toast({
+          title: "Reset Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Reset Link Sent",
+        description: "Check your email to set a new password.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -85,8 +118,10 @@ const Auth = () => {
     setIsSubmitting(true);
 
     try {
+      const normalizedEmail = email.trim().toLowerCase();
+
       if (isLogin) {
-        const { error } = await signIn(email, password);
+        const { error } = await signIn(normalizedEmail, password);
         if (error) {
           toast({
             title: "Login Failed",
@@ -103,7 +138,7 @@ const Auth = () => {
           navigate('/');
         }
       } else {
-        const { error } = await signUp(email, password);
+        const { error, data } = await signUp(normalizedEmail, password);
         if (error) {
           if (error.message.includes("already registered")) {
             toast({
@@ -118,12 +153,33 @@ const Auth = () => {
               variant: "destructive",
             });
           }
-        } else {
+          return;
+        }
+
+        const isExistingEmailSignup = Array.isArray(data?.user?.identities) && data.user.identities.length === 0;
+
+        if (isExistingEmailSignup) {
+          toast({
+            title: "Account Exists",
+            description: "This email already exists. Signup does not reset password — use Forgot password.",
+            variant: "destructive",
+          });
+          setIsLogin(true);
+          return;
+        }
+
+        if (data?.session) {
           toast({
             title: "Account Created!",
-            description: "You have successfully signed up",
+            description: "You have successfully signed up and logged in.",
           });
           navigate('/');
+        } else {
+          toast({
+            title: "Account Created",
+            description: "Please check your email to verify before login.",
+          });
+          setIsLogin(true);
         }
       }
     } finally {

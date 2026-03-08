@@ -141,6 +141,19 @@ const App = () => (
               <Route path="/all-tools" element={<AllTools />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
+              {/* Admin Panel */}
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="tools" element={<AdminTools />} />
+                <Route path="blogs" element={<AdminBlogs />} />
+                <Route path="faqs" element={<AdminFAQs />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="settings" element={<AdminSettings />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="messages" element={<AdminMessages />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
+                <Route path="media" element={<AdminMedia />} />
+              </Route>
               {/* Category Pages */}
               <Route path="/pdf-tools" element={<PDFTools />} />
               <Route path="/image-tools" element={<ImageTools />} />

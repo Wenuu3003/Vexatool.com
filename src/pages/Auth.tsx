@@ -43,7 +43,7 @@ const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user, signIn, signUp, resetPassword } = useAuth();
+  const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -56,39 +56,6 @@ const Auth = () => {
       navigate('/');
     }
   }, [user, navigate]);
-
-  const handleForgotPassword = async () => {
-    const normalizedEmail = email.trim().toLowerCase();
-
-    if (!normalizedEmail) {
-      toast({
-        title: "Email Required",
-        description: "Enter your email first, then click Forgot password.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const { error } = await resetPassword(normalizedEmail);
-      if (error) {
-        toast({
-          title: "Reset Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Reset Link Sent",
-        description: "Check your email to set a new password.",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,10 +85,8 @@ const Auth = () => {
     setIsSubmitting(true);
 
     try {
-      const normalizedEmail = email.trim().toLowerCase();
-
       if (isLogin) {
-        const { error } = await signIn(normalizedEmail, password);
+        const { error } = await signIn(email, password);
         if (error) {
           toast({
             title: "Login Failed",
@@ -138,7 +103,7 @@ const Auth = () => {
           navigate('/');
         }
       } else {
-        const { error, data } = await signUp(normalizedEmail, password);
+        const { error } = await signUp(email, password);
         if (error) {
           if (error.message.includes("already registered")) {
             toast({
@@ -153,33 +118,12 @@ const Auth = () => {
               variant: "destructive",
             });
           }
-          return;
-        }
-
-        const isExistingEmailSignup = Array.isArray(data?.user?.identities) && data.user.identities.length === 0;
-
-        if (isExistingEmailSignup) {
-          toast({
-            title: "Account Exists",
-            description: "This email already exists. Signup does not reset password — use Forgot password.",
-            variant: "destructive",
-          });
-          setIsLogin(true);
-          return;
-        }
-
-        if (data?.session) {
-          toast({
-            title: "Account Created!",
-            description: "You have successfully signed up and logged in.",
-          });
-          navigate('/');
         } else {
           toast({
-            title: "Account Created",
-            description: "Please check your email to verify before login.",
+            title: "Account Created!",
+            description: "You have successfully signed up",
           });
-          setIsLogin(true);
+          navigate('/');
         }
       }
     } finally {
@@ -266,18 +210,6 @@ const Auth = () => {
               )}
             </Button>
           </form>
-          {isLogin && (
-            <div className="mt-3 text-right">
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                disabled={isSubmitting}
-                className="text-sm text-primary hover:underline disabled:opacity-60"
-              >
-                Forgot password?
-              </button>
-            </div>
-          )}
           <div className="mt-4 text-center">
             <button
               type="button"

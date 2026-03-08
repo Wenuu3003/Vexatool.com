@@ -14,188 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_blogs: {
-        Row: {
-          author: string | null
-          content: string | null
-          created_at: string | null
-          excerpt: string | null
-          featured_image: string | null
-          id: string
-          is_published: boolean | null
-          seo_description: string | null
-          seo_title: string | null
-          slug: string
-          tags: Json | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          author?: string | null
-          content?: string | null
-          created_at?: string | null
-          excerpt?: string | null
-          featured_image?: string | null
-          id?: string
-          is_published?: boolean | null
-          seo_description?: string | null
-          seo_title?: string | null
-          slug: string
-          tags?: Json | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          author?: string | null
-          content?: string | null
-          created_at?: string | null
-          excerpt?: string | null
-          featured_image?: string | null
-          id?: string
-          is_published?: boolean | null
-          seo_description?: string | null
-          seo_title?: string | null
-          slug?: string
-          tags?: Json | null
-          title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      admin_categories: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          icon: string | null
-          id: string
-          is_active: boolean | null
-          name: string
-          slug: string
-          sort_order: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          icon?: string | null
-          id?: string
-          is_active?: boolean | null
-          name: string
-          slug: string
-          sort_order?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          icon?: string | null
-          id?: string
-          is_active?: boolean | null
-          name?: string
-          slug?: string
-          sort_order?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      admin_faqs: {
-        Row: {
-          answer: string
-          created_at: string | null
-          id: string
-          is_published: boolean | null
-          question: string
-          sort_order: number | null
-          tool_slug: string | null
-        }
-        Insert: {
-          answer: string
-          created_at?: string | null
-          id?: string
-          is_published?: boolean | null
-          question: string
-          sort_order?: number | null
-          tool_slug?: string | null
-        }
-        Update: {
-          answer?: string
-          created_at?: string | null
-          id?: string
-          is_published?: boolean | null
-          question?: string
-          sort_order?: number | null
-          tool_slug?: string | null
-        }
-        Relationships: []
-      }
-      admin_tools: {
-        Row: {
-          category_id: string | null
-          created_at: string | null
-          description: string | null
-          features: Json | null
-          icon: string | null
-          id: string
-          is_enabled: boolean | null
-          is_featured: boolean | null
-          name: string
-          preview_image: string | null
-          route_path: string
-          seo_description: string | null
-          seo_keywords: string | null
-          seo_title: string | null
-          slug: string
-          sort_order: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          category_id?: string | null
-          created_at?: string | null
-          description?: string | null
-          features?: Json | null
-          icon?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          is_featured?: boolean | null
-          name: string
-          preview_image?: string | null
-          route_path: string
-          seo_description?: string | null
-          seo_keywords?: string | null
-          seo_title?: string | null
-          slug: string
-          sort_order?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          category_id?: string | null
-          created_at?: string | null
-          description?: string | null
-          features?: Json | null
-          icon?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          is_featured?: boolean | null
-          name?: string
-          preview_image?: string | null
-          route_path?: string
-          seo_description?: string | null
-          seo_keywords?: string | null
-          seo_title?: string | null
-          slug?: string
-          sort_order?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "admin_tools_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "admin_categories"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       audit_log: {
         Row: {
           action_details: Json | null
@@ -226,36 +44,6 @@ export type Database = {
         }
         Relationships: []
       }
-      contact_messages: {
-        Row: {
-          created_at: string | null
-          email: string
-          id: string
-          is_read: boolean | null
-          message: string
-          name: string
-          subject: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          id?: string
-          is_read?: boolean | null
-          message: string
-          name: string
-          subject?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          id?: string
-          is_read?: boolean | null
-          message?: string
-          name?: string
-          subject?: string | null
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           created_at: string
@@ -277,30 +65,6 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
-        }
-        Relationships: []
-      }
-      site_settings: {
-        Row: {
-          id: string
-          setting_key: string
-          setting_type: string | null
-          setting_value: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          setting_key: string
-          setting_type?: string | null
-          setting_value?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          setting_key?: string
-          setting_type?: string | null
-          setting_value?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }
@@ -331,40 +95,15 @@ export type Database = {
         }
         Relationships: []
       }
-      user_roles: {
-        Row: {
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      setup_first_admin: { Args: never; Returns: boolean }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "moderator" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -491,8 +230,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "moderator", "user"],
-    },
+    Enums: {},
   },
 } as const

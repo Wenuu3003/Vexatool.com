@@ -6,8 +6,13 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string) => Promise<{
+    error: Error | null;
+    data: { user: User | null; session: Session | null } | null;
+  }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  updatePassword: (password: string) => Promise<{ error: Error | null }>;
   signInWithGoogle: () => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -21,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -39,16 +44,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string) => {
     const redirectUrl = `${window.location.origin}/`;
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { emailRedirectTo: redirectUrl }
     });
-    return { error };
+    return { data, error };
   };
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error };
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error };
+  };
+
+  const updatePassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password });
     return { error };
   };
 
@@ -67,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, resetPassword, updatePassword, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   );

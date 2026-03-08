@@ -266,6 +266,18 @@ const Auth = () => {
               )}
             </Button>
           </form>
+          {isLogin && (
+            <div className="mt-3 text-right">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={isSubmitting}
+                className="text-sm text-primary hover:underline disabled:opacity-60"
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
           <div className="mt-4 text-center">
             <button
               type="button"

@@ -142,6 +142,7 @@ const App = () => (
               <Route path="/all-tools" element={<AllTools />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               {/* Admin Panel */}
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />

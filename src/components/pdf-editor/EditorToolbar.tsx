@@ -103,7 +103,7 @@ export const EditorToolbar = memo(({
   const [showEraserPopover, setShowEraserPopover] = useState(false);
 
   return (
-    <div className="bg-card border-b border-border p-2 flex items-center gap-1 sticky top-0 z-20 overflow-x-auto scrollbar-thin">
+    <div className="bg-card border-b border-border p-1.5 md:p-2 flex items-center gap-0.5 md:gap-1 sticky top-0 z-20 overflow-x-auto scrollbar-thin min-h-[44px]">
       {/* Selection Tools */}
       <div className="flex items-center gap-0.5">
         <ToolButton icon={MousePointer2} tool="select" activeTool={activeTool} onClick={onToolChange} tooltip="Select (V)" />

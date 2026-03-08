@@ -33,10 +33,6 @@ export const ToolsGrid = ({
   return (
     <section id="tools-grid" className="py-20 md:py-24" style={{ backgroundColor: "#f8fafc" }}>
       <div className="container mx-auto px-4 max-w-5xl">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-12 text-foreground">
-          {title}
-        </h2>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {tools.map((tool) => {
             const Icon = tool.icon;

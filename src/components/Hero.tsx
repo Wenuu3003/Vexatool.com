@@ -25,7 +25,7 @@ export const Hero = () => {
             id="hero-heading"
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-foreground drop-shadow-sm"
           >
-            Free Online PDF Tools – Secure, Fast & Easy
+            Free Online Tools – PDF, Image, QR & More
           </h1>
 
           <p className="text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed text-muted-foreground">

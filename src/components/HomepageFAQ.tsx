@@ -48,25 +48,31 @@ export const HomepageFAQ = () => {
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
       </Helmet>
-      <section className="py-12 md:py-16 bg-muted/30">
+      <section className="py-16 sm:py-20 md:py-24 bg-muted/30 border-t border-border/40">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          <div className="text-center mb-8 sm:mb-10">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 text-foreground tracking-tight">
               Frequently Asked Questions
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to know about using VexaTool free online tools
+            <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+              Everything you need to know about VexaTool
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto">
-            <Accordion type="single" collapsible className="w-full space-y-4">
+          <div className="max-w-2xl mx-auto">
+            <Accordion type="single" collapsible className="w-full space-y-2.5 sm:space-y-3">
               {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`faq-${index}`} className="bg-background border rounded-lg px-6">
-                  <AccordionTrigger className="text-left font-medium hover:no-underline py-4">
+                <AccordionItem
+                  key={index}
+                  value={`faq-${index}`}
+                  className="bg-card border border-border/60 rounded-xl px-4 sm:px-5 shadow-sm"
+                >
+                  <AccordionTrigger className="text-left text-sm font-medium hover:no-underline py-3.5 sm:py-4">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground pb-4">{faq.answer}</AccordionContent>
+                  <AccordionContent className="text-xs sm:text-sm text-muted-foreground pb-4 leading-relaxed">
+                    {faq.answer}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>

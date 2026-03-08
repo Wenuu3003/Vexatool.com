@@ -910,35 +910,45 @@ export const EditorCanvas = memo(({
     return 'default';
   };
 
+  // Compute the scaled dimensions for the layout wrapper
+  const scaledWidth = currentPageData.width * zoom;
+  const scaledHeight = currentPageData.height * zoom;
+
   return (
     <div 
       ref={scrollContainerRef}
-      className="flex-1 overflow-auto bg-muted/30 p-4"
+      className="flex-1 overflow-auto bg-muted/30 p-2 md:p-4"
     >
       {/* 
-        CRITICAL FIX: Use CSS transform: scale(zoom) with transformOrigin: top left.
-        This scales the entire page container uniformly. The inner content uses 
-        UNSCALED coordinates matching the PDF render space.
-        No double-scaling — elements layer does NOT have its own scale transform.
+        Layout wrapper: sets explicit width/height to the SCALED size so the 
+        scroll container doesn't overflow. The inner container uses transform: scale(zoom)
+        which doesn't affect layout — this wrapper compensates for that.
       */}
       <div
-        ref={containerRef}
-        className="relative mx-auto bg-white shadow-lg select-none"
+        className="mx-auto"
         style={{
-          width: currentPageData.width,
-          height: currentPageData.height,
-          transform: `scale(${zoom}) rotate(${currentPageData.rotation}deg)`,
-          transformOrigin: 'top left',
-          cursor: getCursor(),
+          width: scaledWidth,
+          height: scaledHeight,
         }}
-        onMouseDown={handleCanvasMouseDown}
-        onMouseMove={handleCanvasMouseMove}
-        onMouseUp={handleCanvasMouseUp}
-        onMouseLeave={handleCanvasMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
+        <div
+          ref={containerRef}
+          className="relative bg-white shadow-lg select-none"
+          style={{
+            width: currentPageData.width,
+            height: currentPageData.height,
+            transform: `scale(${zoom}) rotate(${currentPageData.rotation}deg)`,
+            transformOrigin: 'top left',
+            cursor: getCursor(),
+          }}
+          onMouseDown={handleCanvasMouseDown}
+          onMouseMove={handleCanvasMouseMove}
+          onMouseUp={handleCanvasMouseUp}
+          onMouseLeave={handleCanvasMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
         {/* PDF Page Image */}
         {currentPageData.canvas && (
           <img
@@ -959,6 +969,7 @@ export const EditorCanvas = memo(({
         
         {/* Text selection overlay - rendered inside scaled container */}
         {textOverlay}
+      </div>
       </div>
       {renderEraserCursor()}
     </div>

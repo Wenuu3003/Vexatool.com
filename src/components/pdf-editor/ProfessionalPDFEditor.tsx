@@ -63,7 +63,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<Tool>('select');
-  const [zoom, setZoom] = useState(isMobile ? 0.4 : 0.75);
+  const [zoom, setZoom] = useState(isMobile ? 0.3 : 0.75);
+  const editorContainerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -173,6 +174,17 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         if (isCancelled) return;
         
         setPages(loadedPages);
+        
+        // Auto-fit to viewport on mobile after pages load
+        if (isMobile && loadedPages.length > 0) {
+          setTimeout(() => {
+            const firstPage = loadedPages[0];
+            const viewportWidth = window.innerWidth - 32; // account for padding
+            const fitZoom = Math.min(0.8, Math.max(0.2, viewportWidth / firstPage.width));
+            setZoom(fitZoom);
+          }, 100);
+        }
+        
         setLoadProgress(90);
         
         // Detect PDF type
@@ -402,12 +414,36 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   }, [zoom]);
 
   const handleFitToWidth = useCallback(() => {
-    setZoom(1);
-  }, []);
+    // Compute zoom that fits the current page width into the available viewport
+    const currentPageData = pages[currentPage];
+    const container = editorContainerRef.current;
+    if (currentPageData && container) {
+      // Available width: container minus sidebar widths, minus padding
+      const sidebarWidth = isMobile ? 0 : (40 * 4 + 64 * 4); // ~pages + properties panel
+      const availableWidth = container.clientWidth - (isMobile ? 16 : 48);
+      const fitZoom = Math.min(1.5, Math.max(0.2, availableWidth / currentPageData.width));
+      setZoom(fitZoom);
+    } else {
+      setZoom(1);
+    }
+  }, [pages, currentPage, isMobile]);
 
   const handleFitToPage = useCallback(() => {
-    setZoom(0.75);
-  }, []);
+    const currentPageData = pages[currentPage];
+    const container = editorContainerRef.current;
+    if (currentPageData && container) {
+      const availableWidth = container.clientWidth - (isMobile ? 16 : 48);
+      const availableHeight = container.clientHeight - (isMobile ? 80 : 48);
+      const fitZoom = Math.min(
+        availableWidth / currentPageData.width,
+        availableHeight / currentPageData.height,
+        1.5
+      );
+      setZoom(Math.max(0.2, fitZoom));
+    } else {
+      setZoom(0.75);
+    }
+  }, [pages, currentPage, isMobile]);
 
   // Element operations
   const handleAddElement = useCallback((element: AnyElement) => {
@@ -884,7 +920,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-200px)] min-h-[400px] md:min-h-[600px] border border-border rounded-lg overflow-hidden bg-background">
+    <div 
+      ref={editorContainerRef}
+      className="flex flex-col h-[calc(100vh-200px)] min-h-[400px] md:min-h-[600px] border border-border rounded-lg overflow-hidden bg-background"
+    >
       {/* Hidden file input for images */}
       <input
         ref={imageInputRef}
@@ -985,7 +1024,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         )}
         
         {/* Canvas with text selection layer rendered inside */}
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative overflow-hidden min-w-0">
           <EditorCanvas
             pages={pages}
             currentPage={currentPage}

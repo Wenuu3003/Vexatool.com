@@ -103,7 +103,7 @@ export const EditorToolbar = memo(({
   const [showEraserPopover, setShowEraserPopover] = useState(false);
 
   return (
-    <div className="bg-card border-b border-border p-2 flex items-center gap-1 sticky top-0 z-20 overflow-x-auto scrollbar-thin">
+    <div className="bg-card border-b border-border p-1.5 md:p-2 flex items-center gap-0.5 md:gap-1 sticky top-0 z-20 overflow-x-auto scrollbar-thin min-h-[44px]">
       {/* Selection Tools */}
       <div className="flex items-center gap-0.5">
         <ToolButton icon={MousePointer2} tool="select" activeTool={activeTool} onClick={onToolChange} tooltip="Select (V)" />
@@ -385,17 +385,20 @@ export const EditorToolbar = memo(({
       <Button 
         onClick={onDownload} 
         disabled={isProcessing}
-        className="bg-primary hover:bg-primary/90"
+        size="sm"
+        className="bg-primary hover:bg-primary/90 whitespace-nowrap text-xs md:text-sm"
       >
         {isProcessing ? (
           <>
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-            Processing...
+            <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-b-2 border-white mr-1 md:mr-2" />
+            <span className="hidden sm:inline">Processing...</span>
+            <span className="sm:hidden">...</span>
           </>
         ) : (
           <>
-            <Download className="h-4 w-4 mr-2" />
-            Download PDF
+            <Download className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
+            <span className="hidden sm:inline">Download PDF</span>
+            <span className="sm:hidden">Download</span>
           </>
         )}
       </Button>

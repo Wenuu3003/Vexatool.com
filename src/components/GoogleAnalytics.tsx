@@ -40,20 +40,19 @@ export const GoogleAnalyticsScript = () => {
       send_page_view: false, // We'll handle this manually for SPA
     });
 
-    // Load the GA script asynchronously
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    // Load GA script after page is fully interactive
+    const loadGA = () => {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+    };
 
-    // Defer loading for performance
-    if ("requestIdleCallback" in window) {
-      window.requestIdleCallback(() => {
-        document.head.appendChild(script);
-      });
+    // Defer 4s after load to not compete with critical resources
+    if (document.readyState === "complete") {
+      setTimeout(loadGA, 4000);
     } else {
-      setTimeout(() => {
-        document.head.appendChild(script);
-      }, 2000);
+      window.addEventListener("load", () => setTimeout(loadGA, 4000), { once: true });
     }
   }, []);
 

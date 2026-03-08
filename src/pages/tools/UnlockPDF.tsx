@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Unlock, Download, Key, Shield, ShieldCheck, ShieldX, AlertCircle, Eye, FileText, CheckCircle2, Lock, Upload } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
@@ -13,10 +13,31 @@ import { Progress } from "@/components/ui/progress";
 import * as pdfjsLib from "pdfjs-dist";
 import jsPDF from "jspdf";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+// Use the correct worker path from the installed package (same as all other PDF tools)
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
 
 type ProtectionStatus = "checking" | "password-protected" | "restriction-only" | "not-protected" | "error";
 type ProcessStep = "idle" | "decrypting" | "rendering" | "building" | "done";
+
+const classifyPdfError = (err: unknown): "password-needed" | "wrong-password" | "corrupt" | "unsupported" | "unknown" => {
+  if (!err) return "unknown";
+  const msg = (err as any)?.message?.toLowerCase?.() || "";
+  const name = (err as any)?.name || "";
+  const code = (err as any)?.code;
+
+  // pdfjs PasswordException: code 1 = NEED_PASSWORD, code 2 = INCORRECT_PASSWORD
+  if (name === "PasswordException" || msg.includes("password")) {
+    if (code === 2 || msg.includes("incorrect")) return "wrong-password";
+    return "password-needed";
+  }
+  if (msg.includes("encrypted")) return "password-needed";
+  if (msg.includes("invalid pdf") || msg.includes("invalid or corrupted") || msg.includes("bad xref") || msg.includes("xref")) return "corrupt";
+  if (msg.includes("unsupported")) return "unsupported";
+  return "unknown";
+};
 
 const UnlockPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -53,37 +74,41 @@ const UnlockPDF = () => {
       }
 
       setProtectionStatus("checking");
+      console.log("[UnlockPDF] Detecting protection for:", files[0].name);
 
       try {
         const arrayBuffer = await files[0].arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
 
-        // Use pdfjs-dist for accurate detection
         try {
           const loadingTask = pdfjsLib.getDocument({ data, useSystemFonts: true });
           const pdf = await loadingTask.promise;
           setPageCount(pdf.numPages);
-          
-          // Check if it has permissions restrictions
+          console.log("[UnlockPDF] PDF opened without password, pages:", pdf.numPages);
+
           const perms = await pdf.getPermissions();
           if (perms && perms.length > 0) {
-            // Has some restrictions
+            console.log("[UnlockPDF] Restrictions detected:", perms);
             setProtectionStatus("restriction-only");
           } else {
+            console.log("[UnlockPDF] No protection detected");
             setProtectionStatus("not-protected");
           }
           pdf.destroy();
-        } catch (err: any) {
-          const msg = err?.message || "";
-          if (msg.includes("password") || msg.includes("encrypted") || err?.name === "PasswordException") {
+        } catch (err: unknown) {
+          console.log("[UnlockPDF] Detection error:", (err as any)?.name, (err as any)?.message);
+          const errType = classifyPdfError(err);
+
+          if (errType === "password-needed" || errType === "wrong-password") {
             setProtectionStatus("password-protected");
           } else {
-            // Try with empty password - some PDFs have empty owner password
+            // Try with empty password for owner-only protection
             try {
               const loadingTask2 = pdfjsLib.getDocument({ data, password: "", useSystemFonts: true });
               const pdf2 = await loadingTask2.promise;
               setPageCount(pdf2.numPages);
               setProtectionStatus("restriction-only");
+              console.log("[UnlockPDF] Opened with empty password - restriction only");
               pdf2.destroy();
             } catch {
               setProtectionStatus("password-protected");
@@ -91,7 +116,7 @@ const UnlockPDF = () => {
           }
         }
       } catch (error) {
-        console.error("Detection error:", error);
+        console.error("[UnlockPDF] Detection failed:", error);
         setProtectionStatus("error");
       }
     };
@@ -114,6 +139,34 @@ const UnlockPDF = () => {
     return canvas;
   }, []);
 
+  const tryOpenPdf = async (data: Uint8Array, pwd: string): Promise<pdfjsLib.PDFDocumentProxy> => {
+    // Try multiple password variations to handle encoding edge cases
+    const passwordsToTry = [pwd];
+    const trimmed = pwd.trim();
+    if (trimmed !== pwd) passwordsToTry.push(trimmed);
+
+    let lastError: unknown = null;
+
+    for (const p of passwordsToTry) {
+      try {
+        console.log("[UnlockPDF] Trying password (length:", p.length, ")");
+        const loadingTask = pdfjsLib.getDocument({
+          data: data.slice(), // fresh copy each attempt
+          password: p,
+          useSystemFonts: true,
+        });
+        const pdf = await loadingTask.promise;
+        console.log("[UnlockPDF] Password accepted, pages:", pdf.numPages);
+        return pdf;
+      } catch (err) {
+        console.log("[UnlockPDF] Attempt failed:", (err as any)?.name, (err as any)?.code, (err as any)?.message);
+        lastError = err;
+      }
+    }
+
+    throw lastError;
+  };
+
   const handleUnlock = async () => {
     if (files.length === 0) {
       toast({ title: "No file selected", description: "Please upload a PDF file first.", variant: "destructive" });
@@ -131,61 +184,95 @@ const UnlockPDF = () => {
       const arrayBuffer = await files[0].arrayBuffer();
       const data = new Uint8Array(arrayBuffer);
 
-      // Step 1: Open with pdfjs-dist (handles all encryption)
-      const loadOptions: any = { data, useSystemFonts: true };
-      
-      if (protectionStatus === "password-protected" && password.trim()) {
-        loadOptions.password = password.trim();
-      }
-
+      // Step 1: Open/decrypt the PDF
+      console.log("[UnlockPDF] Step 1: Decrypting...");
       let pdf: pdfjsLib.PDFDocumentProxy;
-      try {
-        pdf = await pdfjsLib.getDocument(loadOptions).promise;
-      } catch (err: any) {
-        const msg = err?.message || "";
-        if (msg.includes("password") || msg.includes("encrypted") || err?.name === "PasswordException") {
-          if (!password.trim()) {
-            toast({ title: "Password required", description: "This PDF is password-protected. Please enter the password.", variant: "destructive" });
+
+      if (protectionStatus === "password-protected") {
+        if (!password.trim()) {
+          toast({ title: "Password required", description: "This PDF is password-protected. Please enter the password.", variant: "destructive" });
+          setIsProcessing(false);
+          setProcessStep("idle");
+          return;
+        }
+        try {
+          pdf = await tryOpenPdf(data, password);
+        } catch (err: unknown) {
+          const errType = classifyPdfError(err);
+          console.log("[UnlockPDF] Decryption failed, classified as:", errType);
+          if (errType === "wrong-password" || errType === "password-needed") {
+            toast({ title: "Incorrect password", description: "The password you entered is wrong. Please check capitalization, spaces, and special characters.", variant: "destructive" });
+          } else if (errType === "corrupt") {
+            toast({ title: "Corrupted PDF", description: "This PDF file appears to be corrupted and cannot be processed.", variant: "destructive" });
+          } else if (errType === "unsupported") {
+            toast({ title: "Unsupported encryption", description: "This PDF uses an encryption method not supported by browser-based processing.", variant: "destructive" });
           } else {
-            toast({ title: "Incorrect password", description: "The password you entered is wrong. Please try again.", variant: "destructive" });
+            toast({ title: "Decryption failed", description: `Could not decrypt this PDF: ${(err as Error)?.message || "Unknown error"}`, variant: "destructive" });
           }
           setIsProcessing(false);
           setProcessStep("idle");
           return;
         }
-        throw err;
+      } else {
+        // restriction-only: open without password or with empty password
+        try {
+          const loadingTask = pdfjsLib.getDocument({ data, useSystemFonts: true });
+          pdf = await loadingTask.promise;
+        } catch {
+          try {
+            const loadingTask = pdfjsLib.getDocument({ data, password: "", useSystemFonts: true });
+            pdf = await loadingTask.promise;
+          } catch (err) {
+            console.error("[UnlockPDF] Cannot open restriction-only PDF:", err);
+            toast({ title: "Cannot open PDF", description: "Failed to open this PDF for restriction removal.", variant: "destructive" });
+            setIsProcessing(false);
+            setProcessStep("idle");
+            return;
+          }
+        }
       }
 
       const totalPages = pdf.numPages;
       setPageCount(totalPages);
       setProcessStep("rendering");
       setProgress(10);
+      console.log("[UnlockPDF] Step 2: Rendering", totalPages, "pages...");
 
-      // Step 2: Render all pages to canvas (this strips all encryption/restrictions)
+      // Step 2: Render all pages
       const renderedPages: HTMLCanvasElement[] = [];
       const previewUrls: string[] = [];
 
       for (let i = 1; i <= totalPages; i++) {
-        const canvas = await renderPageToCanvas(pdf, i, 2);
-        renderedPages.push(canvas);
+        try {
+          const canvas = await renderPageToCanvas(pdf, i, 2);
+          renderedPages.push(canvas);
 
-        // Generate preview image for first 3 pages
-        if (i <= 3) {
-          const previewCanvas = await renderPageToCanvas(pdf, i, 1.5);
-          const previewBlob = await new Promise<Blob>((resolve) => {
-            previewCanvas.toBlob((b) => resolve(b!), "image/png");
-          });
-          previewUrls.push(URL.createObjectURL(previewBlob));
+          if (i <= 3) {
+            const previewCanvas = await renderPageToCanvas(pdf, i, 1.5);
+            const previewBlob = await new Promise<Blob>((resolve, reject) => {
+              previewCanvas.toBlob((b) => b ? resolve(b) : reject(new Error("Canvas toBlob failed")), "image/png");
+            });
+            previewUrls.push(URL.createObjectURL(previewBlob));
+          }
+
+          setProgress(10 + Math.round((i / totalPages) * 60));
+          console.log("[UnlockPDF] Rendered page", i, "/", totalPages);
+        } catch (renderErr) {
+          console.error("[UnlockPDF] Failed to render page", i, ":", renderErr);
+          toast({ title: "Rendering failed", description: `Failed to render page ${i}. The PDF may contain unsupported content.`, variant: "destructive" });
+          pdf.destroy();
+          setIsProcessing(false);
+          setProcessStep("idle");
+          return;
         }
-
-        setProgress(10 + Math.round((i / totalPages) * 60));
       }
 
       setPreviewPages(previewUrls);
       setProcessStep("building");
       setProgress(75);
+      console.log("[UnlockPDF] Step 3: Building new PDF...");
 
-      // Step 3: Build a new clean PDF from rendered pages using jsPDF
+      // Step 3: Build clean PDF
       const firstPage = renderedPages[0];
       const pdfDoc = new jsPDF({
         orientation: firstPage.width > firstPage.height ? "landscape" : "portrait",
@@ -220,16 +307,21 @@ const UnlockPDF = () => {
       setProgress(100);
 
       pdf.destroy();
+      console.log("[UnlockPDF] Done! Unlocked", totalPages, "pages successfully.");
 
       toast({ title: "PDF Unlocked Successfully!", description: `All ${totalPages} pages unlocked. Restrictions completely removed.` });
     } catch (error) {
-      console.error("Unlock error:", error);
-      const errorMessage = error instanceof Error ? error.message : "";
+      console.error("[UnlockPDF] Unexpected error:", error);
+      const errType = classifyPdfError(error);
 
-      if (errorMessage.includes("password") || errorMessage.includes("encrypted")) {
+      if (errType === "wrong-password" || errType === "password-needed") {
         toast({ title: "Incorrect password", description: "The password you entered is wrong. Please try again.", variant: "destructive" });
+      } else if (errType === "corrupt") {
+        toast({ title: "Corrupted PDF", description: "This PDF file appears to be corrupted and cannot be processed.", variant: "destructive" });
+      } else if (errType === "unsupported") {
+        toast({ title: "Unsupported encryption", description: "This PDF uses an encryption method not supported by browser-based processing.", variant: "destructive" });
       } else {
-        toast({ title: "Cannot process this PDF", description: "The file may be corrupted or use unsupported encryption.", variant: "destructive" });
+        toast({ title: "Processing failed", description: `An unexpected error occurred: ${(error as Error)?.message || "Please try again."}`, variant: "destructive" });
       }
     } finally {
       setIsProcessing(false);

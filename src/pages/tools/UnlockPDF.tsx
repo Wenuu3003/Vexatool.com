@@ -18,6 +18,46 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 type ProtectionStatus = "checking" | "password-protected" | "restriction-only" | "not-protected" | "error";
 type ProcessStep = "idle" | "decrypting" | "rendering" | "building" | "done";
 
+const isPasswordException = (err: unknown) => {
+  const error = err as { name?: string; code?: number; message?: string };
+  const msg = (error?.message || "").toLowerCase();
+  return (
+    error?.name === "PasswordException" ||
+    error?.code === pdfjsLib.PasswordResponses?.NEED_PASSWORD ||
+    error?.code === pdfjsLib.PasswordResponses?.INCORRECT_PASSWORD ||
+    msg.includes("password") ||
+    msg.includes("encrypted")
+  );
+};
+
+const getPasswordCandidates = (rawPassword: string) => {
+  const trimmed = rawPassword.trim();
+  return Array.from(new Set([rawPassword, trimmed].filter((value) => value.length > 0)));
+};
+
+const openPdfWithFallbackPasswords = async (data: Uint8Array, rawPassword: string) => {
+  const candidates = getPasswordCandidates(rawPassword);
+
+  if (candidates.length === 0) {
+    return pdfjsLib.getDocument({ data, useSystemFonts: true }).promise;
+  }
+
+  let lastPasswordError: unknown = null;
+
+  for (const candidate of candidates) {
+    try {
+      return await pdfjsLib.getDocument({ data, password: candidate, useSystemFonts: true }).promise;
+    } catch (err) {
+      if (!isPasswordException(err)) {
+        throw err;
+      }
+      lastPasswordError = err;
+    }
+  }
+
+  throw lastPasswordError || new Error("INVALID_PDF_PASSWORD");
+};
+
 const UnlockPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -58,27 +98,22 @@ const UnlockPDF = () => {
         const arrayBuffer = await files[0].arrayBuffer();
         const data = new Uint8Array(arrayBuffer);
 
-        // Use pdfjs-dist for accurate detection
         try {
           const loadingTask = pdfjsLib.getDocument({ data, useSystemFonts: true });
           const pdf = await loadingTask.promise;
           setPageCount(pdf.numPages);
-          
-          // Check if it has permissions restrictions
+
           const perms = await pdf.getPermissions();
           if (perms && perms.length > 0) {
-            // Has some restrictions
             setProtectionStatus("restriction-only");
           } else {
             setProtectionStatus("not-protected");
           }
           pdf.destroy();
-        } catch (err: any) {
-          const msg = err?.message || "";
-          if (msg.includes("password") || msg.includes("encrypted") || err?.name === "PasswordException") {
+        } catch (err) {
+          if (isPasswordException(err)) {
             setProtectionStatus("password-protected");
           } else {
-            // Try with empty password - some PDFs have empty owner password
             try {
               const loadingTask2 = pdfjsLib.getDocument({ data, password: "", useSystemFonts: true });
               const pdf2 = await loadingTask2.promise;
@@ -120,6 +155,11 @@ const UnlockPDF = () => {
       return;
     }
 
+    if (protectionStatus === "password-protected" && password.length === 0) {
+      toast({ title: "Password required", description: "Please enter the PDF password.", variant: "destructive" });
+      return;
+    }
+
     setIsProcessing(true);
     setUnlockedBlob(null);
     setShowPreview(false);
@@ -131,25 +171,16 @@ const UnlockPDF = () => {
       const arrayBuffer = await files[0].arrayBuffer();
       const data = new Uint8Array(arrayBuffer);
 
-      // Step 1: Open with pdfjs-dist (handles all encryption)
-      const loadOptions: any = { data, useSystemFonts: true };
-      
-      if (protectionStatus === "password-protected" && password.trim()) {
-        loadOptions.password = password.trim();
-      }
-
       let pdf: pdfjsLib.PDFDocumentProxy;
       try {
-        pdf = await pdfjsLib.getDocument(loadOptions).promise;
-      } catch (err: any) {
-        const msg = err?.message || "";
-        if (msg.includes("password") || msg.includes("encrypted") || err?.name === "PasswordException") {
-          if (!password.trim()) {
+        pdf = await openPdfWithFallbackPasswords(data, password);
+      } catch (err) {
+        if (isPasswordException(err)) {
+          if (password.length === 0) {
             toast({ title: "Password required", description: "This PDF is password-protected. Please enter the password.", variant: "destructive" });
           } else {
-            toast({ title: "Incorrect password", description: "The password you entered is wrong. Please try again.", variant: "destructive" });
+            toast({ title: "Incorrect password", description: "The password is incorrect. Check uppercase/lowercase and try again.", variant: "destructive" });
           }
-          setIsProcessing(false);
           setProcessStep("idle");
           return;
         }
@@ -427,7 +458,7 @@ const UnlockPDF = () => {
                     <Button
                       size="lg"
                       onClick={handleUnlock}
-                      disabled={isProcessing || (protectionStatus === "password-protected" && !password.trim())}
+                      disabled={isProcessing || (protectionStatus === "password-protected" && password.length === 0)}
                       className="gap-2"
                     >
                       {isProcessing ? (

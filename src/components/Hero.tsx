@@ -14,17 +14,8 @@ export const Hero = () => {
       className="relative py-16 sm:py-24 md:py-32 lg:py-36 overflow-hidden"
       aria-labelledby="hero-heading"
     >
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="/hero-bg.webp"
-          alt=""
-          aria-hidden="true"
-          className="w-full h-full object-cover"
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
-      </div>
+      {/* CSS gradient background instead of image for faster LCP */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5" />
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
@@ -55,7 +46,7 @@ export const Hero = () => {
           <div className="grid grid-cols-4 gap-2 sm:gap-3">
             {trustItems.map((item) => (
               <div key={item.label} className="flex flex-col items-center text-center gap-1">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-card/80 backdrop-blur-sm shadow-sm flex items-center justify-center">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-card/80 shadow-sm flex items-center justify-center">
                   <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
                 <span className="text-[10px] sm:text-xs font-medium text-foreground/80 leading-tight">{item.label}</span>

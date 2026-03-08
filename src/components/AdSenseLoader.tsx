@@ -11,7 +11,7 @@ declare global {
 const ADSENSE_SRC =
   "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3192107856471636";
 
-export function AdSenseLoader({ delayMs = 2500 }: { delayMs?: number }) {
+export function AdSenseLoader({ delayMs = 5000 }: { delayMs?: number }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!hasAdConsent()) return;

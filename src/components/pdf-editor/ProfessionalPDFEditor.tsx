@@ -403,12 +403,36 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   }, [zoom]);
 
   const handleFitToWidth = useCallback(() => {
-    setZoom(1);
-  }, []);
+    // Compute zoom that fits the current page width into the available viewport
+    const currentPageData = pages[currentPage];
+    const container = editorContainerRef.current;
+    if (currentPageData && container) {
+      // Available width: container minus sidebar widths, minus padding
+      const sidebarWidth = isMobile ? 0 : (40 * 4 + 64 * 4); // ~pages + properties panel
+      const availableWidth = container.clientWidth - (isMobile ? 16 : 48);
+      const fitZoom = Math.min(1.5, Math.max(0.2, availableWidth / currentPageData.width));
+      setZoom(fitZoom);
+    } else {
+      setZoom(1);
+    }
+  }, [pages, currentPage, isMobile]);
 
   const handleFitToPage = useCallback(() => {
-    setZoom(0.75);
-  }, []);
+    const currentPageData = pages[currentPage];
+    const container = editorContainerRef.current;
+    if (currentPageData && container) {
+      const availableWidth = container.clientWidth - (isMobile ? 16 : 48);
+      const availableHeight = container.clientHeight - (isMobile ? 80 : 48);
+      const fitZoom = Math.min(
+        availableWidth / currentPageData.width,
+        availableHeight / currentPageData.height,
+        1.5
+      );
+      setZoom(Math.max(0.2, fitZoom));
+    } else {
+      setZoom(0.75);
+    }
+  }, [pages, currentPage, isMobile]);
 
   // Element operations
   const handleAddElement = useCallback((element: AnyElement) => {

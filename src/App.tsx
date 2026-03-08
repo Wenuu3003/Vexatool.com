@@ -20,6 +20,7 @@ import Index from "./pages/Index";
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Account = lazy(() => import("./pages/Account"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 // Category Pages
 const PDFTools = lazy(() => import("./pages/categories/PDFTools"));

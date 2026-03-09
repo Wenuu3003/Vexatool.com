@@ -1205,7 +1205,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         {/* Properties panel with OCR - desktop only */}
         {!isMobile && (
           <div className="w-64 bg-card border-l border-border overflow-y-auto">
-            {ocrPanelContent}
+            {rightPanelContent}
           </div>
         )}
       </div>

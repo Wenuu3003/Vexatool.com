@@ -1079,6 +1079,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             progress={ocrProgress}
             textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
             stats={ocrStats}
+            segmentationMode={segmentationMode}
+            resolvedSegmentationMode={modeUsed}
+            onSegmentationModeChange={setSegmentationMode}
             onRunOCR={handleRunOCR}
             onExtractText={handleExtractText}
             currentPage={currentPage}

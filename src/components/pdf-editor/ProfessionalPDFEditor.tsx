@@ -1033,11 +1033,15 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       rotation: 0,
       opacity: 1,
       locked: false,
-      zIndex: elements.length,
+      zIndex: 0,
       fillColor: '#FFFFFF',
     };
 
-    setElements(prev => [...prev, redactElement]);
+    setElements(prev => {
+      const baseZIndex = prev.length;
+      return [...prev, { ...redactElement, zIndex: baseZIndex }];
+    });
+
     setDeletedTextBlocks(prev => {
       const next = new Set(prev);
       region.sourceBlocks.forEach(b => next.add(b.id));
@@ -1050,7 +1054,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       title: 'Block Deleted',
       description: 'Text block removed with white cover.',
     });
-  }, [elements.length, saveToHistory, toast]);
+  }, [saveToHistory, toast]);
 
   // File size error
   if (fileSizeError) {

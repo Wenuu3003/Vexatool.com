@@ -666,7 +666,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         for (const element of pageElements) {
           if (element.type === 'text') {
             const textEl = element as TextElement;
-            const font = fontMap[textEl.fontFamily] || helveticaFont;
+            const font = getFontForElement(textEl.fontFamily, textEl.fontWeight);
             
             const color = textEl.color.replace('#', '');
             const r = parseInt(color.substring(0, 2), 16) / 255;

@@ -645,8 +645,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       
       const getFontForElement = (family: string, weight: string) => {
         const isBold = weight === 'bold' || weight === 'semibold';
-        if (family === 'Courier') return isBold ? courierBoldFont : courierFont;
-        if (family === 'Times-Roman' || family === 'Georgia' || family === 'Palatino') return isBold ? timesBoldFont : timesFont;
+        const pdfFontName = getPdfLibFontName(family);
+        if (pdfFontName === 'Courier') return isBold ? courierBoldFont : courierFont;
+        if (pdfFontName === 'Times-Roman') return isBold ? timesBoldFont : timesFont;
         return isBold ? helveticaBoldFont : helveticaFont;
       };
       

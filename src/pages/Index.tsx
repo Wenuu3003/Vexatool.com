@@ -3,22 +3,12 @@ import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
-import { lazy, Suspense, useEffect, useState } from "react";
 import { HomepageContent } from "@/components/HomepageContent";
 import { ToolsGrid } from "@/components/ToolsGrid";
-
-const HomepageFAQ = lazy(() =>
-  import("@/components/HomepageFAQ").then((m) => ({ default: m.HomepageFAQ }))
-);
+import { HomepageFAQ } from "@/components/HomepageFAQ";
 
 const Index = () => {
   const canonicalUrl = useCanonicalUrl();
-  const [showDeferredContent, setShowDeferredContent] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowDeferredContent(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <>

@@ -262,6 +262,18 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       }
       
       if (!e.ctrlKey && !e.metaKey && !document.activeElement?.closest('input, textarea')) {
+        // Page navigation with arrow keys
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          setCurrentPage(prev => Math.max(0, prev - 1));
+          return;
+        }
+        if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+          e.preventDefault();
+          setCurrentPage(prev => Math.min(pages.filter(p => !p.deleted).length - 1, prev + 1));
+          return;
+        }
+
         switch (e.key.toLowerCase()) {
           case 'v': setActiveTool('select'); break;
           case 'h': setActiveTool('pan'); break;

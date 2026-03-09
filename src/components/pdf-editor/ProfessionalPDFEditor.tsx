@@ -928,7 +928,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const visibleTextBlocks = textBlocks.filter(b => !deletedTextBlocks.has(b.id));
   
   // Block-based text regions
-  const { regions } = useTextBlocks(textBlocks, deletedTextBlocks, currentPage);
+  const { regions, modeUsed } = useTextBlocks(textBlocks, deletedTextBlocks, currentPage, segmentationMode);
 
   // Block-level replace: covers all source blocks with white and places new multi-line text
   const handleRegionReplace = useCallback((region: TextRegion, newText: string) => {

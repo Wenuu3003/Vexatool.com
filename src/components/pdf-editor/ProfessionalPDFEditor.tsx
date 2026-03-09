@@ -28,7 +28,7 @@ import { PageThumbnails } from './PageThumbnails';
 import { WatermarkDialog } from './WatermarkDialog';
 import { DownloadPreviewDialog } from './DownloadPreviewDialog';
 import { OCRPanel } from './OCRPanel';
-import { TextSelectionLayer } from './TextSelectionLayer';
+// TextSelectionLayer kept for backward compat but replaced by BlockHighlightLayer
 import { useEditorHistory } from './useEditorHistory';
 import { useOCR, OCRTextBlock } from './useOCR';
 import { useTextBlocks, TextRegion } from './useTextBlocks';

@@ -65,7 +65,7 @@ export const Hero = () => {
 
       {/* Image/photo frame shape */}
       <svg
-        className="absolute bottom-[14%] left-[8%] w-16 h-16 sm:w-20 sm:h-20 text-secondary/[0.07] pointer-events-none hidden sm:block"
+        className="absolute bottom-[14%] left-[8%] w-16 h-16 sm:w-20 sm:h-20 text-secondary/[0.11] pointer-events-none hidden sm:block"
         viewBox="0 0 80 80"
         fill="none"
         aria-hidden="true"

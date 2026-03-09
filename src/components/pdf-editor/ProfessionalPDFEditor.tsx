@@ -684,6 +684,22 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               font,
             });
 
+            // Draw white background mask if enabled
+            if (textEl.backgroundMask) {
+              const maskX = textEl.x * scaleFactor;
+              const maskY = pageHeight - (textEl.y * scaleFactor) - (textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1));
+              const maskW = textEl.width * scaleFactor;
+              const maskH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1) * 1.15;
+              page.drawRectangle({
+                x: maskX,
+                y: maskY,
+                width: maskW,
+                height: maskH,
+                color: rgb(1, 1, 1),
+                opacity: 1,
+              });
+            }
+
             page.drawText(textEl.text, {
               x: placement.x,
               y: placement.y,

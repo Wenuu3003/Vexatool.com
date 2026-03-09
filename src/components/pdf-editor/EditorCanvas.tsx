@@ -965,10 +965,10 @@ export const EditorCanvas = memo(({
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-        {/* PDF Page Image */}
-        {currentPageData.canvas && (
+        {/* PDF Page Image — uses cached dataUrl to prevent expensive toDataURL() on every render */}
+        {(currentPageData.dataUrl || currentPageData.canvas) && (
           <img
-            src={currentPageData.canvas.toDataURL()}
+            src={currentPageData.dataUrl || currentPageData.canvas!.toDataURL()}
             alt={`Page ${currentPage + 1}`}
             className="w-full h-full pointer-events-none"
             draggable={false}

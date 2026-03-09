@@ -1183,36 +1183,77 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           />
         )}
         
-        {/* Canvas with text selection layer rendered inside */}
-        <div className="flex-1 relative overflow-hidden min-w-0">
-          <EditorCanvas
-            pages={pages}
-            currentPage={currentPage}
-            elements={elements}
-            selectedElement={selectedElement}
-            activeTool={activeTool}
-            zoom={zoom}
-            brushSettings={brushSettings}
-            eraserSettings={eraserSettings}
-            onSelectElement={setSelectedElement}
-            onAddElement={handleAddElement}
-            onUpdateElement={handleUpdateElement}
-            onElementsChange={setElements}
-            onZoomChange={setZoom}
-            textOverlay={
-              textSelectionEnabled ? (
-                <BlockHighlightLayer
-                  regions={regions}
-                  selectedRegion={selectedRegionId}
-                  enabled={textSelectionEnabled && activeTool === 'select'}
-                  onSelectRegion={(id) => {
-                    setSelectedRegionId(id);
-                    if (id) setActivePanel('blocks');
-                  }}
-                />
-              ) : null
-            }
-          />
+        {/* Canvas with block highlight overlay and page nav */}
+        <div className="flex-1 relative overflow-hidden min-w-0 flex flex-col">
+          <div className="flex-1 overflow-hidden">
+            <EditorCanvas
+              pages={pages}
+              currentPage={currentPage}
+              elements={elements}
+              selectedElement={selectedElement}
+              activeTool={activeTool}
+              zoom={zoom}
+              brushSettings={brushSettings}
+              eraserSettings={eraserSettings}
+              onSelectElement={setSelectedElement}
+              onAddElement={handleAddElement}
+              onUpdateElement={handleUpdateElement}
+              onElementsChange={setElements}
+              onZoomChange={setZoom}
+              textOverlay={
+                textSelectionEnabled ? (
+                  <BlockHighlightLayer
+                    regions={regions}
+                    selectedRegion={selectedRegionId}
+                    enabled={textSelectionEnabled && activeTool === 'select'}
+                    onSelectRegion={(id) => {
+                      setSelectedRegionId(id);
+                      if (id) setActivePanel('blocks');
+                    }}
+                  />
+                ) : null
+              }
+            />
+          </div>
+          
+          {/* Quick page navigation bar */}
+          {pages.filter(p => !p.deleted).length > 1 && (
+            <div className="flex items-center justify-center gap-2 py-1.5 px-3 bg-card border-t border-border">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                disabled={currentPage === 0}
+                onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+              >
+                ← Prev
+              </Button>
+              <div className="flex gap-1 max-w-[300px] overflow-x-auto">
+                {pages.filter(p => !p.deleted).map((_, idx) => (
+                  <button
+                    key={idx}
+                    className={`w-7 h-7 rounded text-xs font-medium transition-all ${
+                      idx === currentPage
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                    }`}
+                    onClick={() => setCurrentPage(idx)}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                disabled={currentPage >= pages.filter(p => !p.deleted).length - 1}
+                onClick={() => setCurrentPage(prev => Math.min(pages.filter(p => !p.deleted).length - 1, prev + 1))}
+              >
+                Next →
+              </Button>
+            </div>
+          )}
         </div>
         
         {/* Properties panel with OCR - desktop only */}

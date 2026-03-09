@@ -1011,7 +1011,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       title: 'Block Replaced',
       description: 'Only the selected region was replaced with matched block styling.',
     });
-  }, [handleRegionDelete, saveToHistory, toast]);
+  }, [saveToHistory, toast]);
 
   const handleRegionDelete = useCallback((region: TextRegion) => {
     const redactElement: RedactElement = {

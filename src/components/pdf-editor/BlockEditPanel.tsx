@@ -137,9 +137,14 @@ export const BlockEditPanel = memo(({
                   ) : (
                     <div className="space-y-1.5">
                       <div className="flex items-start justify-between gap-1">
-                        <span className="text-[10px] font-medium text-muted-foreground">
-                          Block {idx + 1}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] font-medium text-muted-foreground">
+                            Block {idx + 1}
+                          </span>
+                          <Badge variant="outline" className="text-[9px] h-4 px-1 capitalize">
+                            {region.kind}
+                          </Badge>
+                        </div>
                         <Badge
                           variant={region.confidence >= 90 ? 'default' : region.confidence >= 70 ? 'secondary' : 'destructive'}
                           className="text-[9px] h-4 px-1"

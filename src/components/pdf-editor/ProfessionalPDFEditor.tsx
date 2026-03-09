@@ -1189,13 +1189,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             onZoomChange={setZoom}
             textOverlay={
               textSelectionEnabled ? (
-                <TextSelectionLayer
-                  textBlocks={visibleTextBlocks}
-                  currentPage={currentPage}
-                  zoom={zoom}
+                <BlockHighlightLayer
+                  regions={regions}
+                  selectedRegion={selectedRegionId}
                   enabled={textSelectionEnabled && activeTool === 'select'}
-                  onTextDelete={handleTextDelete}
-                  onTextReplace={handleTextReplace}
+                  onSelectRegion={(id) => {
+                    setSelectedRegionId(id);
+                    if (id) setActivePanel('blocks');
+                  }}
                 />
               ) : null
             }

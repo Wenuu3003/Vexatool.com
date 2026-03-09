@@ -1,5 +1,5 @@
 import { useState, useCallback, lazy, Suspense } from "react";
-import { FileEdit, ArrowLeft } from "lucide-react";
+import { FileEdit, ArrowLeft, ScanText, LayoutGrid, Shield, Smartphone } from "lucide-react";
 import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
@@ -10,9 +10,9 @@ import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 
 // Lazy load the heavy editor component
-const ProfessionalPDFEditor = lazy(() => 
-  import("@/components/pdf-editor/ProfessionalPDFEditor").then(m => ({ 
-    default: m.ProfessionalPDFEditor 
+const ProfessionalPDFEditor = lazy(() =>
+  import("@/components/pdf-editor/ProfessionalPDFEditor").then(m => ({
+    default: m.ProfessionalPDFEditor
   }))
 );
 
@@ -33,128 +33,190 @@ const EditPDF = () => {
     setFiles([]);
   }, []);
 
-  // FAQ Schema for SEO
+  // FAQ Schema for SEO — 10 detailed, unique questions
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Can I replace existing text in a PDF online?",
+        "name": "How do I edit text in a PDF online for free?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, you can replace existing text in a PDF if it is text-based. Upload the PDF, select the text, delete it and type new text in the same position."
+          "text": "Upload your PDF to the VexaTool PDF Editor. For text-based PDFs the editor automatically extracts selectable text. Click any text block in the sidebar or directly on the page to select it, then edit or replace the content. For scanned documents, run the built-in OCR first. All processing happens in your browser — no signup, no watermark, completely free."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I edit scanned PDF files?",
+        "name": "Can I edit scanned or image-based PDF files?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, scanned PDFs can be edited using OCR technology which converts scanned images into editable text."
+          "text": "Yes. The editor includes a dual-pass OCR engine powered by Tesseract.js. After uploading a scanned PDF, click 'Run OCR' to detect text regions. The OCR uses image preprocessing (grayscale conversion, contrast enhancement, binarization) for high accuracy even on faint or low-quality scans. Detected text becomes fully editable."
         }
       },
       {
         "@type": "Question",
-        "name": "Will the original PDF quality be preserved?",
+        "name": "What is block-based PDF editing?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, the editor preserves the original layout, clarity and formatting while editing."
+          "text": "Block-based editing groups individual words into meaningful regions — paragraphs, table rows, form fields, or single lines — so you can select and replace an entire section at once instead of editing word by word. The VexaTool editor automatically detects the best grouping mode (Auto, Paragraph, Table, or Form) based on your document's layout."
         }
       },
       {
         "@type": "Question",
-        "name": "Is this PDF editor free and safe?",
+        "name": "What are the segmentation modes (Auto, Paragraph, Table, Form)?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, this PDF editor is free to use and files are processed securely without permanent storage."
+          "text": "These modes control how detected text is grouped into editable blocks. 'Auto' analyses the page layout and picks the best strategy. 'Paragraph' groups lines with similar indentation into multi-line blocks. 'Table' creates tighter, row-level or cell-level blocks for tabular data. 'Form' detects label-value pairs common in structured forms. You can switch modes at any time from the OCR panel."
         }
       },
       {
         "@type": "Question",
-        "name": "How does OCR work for scanned PDFs?",
+        "name": "Does the PDF editor work on mobile phones and tablets?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "OCR (Optical Character Recognition) analyzes the scanned image and identifies text patterns, converting them into selectable and editable text that you can modify or replace."
+          "text": "Yes. The editor is fully responsive with touch-friendly controls, pinch-to-zoom, swipe page navigation, and slide-out panels for pages and text editing. It adapts to any screen size. For complex multi-page editing we recommend a tablet or desktop, but basic text edits, annotations, and OCR work well on smartphones."
         }
       },
       {
         "@type": "Question",
-        "name": "Can I add images and signatures to my PDF?",
+        "name": "Are my PDF files stored on your servers?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes, you can add images, logos, and signatures to your PDF. Simply use the image tool to upload and position your graphics anywhere on the document."
+          "text": "No. Every file you upload is processed entirely inside your web browser using client-side JavaScript. Your PDF never leaves your device — it is not uploaded to any server. When you close the editor or navigate away, all file data is cleared from browser memory. This makes the editor safe for confidential documents like contracts, medical records, legal papers, and financial statements."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this PDF editor really free? Are there hidden costs or watermarks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The VexaTool PDF Editor is 100% free with no hidden fees, no premium tier, and no watermarks on exported files. Because all processing happens locally in your browser, there are no server costs to pass on. You get professional-grade editing with zero cost."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the text replacement engine keep alignment accurate?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "When you replace a text block, the editor places a white redaction mask over the original content and positions your new text using font-metric baseline alignment. It calculates the exact ascent, line height, and character width so the replacement text sits in precisely the same position as the original — both on screen and in the exported PDF."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What happens when I click Download PDF?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Clicking Download opens a preview dialog showing your edits. On confirmation, the editor writes all changes (text replacements, images, shapes, watermarks, redactions, drawings) into the original PDF structure using pdf-lib, preserving the original resolution, embedded fonts, and vector graphics. The result downloads as a standard PDF file — no quality loss."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I add images, signatures, and watermarks to my PDF?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Use the Image tool (keyboard shortcut I) to insert logos, photos, or scanned signatures in PNG, JPG, or SVG format. The Watermark tool (shortcut W) adds text or image watermarks with adjustable opacity, position, rotation, and tiling. You can apply watermarks to the current page or all pages at once."
         }
       }
     ]
   };
 
   const seoContent = {
-    toolName: "Free Online PDF Editor with OCR",
-    whatIs: "The VexaTool Professional PDF Editor is the most comprehensive free online tool for editing PDF documents directly in your browser – no software installation needed. Our advanced editor handles both regular text-based PDFs and scanned documents through integrated OCR (Optical Character Recognition) technology powered by Tesseract.js. Edit existing text, correct typos, update outdated information, add annotations, insert logos and images, apply professional watermarks, draw shapes, and highlight important content – all from one intuitive interface. Unlike basic PDF editors, our precision alignment engine ensures that when you replace text, the new content appears in exactly the right position, maintaining your document's professional appearance. Perfect for editing contracts, invoices, certificates, forms, letters, reports, and any PDF document that needs quick modifications. Your files are processed entirely on your device using secure client-side JavaScript, meaning sensitive documents like financial records, legal papers, medical forms, and confidential business materials never leave your computer.",
+    toolName: "Free Online PDF Editor with Block-Based OCR Editing",
+    whatIs: "The VexaTool PDF Editor is a professional-grade, free online tool that lets you edit any PDF document directly in your browser — no software installation, no signup, no watermarks. It handles both text-based and scanned PDFs through an integrated OCR engine powered by Tesseract.js. What sets this editor apart is its block-based editing workflow: instead of struggling with tiny word-level overlays, the editor intelligently groups detected text into paragraphs, table rows, form fields, or single lines. You select an entire block, edit or replace the text in a sidebar panel, and the precision alignment engine places your new content in exactly the right position. The editor supports four segmentation modes — Auto, Paragraph, Table, and Form — so it adapts to any document structure: contracts, invoices, government forms, academic certificates, railway lists, hospital records, or spreadsheet-style tables. Add images, logos, electronic signatures, freehand annotations, shapes, and professional watermarks. Manage multi-page documents with thumbnail navigation, page rotation, reordering, duplication, and deletion. Every file is processed entirely on your device using secure client-side JavaScript — your documents never leave your computer, making it safe for confidential financial, legal, and medical files. Works on desktops, tablets, and mobile phones.",
     howToUse: [
-      "Click the upload area or drag-and-drop your PDF file onto the page to begin editing.",
-      "The editor automatically detects whether your PDF contains selectable text or is a scanned image.",
-      "For text-based PDFs: Click 'Extract PDF Text' in the right panel to enable text selection and inline editing.",
-      "For scanned PDFs: Click 'Run OCR' to detect and extract text from scanned pages using optical character recognition.",
-      "Select any text block to edit, delete, or replace it with new content – the precision engine maintains perfect alignment.",
-      "Use the toolbar to add new elements: text boxes, rectangles, circles, lines, arrows, or freehand annotations.",
-      "Insert images, company logos, or signatures using the Image tool (keyboard shortcut: I).",
-      "Apply text or image watermarks to single pages or entire documents (keyboard shortcut: W).",
-      "Navigate between pages using the thumbnail sidebar; rotate, delete, duplicate, or reorder pages as needed.",
-      "Undo mistakes with Ctrl+Z (Cmd+Z on Mac) and redo with Ctrl+Y (Cmd+Y on Mac) – up to 50 steps.",
-      "Click 'Download PDF' when finished to preview your edits and save the high-quality output file."
+      "Upload your PDF by clicking the upload area or dragging and dropping the file.",
+      "The editor automatically detects whether your PDF is text-based or scanned and shows the appropriate options.",
+      "For text-based PDFs: text is auto-extracted. Switch to the 'Edit Text' tab in the sidebar to see detected blocks.",
+      "For scanned PDFs: click 'Run OCR' in the 'OCR & Props' tab. The dual-pass OCR engine detects text with image preprocessing for maximum accuracy.",
+      "Choose a segmentation mode — Auto (recommended), Paragraph, Table, or Form — to control how text is grouped into editable blocks.",
+      "Click any block in the sidebar or directly on the page to select it. The selected region highlights on the canvas.",
+      "Click 'Edit' to modify the text, then 'Replace' to apply. The editor covers the original text and positions your replacement with pixel-perfect alignment.",
+      "Use the toolbar to add text boxes, shapes (rectangles, circles, lines, arrows), images, signatures, or watermarks.",
+      "Navigate pages using the thumbnail panel, bottom page strip, or keyboard arrows (← → PageUp PageDown).",
+      "Click 'Download PDF' to preview and save. The exported file preserves original quality with no watermarks."
     ],
     features: [
-      "Industry-leading OCR technology powered by Tesseract.js for editing scanned PDFs and image-based documents.",
-      "Precise text selection with automatic baseline alignment for pixel-perfect text replacement.",
-      "Smart text editing that preserves original font sizes, line spacing, and document layout.",
-      "Rich text formatting: choose fonts, sizes, bold, italic, underline, and any color.",
-      "Professional drawing tools: rectangles, circles, lines, arrows with customizable stroke and fill colors.",
-      "Freehand annotation: pen, highlighter, and underline tools with adjustable brush size and opacity.",
-      "Image insertion supporting PNG, JPG, SVG formats with resize, rotate, and opacity controls.",
-      "Watermarking system with text or image watermarks, tiling patterns, and adjustable transparency.",
-      "Complete page management: rotate 90°/180°/270°, delete pages, duplicate, reorder via drag-and-drop.",
-      "Insert blank pages anywhere in your document for additional content or spacing.",
-      "Smooth zoom controls: scroll-to-zoom, fit-to-width, fit-to-page, and preset zoom levels.",
-      "50-level undo/redo history with full keyboard shortcut support for efficient editing.",
-      "Element locking to prevent accidental modifications to finished elements.",
-      "High-fidelity PDF export preserving original resolution, embedded fonts, and vector graphics.",
-      "Responsive design optimized for desktops, tablets, and mobile devices.",
-      "No watermarks added to your exported files – professional results every time.",
-      "100% secure local processing – your files never upload to any external server."
+      "Block-based text editing: select and replace entire paragraphs, table rows, or form fields instead of individual words.",
+      "Four intelligent segmentation modes (Auto, Paragraph, Table, Form) that adapt to any document layout.",
+      "Dual-pass OCR engine with image preprocessing (grayscale, contrast, binarization) for high-accuracy scanned PDF editing.",
+      "Precision baseline alignment engine ensuring replacement text matches original positioning in both preview and export.",
+      "Multi-line text replacement with automatic line-height matching and white background masking.",
+      "Visual block highlights on the canvas with hover previews and selection indicators showing block type (paragraph, cell, line, field).",
+      "Rich text formatting: multiple font families, sizes (7pt–72pt), bold, italic, underline, custom colors, letter spacing, and alignment.",
+      "Professional drawing tools: freehand pen, highlighter, brush with adjustable opacity and size, plus eraser.",
+      "Image insertion (PNG, JPG, SVG) for logos, photos, and electronic signatures with resize, rotate, and opacity controls.",
+      "Text and image watermarks with tiling, rotation, and per-page or all-pages application.",
+      "Complete page management: rotate, delete, duplicate, reorder via drag-and-drop, and insert blank pages.",
+      "50-level undo/redo history with full keyboard shortcut support (Ctrl+Z / Ctrl+Y).",
+      "Responsive design with touch-friendly controls, pinch-to-zoom, and slide-out panels for mobile editing.",
+      "100% client-side processing — files never leave your device. No server uploads, no data storage.",
+      "High-fidelity PDF export preserving original resolution, embedded fonts, and vector graphics. No watermarks added.",
+      "Keyboard shortcuts for every tool: V (select), T (text), R (rectangle), P (pen), X (redact), I (image), W (watermark)."
     ],
-    safetyNote: "Every PDF you edit is processed entirely within your web browser using secure client-side JavaScript libraries. Your documents never leave your device and are not transmitted to any external server. We use industry-trusted libraries: PDF.js for rendering and pdf-lib for export. All file data is automatically cleared from browser memory when you close the editor or navigate away. We have no access to your documents and store no user data. This client-side approach provides enterprise-grade security without requiring registration, subscriptions, or personal information. Perfect for editing confidential contracts, financial statements, legal documents, medical records, and any sensitive files.",
+    safetyNote: "Your PDF is processed entirely within your web browser using client-side JavaScript libraries (PDF.js for rendering, pdf-lib for export, Tesseract.js for OCR). No file data is transmitted to any server — your documents stay on your device at all times. When you close the editor or navigate away, all file data is automatically cleared from browser memory. We have zero access to your documents and store no user data whatsoever. This architecture provides enterprise-grade security without requiring registration, subscriptions, or personal information. It is safe for editing confidential contracts, financial statements, legal papers, medical records, Aadhaar-related documents, government forms, and any sensitive files. No cookies or tracking are involved in file processing.",
     faqs: [
-      { question: "Can I edit and replace existing text directly in a PDF?", answer: "Yes! For text-based PDFs with selectable text, click 'Extract PDF Text' to enable editing mode, then click any text block to select and modify it. Our precision alignment engine covers the original text and places your new text in the exact same position, preserving the document's professional layout." },
-      { question: "How do I edit scanned PDFs or image-based documents?", answer: "Scanned PDFs require OCR (Optical Character Recognition) to convert images into editable text. After uploading your scanned document, click 'Run OCR' in the right panel. The OCR engine analyzes each page, detects text regions, and makes them editable just like a regular PDF. OCR accuracy is highest for clear, well-scanned English documents." },
-      { question: "Will editing preserve my PDF's original quality and formatting?", answer: "Absolutely. Our editor uses pdf-lib for high-fidelity export, preserving the original DPI, embedded fonts, and vector graphics. Text replacements use our baseline alignment engine to match original line heights, spacing, and positioning exactly." },
-      { question: "Is this PDF editor really free with no hidden costs?", answer: "Yes, the VexaTool PDF Editor is 100% free with no hidden fees, subscriptions, or premium tiers. We don't add watermarks to your exported files. The tool is free because all processing happens in your browser – we don't need expensive servers to handle your files." },
-      { question: "How does the text replacement alignment work technically?", answer: "When you edit text, the editor creates a white redaction patch over the original text and positions your replacement text using font-metric baseline alignment. This calculates the exact line height, character spacing, and position to ensure your new text appears in precisely the right location." },
-      { question: "Can I add my company logo, electronic signature, or custom watermark?", answer: "Yes! Use the Image tool (press I) to insert logos, photos, or scanned signatures anywhere on your document. For watermarks, use the Watermark tool (press W) to add text or image watermarks with adjustable opacity, position, rotation, and tiling options. Watermarks can be applied to single pages or all pages at once." },
-      { question: "What file types can I upload and download?", answer: "You can upload standard PDF files (.pdf). The edited document exports as a high-quality PDF file. For inserting images into your PDF, PNG, JPG, JPEG, and SVG formats are all supported." },
-      { question: "Does the PDF editor work on mobile phones and tablets?", answer: "Yes! Our editor features a fully responsive design that adapts to any screen size. While we recommend larger screens for complex editing tasks, basic operations like text editing, annotations, and page management work smoothly on tablets and smartphones." }
+      {
+        question: "How do I edit text in a PDF online for free?",
+        answer: "Upload your PDF to VexaTool. For text-based PDFs, text is auto-extracted into editable blocks. For scanned PDFs, click 'Run OCR' to detect text. Select any block, click Edit, modify the text, and click Replace. The editor covers the original and places your new text in the exact same position. Download the edited PDF — no signup, no watermark, completely free."
+      },
+      {
+        question: "Can I edit scanned or image-based PDF files?",
+        answer: "Yes. The editor includes a dual-pass OCR engine that converts scanned images into editable text. It uses image preprocessing (grayscale conversion, contrast enhancement, binarization) to detect even faint or low-quality text. After OCR, each detected region becomes a clickable, editable block in the sidebar."
+      },
+      {
+        question: "What is block-based PDF editing and how does it work?",
+        answer: "Block-based editing groups individual words into meaningful regions — paragraphs, table rows, form fields, or single lines — so you can select and replace an entire section at once. The editor automatically analyses your document's layout and applies the best grouping. You can also manually choose Paragraph, Table, or Form mode for precise control."
+      },
+      {
+        question: "What are the segmentation modes (Auto, Paragraph, Table, Form)?",
+        answer: "These modes control how OCR-detected or extracted text is grouped. Auto analyses the layout and picks the best strategy. Paragraph groups nearby lines into multi-line blocks. Table creates tight row-level or cell-level blocks for tabular data. Form detects label-value pairs in structured forms. Switch modes instantly from the OCR panel."
+      },
+      {
+        question: "Does the PDF editor work on mobile phones and tablets?",
+        answer: "Yes. The editor is fully responsive with touch-friendly controls, pinch-to-zoom, swipe navigation, and slide-out panels. It works on any screen size. For complex multi-page editing a larger screen is recommended, but basic text editing, annotations, and OCR work well on smartphones."
+      },
+      {
+        question: "Are my files stored on your servers? Is it safe for confidential documents?",
+        answer: "No files are ever uploaded to any server. All processing happens locally in your browser using JavaScript. When you close the editor, all data is cleared from memory. This makes it safe for confidential contracts, financial records, legal documents, medical files, and government forms."
+      },
+      {
+        question: "Is this PDF editor really free? Are there hidden costs or watermarks?",
+        answer: "100% free with no hidden fees, no premium tier, and no watermarks on exported files. Because everything runs in your browser, there are no server costs. You get professional-grade editing at zero cost."
+      },
+      {
+        question: "How does the text replacement keep alignment accurate in the exported PDF?",
+        answer: "The editor uses font-metric baseline alignment. It calculates the exact ascent, line height, and character width of the original text, then positions replacement text at the same coordinates. A white redaction mask covers the original content. This ensures both the on-screen preview and the exported PDF match perfectly."
+      },
+      {
+        question: "What happens when I click Download PDF?",
+        answer: "A preview dialog shows your edits. On confirmation, the editor writes all changes (text, images, shapes, watermarks, redactions, drawings) into the original PDF structure using pdf-lib. The result downloads as a standard PDF preserving original resolution, fonts, and vector graphics — no quality loss."
+      },
+      {
+        question: "Can I add images, signatures, and watermarks to my PDF?",
+        answer: "Yes. Use the Image tool (press I) to insert logos, photos, or scanned signatures in PNG, JPG, or SVG format. The Watermark tool (press W) adds text or image watermarks with adjustable opacity, rotation, and tiling. Watermarks can be applied to one page or all pages at once."
+      }
     ]
   };
 
   return (
     <>
-      <CanonicalHead 
-        title="PDF Editor Online Free – Edit PDF Without Watermark | VexaTool"
-        description="Free online PDF editor India. Edit text, add images, OCR scanned documents. No watermark, no signup. Best free PDF editing tool for students & professionals."
-        keywords="PDF editor online free, edit PDF without watermark, online PDF editor India, free PDF editing tool, modify PDF text, OCR PDF editor, PDF editor for students, best free PDF editor"
+      <CanonicalHead
+        title="Edit PDF Online Free – Block-Based Text Editor with OCR | VexaTool"
+        description="Free online PDF editor with block-based text editing and OCR. Edit text in scanned PDFs, replace paragraphs, table rows, form fields. No watermark, no signup. Works on mobile."
+        keywords="edit PDF online free, PDF editor no watermark, edit scanned PDF OCR, block-based PDF editing, free PDF text editor, online PDF editor India, edit PDF on mobile, replace text in PDF, PDF editor for students, OCR PDF editor free"
       />
-      
+
       {/* FAQ Schema */}
       <Helmet>
         <script type="application/ld+json">
           {JSON.stringify(faqSchema)}
         </script>
       </Helmet>
-      
+
       <ToolLayout
-        title="PDF Editor Online Free – No Watermark"
-        description="Edit text, add images, OCR scanned documents. Free online PDF editor for students & professionals."
+        title="Edit PDF Online Free – Block-Based Text Editor"
+        description="Edit text, replace paragraphs, OCR scanned documents. Block-based editing for tables, forms & structured PDFs. No watermark."
         icon={FileEdit}
         colorClass="bg-tool-edit"
       >
@@ -166,7 +228,7 @@ const EditPDF = () => {
               <div className="text-center mb-6">
                 <h2 className="text-xl font-semibold mb-2">Upload a PDF to Start Editing</h2>
                 <p className="text-muted-foreground">
-                  Edit text-based PDFs directly or use OCR for scanned documents. Replace, delete, or add new content.
+                  Edit text-based PDFs directly or use OCR for scanned documents. Select entire paragraphs, table rows, or form fields — not just individual words.
                 </p>
               </div>
               <FileUpload
@@ -176,46 +238,55 @@ const EditPDF = () => {
                 multiple={false}
                 accept=".pdf"
               />
-              
-              {/* Feature highlights */}
+
+              {/* Feature highlights — updated for block-based editing */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
-                  <div className="text-2xl mb-2">✏️</div>
-                  <h3 className="font-medium text-sm">Edit & Replace Text</h3>
-                  <p className="text-xs text-muted-foreground">Select & modify existing text</p>
+                  <LayoutGrid className="w-7 h-7 mx-auto mb-2 text-primary" />
+                  <h3 className="font-medium text-sm">Block-Based Editing</h3>
+                  <p className="text-xs text-muted-foreground">Select & replace full paragraphs, rows, cells</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
-                  <div className="text-2xl mb-2">📝</div>
-                  <h3 className="font-medium text-sm">OCR Technology</h3>
-                  <p className="text-xs text-muted-foreground">Edit scanned PDFs</p>
+                  <ScanText className="w-7 h-7 mx-auto mb-2 text-primary" />
+                  <h3 className="font-medium text-sm">Dual-Pass OCR</h3>
+                  <p className="text-xs text-muted-foreground">Edit scanned PDFs with high accuracy</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
-                  <div className="text-2xl mb-2">🖼️</div>
-                  <h3 className="font-medium text-sm">Add Images</h3>
-                  <p className="text-xs text-muted-foreground">Logos, photos, signatures</p>
+                  <Shield className="w-7 h-7 mx-auto mb-2 text-primary" />
+                  <h3 className="font-medium text-sm">100% Private</h3>
+                  <p className="text-xs text-muted-foreground">Files never leave your device</p>
                 </div>
                 <div className="p-4 bg-muted/30 rounded-lg text-center">
-                  <div className="text-2xl mb-2">💧</div>
-                  <h3 className="font-medium text-sm">Watermarks</h3>
-                  <p className="text-xs text-muted-foreground">Text or image watermarks</p>
+                  <Smartphone className="w-7 h-7 mx-auto mb-2 text-primary" />
+                  <h3 className="font-medium text-sm">Works on Mobile</h3>
+                  <p className="text-xs text-muted-foreground">Responsive touch-friendly editor</p>
                 </div>
               </div>
-              
-              {/* Additional info */}
+
+              {/* Supported PDF types + segmentation modes */}
               <div className="bg-muted/20 rounded-lg p-4 mt-4">
-                <h3 className="font-medium mb-2">Supported PDF Types</h3>
+                <h3 className="font-medium mb-3">Supported PDF Types & Editing Modes</h3>
                 <div className="grid md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="font-medium text-primary">Text-Based PDFs</p>
                     <p className="text-muted-foreground">
-                      PDFs with selectable text can be edited directly. Click on text to select, delete, or replace it.
+                      PDFs with selectable text are auto-extracted into editable blocks. Click any block to select, edit, or replace it instantly.
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium text-primary">Scanned PDFs</p>
+                    <p className="font-medium text-primary">Scanned / Image PDFs</p>
                     <p className="text-muted-foreground">
-                      Image-based or scanned PDFs use OCR to detect text. High accuracy for English documents.
+                      Scanned documents are processed with dual-pass OCR and image preprocessing for high-accuracy text detection, even on faint or low-contrast scans.
                     </p>
+                  </div>
+                </div>
+                <div className="mt-4 pt-3 border-t border-border">
+                  <p className="font-medium text-sm mb-2">Intelligent Segmentation Modes</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-muted-foreground">
+                    <span className="bg-background rounded px-2 py-1 text-center"><strong className="text-foreground">Auto</strong> — best for most documents</span>
+                    <span className="bg-background rounded px-2 py-1 text-center"><strong className="text-foreground">Paragraph</strong> — multi-line text blocks</span>
+                    <span className="bg-background rounded px-2 py-1 text-center"><strong className="text-foreground">Table</strong> — row &amp; cell-level blocks</span>
+                    <span className="bg-background rounded px-2 py-1 text-center"><strong className="text-foreground">Form</strong> — label-value field pairs</span>
                   </div>
                 </div>
               </div>
@@ -246,8 +317,8 @@ const EditPDF = () => {
                   </div>
                 </div>
               }>
-                <ProfessionalPDFEditor 
-                  file={files[0]} 
+                <ProfessionalPDFEditor
+                  file={files[0]}
                   onClose={handleClose}
                 />
               </Suspense>

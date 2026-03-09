@@ -15,32 +15,35 @@ export const Hero = () => {
       aria-labelledby="hero-heading"
     >
       {/* Base gradient: white → soft blue → hint of purple */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(135deg,hsl(0_0%_100%)_0%,hsl(220_60%_97%)_40%,hsl(240_50%_96%)_70%,hsl(225_20%_98%)_100%)]" />
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(135deg,hsl(0_0%_100%)_0%,hsl(220_65%_95%)_35%,hsl(245_55%_94%)_65%,hsl(225_30%_97%)_100%)]" />
 
       {/* Large blurred glow — top-right blue */}
-      <div className="absolute -top-[15%] -right-[10%] w-[550px] h-[550px] rounded-full bg-primary/[0.07] blur-[120px] pointer-events-none" />
+      <div className="absolute -top-[15%] -right-[10%] w-[550px] h-[550px] rounded-full bg-primary/[0.14] blur-[120px] pointer-events-none" />
 
       {/* Large blurred glow — bottom-left purple */}
-      <div className="absolute -bottom-[18%] -left-[8%] w-[480px] h-[480px] rounded-full bg-secondary/[0.06] blur-[110px] pointer-events-none" />
+      <div className="absolute -bottom-[18%] -left-[8%] w-[480px] h-[480px] rounded-full bg-secondary/[0.12] blur-[110px] pointer-events-none" />
 
       {/* Mid glow — center-left soft blue */}
-      <div className="absolute top-[30%] left-[20%] w-[260px] h-[260px] rounded-full bg-primary/[0.04] blur-[80px] pointer-events-none hidden md:block" />
+      <div className="absolute top-[30%] left-[20%] w-[260px] h-[260px] rounded-full bg-primary/[0.08] blur-[80px] pointer-events-none hidden md:block" />
 
       {/* Small accent glow — right side purple */}
-      <div className="absolute top-[50%] right-[15%] w-[180px] h-[180px] rounded-full bg-secondary/[0.04] blur-[70px] pointer-events-none hidden lg:block" />
+      <div className="absolute top-[50%] right-[15%] w-[180px] h-[180px] rounded-full bg-secondary/[0.08] blur-[70px] pointer-events-none hidden lg:block" />
 
-      {/* Dot grid pattern — very faint */}
+      {/* Center glow behind heading */}
+      <div className="absolute top-[35%] left-1/2 -translate-x-1/2 w-[400px] h-[250px] rounded-full bg-primary/[0.06] blur-[90px] pointer-events-none" />
+
+      {/* Dot grid pattern */}
       <div
-        className="absolute inset-0 z-0 opacity-[0.4] pointer-events-none"
+        className="absolute inset-0 z-0 opacity-[0.55] pointer-events-none"
         style={{
-          backgroundImage: `radial-gradient(circle, hsl(217 91% 60% / 0.07) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, hsl(217 91% 60% / 0.1) 1px, transparent 1px)`,
           backgroundSize: "32px 32px",
         }}
       />
 
       {/* Faint diagonal lines for texture */}
       <div
-        className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none"
+        className="absolute inset-0 z-0 opacity-[0.25] pointer-events-none"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='0' y1='60' x2='60' y2='0' stroke='%232563eb' stroke-opacity='0.08' stroke-width='0.5'/%3E%3C/svg%3E")`,
           backgroundSize: "60px 60px",

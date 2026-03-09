@@ -31,7 +31,7 @@ import { OCRPanel } from './OCRPanel';
 // TextSelectionLayer kept for backward compat but replaced by BlockHighlightLayer
 import { useEditorHistory } from './useEditorHistory';
 import { useOCR, OCRTextBlock } from './useOCR';
-import { useTextBlocks, TextRegion } from './useTextBlocks';
+import { useTextBlocks, TextRegion, TextSegmentationMode } from './useTextBlocks';
 import { BlockHighlightLayer } from './BlockHighlightLayer';
 import { BlockEditPanel } from './BlockEditPanel';
 import { Button } from '@/components/ui/button';

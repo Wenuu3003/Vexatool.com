@@ -358,10 +358,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       id: `redact-${Date.now()}`,
       type: 'redact',
       page: originalBlock.pageIndex,
-      x: originalBlock.x,
-      y: originalBlock.y,
-      width: originalBlock.width + 4,
-      height: originalBlock.height + 2,
+      x: originalBlock.x - 2,
+      y: originalBlock.y - 1,
+      width: originalBlock.width + 6,
+      height: originalBlock.height + 4,
       rotation: 0,
       opacity: 1,
       locked: false,
@@ -369,26 +369,28 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       fillColor: '#FFFFFF',
     };
     
-    const replaceFontSize = Math.max(8, Math.round(originalBlock.height * 0.85));
+    // Use the exact font size from the OCR block (already in canvas px)
+    const replaceFontSize = originalBlock.height;
     const textElement: TextElement = {
       id: `text-${Date.now()}`,
       type: 'text',
       page: originalBlock.pageIndex,
       x: originalBlock.x,
       y: originalBlock.y,
-      width: Math.max(originalBlock.width, newText.length * (originalBlock.height * 0.6)),
-      height: replaceFontSize, // match height to fontSize for lineHeight:1 alignment
+      width: Math.max(originalBlock.width, newText.length * (replaceFontSize * 0.6)),
+      height: replaceFontSize,
       rotation: 0,
       opacity: 1,
       locked: false,
       zIndex: elements.length + 1,
       text: newText,
       fontSize: replaceFontSize,
-      fontFamily: 'Helvetica',
+      fontFamily: 'Helvetica, Arial, sans-serif',
       fontWeight: 'normal',
       fontStyle: 'normal',
       textDecoration: 'none',
       color: '#000000',
+      backgroundMask: true, // Auto-enable white mask for clean replacement
     };
     
     setElements(prev => [...prev, redactElement, textElement]);
@@ -397,7 +399,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     
     toast({
       title: 'Text Replaced',
-      description: 'New text added in place of original.',
+      description: 'New text added with white mask. Adjust style in Properties panel.',
     });
   }, [elements.length, saveToHistory, toast]);
 

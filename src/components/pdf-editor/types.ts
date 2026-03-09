@@ -24,10 +24,14 @@ export interface TextElement extends EditorElement {
   text: string;
   fontSize: number;
   fontFamily: string;
-  fontWeight: 'normal' | 'bold';
+  fontWeight: 'normal' | 'medium' | 'semibold' | 'bold';
   fontStyle: 'normal' | 'italic';
   textDecoration: 'none' | 'underline';
   color: string;
+  letterSpacing?: number;
+  lineHeightMultiplier?: number;
+  textAlign?: 'left' | 'center' | 'right';
+  backgroundMask?: boolean;
 }
 
 export interface ShapeElement extends EditorElement {

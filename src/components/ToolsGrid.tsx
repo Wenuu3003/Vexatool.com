@@ -72,7 +72,7 @@ export const ToolsGrid = ({ categoryFilter }: ToolsGridProps) => {
 
         <div className="flex justify-center mt-10 sm:mt-14">
           <Link
-            to={categoryFilter === "pdf" ? "/pdf-tools" : categoryFilter === "image" ? "/image-tools" : categoryFilter === "calculator" ? "/calculator-tools" : categoryFilter === "qr" ? "/qr-tools" : categoryFilter === "utility" ? "/utility-tools" : "/pdf-tools"}
+            to={categoryFilter === "pdf" ? "/pdf-tools" : categoryFilter === "image" ? "/image-tools" : categoryFilter === "calculator" ? "/calculator-tools" : categoryFilter === "qr" ? "/qr-tools" : categoryFilter === "utility" ? "/utility-tools" : "/all-tools"}
             className={cn(
               "inline-flex items-center gap-2 px-6 sm:px-7 py-2.5 rounded-lg text-sm font-semibold",
               "bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"

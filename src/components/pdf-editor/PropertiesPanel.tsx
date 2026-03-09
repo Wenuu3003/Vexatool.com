@@ -16,7 +16,8 @@ import {
   FONT_FAMILIES, 
   FONT_SIZES, 
   FONT_WEIGHTS,
-  COLORS 
+  COLORS,
+  canvasPxToPt
 } from './types';
 
 interface PropertiesPanelProps {

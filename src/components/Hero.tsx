@@ -53,7 +53,7 @@ export const Hero = () => {
       {/* Decorative themed icons — very light, non-distracting */}
       {/* PDF document shape */}
       <svg
-        className="absolute top-[12%] right-[11%] w-20 h-20 sm:w-24 sm:h-24 text-primary/[0.06] pointer-events-none hidden sm:block"
+        className="absolute top-[12%] right-[11%] w-20 h-20 sm:w-24 sm:h-24 text-primary/[0.10] pointer-events-none hidden sm:block"
         viewBox="0 0 96 96"
         fill="none"
         aria-hidden="true"

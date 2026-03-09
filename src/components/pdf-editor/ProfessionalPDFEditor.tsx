@@ -42,8 +42,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-// High-res rendering scale for 4K quality PDF display
-const PDF_RENDER_SCALE = 3.0;
+// Use scale from types
 const MAX_FILE_SIZE_MB = 25;
 
 interface ProfessionalPDFEditorProps {

@@ -633,15 +633,17 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       const pdfPages = pdfDoc.getPages();
       
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const timesFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+      const timesBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
       const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
+      const courierBoldFont = await pdfDoc.embedFont(StandardFonts.CourierBold);
       
-      const fontMap: Record<string, typeof helveticaFont> = {
-        'Helvetica': helveticaFont,
-        'Arial': helveticaFont,
-        'Times-Roman': timesFont,
-        'Georgia': timesFont,
-        'Courier': courierFont,
+      const getFontForElement = (family: string, weight: string) => {
+        const isBold = weight === 'bold' || weight === 'semibold';
+        if (family === 'Courier') return isBold ? courierBoldFont : courierFont;
+        if (family === 'Times-Roman' || family === 'Georgia' || family === 'Palatino') return isBold ? timesBoldFont : timesFont;
+        return isBold ? helveticaBoldFont : helveticaFont;
       };
       
       for (let i = 0; i < pdfPages.length; i++) {

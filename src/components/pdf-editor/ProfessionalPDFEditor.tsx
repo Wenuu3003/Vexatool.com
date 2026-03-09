@@ -934,13 +934,13 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const handleRegionReplace = useCallback((region: TextRegion, newText: string) => {
     const cleanText = newText.trimEnd();
     if (!cleanText) {
-      handleRegionDelete(region);
+      toast({
+        title: 'Replacement text required',
+        description: 'Enter text to replace this block, or use Delete to remove it.',
+        variant: 'destructive',
+      });
       return;
     }
-
-    const avgHeight = region.sourceBlocks.length
-      ? region.sourceBlocks.reduce((sum, block) => sum + block.height, 0) / region.sourceBlocks.length
-      : region.height;
 
     const fontSize = Math.max(9, Math.round(avgHeight));
     const lineHeightMultiplier = 1.2;

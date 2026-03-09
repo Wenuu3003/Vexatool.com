@@ -1024,26 +1024,47 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     );
   }
 
-  const ocrPanelContent = (
-    <>
-      <div className="p-2">
-        <OCRPanel
-          pdfType={pdfType}
-          isProcessing={isOCRProcessing}
-          progress={ocrProgress}
-          textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
-          stats={ocrStats}
-          onRunOCR={handleRunOCR}
-          onExtractText={handleExtractText}
-          currentPage={currentPage}
-          totalPages={pages.filter(p => !p.deleted).length}
+  const rightPanelContent = (
+    <Tabs value={activePanel} onValueChange={(v) => setActivePanel(v as 'properties' | 'blocks')} className="flex flex-col h-full">
+      <TabsList className="grid w-full grid-cols-2 m-1.5 mb-0">
+        <TabsTrigger value="blocks" className="text-xs gap-1">
+          <Edit3 className="w-3 h-3" />
+          Edit Text
+        </TabsTrigger>
+        <TabsTrigger value="properties" className="text-xs gap-1">
+          <ScanText className="w-3 h-3" />
+          OCR & Props
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="blocks" className="flex-1 overflow-hidden m-0">
+        <BlockEditPanel
+          regions={regions}
+          selectedRegion={selectedRegionId}
+          onSelectRegion={setSelectedRegionId}
+          onReplaceRegion={handleRegionReplace}
+          onDeleteRegion={handleRegionDelete}
         />
-      </div>
-      <PropertiesPanel
-        element={selectedElementData ?? null}
-        onUpdate={handleUpdateElement}
-      />
-    </>
+      </TabsContent>
+      <TabsContent value="properties" className="flex-1 overflow-y-auto m-0">
+        <div className="p-2">
+          <OCRPanel
+            pdfType={pdfType}
+            isProcessing={isOCRProcessing}
+            progress={ocrProgress}
+            textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
+            stats={ocrStats}
+            onRunOCR={handleRunOCR}
+            onExtractText={handleExtractText}
+            currentPage={currentPage}
+            totalPages={pages.filter(p => !p.deleted).length}
+          />
+        </div>
+        <PropertiesPanel
+          element={selectedElementData ?? null}
+          onUpdate={handleUpdateElement}
+        />
+      </TabsContent>
+    </Tabs>
   );
 
   return (

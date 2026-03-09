@@ -5,13 +5,12 @@ export interface OCRTextBlock {
   id: string;
   text: string;
   x: number;
-  y: number;
+  y: number;        // top of visible text in canvas px
   width: number;
-  height: number;
+  height: number;   // font em-height in canvas px
   confidence: number;
   pageIndex: number;
-  fontSize?: number;
-  fontColor?: string;
+  fontSizePt?: number; // original font size in PDF points (from PDF text extraction)
 }
 
 export interface OCRProgress {
@@ -26,10 +25,9 @@ export interface OCRStats {
 }
 
 /**
- * Preprocess a canvas for better OCR accuracy:
- * - Convert to grayscale
- * - Enhance contrast
- * - Apply adaptive thresholding
+ * Preprocess canvas image for better OCR accuracy.
+ * - Converts to grayscale
+ * - Optionally enhances contrast & thresholds for faint/small text
  */
 function preprocessForOCR(
   sourceCanvas: HTMLCanvasElement,
@@ -39,75 +37,54 @@ function preprocessForOCR(
   canvas.width = sourceCanvas.width;
   canvas.height = sourceCanvas.height;
   const ctx = canvas.getContext('2d')!;
-
-  // Draw original
   ctx.drawImage(sourceCanvas, 0, 0);
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const data = imageData.data;
 
-  // Convert to grayscale
+  // Grayscale
   for (let i = 0; i < data.length; i += 4) {
     const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
     data[i] = data[i + 1] = data[i + 2] = gray;
   }
 
-  if (mode === 'enhanced') {
-    // Higher contrast for faint text
-    const contrast = 80; // -255 to 255
-    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = Math.min(255, Math.max(0, factor * (data[i] - 128) + 128));
-      data[i + 1] = data[i];
-      data[i + 2] = data[i];
-    }
+  // Contrast enhancement
+  const contrast = mode === 'enhanced' ? 70 : 35;
+  const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+  for (let i = 0; i < data.length; i += 4) {
+    const v = Math.min(255, Math.max(0, factor * (data[i] - 128) + 128));
+    data[i] = data[i + 1] = data[i + 2] = v;
+  }
 
-    // Simple threshold for very faint text
-    const threshold = 160;
+  if (mode === 'enhanced') {
+    // Binarization threshold — helps for faint, light, or low-contrast text
     for (let i = 0; i < data.length; i += 4) {
-      const v = data[i] < threshold ? 0 : 255;
+      const v = data[i] < 140 ? 0 : 255;
       data[i] = data[i + 1] = data[i + 2] = v;
-    }
-  } else {
-    // Mild contrast boost
-    const contrast = 40;
-    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = Math.min(255, Math.max(0, factor * (data[i] - 128) + 128));
-      data[i + 1] = data[i];
-      data[i + 2] = data[i];
     }
   }
 
   ctx.putImageData(imageData, 0, 0);
-
-  // Sharpen via unsharp mask (overlay with blurred difference)
-  // Simple approach: draw slightly offset copies at reduced opacity
-  ctx.globalCompositeOperation = 'source-over';
-
   return canvas;
 }
 
 /**
- * Merge OCR results from multiple passes, deduplicating overlapping blocks.
+ * Merge OCR results from multiple passes, deduplicating strongly overlapping blocks.
  */
 function mergeOCRBlocks(primary: OCRTextBlock[], secondary: OCRTextBlock[]): OCRTextBlock[] {
   const merged = [...primary];
-
   for (const block of secondary) {
     const overlaps = merged.some(existing => {
-      const overlapX = Math.max(0, Math.min(existing.x + existing.width, block.x + block.width) - Math.max(existing.x, block.x));
-      const overlapY = Math.max(0, Math.min(existing.y + existing.height, block.y + block.height) - Math.max(existing.y, block.y));
-      const overlapArea = overlapX * overlapY;
+      const ox = Math.max(0, Math.min(existing.x + existing.width, block.x + block.width) - Math.max(existing.x, block.x));
+      const oy = Math.max(0, Math.min(existing.y + existing.height, block.y + block.height) - Math.max(existing.y, block.y));
+      const overlapArea = ox * oy;
       const blockArea = block.width * block.height;
       return blockArea > 0 && overlapArea / blockArea > 0.4;
     });
-
-    if (!overlaps) {
+    if (!overlaps && block.text.trim()) {
       merged.push(block);
     }
   }
-
   return merged;
 }
 
@@ -116,82 +93,81 @@ export const useOCR = () => {
   const [progress, setProgress] = useState<OCRProgress>({ status: '', progress: 0 });
   const [textBlocks, setTextBlocks] = useState<OCRTextBlock[]>([]);
   const [stats, setStats] = useState<OCRStats | null>(null);
-  const progressRef = useRef(progress);
-  progressRef.current = progress;
+  // Throttle progress updates to avoid triggering excessive re-renders / flickering
+  const lastProgressRef = useRef(0);
 
-  const runSingleOCR = useCallback(async (
+  const runOCRPass = useCallback(async (
     canvas: HTMLCanvasElement,
     pageIndex: number,
     language: string,
-    idPrefix: string
+    idPrefix: string,
+    startProgress: number,
+    endProgress: number
   ): Promise<OCRTextBlock[]> => {
     const result = await Tesseract.recognize(canvas, language, {
       logger: (m) => {
         if (m.status === 'recognizing text') {
-          setProgress({
-            status: 'Recognizing text...',
-            progress: Math.round(m.progress * 100),
-          });
+          const pct = Math.round(startProgress + (m.progress * (endProgress - startProgress)));
+          // Only update progress every 5% to reduce re-renders
+          if (pct - lastProgressRef.current >= 5) {
+            lastProgressRef.current = pct;
+            setProgress({ status: 'Recognizing text...', progress: pct });
+          }
         }
       },
     });
 
     const blocks: OCRTextBlock[] = [];
-
     if (result.data.words) {
       result.data.words.forEach((word, index) => {
-        if (word.text.trim() && word.text.trim().length > 0) {
+        if (word.text.trim()) {
+          const h = word.bbox.y1 - word.bbox.y0;
           blocks.push({
             id: `${idPrefix}-${pageIndex}-${index}`,
             text: word.text,
             x: word.bbox.x0,
             y: word.bbox.y0,
             width: word.bbox.x1 - word.bbox.x0,
-            height: word.bbox.y1 - word.bbox.y0,
+            height: h,
             confidence: word.confidence,
             pageIndex,
-            fontSize: Math.round((word.bbox.y1 - word.bbox.y0) * 0.75),
           });
         }
       });
     }
-
     return blocks;
   }, []);
 
+  /**
+   * Dual-pass OCR with image preprocessing for scanned/image PDFs.
+   * Pass 1: Normal grayscale + mild contrast
+   * Pass 2: Enhanced contrast + binarization (catches faint/small text missed by pass 1)
+   */
   const performOCR = useCallback(async (
     canvas: HTMLCanvasElement,
     pageIndex: number,
     language: string = 'eng'
   ): Promise<OCRTextBlock[]> => {
     setIsProcessing(true);
-    setProgress({ status: 'Preprocessing image...', progress: 0 });
+    lastProgressRef.current = 0;
+    setProgress({ status: 'Preprocessing (pass 1/2)...', progress: 0 });
 
     try {
-      // Pass 1: Normal preprocessing
-      const normalCanvas = preprocessForOCR(canvas, 'normal');
-      setProgress({ status: 'OCR Pass 1: Normal scan...', progress: 5 });
-      const pass1Blocks = await runSingleOCR(normalCanvas, pageIndex, language, 'ocr-p1');
+      const pass1Canvas = preprocessForOCR(canvas, 'normal');
+      const pass1 = await runOCRPass(pass1Canvas, pageIndex, language, 'ocr-p1', 5, 50);
 
-      // Pass 2: Enhanced preprocessing for faint/small text
-      setProgress({ status: 'OCR Pass 2: Enhanced scan for faint text...', progress: 55 });
-      const enhancedCanvas = preprocessForOCR(canvas, 'enhanced');
-      const pass2Blocks = await runSingleOCR(enhancedCanvas, pageIndex, language, 'ocr-p2');
+      setProgress({ status: 'Deep scan pass 2/2 (faint text)...', progress: 52 });
+      const pass2Canvas = preprocessForOCR(canvas, 'enhanced');
+      const pass2 = await runOCRPass(pass2Canvas, pageIndex, language, 'ocr-p2', 55, 95);
 
-      // Merge results
-      const usedFallback = pass2Blocks.length > 0;
-      const merged = mergeOCRBlocks(pass1Blocks, pass2Blocks);
-
+      const merged = mergeOCRBlocks(pass1, pass2);
+      const usedFallback = pass2.length > 0;
       const avgConf = merged.length > 0
-        ? merged.reduce((sum, b) => sum + b.confidence, 0) / merged.length
+        ? Math.round(merged.reduce((s, b) => s + b.confidence, 0) / merged.length)
         : 0;
 
-      setStats({
-        totalBlocks: merged.length,
-        avgConfidence: Math.round(avgConf),
-        usedFallback,
-      });
-
+      const newStats: OCRStats = { totalBlocks: merged.length, avgConfidence: avgConf, usedFallback };
+      setStats(newStats);
       setTextBlocks(prev => [...prev.filter(b => b.pageIndex !== pageIndex), ...merged]);
       return merged;
     } catch (error) {
@@ -201,14 +177,20 @@ export const useOCR = () => {
       setIsProcessing(false);
       setProgress({ status: 'Complete', progress: 100 });
     }
-  }, [runSingleOCR]);
+  }, [runOCRPass]);
 
+  /**
+   * Extract native text from a PDF text-layer.
+   * CRITICAL FIX: y coordinate now correctly places the top of visible text
+   * by using the baseline and font ascent metric, ensuring replacement text
+   * aligns exactly with the original on export.
+   */
   const extractPDFText = useCallback(async (
     pdfDocument: any,
     pageIndex: number
   ): Promise<OCRTextBlock[]> => {
     setIsProcessing(true);
-    setProgress({ status: 'Extracting text from PDF...', progress: 0 });
+    setProgress({ status: 'Extracting text...', progress: 0 });
 
     try {
       const page = await pdfDocument.getPage(pageIndex + 1);
@@ -217,34 +199,39 @@ export const useOCR = () => {
       const viewport = page.getViewport({ scale: renderScale });
 
       const blocks: OCRTextBlock[] = [];
-
       textContent.items.forEach((item: any, index: number) => {
-        if (item.str && item.str.trim()) {
-          const tx = item.transform[4] * renderScale;
-          const itemHeight = (item.height || 12) * renderScale;
-          const ty = viewport.height - (item.transform[5] * renderScale) - itemHeight;
+        if (!item.str || !item.str.trim()) return;
 
-          blocks.push({
-            id: `pdf-text-${pageIndex}-${index}`,
-            text: item.str,
-            x: tx,
-            y: ty,
-            width: item.width * renderScale,
-            height: itemHeight,
-            confidence: 100,
-            pageIndex,
-            fontSize: Math.round(itemHeight * 0.75),
-            fontColor: item.color ? `rgb(${item.color[0] * 255},${item.color[1] * 255},${item.color[2] * 255})` : '#000000',
-          });
-        }
+        // item.transform: [scaleX, skewY, skewX, scaleY, tx, ty]
+        // For horizontal text: scaleX = scaleY = fontSize in PDF user units
+        const fontSizePt = Math.abs(item.transform[3]) || item.height || 12;
+        const fontSizeCanvas = fontSizePt * renderScale;
+
+        // PDF baseline in canvas space (PDF Y goes up, canvas Y goes down)
+        const baselineCanvas = viewport.height - (item.transform[5] * renderScale);
+
+        // Ascent ≈ 72% of em for Helvetica/standard fonts
+        // This is the critical fix: y = TOP of visible text, not bottom of em box
+        const ASCENT_RATIO = 0.72;
+        const ascent = fontSizeCanvas * ASCENT_RATIO;
+        const y = baselineCanvas - ascent;
+        const x = item.transform[4] * renderScale;
+
+        blocks.push({
+          id: `pdf-text-${pageIndex}-${index}`,
+          text: item.str,
+          x: Math.max(0, x),
+          y: Math.max(0, y),
+          width: Math.max(10, item.width * renderScale),
+          height: fontSizeCanvas, // store em-height (= fontSize in canvas px)
+          confidence: 100,
+          pageIndex,
+          fontSizePt, // store original PDF pt size for accurate replacement
+        });
       });
 
-      setStats({
-        totalBlocks: blocks.length,
-        avgConfidence: 100,
-        usedFallback: false,
-      });
-
+      const newStats: OCRStats = { totalBlocks: blocks.length, avgConfidence: 100, usedFallback: false };
+      setStats(newStats);
       setTextBlocks(prev => [...prev.filter(b => b.pageIndex !== pageIndex), ...blocks]);
       setProgress({ status: 'Complete', progress: 100 });
       return blocks;
@@ -264,12 +251,10 @@ export const useOCR = () => {
       const page = await pdfDocument.getPage(pageIndex + 1);
       const textContent = await page.getTextContent();
       const textItems = textContent.items.filter((item: any) => item.str && item.str.trim());
-
       if (textItems.length > 10) return 'text-based';
       if (textItems.length === 0) return 'scanned';
       return 'mixed';
-    } catch (error) {
-      console.error('PDF type detection error:', error);
+    } catch {
       return 'scanned';
     }
   }, []);

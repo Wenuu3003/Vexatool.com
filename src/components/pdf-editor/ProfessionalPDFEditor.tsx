@@ -1144,7 +1144,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] p-0 overflow-y-auto">
               <div className="pt-10">
-                {ocrPanelContent}
+                {rightPanelContent}
               </div>
             </SheetContent>
           </Sheet>

@@ -294,6 +294,19 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedElement, undo, redo]);
 
+  // Auto-extract text when changing pages (for text-based PDFs)
+  useEffect(() => {
+    if (!pdfDocument || !textSelectionEnabled) return;
+    const pageBlocks = textBlocks.filter(b => b.pageIndex === currentPage);
+    if (pageBlocks.length > 0) return; // already extracted
+    if (pdfType === 'text-based' || pdfType === 'mixed') {
+      extractPDFText(pdfDocument, currentPage).catch(() => {});
+    }
+    // Reset selected region when changing pages
+    setSelectedRegionId(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pdfDocument, textSelectionEnabled, pdfType]);
+
   // OCR handlers
   const handleRunOCR = useCallback(async () => {
     const currentPageData = pages[currentPage];

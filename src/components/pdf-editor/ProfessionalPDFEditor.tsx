@@ -1150,8 +1150,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           <Sheet open={showMobilePanel} onOpenChange={setShowMobilePanel}>
             <SheetTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5">
-                <ScanText className="w-4 h-4" />
-                OCR & Edit
+                <Edit3 className="w-4 h-4" />
+                Edit Text
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] p-0 overflow-y-auto">

@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScanText, FileText, AlertCircle, CheckCircle2, Loader2, Info } from 'lucide-react';
+import { ScanText, FileText, AlertCircle, CheckCircle2, Loader2, Info, LayoutGrid } from 'lucide-react';
 import { OCRProgress } from './useOCR';
 import type { OCRStats } from './useOCR';
+import type { ResolvedSegmentationMode, TextSegmentationMode } from './useTextBlocks';
 
 interface OCRPanelProps {
   pdfType: 'text-based' | 'scanned' | 'mixed' | null;
@@ -13,11 +14,21 @@ interface OCRPanelProps {
   progress: OCRProgress;
   textBlockCount: number;
   stats: OCRStats | null;
+  segmentationMode: TextSegmentationMode;
+  resolvedSegmentationMode: ResolvedSegmentationMode;
+  onSegmentationModeChange: (mode: TextSegmentationMode) => void;
   onRunOCR: () => void;
   onExtractText: () => void;
   currentPage: number;
   totalPages: number;
 }
+
+const SEGMENTATION_OPTIONS: { value: TextSegmentationMode; label: string }[] = [
+  { value: 'auto', label: 'Auto' },
+  { value: 'paragraph', label: 'Paragraph' },
+  { value: 'table', label: 'Table' },
+  { value: 'form', label: 'Form' },
+];
 
 export const OCRPanel = memo(({
   pdfType,
@@ -25,6 +36,9 @@ export const OCRPanel = memo(({
   progress,
   textBlockCount,
   stats,
+  segmentationMode,
+  resolvedSegmentationMode,
+  onSegmentationModeChange,
   onRunOCR,
   onExtractText,
   currentPage,
@@ -39,7 +53,7 @@ export const OCRPanel = memo(({
             <CardTitle className="text-sm font-medium">Text Detection</CardTitle>
           </div>
           {pdfType && (
-            <Badge 
+            <Badge
               variant={pdfType === 'text-based' ? 'default' : pdfType === 'scanned' ? 'secondary' : 'outline'}
               className="text-xs"
             >
@@ -52,6 +66,33 @@ export const OCRPanel = memo(({
         </CardDescription>
       </CardHeader>
       <CardContent className="py-2 px-4 space-y-3">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <LayoutGrid className="w-3.5 h-3.5" />
+              Segmentation mode
+            </div>
+            <Badge variant="outline" className="text-[10px] capitalize">
+              Active: {resolvedSegmentationMode}
+            </Badge>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            {SEGMENTATION_OPTIONS.map((option) => (
+              <Button
+                key={option.value}
+                type="button"
+                size="sm"
+                variant={segmentationMode === option.value ? 'default' : 'outline'}
+                className="h-7 text-[11px]"
+                onClick={() => onSegmentationModeChange(option.value)}
+                disabled={isProcessing}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
         {isProcessing ? (
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -67,9 +108,9 @@ export const OCRPanel = memo(({
           <>
             {textBlockCount > 0 ? (
               <div className="space-y-1">
-                <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                <div className="flex items-center gap-2 text-sm text-primary">
                   <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  {textBlockCount} text blocks detected
+                  {textBlockCount} editable text regions detected
                 </div>
                 {stats && (
                   <div className="flex flex-wrap gap-1.5 text-xs text-muted-foreground">
@@ -79,7 +120,7 @@ export const OCRPanel = memo(({
                     </span>
                     {stats.usedFallback && (
                       <Badge variant="outline" className="text-[10px] h-4">
-                        Multi-pass
+                        Multi-pass OCR
                       </Badge>
                     )}
                   </div>
@@ -93,20 +134,20 @@ export const OCRPanel = memo(({
             )}
 
             <div className="flex flex-col gap-2">
-              {pdfType === 'text-based' || pdfType === 'mixed' ? (
-                <Button 
-                  size="sm" 
-                  variant="outline" 
+              {(pdfType === 'text-based' || pdfType === 'mixed') && (
+                <Button
+                  size="sm"
+                  variant="outline"
                   onClick={onExtractText}
                   className="w-full"
                 >
                   <FileText className="w-4 h-4 mr-2" />
                   Extract PDF Text
                 </Button>
-              ) : null}
-              
-              <Button 
-                size="sm" 
+              )}
+
+              <Button
+                size="sm"
                 onClick={onRunOCR}
                 className="w-full"
               >
@@ -116,11 +157,7 @@ export const OCRPanel = memo(({
             </div>
 
             <p className="text-xs text-muted-foreground">
-              {pdfType === 'scanned' 
-                ? 'Scanned PDF detected. OCR uses dual-pass with image preprocessing for best results.'
-                : pdfType === 'text-based'
-                ? 'Text PDF detected. Click "Extract PDF Text" to enable inline editing.'
-                : 'Mixed PDF. Extract text first, then OCR for remaining scanned content.'}
+              Use <strong>{segmentationMode === 'auto' ? 'Auto' : segmentationMode}</strong> mode to control how blocks split for editing.
             </p>
           </>
         )}

@@ -31,7 +31,7 @@ import { OCRPanel } from './OCRPanel';
 // TextSelectionLayer kept for backward compat but replaced by BlockHighlightLayer
 import { useEditorHistory } from './useEditorHistory';
 import { useOCR, OCRTextBlock } from './useOCR';
-import { useTextBlocks, TextRegion } from './useTextBlocks';
+import { useTextBlocks, TextRegion, TextSegmentationMode } from './useTextBlocks';
 import { BlockHighlightLayer } from './BlockHighlightLayer';
 import { BlockEditPanel } from './BlockEditPanel';
 import { Button } from '@/components/ui/button';
@@ -84,6 +84,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [deletedTextBlocks, setDeletedTextBlocks] = useState<Set<string>>(new Set());
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<'properties' | 'blocks'>('blocks');
+  const [segmentationMode, setSegmentationMode] = useState<TextSegmentationMode>('auto');
   
   // OCR hook
   const { 
@@ -704,12 +705,12 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           if (element.type === 'text') {
             const textEl = element as TextElement;
             const font = getFontForElement(textEl.fontFamily, textEl.fontWeight);
-            
+
             const color = textEl.color.replace('#', '');
             const r = parseInt(color.substring(0, 2), 16) / 255;
             const g = parseInt(color.substring(2, 4), 16) / 255;
             const b = parseInt(color.substring(4, 6), 16) / 255;
-            
+
             const placement = getAlignedPdfTextPlacement({
               pageHeight,
               scaleFactor,
@@ -719,15 +720,21 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               height: textEl.height,
               fontSize: textEl.fontSize,
               font,
+              lineHeightMultiplier: textEl.lineHeightMultiplier ?? 1,
             });
+
+            const textLines = textEl.text.split(/\r?\n/);
+            const lineHeight = placement.size * (textEl.lineHeightMultiplier ?? 1);
 
             // Draw white background mask if enabled
             if (textEl.backgroundMask) {
               const maskX = textEl.x * scaleFactor - 1;
-              const lineH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1);
-              const maskY = pageHeight - (textEl.y * scaleFactor) - lineH;
+              const maskTop = pageHeight - (textEl.y * scaleFactor);
+              const maskLineCount = Math.max(1, textLines.length);
               const maskW = textEl.width * scaleFactor + 2;
-              const maskH = lineH + 2;
+              const maskH = lineHeight * maskLineCount + 2;
+              const maskY = maskTop - maskH;
+
               page.drawRectangle({
                 x: maskX,
                 y: maskY,
@@ -738,13 +745,15 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               });
             }
 
-            page.drawText(textEl.text, {
-              x: placement.x,
-              y: placement.y,
-              size: placement.size,
-              font,
-              color: rgb(r, g, b),
-              opacity: textEl.opacity,
+            textLines.forEach((lineText, lineIndex) => {
+              page.drawText(lineText.length ? lineText : ' ', {
+                x: placement.x,
+                y: placement.y - (lineIndex * lineHeight),
+                size: placement.size,
+                font,
+                color: rgb(r, g, b),
+                opacity: textEl.opacity,
+              });
             });
           } else if (element.type === 'shape') {
             const shapeEl = element as ShapeElement;
@@ -927,11 +936,29 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const visibleTextBlocks = textBlocks.filter(b => !deletedTextBlocks.has(b.id));
   
   // Block-based text regions
-  const { regions } = useTextBlocks(textBlocks, deletedTextBlocks, currentPage);
+  const { regions, modeUsed } = useTextBlocks(textBlocks, deletedTextBlocks, currentPage, segmentationMode);
 
-  // Block-level replace: covers all source blocks with white and places new multi-line text
+  // Block-level replace: cover selected region and place replacement text anchored to that same region
   const handleRegionReplace = useCallback((region: TextRegion, newText: string) => {
-    // Cover the entire region with a white redact
+    const cleanText = newText.trimEnd();
+    if (!cleanText) {
+      toast({
+        title: 'Replacement text required',
+        description: 'Enter text to replace this block, or use Delete to remove it.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const avgHeight = region.sourceBlocks.length
+      ? region.sourceBlocks.reduce((sum, block) => sum + block.height, 0) / region.sourceBlocks.length
+      : region.height;
+
+    const fontSize = Math.max(9, Math.round(avgHeight));
+    const lineHeightMultiplier = 1.2;
+    const lineCount = Math.max(1, cleanText.split(/\r?\n/).length);
+    const estimatedTextHeight = Math.max(region.height, fontSize * lineHeightMultiplier * lineCount);
+
     const redactElement: RedactElement = {
       id: `redact-region-${Date.now()}`,
       type: 'redact',
@@ -939,17 +966,13 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       x: region.x - 2,
       y: region.y - 1,
       width: region.width + 6,
-      height: region.height + 4,
+      height: Math.max(region.height + 4, estimatedTextHeight + 2),
       rotation: 0,
       opacity: 1,
       locked: false,
-      zIndex: elements.length,
+      zIndex: 0,
       fillColor: '#FFFFFF',
     };
-
-    // Compute average font size from source blocks
-    const avgHeight = region.sourceBlocks.reduce((s, b) => s + b.height, 0) / region.sourceBlocks.length;
-    const fontSize = Math.max(24, avgHeight);
 
     const textElement: TextElement = {
       id: `text-region-${Date.now()}`,
@@ -957,37 +980,46 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       page: region.pageIndex,
       x: region.x,
       y: region.y,
-      width: region.width + 4,
-      height: region.height,
+      width: Math.max(region.width, 40),
+      height: estimatedTextHeight,
       rotation: 0,
       opacity: 1,
       locked: false,
-      zIndex: elements.length + 1,
-      text: newText,
+      zIndex: 0,
+      text: cleanText,
       fontSize,
       fontFamily: 'Helvetica, Arial, sans-serif',
       fontWeight: 'normal',
       fontStyle: 'normal',
       textDecoration: 'none',
       color: '#000000',
+      lineHeightMultiplier,
       backgroundMask: true,
     };
 
-    setElements(prev => [...prev, redactElement, textElement]);
-    // Mark all source blocks as deleted
+    setElements(prev => {
+      const baseZIndex = prev.length;
+      return [
+        ...prev,
+        { ...redactElement, zIndex: baseZIndex },
+        { ...textElement, zIndex: baseZIndex + 1 },
+      ];
+    });
+
     setDeletedTextBlocks(prev => {
       const next = new Set(prev);
-      region.sourceBlocks.forEach(b => next.add(b.id));
+      region.sourceBlocks.forEach(block => next.add(block.id));
       return next;
     });
+
     setSelectedRegionId(null);
     saveToHistory();
 
     toast({
       title: 'Block Replaced',
-      description: 'Text block replaced. Adjust style in Properties panel.',
+      description: 'Only the selected region was replaced with matched block styling.',
     });
-  }, [elements.length, saveToHistory, toast]);
+  }, [saveToHistory, toast]);
 
   const handleRegionDelete = useCallback((region: TextRegion) => {
     const redactElement: RedactElement = {
@@ -1001,11 +1033,15 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       rotation: 0,
       opacity: 1,
       locked: false,
-      zIndex: elements.length,
+      zIndex: 0,
       fillColor: '#FFFFFF',
     };
 
-    setElements(prev => [...prev, redactElement]);
+    setElements(prev => {
+      const baseZIndex = prev.length;
+      return [...prev, { ...redactElement, zIndex: baseZIndex }];
+    });
+
     setDeletedTextBlocks(prev => {
       const next = new Set(prev);
       region.sourceBlocks.forEach(b => next.add(b.id));
@@ -1018,7 +1054,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       title: 'Block Deleted',
       description: 'Text block removed with white cover.',
     });
-  }, [elements.length, saveToHistory, toast]);
+  }, [saveToHistory, toast]);
 
   // File size error
   if (fileSizeError) {
@@ -1078,6 +1114,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             progress={ocrProgress}
             textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
             stats={ocrStats}
+            segmentationMode={segmentationMode}
+            resolvedSegmentationMode={modeUsed}
+            onSegmentationModeChange={setSegmentationMode}
             onRunOCR={handleRunOCR}
             onExtractText={handleExtractText}
             currentPage={currentPage}

@@ -616,20 +616,21 @@ export const EditorCanvas = memo(({
             onDoubleClick={(e) => handleTextDoubleClick(e, element.id)}
           >
             {editingText === element.id ? (
-              <input
-                type="text"
+              <textarea
                 value={textEl.text}
                 onChange={(e) => handleTextChange(element.id, e.target.value)}
                 onBlur={handleTextBlur}
+                onMouseDown={(e) => e.stopPropagation()}
                 autoFocus
-                className="bg-transparent border-none outline-none w-full"
+                className="bg-transparent border-none outline-none w-full resize-none"
                 style={{
                   ...textStyle,
-                  height: textEl.fontSize * lineHeight,
+                  minHeight: Math.max(textEl.fontSize * lineHeight, textEl.height),
+                  whiteSpace: 'pre-wrap',
                 }}
               />
             ) : (
-              <span style={{ whiteSpace: 'pre' }}>{textEl.text}</span>
+              <span style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{textEl.text}</span>
             )}
             {isSelected && !element.locked && (
               <div

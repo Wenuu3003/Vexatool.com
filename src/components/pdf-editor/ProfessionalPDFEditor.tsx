@@ -28,13 +28,17 @@ import { PageThumbnails } from './PageThumbnails';
 import { WatermarkDialog } from './WatermarkDialog';
 import { DownloadPreviewDialog } from './DownloadPreviewDialog';
 import { OCRPanel } from './OCRPanel';
-import { TextSelectionLayer } from './TextSelectionLayer';
+// TextSelectionLayer kept for backward compat but replaced by BlockHighlightLayer
 import { useEditorHistory } from './useEditorHistory';
 import { useOCR, OCRTextBlock } from './useOCR';
+import { useTextBlocks, TextRegion } from './useTextBlocks';
+import { BlockHighlightLayer } from './BlockHighlightLayer';
+import { BlockEditPanel } from './BlockEditPanel';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
-import { ScanText, PanelRightOpen, Layers, AlertTriangle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScanText, PanelRightOpen, Layers, AlertTriangle, Edit3 } from 'lucide-react';
 
 // Set up the worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
@@ -78,6 +82,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [pdfType, setPdfType] = useState<'text-based' | 'scanned' | 'mixed' | null>(null);
   const [textSelectionEnabled, setTextSelectionEnabled] = useState(false);
   const [deletedTextBlocks, setDeletedTextBlocks] = useState<Set<string>>(new Set());
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [activePanel, setActivePanel] = useState<'properties' | 'blocks'>('blocks');
   
   // OCR hook
   const { 
@@ -256,6 +262,18 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       }
       
       if (!e.ctrlKey && !e.metaKey && !document.activeElement?.closest('input, textarea')) {
+        // Page navigation with arrow keys
+        if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+          e.preventDefault();
+          setCurrentPage(prev => Math.max(0, prev - 1));
+          return;
+        }
+        if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+          e.preventDefault();
+          setCurrentPage(prev => Math.min(pages.filter(p => !p.deleted).length - 1, prev + 1));
+          return;
+        }
+
         switch (e.key.toLowerCase()) {
           case 'v': setActiveTool('select'); break;
           case 'h': setActiveTool('pan'); break;
@@ -275,6 +293,19 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedElement, undo, redo]);
+
+  // Auto-extract text when changing pages (for text-based PDFs)
+  useEffect(() => {
+    if (!pdfDocument || !textSelectionEnabled) return;
+    const pageBlocks = textBlocks.filter(b => b.pageIndex === currentPage);
+    if (pageBlocks.length > 0) return; // already extracted
+    if (pdfType === 'text-based' || pdfType === 'mixed') {
+      extractPDFText(pdfDocument, currentPage).catch(() => {});
+    }
+    // Reset selected region when changing pages
+    setSelectedRegionId(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pdfDocument, textSelectionEnabled, pdfType]);
 
   // OCR handlers
   const handleRunOCR = useCallback(async () => {
@@ -894,6 +925,100 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const selectedElementData = elements.find(el => el.id === selectedElement);
   
   const visibleTextBlocks = textBlocks.filter(b => !deletedTextBlocks.has(b.id));
+  
+  // Block-based text regions
+  const { regions } = useTextBlocks(textBlocks, deletedTextBlocks, currentPage);
+
+  // Block-level replace: covers all source blocks with white and places new multi-line text
+  const handleRegionReplace = useCallback((region: TextRegion, newText: string) => {
+    // Cover the entire region with a white redact
+    const redactElement: RedactElement = {
+      id: `redact-region-${Date.now()}`,
+      type: 'redact',
+      page: region.pageIndex,
+      x: region.x - 2,
+      y: region.y - 1,
+      width: region.width + 6,
+      height: region.height + 4,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length,
+      fillColor: '#FFFFFF',
+    };
+
+    // Compute average font size from source blocks
+    const avgHeight = region.sourceBlocks.reduce((s, b) => s + b.height, 0) / region.sourceBlocks.length;
+    const fontSize = Math.max(24, avgHeight);
+
+    const textElement: TextElement = {
+      id: `text-region-${Date.now()}`,
+      type: 'text',
+      page: region.pageIndex,
+      x: region.x,
+      y: region.y,
+      width: region.width + 4,
+      height: region.height,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length + 1,
+      text: newText,
+      fontSize,
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+      color: '#000000',
+      backgroundMask: true,
+    };
+
+    setElements(prev => [...prev, redactElement, textElement]);
+    // Mark all source blocks as deleted
+    setDeletedTextBlocks(prev => {
+      const next = new Set(prev);
+      region.sourceBlocks.forEach(b => next.add(b.id));
+      return next;
+    });
+    setSelectedRegionId(null);
+    saveToHistory();
+
+    toast({
+      title: 'Block Replaced',
+      description: 'Text block replaced. Adjust style in Properties panel.',
+    });
+  }, [elements.length, saveToHistory, toast]);
+
+  const handleRegionDelete = useCallback((region: TextRegion) => {
+    const redactElement: RedactElement = {
+      id: `redact-region-${Date.now()}`,
+      type: 'redact',
+      page: region.pageIndex,
+      x: region.x - 2,
+      y: region.y - 1,
+      width: region.width + 6,
+      height: region.height + 4,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length,
+      fillColor: '#FFFFFF',
+    };
+
+    setElements(prev => [...prev, redactElement]);
+    setDeletedTextBlocks(prev => {
+      const next = new Set(prev);
+      region.sourceBlocks.forEach(b => next.add(b.id));
+      return next;
+    });
+    setSelectedRegionId(null);
+    saveToHistory();
+
+    toast({
+      title: 'Block Deleted',
+      description: 'Text block removed with white cover.',
+    });
+  }, [elements.length, saveToHistory, toast]);
 
   // File size error
   if (fileSizeError) {
@@ -924,26 +1049,47 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     );
   }
 
-  const ocrPanelContent = (
-    <>
-      <div className="p-2">
-        <OCRPanel
-          pdfType={pdfType}
-          isProcessing={isOCRProcessing}
-          progress={ocrProgress}
-          textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
-          stats={ocrStats}
-          onRunOCR={handleRunOCR}
-          onExtractText={handleExtractText}
-          currentPage={currentPage}
-          totalPages={pages.filter(p => !p.deleted).length}
+  const rightPanelContent = (
+    <Tabs value={activePanel} onValueChange={(v) => setActivePanel(v as 'properties' | 'blocks')} className="flex flex-col h-full">
+      <TabsList className="grid w-full grid-cols-2 m-1.5 mb-0">
+        <TabsTrigger value="blocks" className="text-xs gap-1">
+          <Edit3 className="w-3 h-3" />
+          Edit Text
+        </TabsTrigger>
+        <TabsTrigger value="properties" className="text-xs gap-1">
+          <ScanText className="w-3 h-3" />
+          OCR & Props
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="blocks" className="flex-1 overflow-hidden m-0">
+        <BlockEditPanel
+          regions={regions}
+          selectedRegion={selectedRegionId}
+          onSelectRegion={setSelectedRegionId}
+          onReplaceRegion={handleRegionReplace}
+          onDeleteRegion={handleRegionDelete}
         />
-      </div>
-      <PropertiesPanel
-        element={selectedElementData ?? null}
-        onUpdate={handleUpdateElement}
-      />
-    </>
+      </TabsContent>
+      <TabsContent value="properties" className="flex-1 overflow-y-auto m-0">
+        <div className="p-2">
+          <OCRPanel
+            pdfType={pdfType}
+            isProcessing={isOCRProcessing}
+            progress={ocrProgress}
+            textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
+            stats={ocrStats}
+            onRunOCR={handleRunOCR}
+            onExtractText={handleExtractText}
+            currentPage={currentPage}
+            totalPages={pages.filter(p => !p.deleted).length}
+          />
+        </div>
+        <PropertiesPanel
+          element={selectedElementData ?? null}
+          onUpdate={handleUpdateElement}
+        />
+      </TabsContent>
+    </Tabs>
   );
 
   return (
@@ -1017,13 +1163,13 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           <Sheet open={showMobilePanel} onOpenChange={setShowMobilePanel}>
             <SheetTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5">
-                <ScanText className="w-4 h-4" />
-                OCR & Edit
+                <Edit3 className="w-4 h-4" />
+                Edit Text
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] p-0 overflow-y-auto">
               <div className="pt-10">
-                {ocrPanelContent}
+                {rightPanelContent}
               </div>
             </SheetContent>
           </Sheet>
@@ -1050,41 +1196,83 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           />
         )}
         
-        {/* Canvas with text selection layer rendered inside */}
-        <div className="flex-1 relative overflow-hidden min-w-0">
-          <EditorCanvas
-            pages={pages}
-            currentPage={currentPage}
-            elements={elements}
-            selectedElement={selectedElement}
-            activeTool={activeTool}
-            zoom={zoom}
-            brushSettings={brushSettings}
-            eraserSettings={eraserSettings}
-            onSelectElement={setSelectedElement}
-            onAddElement={handleAddElement}
-            onUpdateElement={handleUpdateElement}
-            onElementsChange={setElements}
-            onZoomChange={setZoom}
-            textOverlay={
-              textSelectionEnabled ? (
-                <TextSelectionLayer
-                  textBlocks={visibleTextBlocks}
-                  currentPage={currentPage}
-                  zoom={zoom}
-                  enabled={textSelectionEnabled && activeTool === 'select'}
-                  onTextDelete={handleTextDelete}
-                  onTextReplace={handleTextReplace}
-                />
-              ) : null
-            }
-          />
+        {/* Canvas with block highlight overlay and page nav */}
+        <div className="flex-1 relative overflow-hidden min-w-0 flex flex-col">
+          <div className="flex-1 overflow-hidden">
+            <EditorCanvas
+              pages={pages}
+              currentPage={currentPage}
+              elements={elements}
+              selectedElement={selectedElement}
+              activeTool={activeTool}
+              zoom={zoom}
+              brushSettings={brushSettings}
+              eraserSettings={eraserSettings}
+              onSelectElement={setSelectedElement}
+              onAddElement={handleAddElement}
+              onUpdateElement={handleUpdateElement}
+              onElementsChange={setElements}
+              onZoomChange={setZoom}
+              textOverlay={
+                textSelectionEnabled ? (
+                  <BlockHighlightLayer
+                    regions={regions}
+                    selectedRegion={selectedRegionId}
+                    enabled={textSelectionEnabled && activeTool === 'select'}
+                    onSelectRegion={(id) => {
+                      setSelectedRegionId(id);
+                      if (id) setActivePanel('blocks');
+                    }}
+                  />
+                ) : null
+              }
+            />
+          </div>
+          
+          {/* Quick page navigation bar */}
+          {pages.filter(p => !p.deleted).length > 1 && (
+            <div className="flex items-center justify-center gap-2 py-1.5 px-3 bg-card border-t border-border">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                disabled={currentPage === 0}
+                onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+              >
+                ← Prev
+              </Button>
+              <div className="flex gap-1 max-w-[300px] overflow-x-auto">
+                {pages.filter(p => !p.deleted).map((_, idx) => (
+                  <button
+                    key={idx}
+                    className={`w-7 h-7 rounded text-xs font-medium transition-all ${
+                      idx === currentPage
+                        ? 'bg-primary text-primary-foreground shadow-sm'
+                        : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                    }`}
+                    onClick={() => setCurrentPage(idx)}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                disabled={currentPage >= pages.filter(p => !p.deleted).length - 1}
+                onClick={() => setCurrentPage(prev => Math.min(pages.filter(p => !p.deleted).length - 1, prev + 1))}
+              >
+                Next →
+              </Button>
+            </div>
+          )}
         </div>
         
         {/* Properties panel with OCR - desktop only */}
         {!isMobile && (
           <div className="w-64 bg-card border-l border-border overflow-y-auto">
-            {ocrPanelContent}
+            {rightPanelContent}
           </div>
         )}
       </div>

@@ -260,22 +260,22 @@ export const EditorCanvas = memo(({
     onSelectElement(null);
     
     if (activeTool === 'text') {
-      const defaultFontSize = 16;
+      const defaultFontSize = 36; // 12pt PDF (= 36 canvas px at 3× scale)
       const newElement: TextElement = {
         id: `text-${Date.now()}`,
         type: 'text',
         page: currentPage,
         x: pos.x,
         y: pos.y,
-        width: 150,
-        height: defaultFontSize, // match height to fontSize for tight lineHeight:1
+        width: 200,
+        height: defaultFontSize,
         rotation: 0,
         opacity: 1,
         locked: false,
         zIndex: elements.length,
         text: 'Click to edit',
         fontSize: defaultFontSize,
-        fontFamily: 'Helvetica',
+        fontFamily: 'Helvetica, Arial, sans-serif',
         fontWeight: 'normal',
         fontStyle: 'normal',
         textDecoration: 'none',

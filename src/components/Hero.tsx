@@ -77,7 +77,7 @@ export const Hero = () => {
 
       {/* QR code shape */}
       <svg
-        className="absolute top-[55%] right-[6%] w-14 h-14 sm:w-16 sm:h-16 text-primary/[0.05] pointer-events-none hidden lg:block"
+        className="absolute top-[55%] right-[6%] w-14 h-14 sm:w-16 sm:h-16 text-primary/[0.08] pointer-events-none hidden lg:block"
         viewBox="0 0 64 64"
         fill="none"
         aria-hidden="true"

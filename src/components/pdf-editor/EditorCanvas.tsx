@@ -580,18 +580,23 @@ export const EditorCanvas = memo(({
     switch (element.type) {
       case 'text': {
         const textEl = element as TextElement;
-        // Use lineHeight:1 and no padding so the CSS text box tightly
-        // wraps the glyphs — this matches the pdf-lib export positioning.
+        const cssWeight = textEl.fontWeight === 'medium' ? 500 : textEl.fontWeight === 'semibold' ? 600 : textEl.fontWeight === 'bold' ? 700 : 400;
+        const lineHeight = textEl.lineHeightMultiplier ?? 1;
         const textStyle: React.CSSProperties = {
           fontFamily: textEl.fontFamily,
           fontSize: textEl.fontSize,
-          fontWeight: textEl.fontWeight,
+          fontWeight: cssWeight,
           fontStyle: textEl.fontStyle,
           textDecoration: textEl.textDecoration,
           color: textEl.color,
-          lineHeight: 1,
+          letterSpacing: textEl.letterSpacing ? `${textEl.letterSpacing}px` : undefined,
+          lineHeight,
+          textAlign: textEl.textAlign || 'left',
           padding: 0,
           margin: 0,
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale' as any,
+          textRendering: 'optimizeLegibility',
         };
         return (
           <div
@@ -601,11 +606,11 @@ export const EditorCanvas = memo(({
               ...baseStyle,
               ...textStyle,
               minWidth: 50,
-              // Override height to auto so it tracks fontSize tightly
               height: 'auto',
               minHeight: textEl.fontSize,
               display: 'flex',
               alignItems: 'flex-start',
+              backgroundColor: textEl.backgroundMask ? '#FFFFFF' : undefined,
             }}
             onMouseDown={(e) => handleElementMouseDown(e, element.id)}
             onDoubleClick={(e) => handleTextDoubleClick(e, element.id)}
@@ -620,7 +625,7 @@ export const EditorCanvas = memo(({
                 className="bg-transparent border-none outline-none w-full"
                 style={{
                   ...textStyle,
-                  height: textEl.fontSize,
+                  height: textEl.fontSize * lineHeight,
                 }}
               />
             ) : (

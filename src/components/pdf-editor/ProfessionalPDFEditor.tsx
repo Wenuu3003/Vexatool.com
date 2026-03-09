@@ -633,15 +633,17 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       const pdfPages = pdfDoc.getPages();
       
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const timesFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+      const timesBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
       const courierFont = await pdfDoc.embedFont(StandardFonts.Courier);
+      const courierBoldFont = await pdfDoc.embedFont(StandardFonts.CourierBold);
       
-      const fontMap: Record<string, typeof helveticaFont> = {
-        'Helvetica': helveticaFont,
-        'Arial': helveticaFont,
-        'Times-Roman': timesFont,
-        'Georgia': timesFont,
-        'Courier': courierFont,
+      const getFontForElement = (family: string, weight: string) => {
+        const isBold = weight === 'bold' || weight === 'semibold';
+        if (family === 'Courier') return isBold ? courierBoldFont : courierFont;
+        if (family === 'Times-Roman' || family === 'Georgia' || family === 'Palatino') return isBold ? timesBoldFont : timesFont;
+        return isBold ? helveticaBoldFont : helveticaFont;
       };
       
       for (let i = 0; i < pdfPages.length; i++) {
@@ -664,7 +666,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         for (const element of pageElements) {
           if (element.type === 'text') {
             const textEl = element as TextElement;
-            const font = fontMap[textEl.fontFamily] || helveticaFont;
+            const font = getFontForElement(textEl.fontFamily, textEl.fontWeight);
             
             const color = textEl.color.replace('#', '');
             const r = parseInt(color.substring(0, 2), 16) / 255;
@@ -681,6 +683,22 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               fontSize: textEl.fontSize,
               font,
             });
+
+            // Draw white background mask if enabled
+            if (textEl.backgroundMask) {
+              const maskX = textEl.x * scaleFactor;
+              const maskY = pageHeight - (textEl.y * scaleFactor) - (textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1));
+              const maskW = textEl.width * scaleFactor;
+              const maskH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1) * 1.15;
+              page.drawRectangle({
+                x: maskX,
+                y: maskY,
+                width: maskW,
+                height: maskH,
+                color: rgb(1, 1, 1),
+                opacity: 1,
+              });
+            }
 
             page.drawText(textEl.text, {
               x: placement.x,
@@ -756,7 +774,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           } else if (element.type === 'watermark') {
             const wmEl = element as WatermarkElement;
             if (wmEl.watermarkType === 'text' && wmEl.text) {
-              const font = fontMap[wmEl.fontFamily || 'Helvetica'] || helveticaFont;
+              const font = getFontForElement(wmEl.fontFamily || 'Helvetica', 'normal');
               const color = (wmEl.color || '#CCCCCC').replace('#', '');
               const r = parseInt(color.substring(0, 2), 16) / 255;
               const g = parseInt(color.substring(2, 4), 16) / 255;

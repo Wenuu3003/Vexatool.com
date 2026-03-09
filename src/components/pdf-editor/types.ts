@@ -24,10 +24,14 @@ export interface TextElement extends EditorElement {
   text: string;
   fontSize: number;
   fontFamily: string;
-  fontWeight: 'normal' | 'bold';
+  fontWeight: 'normal' | 'medium' | 'semibold' | 'bold';
   fontStyle: 'normal' | 'italic';
   textDecoration: 'none' | 'underline';
   color: string;
+  letterSpacing?: number;
+  lineHeightMultiplier?: number;
+  textAlign?: 'left' | 'center' | 'right';
+  backgroundMask?: boolean;
 }
 
 export interface ShapeElement extends EditorElement {
@@ -113,6 +117,18 @@ export const FONT_FAMILIES = [
   { value: 'Courier', label: 'Courier' },
   { value: 'Arial', label: 'Arial' },
   { value: 'Georgia', label: 'Georgia' },
+  { value: 'Verdana', label: 'Verdana' },
+  { value: 'Calibri', label: 'Calibri' },
+  { value: 'Tahoma', label: 'Tahoma' },
+  { value: 'Trebuchet MS', label: 'Trebuchet MS' },
+  { value: 'Palatino', label: 'Palatino' },
+];
+
+export const FONT_WEIGHTS = [
+  { value: 'normal', label: 'Regular', css: 400 },
+  { value: 'medium', label: 'Medium', css: 500 },
+  { value: 'semibold', label: 'SemiBold', css: 600 },
+  { value: 'bold', label: 'Bold', css: 700 },
 ];
 
 export const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64, 72];

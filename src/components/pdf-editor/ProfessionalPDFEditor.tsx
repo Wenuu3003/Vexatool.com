@@ -691,10 +691,11 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
 
             // Draw white background mask if enabled
             if (textEl.backgroundMask) {
-              const maskX = textEl.x * scaleFactor;
-              const maskY = pageHeight - (textEl.y * scaleFactor) - (textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1));
-              const maskW = textEl.width * scaleFactor;
-              const maskH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1) * 1.15;
+              const maskX = textEl.x * scaleFactor - 1;
+              const lineH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1);
+              const maskY = pageHeight - (textEl.y * scaleFactor) - lineH;
+              const maskW = textEl.width * scaleFactor + 2;
+              const maskH = lineH + 2;
               page.drawRectangle({
                 x: maskX,
                 y: maskY,

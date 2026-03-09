@@ -31,10 +31,14 @@ import { OCRPanel } from './OCRPanel';
 import { TextSelectionLayer } from './TextSelectionLayer';
 import { useEditorHistory } from './useEditorHistory';
 import { useOCR, OCRTextBlock } from './useOCR';
+import { useTextBlocks, TextRegion } from './useTextBlocks';
+import { BlockHighlightLayer } from './BlockHighlightLayer';
+import { BlockEditPanel } from './BlockEditPanel';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
-import { ScanText, PanelRightOpen, Layers, AlertTriangle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ScanText, PanelRightOpen, Layers, AlertTriangle, Edit3 } from 'lucide-react';
 
 // Set up the worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(

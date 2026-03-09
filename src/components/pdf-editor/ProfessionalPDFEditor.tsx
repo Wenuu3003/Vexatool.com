@@ -165,6 +165,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             rotation: 0,
             deleted: false,
             canvas,
+            dataUrl: canvas.toDataURL('image/jpeg', 0.92),
             width: viewport.width,
             height: viewport.height,
           });

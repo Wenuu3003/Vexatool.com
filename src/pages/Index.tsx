@@ -70,11 +70,7 @@ const Index = () => {
 
           <HomepageContent />
 
-          {showDeferredContent && (
-            <Suspense fallback={null}>
-              <HomepageFAQ />
-            </Suspense>
-          )}
+          <HomepageFAQ />
         </main>
         <Footer />
       </div>

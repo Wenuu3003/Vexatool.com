@@ -900,6 +900,100 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const selectedElementData = elements.find(el => el.id === selectedElement);
   
   const visibleTextBlocks = textBlocks.filter(b => !deletedTextBlocks.has(b.id));
+  
+  // Block-based text regions
+  const { regions } = useTextBlocks(textBlocks, deletedTextBlocks, currentPage);
+
+  // Block-level replace: covers all source blocks with white and places new multi-line text
+  const handleRegionReplace = useCallback((region: TextRegion, newText: string) => {
+    // Cover the entire region with a white redact
+    const redactElement: RedactElement = {
+      id: `redact-region-${Date.now()}`,
+      type: 'redact',
+      page: region.pageIndex,
+      x: region.x - 2,
+      y: region.y - 1,
+      width: region.width + 6,
+      height: region.height + 4,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length,
+      fillColor: '#FFFFFF',
+    };
+
+    // Compute average font size from source blocks
+    const avgHeight = region.sourceBlocks.reduce((s, b) => s + b.height, 0) / region.sourceBlocks.length;
+    const fontSize = Math.max(24, avgHeight);
+
+    const textElement: TextElement = {
+      id: `text-region-${Date.now()}`,
+      type: 'text',
+      page: region.pageIndex,
+      x: region.x,
+      y: region.y,
+      width: region.width + 4,
+      height: region.height,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length + 1,
+      text: newText,
+      fontSize,
+      fontFamily: 'Helvetica, Arial, sans-serif',
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      textDecoration: 'none',
+      color: '#000000',
+      backgroundMask: true,
+    };
+
+    setElements(prev => [...prev, redactElement, textElement]);
+    // Mark all source blocks as deleted
+    setDeletedTextBlocks(prev => {
+      const next = new Set(prev);
+      region.sourceBlocks.forEach(b => next.add(b.id));
+      return next;
+    });
+    setSelectedRegionId(null);
+    saveToHistory();
+
+    toast({
+      title: 'Block Replaced',
+      description: 'Text block replaced. Adjust style in Properties panel.',
+    });
+  }, [elements.length, saveToHistory, toast]);
+
+  const handleRegionDelete = useCallback((region: TextRegion) => {
+    const redactElement: RedactElement = {
+      id: `redact-region-${Date.now()}`,
+      type: 'redact',
+      page: region.pageIndex,
+      x: region.x - 2,
+      y: region.y - 1,
+      width: region.width + 6,
+      height: region.height + 4,
+      rotation: 0,
+      opacity: 1,
+      locked: false,
+      zIndex: elements.length,
+      fillColor: '#FFFFFF',
+    };
+
+    setElements(prev => [...prev, redactElement]);
+    setDeletedTextBlocks(prev => {
+      const next = new Set(prev);
+      region.sourceBlocks.forEach(b => next.add(b.id));
+      return next;
+    });
+    setSelectedRegionId(null);
+    saveToHistory();
+
+    toast({
+      title: 'Block Deleted',
+      description: 'Text block removed with white cover.',
+    });
+  }, [elements.length, saveToHistory, toast]);
 
   // File size error
   if (fileSizeError) {

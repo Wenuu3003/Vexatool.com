@@ -16,7 +16,9 @@ import {
   Tool,
   ZOOM_LEVELS,
   BrushSettings,
-  EraserSettings
+  EraserSettings,
+  getPdfLibFontName,
+  PDF_RENDER_SCALE,
 } from './types';
 import { getAlignedPdfTextPlacement } from './pdfTextAlignment';
 import { EditorToolbar } from './EditorToolbar';
@@ -40,8 +42,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   import.meta.url
 ).toString();
 
-// High-res rendering scale for 4K quality PDF display
-const PDF_RENDER_SCALE = 3.0;
+// Use scale from types
 const MAX_FILE_SIZE_MB = 25;
 
 interface ProfessionalPDFEditorProps {
@@ -83,6 +84,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     isProcessing: isOCRProcessing, 
     progress: ocrProgress, 
     textBlocks, 
+    stats: ocrStats,
     performOCR, 
     extractPDFText,
     detectPDFType,
@@ -164,6 +166,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             rotation: 0,
             deleted: false,
             canvas,
+            dataUrl: canvas.toDataURL('image/jpeg', 0.92),
             width: viewport.width,
             height: viewport.height,
           });
@@ -356,10 +359,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       id: `redact-${Date.now()}`,
       type: 'redact',
       page: originalBlock.pageIndex,
-      x: originalBlock.x,
-      y: originalBlock.y,
-      width: originalBlock.width + 4,
-      height: originalBlock.height + 2,
+      x: originalBlock.x - 2,
+      y: originalBlock.y - 1,
+      width: originalBlock.width + 6,
+      height: originalBlock.height + 4,
       rotation: 0,
       opacity: 1,
       locked: false,
@@ -367,26 +370,28 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       fillColor: '#FFFFFF',
     };
     
-    const replaceFontSize = Math.max(8, Math.round(originalBlock.height * 0.85));
+    // Use the exact font size from the OCR block (already in canvas px)
+    const replaceFontSize = originalBlock.height;
     const textElement: TextElement = {
       id: `text-${Date.now()}`,
       type: 'text',
       page: originalBlock.pageIndex,
       x: originalBlock.x,
       y: originalBlock.y,
-      width: Math.max(originalBlock.width, newText.length * (originalBlock.height * 0.6)),
-      height: replaceFontSize, // match height to fontSize for lineHeight:1 alignment
+      width: Math.max(originalBlock.width, newText.length * (replaceFontSize * 0.6)),
+      height: replaceFontSize,
       rotation: 0,
       opacity: 1,
       locked: false,
       zIndex: elements.length + 1,
       text: newText,
       fontSize: replaceFontSize,
-      fontFamily: 'Helvetica',
+      fontFamily: 'Helvetica, Arial, sans-serif',
       fontWeight: 'normal',
       fontStyle: 'normal',
       textDecoration: 'none',
       color: '#000000',
+      backgroundMask: true, // Auto-enable white mask for clean replacement
     };
     
     setElements(prev => [...prev, redactElement, textElement]);
@@ -395,7 +400,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     
     toast({
       title: 'Text Replaced',
-      description: 'New text added in place of original.',
+      description: 'New text added with white mask. Adjust style in Properties panel.',
     });
   }, [elements.length, saveToHistory, toast]);
 
@@ -641,8 +646,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       
       const getFontForElement = (family: string, weight: string) => {
         const isBold = weight === 'bold' || weight === 'semibold';
-        if (family === 'Courier') return isBold ? courierBoldFont : courierFont;
-        if (family === 'Times-Roman' || family === 'Georgia' || family === 'Palatino') return isBold ? timesBoldFont : timesFont;
+        const pdfFontName = getPdfLibFontName(family);
+        if (pdfFontName === 'Courier') return isBold ? courierBoldFont : courierFont;
+        if (pdfFontName === 'Times-Roman') return isBold ? timesBoldFont : timesFont;
         return isBold ? helveticaBoldFont : helveticaFont;
       };
       
@@ -686,10 +692,11 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
 
             // Draw white background mask if enabled
             if (textEl.backgroundMask) {
-              const maskX = textEl.x * scaleFactor;
-              const maskY = pageHeight - (textEl.y * scaleFactor) - (textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1));
-              const maskW = textEl.width * scaleFactor;
-              const maskH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1) * 1.15;
+              const maskX = textEl.x * scaleFactor - 1;
+              const lineH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1);
+              const maskY = pageHeight - (textEl.y * scaleFactor) - lineH;
+              const maskW = textEl.width * scaleFactor + 2;
+              const maskH = lineH + 2;
               page.drawRectangle({
                 x: maskX,
                 y: maskY,
@@ -925,6 +932,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           isProcessing={isOCRProcessing}
           progress={ocrProgress}
           textBlockCount={visibleTextBlocks.filter(b => b.pageIndex === currentPage).length}
+          stats={ocrStats}
           onRunOCR={handleRunOCR}
           onExtractText={handleExtractText}
           currentPage={currentPage}

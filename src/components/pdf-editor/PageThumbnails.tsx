@@ -76,9 +76,9 @@ export const PageThumbnails = memo(({
                 className="aspect-[3/4] bg-muted/30 flex items-center justify-center"
                 style={{ transform: `rotate(${page.rotation}deg)` }}
               >
-                {page.canvas ? (
+                {(page.dataUrl || page.canvas) ? (
                   <img 
-                    src={page.canvas.toDataURL()} 
+                    src={page.dataUrl || page.canvas!.toDataURL()} 
                     alt={`Page ${displayIndex + 1}`}
                     className="w-full h-full object-contain"
                   />

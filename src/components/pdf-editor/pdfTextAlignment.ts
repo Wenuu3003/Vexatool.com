@@ -8,11 +8,12 @@ export interface AlignedTextPlacementInput {
   pageHeight: number;
   scaleFactor: number;
   x: number;
-  y: number; // top-left Y in editor coordinates
+  y: number; // top-left Y in editor coordinates (PDF render-space pixels)
   width?: number;
   height?: number;
   fontSize: number;
   font: FontLike;
+  lineHeightMultiplier?: number;
 }
 
 export interface AlignedTextPlacement {
@@ -22,17 +23,17 @@ export interface AlignedTextPlacement {
 }
 
 /**
- * Converts the editor's top-left positioning (CSS-like, lineHeight:1) into a
- * pdf-lib baseline position using real font metrics.
+ * Converts the editor's top-left positioning into a pdf-lib baseline position.
  *
- * Because the editor now uses `lineHeight: 1` with `height: auto`, the
- * rendered CSS box height equals exactly the font's em-square (≈ fontSize).
- * The visible text top sits at element.y and the ascent fills almost all of
- * that height. We therefore simply place the PDF baseline at:
+ * The editor renders text with lineHeight:1 so the CSS box height equals the
+ * font's em-square (~fontSize). The visible text top sits at element.y.
  *
- *   baselineY = pageTop - ascent
+ * pdf-lib uses a bottom-up coordinate system where y=0 is the page bottom.
+ * The baseline is where the text "sits" — ascent distance below the top.
  *
- * No centering / boxHeight logic is needed — the editor and PDF now agree.
+ * Key fix: We use the font's actual ascent metric (heightAtSize without
+ * descender) to compute the exact baseline position, ensuring the preview
+ * and export match pixel-perfectly.
  */
 export function getAlignedPdfTextPlacement({
   pageHeight,
@@ -41,6 +42,7 @@ export function getAlignedPdfTextPlacement({
   y,
   fontSize,
   font,
+  lineHeightMultiplier = 1,
 }: AlignedTextPlacementInput): AlignedTextPlacement {
   // Convert editor font size to PDF units
   const size = Math.max(0.1, fontSize * scaleFactor);
@@ -48,7 +50,7 @@ export function getAlignedPdfTextPlacement({
   // Ascent = height from baseline to top of tallest glyph
   const ascent = font.heightAtSize(size, { descender: false } as HeightAtSizeOptions);
 
-  // Top edge of the editor element in PDF coordinate space (PDF Y goes up)
+  // Top edge of the editor element in PDF coordinate space (PDF Y goes up from bottom)
   const topY = pageHeight - (y * scaleFactor);
 
   // Baseline sits one ascent below the top of the text box

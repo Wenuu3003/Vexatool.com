@@ -16,7 +16,8 @@ import {
   FONT_FAMILIES, 
   FONT_SIZES, 
   FONT_WEIGHTS,
-  COLORS 
+  COLORS,
+  canvasPxToPt
 } from './types';
 
 interface PropertiesPanelProps {
@@ -166,12 +167,14 @@ export const PropertiesPanel = memo(({ element, onUpdate }: PropertiesPanelProps
             
             {/* Font Size */}
             <div className="space-y-1">
-              <Label className="text-xs">Font Size</Label>
+              <Label className="text-xs">Font Size <span className="text-muted-foreground">(PDF pts)</span></Label>
               <Select value={String(textEl.fontSize)} onValueChange={(v) => handleUpdate({ fontSize: Number(v) })}>
-                <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-8">
+                  <SelectValue placeholder={`${canvasPxToPt(textEl.fontSize)}pt`} />
+                </SelectTrigger>
                 <SelectContent>
-                  {FONT_SIZES.map(size => (
-                    <SelectItem key={size} value={String(size)}>{size}px</SelectItem>
+                  {FONT_SIZES.map(({ canvasPx, ptLabel }) => (
+                    <SelectItem key={canvasPx} value={String(canvasPx)}>{ptLabel}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

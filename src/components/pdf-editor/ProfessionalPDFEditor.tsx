@@ -84,6 +84,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     isProcessing: isOCRProcessing, 
     progress: ocrProgress, 
     textBlocks, 
+    stats: ocrStats,
     performOCR, 
     extractPDFText,
     detectPDFType,

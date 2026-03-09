@@ -180,7 +180,7 @@ export const PropertiesPanel = memo(({ element, onUpdate }: PropertiesPanelProps
             {/* Font Weight */}
             <div className="space-y-1">
               <Label className="text-xs">Font Weight</Label>
-              <Select value={textEl.fontWeight} onValueChange={(v) => handleUpdate({ fontWeight: v })}>
+              <Select value={textEl.fontWeight} onValueChange={(v: 'normal' | 'medium' | 'semibold' | 'bold') => handleUpdate({ fontWeight: v })}>
                 <SelectTrigger className="h-8"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   {FONT_WEIGHTS.map(w => (

@@ -16,7 +16,9 @@ import {
   Tool,
   ZOOM_LEVELS,
   BrushSettings,
-  EraserSettings
+  EraserSettings,
+  getPdfLibFontName,
+  PDF_RENDER_SCALE,
 } from './types';
 import { getAlignedPdfTextPlacement } from './pdfTextAlignment';
 import { EditorToolbar } from './EditorToolbar';

@@ -82,6 +82,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [pdfType, setPdfType] = useState<'text-based' | 'scanned' | 'mixed' | null>(null);
   const [textSelectionEnabled, setTextSelectionEnabled] = useState(false);
   const [deletedTextBlocks, setDeletedTextBlocks] = useState<Set<string>>(new Set());
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [activePanel, setActivePanel] = useState<'properties' | 'blocks'>('blocks');
   
   // OCR hook
   const { 

@@ -758,7 +758,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           } else if (element.type === 'watermark') {
             const wmEl = element as WatermarkElement;
             if (wmEl.watermarkType === 'text' && wmEl.text) {
-              const font = fontMap[wmEl.fontFamily || 'Helvetica'] || helveticaFont;
+              const font = getFontForElement(wmEl.fontFamily || 'Helvetica', 'normal');
               const color = (wmEl.color || '#CCCCCC').replace('#', '');
               const r = parseInt(color.substring(0, 2), 16) / 255;
               const g = parseInt(color.substring(2, 4), 16) / 255;

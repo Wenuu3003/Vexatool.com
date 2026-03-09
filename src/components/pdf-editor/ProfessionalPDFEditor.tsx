@@ -930,9 +930,23 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   // Block-based text regions
   const { regions, modeUsed } = useTextBlocks(textBlocks, deletedTextBlocks, currentPage, segmentationMode);
 
-  // Block-level replace: covers all source blocks with white and places new multi-line text
+  // Block-level replace: cover selected region and place replacement text anchored to that same region
   const handleRegionReplace = useCallback((region: TextRegion, newText: string) => {
-    // Cover the entire region with a white redact
+    const cleanText = newText.trimEnd();
+    if (!cleanText) {
+      handleRegionDelete(region);
+      return;
+    }
+
+    const avgHeight = region.sourceBlocks.length
+      ? region.sourceBlocks.reduce((sum, block) => sum + block.height, 0) / region.sourceBlocks.length
+      : region.height;
+
+    const fontSize = Math.max(9, Math.round(avgHeight));
+    const lineHeightMultiplier = 1.2;
+    const lineCount = Math.max(1, cleanText.split(/\r?\n/).length);
+    const estimatedTextHeight = Math.max(region.height, fontSize * lineHeightMultiplier * lineCount);
+
     const redactElement: RedactElement = {
       id: `redact-region-${Date.now()}`,
       type: 'redact',
@@ -940,17 +954,13 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       x: region.x - 2,
       y: region.y - 1,
       width: region.width + 6,
-      height: region.height + 4,
+      height: Math.max(region.height + 4, estimatedTextHeight + 2),
       rotation: 0,
       opacity: 1,
       locked: false,
-      zIndex: elements.length,
+      zIndex: 0,
       fillColor: '#FFFFFF',
     };
-
-    // Compute average font size from source blocks
-    const avgHeight = region.sourceBlocks.reduce((s, b) => s + b.height, 0) / region.sourceBlocks.length;
-    const fontSize = Math.max(24, avgHeight);
 
     const textElement: TextElement = {
       id: `text-region-${Date.now()}`,
@@ -958,37 +968,46 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       page: region.pageIndex,
       x: region.x,
       y: region.y,
-      width: region.width + 4,
-      height: region.height,
+      width: Math.max(region.width, 40),
+      height: estimatedTextHeight,
       rotation: 0,
       opacity: 1,
       locked: false,
-      zIndex: elements.length + 1,
-      text: newText,
+      zIndex: 0,
+      text: cleanText,
       fontSize,
       fontFamily: 'Helvetica, Arial, sans-serif',
       fontWeight: 'normal',
       fontStyle: 'normal',
       textDecoration: 'none',
       color: '#000000',
+      lineHeightMultiplier,
       backgroundMask: true,
     };
 
-    setElements(prev => [...prev, redactElement, textElement]);
-    // Mark all source blocks as deleted
+    setElements(prev => {
+      const baseZIndex = prev.length;
+      return [
+        ...prev,
+        { ...redactElement, zIndex: baseZIndex },
+        { ...textElement, zIndex: baseZIndex + 1 },
+      ];
+    });
+
     setDeletedTextBlocks(prev => {
       const next = new Set(prev);
-      region.sourceBlocks.forEach(b => next.add(b.id));
+      region.sourceBlocks.forEach(block => next.add(block.id));
       return next;
     });
+
     setSelectedRegionId(null);
     saveToHistory();
 
     toast({
       title: 'Block Replaced',
-      description: 'Text block replaced. Adjust style in Properties panel.',
+      description: 'Only the selected region was replaced with matched block styling.',
     });
-  }, [elements.length, saveToHistory, toast]);
+  }, [handleRegionDelete, saveToHistory, toast]);
 
   const handleRegionDelete = useCallback((region: TextRegion) => {
     const redactElement: RedactElement = {

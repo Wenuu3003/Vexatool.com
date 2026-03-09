@@ -93,7 +93,7 @@ export const Hero = () => {
 
       {/* Geometric accents — concentric rounded squares */}
       <svg
-        className="absolute top-[8%] left-[6%] w-14 h-14 text-secondary/[0.05] pointer-events-none hidden md:block"
+        className="absolute top-[8%] left-[6%] w-14 h-14 text-secondary/[0.08] pointer-events-none hidden md:block"
         viewBox="0 0 56 56"
         fill="none"
         aria-hidden="true"

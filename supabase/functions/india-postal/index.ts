@@ -8,6 +8,33 @@ const corsHeaders = {
 
 const MAX_QUERY_LENGTH = 100;
 
+// Rate limiting: 30 requests per minute per IP
+const RATE_LIMIT = 30;
+const RATE_WINDOW_MS = 60_000;
+const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
+
+function cleanupRateLimits() {
+  const now = Date.now();
+  for (const [key, value] of rateLimitMap.entries()) {
+    if (now - value.timestamp > RATE_WINDOW_MS) {
+      rateLimitMap.delete(key);
+    }
+  }
+}
+
+function checkRateLimit(ip: string): boolean {
+  cleanupRateLimits();
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.timestamp > RATE_WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, timestamp: now });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
 type IndiaPostOffice = {
   Name: string;
   Description: string | null;

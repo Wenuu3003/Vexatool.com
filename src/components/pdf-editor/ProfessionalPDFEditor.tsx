@@ -942,6 +942,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       return;
     }
 
+    const avgHeight = region.sourceBlocks.length
+      ? region.sourceBlocks.reduce((sum, block) => sum + block.height, 0) / region.sourceBlocks.length
+      : region.height;
+
     const fontSize = Math.max(9, Math.round(avgHeight));
     const lineHeightMultiplier = 1.2;
     const lineCount = Math.max(1, cleanText.split(/\r?\n/).length);

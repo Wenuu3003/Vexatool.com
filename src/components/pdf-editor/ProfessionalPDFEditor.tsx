@@ -705,12 +705,12 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           if (element.type === 'text') {
             const textEl = element as TextElement;
             const font = getFontForElement(textEl.fontFamily, textEl.fontWeight);
-            
+
             const color = textEl.color.replace('#', '');
             const r = parseInt(color.substring(0, 2), 16) / 255;
             const g = parseInt(color.substring(2, 4), 16) / 255;
             const b = parseInt(color.substring(4, 6), 16) / 255;
-            
+
             const placement = getAlignedPdfTextPlacement({
               pageHeight,
               scaleFactor,
@@ -720,15 +720,21 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               height: textEl.height,
               fontSize: textEl.fontSize,
               font,
+              lineHeightMultiplier: textEl.lineHeightMultiplier ?? 1,
             });
+
+            const textLines = textEl.text.split(/\r?\n/);
+            const lineHeight = placement.size * (textEl.lineHeightMultiplier ?? 1);
 
             // Draw white background mask if enabled
             if (textEl.backgroundMask) {
               const maskX = textEl.x * scaleFactor - 1;
-              const lineH = textEl.fontSize * scaleFactor * (textEl.lineHeightMultiplier ?? 1);
-              const maskY = pageHeight - (textEl.y * scaleFactor) - lineH;
+              const maskTop = pageHeight - (textEl.y * scaleFactor);
+              const maskLineCount = Math.max(1, textLines.length);
               const maskW = textEl.width * scaleFactor + 2;
-              const maskH = lineH + 2;
+              const maskH = lineHeight * maskLineCount + 2;
+              const maskY = maskTop - maskH;
+
               page.drawRectangle({
                 x: maskX,
                 y: maskY,
@@ -739,13 +745,15 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               });
             }
 
-            page.drawText(textEl.text, {
-              x: placement.x,
-              y: placement.y,
-              size: placement.size,
-              font,
-              color: rgb(r, g, b),
-              opacity: textEl.opacity,
+            textLines.forEach((lineText, lineIndex) => {
+              page.drawText(lineText.length ? lineText : ' ', {
+                x: placement.x,
+                y: placement.y - (lineIndex * lineHeight),
+                size: placement.size,
+                font,
+                color: rgb(r, g, b),
+                opacity: textEl.opacity,
+              });
             });
           } else if (element.type === 'shape') {
             const shapeEl = element as ShapeElement;

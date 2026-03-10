@@ -51,13 +51,18 @@ const RotatePDF = () => {
       });
 
       setFiles([]);
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Rotate error:", error);
+    } catch (error: unknown) {
+      if (import.meta.env.DEV) console.error("Rotate error:", error);
+      const msg = error instanceof Error ? error.message : "";
+      let description = "Failed to rotate PDF. Please try again.";
+      if (msg.includes("encrypted") || msg.includes("password")) {
+        description = "This PDF is password-protected. Unlock it first.";
+      } else if (msg.includes("Invalid") || msg.includes("parse")) {
+        description = "This PDF appears to be corrupted. Try the Repair PDF tool.";
       }
       toast({
-        title: "Error",
-        description: "Failed to rotate PDF. Please try again.",
+        title: "Rotation failed",
+        description,
         variant: "destructive",
       });
     } finally {

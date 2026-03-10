@@ -118,7 +118,7 @@ const WatermarkPDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer);
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       const pages = pdf.getPages();
 
       if (watermarkType === "text") {

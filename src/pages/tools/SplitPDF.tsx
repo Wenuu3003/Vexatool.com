@@ -21,10 +21,14 @@ const SplitPDF = () => {
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer);
+        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
         setTotalPages(pdf.getPageCount());
-      } catch {
+      } catch (err: unknown) {
         setTotalPages(null);
+        const msg = err instanceof Error ? err.message : "";
+        if (msg.includes("encrypted") || msg.includes("password")) {
+          toast({ title: "Password-protected PDF", description: "Please unlock this PDF first using the Unlock PDF tool.", variant: "destructive" });
+        }
       }
     } else {
       setTotalPages(null);
@@ -69,7 +73,7 @@ const SplitPDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer);
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       const maxPages = pdf.getPageCount();
 
       const pageIndices = pageRange
@@ -105,13 +109,18 @@ const SplitPDF = () => {
         title: "Success!",
         description: `Extracted ${pageIndices.length} page(s) successfully.`,
       });
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Split error:", error);
+    } catch (error: unknown) {
+      if (import.meta.env.DEV) console.error("Split error:", error);
+      const msg = error instanceof Error ? error.message : "";
+      let description = "Failed to split PDF. Please try again.";
+      if (msg.includes("encrypted") || msg.includes("password")) {
+        description = "This PDF is password-protected. Unlock it first using the Unlock PDF tool.";
+      } else if (msg.includes("Invalid") || msg.includes("parse")) {
+        description = "This PDF appears to be corrupted. Try the Repair PDF tool first.";
       }
       toast({
-        title: "Error",
-        description: "Failed to split PDF. Please try again.",
+        title: "Split failed",
+        description,
         variant: "destructive",
       });
     } finally {

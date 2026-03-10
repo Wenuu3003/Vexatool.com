@@ -19,7 +19,7 @@ const OrganizePDF = () => {
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer);
+        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
         const count = pdf.getPageCount();
         setTotalPages(count);
         setPageOrder(Array.from({ length: count }, (_, i) => i));
@@ -54,7 +54,7 @@ const OrganizePDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer);
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
       const newPdf = await PDFDocument.create();
       const copiedPages = await newPdf.copyPages(pdf, pageOrder);
@@ -79,13 +79,18 @@ const OrganizePDF = () => {
       setFiles([]);
       setPageOrder([]);
       setTotalPages(0);
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Organize error:", error);
+    } catch (error: unknown) {
+      if (import.meta.env.DEV) console.error("Organize error:", error);
+      const msg = error instanceof Error ? error.message : "";
+      let description = "Failed to organize PDF. Please try again.";
+      if (msg.includes("encrypted") || msg.includes("password")) {
+        description = "This PDF is password-protected. Unlock it first.";
+      } else if (msg.includes("Invalid") || msg.includes("parse")) {
+        description = "This PDF appears to be corrupted. Try the Repair PDF tool.";
       }
       toast({
-        title: "Error",
-        description: "Failed to organize PDF. Please try again.",
+        title: "Organize failed",
+        description,
         variant: "destructive",
       });
     } finally {

@@ -19,7 +19,7 @@ const OrganizePDF = () => {
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer);
+        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
         const count = pdf.getPageCount();
         setTotalPages(count);
         setPageOrder(Array.from({ length: count }, (_, i) => i));

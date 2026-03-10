@@ -73,7 +73,7 @@ const SplitPDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer);
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
       const maxPages = pdf.getPageCount();
 
       const pageIndices = pageRange

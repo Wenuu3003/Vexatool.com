@@ -27,7 +27,7 @@ const RotatePDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer);
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
       const pages = pdf.getPages();
       pages.forEach((page) => {

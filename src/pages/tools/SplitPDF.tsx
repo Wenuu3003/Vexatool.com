@@ -21,10 +21,14 @@ const SplitPDF = () => {
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer);
+        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
         setTotalPages(pdf.getPageCount());
-      } catch {
+      } catch (err: unknown) {
         setTotalPages(null);
+        const msg = err instanceof Error ? err.message : "";
+        if (msg.includes("encrypted") || msg.includes("password")) {
+          toast({ title: "Password-protected PDF", description: "Please unlock this PDF first using the Unlock PDF tool.", variant: "destructive" });
+        }
       }
     } else {
       setTotalPages(null);

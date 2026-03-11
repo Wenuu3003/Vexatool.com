@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  <!-- Main Pages -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vexatool.com</loc>
     <lastmod>2026-03-03</lastmod>
@@ -49,8 +48,6 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
-  <!-- Category Pages -->
   <url>
     <loc>https://vexatool.com/pdf-tools</loc>
     <lastmod>2026-03-03</lastmod>
@@ -81,17 +78,15 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <!-- PDF Tools -->
   <url>
     <loc>https://vexatool.com/merge-pdf</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://vexatool.com/split-pdf</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -103,7 +98,7 @@
   </url>
   <url>
     <loc>https://vexatool.com/edit-pdf</loc>
-    <lastmod>2026-03-09</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -133,25 +128,25 @@
   </url>
   <url>
     <loc>https://vexatool.com/unlock-pdf</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://vexatool.com/rotate-pdf</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://vexatool.com/watermark-pdf</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://vexatool.com/organize-pdf</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -161,23 +156,21 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- PDF Converters -->
   <url>
     <loc>https://vexatool.com/pdf-to-image</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://vexatool.com/pdf-to-jpg</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://vexatool.com/pdf-to-png</loc>
-    <lastmod>2026-03-03</lastmod>
+    <lastmod>2026-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -253,8 +246,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Image Tools -->
   <url>
     <loc>https://vexatool.com/compress-image</loc>
     <lastmod>2026-03-03</lastmod>
@@ -309,8 +300,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Calculator Tools -->
   <url>
     <loc>https://vexatool.com/calculator</loc>
     <lastmod>2026-03-03</lastmod>
@@ -365,8 +354,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- QR & Utility Tools -->
   <url>
     <loc>https://vexatool.com/qr-code-generator</loc>
     <lastmod>2026-03-03</lastmod>
@@ -391,8 +378,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <!-- Blog Posts -->
   <url>
     <loc>https://vexatool.com/blog/digital-productivity-habits-that-save-time</loc>
     <lastmod>2026-03-02</lastmod>

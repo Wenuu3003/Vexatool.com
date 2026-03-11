@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { CanonicalHead } from "@/components/CanonicalHead";
+import { ToolLayout } from "@/components/ToolLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Percent } from "lucide-react";
+import { CanonicalHead } from "@/components/CanonicalHead";
+import ToolSEOContent from "@/components/ToolSEOContent";
+import { useToast } from "@/hooks/use-toast";
 
 const PercentageCalculator = () => {
   const [val1, setVal1] = useState("");
@@ -22,50 +23,58 @@ const PercentageCalculator = () => {
   const [incPercent, setIncPercent] = useState("");
   const [incResult, setIncResult] = useState<string | null>(null);
 
+  const { toast } = useToast();
+
   const calcBasic = () => {
     const p = parseFloat(val1);
     const n = parseFloat(val2);
-    if (!isNaN(p) && !isNaN(n)) {
-      setResult(((p / 100) * n).toFixed(2));
+    if (isNaN(p) || isNaN(n)) {
+      toast({ title: "Invalid input", description: "Please enter valid numbers.", variant: "destructive" });
+      return;
     }
+    setResult(((p / 100) * n).toFixed(2));
   };
 
   const calcChange = () => {
     const from = parseFloat(changeFrom);
     const to = parseFloat(changeTo);
-    if (!isNaN(from) && !isNaN(to) && from !== 0) {
-      setChangeResult((((to - from) / from) * 100).toFixed(2));
+    if (isNaN(from) || isNaN(to)) {
+      toast({ title: "Invalid input", description: "Please enter valid numbers.", variant: "destructive" });
+      return;
     }
+    if (from === 0) {
+      toast({ title: "Invalid input", description: "The 'From' value cannot be zero.", variant: "destructive" });
+      return;
+    }
+    setChangeResult((((to - from) / from) * 100).toFixed(2));
   };
 
   const calcIncrease = () => {
     const v = parseFloat(incVal);
     const p = parseFloat(incPercent);
-    if (!isNaN(v) && !isNaN(p)) {
-      const increased = v + (v * p) / 100;
-      const decreased = v - (v * p) / 100;
-      setIncResult(`Increase: ${increased.toFixed(2)} | Decrease: ${decreased.toFixed(2)}`);
+    if (isNaN(v) || isNaN(p)) {
+      toast({ title: "Invalid input", description: "Please enter valid numbers.", variant: "destructive" });
+      return;
     }
+    const increased = v + (v * p) / 100;
+    const decreased = v - (v * p) / 100;
+    setIncResult(`Increase: ${increased.toFixed(2)} | Decrease: ${decreased.toFixed(2)}`);
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
       <CanonicalHead
         title="Percentage Calculator Online Free – Calculate Percent Instantly | VexaTool"
         description="Free online percentage calculator. Calculate percentage of a number, percentage change, increase and decrease. Fast, accurate and easy to use."
         keywords="percentage calculator, percent calculator, calculate percentage, percentage change, percentage increase, percentage decrease"
       />
-      <Header />
-      <main className="container mx-auto px-4 py-12 max-w-2xl">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-            <Percent className="w-8 h-8 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Percentage Calculator</h1>
-          <p className="text-muted-foreground">Calculate percentages quickly and accurately</p>
-        </div>
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <ToolLayout
+        title="Percentage Calculator"
+        description="Calculate percentages quickly and accurately"
+        icon={Percent}
+        colorClass="bg-green-500"
+      >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-2xl mx-auto">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="basic">Basic %</TabsTrigger>
             <TabsTrigger value="change">% Change</TabsTrigger>
@@ -78,7 +87,7 @@ const PercentageCalculator = () => {
                 <CardTitle className="text-lg">What is X% of Y?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-muted-foreground">What is</span>
                   <Input type="number" value={val1} onChange={(e) => setVal1(e.target.value)} placeholder="e.g. 25" className="w-24" />
                   <span className="text-muted-foreground">% of</span>
@@ -154,16 +163,31 @@ const PercentageCalculator = () => {
           </TabsContent>
         </Tabs>
 
-        {/* SEO Content */}
-        <div className="mt-12 prose prose-lg max-w-none">
-          <h2 className="text-2xl font-semibold text-foreground mb-4">How to Use the Percentage Calculator</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            This calculator handles the three most common percentage calculations. Use the <strong>Basic</strong> tab to find what a certain percentage of any number is — for example, "What is 15% of 300?" Use the <strong>Percentage Change</strong> tab to calculate the percentage difference between two values, which is useful for comparing prices, scores, or performance metrics. The <strong>Increase/Decrease</strong> tab shows you the result of adding or subtracting a percentage from a value, handy for calculating discounts, tips, or tax amounts.
-          </p>
-        </div>
-      </main>
-      <Footer />
-    </div>
+        <ToolSEOContent
+          toolName="Percentage Calculator"
+          whatIs="The Percentage Calculator handles the three most common percentage calculations: finding what X% of Y is, calculating percentage change between two values, and computing increase/decrease by a percentage."
+          howToUse={[
+            "Choose a calculation type from the tabs.",
+            "Enter your values in the input fields.",
+            "Click Calculate to see the result.",
+          ]}
+          features={[
+            "Basic percentage calculation (X% of Y)",
+            "Percentage change between two values",
+            "Increase and decrease calculations",
+            "Instant results with clear display",
+            "Input validation with error messages",
+            "Works on desktop and mobile",
+          ]}
+          safetyNote="All calculations are performed in your browser. No data is sent to any server."
+          faqs={[
+            { question: "How do I calculate a percentage?", answer: "Use the Basic tab. Enter the percentage and the number, then click Calculate. For example, 25% of 200 = 50." },
+            { question: "How do I find percentage change?", answer: "Use the % Change tab. Enter the old value and new value to see the percentage increase or decrease." },
+            { question: "Can I use decimals?", answer: "Yes, all inputs accept decimal numbers for precise calculations." },
+          ]}
+        />
+      </ToolLayout>
+    </>
   );
 };
 

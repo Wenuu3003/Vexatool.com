@@ -1,5 +1,4 @@
 # Static files - must be served directly (order matters - specific rules BEFORE wildcard)
-# These files bypass the SPA fallback completely
 
 # AdSense verification file (CRITICAL for Google AdSense approval)
 /ads.txt        /ads.txt        200!

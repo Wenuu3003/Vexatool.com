@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    {
+      "source": "/:path(.*)",
+      "has": [{ "type": "host", "value": "www.vexatool.com" }],
+      "destination": "https://vexatool.com/:path",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api|_next|sitemap\\.xml|robots\\.txt|ads\\.txt|58b54417ff684284a45803b3a6855462\\.txt|.*\\..*).*)",

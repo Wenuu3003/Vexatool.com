@@ -1,15 +1,19 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  
+
+  # Force non-www with 301 redirect
+  RewriteCond %{HTTP_HOST} ^www\.vexatool\.com [NC]
+  RewriteRule ^(.*)$ https://vexatool.com/$1 [R=301,L]
+
   # Don't rewrite files or directories
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  
+
   # Don't rewrite static files
   RewriteCond %{REQUEST_URI} !^/sitemap\.xml$
   RewriteCond %{REQUEST_URI} !^/robots\.txt$
-  
+
   # Rewrite everything else to index.html
   RewriteRule ^ index.html [L]
 </IfModule>

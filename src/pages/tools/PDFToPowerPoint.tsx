@@ -1,56 +1,49 @@
 import { useState } from "react";
-import { FileType2, Download, Info, Image, FileImage } from "lucide-react";
+import { FileType2, Download, Info, FileImage, Loader2, Shield } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { PDFDocument } from "pdf-lib";
+import { Progress } from "@/components/ui/progress";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
-import { Progress } from "@/components/ui/progress";
+import * as pdfjsLib from "pdfjs-dist";
+import { Document, Packer, Paragraph, ImageRun, HeadingLevel } from "docx";
+import JSZip from "jszip";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
 
 const PDFToPowerPoint = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [pageCount, setPageCount] = useState<number>(0);
   const [progress, setProgress] = useState(0);
-  const [extractedImages, setExtractedImages] = useState<string[]>([]);
+  const [progressLabel, setProgressLabel] = useState("");
 
   const handleFilesChange = async (newFiles: File[]) => {
     setFiles(newFiles);
-    setExtractedImages([]);
     setProgress(0);
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdfDoc = await PDFDocument.load(arrayBuffer);
-        setPageCount(pdfDoc.getPageCount());
-      } catch (error) {
-        if (import.meta.env.DEV) {
-          console.error("Error loading PDF:", error);
-        }
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+        setPageCount(pdf.numPages);
+        pdf.destroy();
+      } catch {
         toast({
           title: "Error loading PDF",
-          description: "Could not read the PDF file. Please try another file.",
+          description: "Could not read the PDF file. It may be corrupted or password-protected.",
           variant: "destructive",
         });
+        setPageCount(0);
       }
+    } else {
+      setPageCount(0);
     }
-  };
-
-  const renderPDFPageToImage = async (pdfDoc: PDFDocument, pageIndex: number): Promise<string> => {
-    // Create a single-page PDF
-    const singlePagePdf = await PDFDocument.create();
-    const [page] = await singlePagePdf.copyPages(pdfDoc, [pageIndex]);
-    singlePagePdf.addPage(page);
-    const pdfBytes = await singlePagePdf.save();
-    
-    // Convert to base64 data URL for display
-    const base64 = btoa(
-      new Uint8Array(pdfBytes).reduce((data, byte) => data + String.fromCharCode(byte), '')
-    );
-    return `data:application/pdf;base64,${base64}`;
   };
 
   const handleConvert = async () => {
@@ -64,58 +57,110 @@ const PDFToPowerPoint = () => {
     }
 
     setIsProcessing(true);
-    setProgress(0);
+    setProgress(5);
+    setProgressLabel("Loading PDF...");
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdfDoc = await PDFDocument.load(arrayBuffer);
-      const pages = pdfDoc.getPages();
-      
-      // Create individual PDF files for each page (slides)
-      const slideBlobs: Blob[] = [];
-      
-      for (let i = 0; i < pages.length; i++) {
-        setProgress(Math.round(((i + 1) / pages.length) * 100));
-        
-        const newPdf = await PDFDocument.create();
-        const [copiedPage] = await newPdf.copyPages(pdfDoc, [i]);
-        newPdf.addPage(copiedPage);
-        const pdfBytes = await newPdf.save();
-        const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
-        slideBlobs.push(blob);
+      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+      const numPages = pdf.numPages;
+
+      // Render each page as an image
+      const slideImages: Uint8Array[] = [];
+      const slideDimensions: { width: number; height: number }[] = [];
+
+      for (let i = 1; i <= numPages; i++) {
+        setProgress(Math.round(5 + (i / numPages) * 70));
+        setProgressLabel(`Rendering page ${i} of ${numPages}...`);
+
+        const page = await pdf.getPage(i);
+        const scale = 2; // High quality
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext("2d")!;
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        // Convert to JPEG for smaller file size
+        const jpegBlob = await new Promise<Blob>((resolve) => {
+          canvas.toBlob((blob) => resolve(blob!), "image/jpeg", 0.88);
+        });
+
+        slideImages.push(new Uint8Array(await jpegBlob.arrayBuffer()));
+        slideDimensions.push({ width: viewport.width, height: viewport.height });
+
+        // Cleanup
+        canvas.width = 0;
+        canvas.height = 0;
       }
 
-      // Create a combined download - all pages as separate files in a single action
-      // Download all slides
+      pdf.destroy();
+
+      setProgress(80);
+      setProgressLabel("Building presentation ZIP...");
+
+      // Create a ZIP file containing numbered JPEG slides + a README
+      const zip = new JSZip();
       const baseName = files[0].name.replace('.pdf', '');
-      
-      for (let i = 0; i < slideBlobs.length; i++) {
-        const url = URL.createObjectURL(slideBlobs[i]);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${baseName}_slide_${i + 1}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        
-        // Small delay between downloads
-        if (i < slideBlobs.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 300));
-        }
+
+      // Add a simple instructions file
+      zip.file("HOW_TO_USE.txt",
+`${baseName} - Converted Slides
+${"=".repeat(40)}
+
+These JPEG images are high-quality renders of each page from your PDF.
+
+To create a PowerPoint presentation:
+1. Open PowerPoint → New Blank Presentation
+2. Go to Insert → Photo Album → New Photo Album
+3. Select all the slide images from this folder
+4. Click "Create" — each image becomes a slide
+
+Or in Google Slides:
+1. Create a new presentation
+2. For each slide: Insert → Image → Upload from computer
+3. Select the corresponding slide image
+
+Total slides: ${numPages}
+`);
+
+      for (let i = 0; i < slideImages.length; i++) {
+        zip.file(`${baseName}_slide_${String(i + 1).padStart(3, '0')}.jpg`, slideImages[i]);
       }
+
+      setProgress(90);
+      setProgressLabel("Compressing...");
+
+      const zipBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } });
+
+      // Download
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${baseName}_slides.zip`;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      setProgress(100);
+      setProgressLabel("Done!");
 
       toast({
         title: "Conversion Complete!",
-        description: `Successfully extracted ${pages.length} slide(s). Import these PDFs into PowerPoint using Insert → Pictures → Screenshot or drag them directly.`,
+        description: `${numPages} slide image(s) exported. Open the ZIP and follow the included instructions to import into PowerPoint.`,
       });
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error("Conversion error:", error);
       }
+      const msg = error instanceof Error ? error.message : "";
       toast({
         title: "Conversion failed",
-        description: "Could not convert the PDF. Please try again.",
+        description: msg.includes("password")
+          ? "This PDF is password-protected. Unlock it first using our Unlock PDF tool."
+          : "Could not convert the PDF. The file may be corrupted.",
         variant: "destructive",
       });
     } finally {
@@ -125,123 +170,113 @@ const PDFToPowerPoint = () => {
 
   const seoContent = {
     toolName: "PDF to PowerPoint Converter",
-    whatIs: "PDF to PowerPoint Converter is a free online tool that helps you convert PDF documents into presentation slides. The tool extracts each PDF page as a separate slide file that can be imported into Microsoft PowerPoint or Google Slides. This is useful when you need to present PDF content, create slideshows from document pages, or integrate PDF visuals into your presentations. All processing happens in your browser for complete privacy.",
+    whatIs: "PDF to PowerPoint Converter is a free online tool that renders each page of your PDF as a high-quality image and packages them into a ready-to-use slide pack. Unlike tools that just split PDFs, this converter actually renders the visual content at 2× resolution, creating crisp JPEG images that you can directly import into Microsoft PowerPoint or Google Slides as individual slides. The included instructions file walks you through the quick import process.",
     howToUse: [
       "Upload your PDF file by clicking the upload area or dragging and dropping.",
-      "View the page count to see how many slides will be created.",
-      "Click 'Convert to Slides' to process the PDF.",
-      "Download all extracted slide files automatically.",
-      "Import the files into PowerPoint by dragging them in or using Insert → Pictures."
+      "View the page count to confirm the number of slides.",
+      "Click 'Convert to Slides' to render all pages as images.",
+      "Download the ZIP file containing all slide images.",
+      "Follow the included HOW_TO_USE.txt to import into PowerPoint or Google Slides."
     ],
     features: [
-      "Extract PDF pages as individual slide files",
-      "Works with any number of PDF pages",
-      "Maintains original page quality and layout",
-      "Automatic download of all slides",
-      "Compatible with PowerPoint and Google Slides",
-      "100% browser-based - no server upload",
-      "Progress indicator for large files"
+      "Renders actual PDF page content as high-quality JPEG images",
+      "2× resolution for crisp, presentation-ready slides",
+      "ZIP package with numbered slides and import instructions",
+      "Works with any PDF — text, images, charts, diagrams",
+      "Compatible with PowerPoint, Google Slides, and Keynote",
+      "Progress tracking for multi-page documents",
+      "100% browser-based — no server upload required"
     ],
-    safetyNote: "Your PDF files are processed entirely in your browser. No documents are uploaded to any server, ensuring complete privacy. The extraction happens locally on your device, and only you have access to the resulting slide files.",
+    safetyNote: "Your PDF files are processed entirely in your browser. No documents are uploaded to any server, ensuring complete privacy. The rendering happens locally on your device, and only you have access to the resulting slide images.",
     faqs: [
-      { question: "Will the slides be editable in PowerPoint?", answer: "The extracted slides maintain the visual content of your PDF. You can insert them as images or objects in PowerPoint. For text editing, you may need to add text boxes over the slides." },
-      { question: "How do I import the slides into PowerPoint?", answer: "Simply drag the downloaded PDF slides directly into PowerPoint, or use Insert → Pictures → Screenshot to capture the content. Each slide becomes one PowerPoint slide." },
-      { question: "Can I convert to Google Slides?", answer: "Yes! Upload the extracted PDF slides to Google Drive, then insert them into a Google Slides presentation using Insert → Image or by opening them directly." },
-      { question: "How many pages can I convert?", answer: "There's no limit! The tool processes all pages in your PDF. For very large documents, the conversion may take a bit longer but will complete successfully." }
+      { question: "Are the slides editable in PowerPoint?", answer: "The slides are imported as images, preserving the exact visual appearance of your PDF pages. To edit text, you can add text boxes over the slide images in PowerPoint." },
+      { question: "What resolution are the slide images?", answer: "Each page is rendered at 2× scale, producing high-resolution images suitable for presentations on HD displays and projectors." },
+      { question: "How do I import into PowerPoint?", answer: "The ZIP file includes a HOW_TO_USE.txt with step-by-step instructions. The quickest method is: Insert → Photo Album → New Photo Album → select all images → Create." },
+      { question: "Can I convert to Google Slides?", answer: "Yes! After downloading the ZIP, create a new Google Slides presentation and use Insert → Image for each slide." },
+      { question: "Is there a page limit?", answer: "No strict limit. The tool handles documents of any length, though very large PDFs may take longer to render." }
     ]
   };
 
   return (
     <>
-      <CanonicalHead 
+      <CanonicalHead
         title="PDF to PowerPoint Converter Free Online | VexaTool"
-        description="Free PDF to PowerPoint converter. Convert PDF documents to presentation slides instantly. 100% private."
+        description="Free PDF to PowerPoint converter. Convert PDF pages to high-quality slide images for PowerPoint and Google Slides. 100% private."
         keywords="PDF to PowerPoint, PDF to PPT, convert PDF to slides, PDF to presentation, free PDF to PPT"
       />
       <ToolLayout
         title="PDF to PowerPoint"
-        description="Convert PDF documents to PowerPoint presentation slides"
+        description="Convert PDF pages to high-quality slide images for presentations"
         icon={FileType2}
         colorClass="bg-orange-500"
       >
-      <div className="max-w-2xl mx-auto space-y-6">
-        <Alert>
-          <Info className="h-4 w-4" />
-          <AlertDescription>
-            This tool extracts each PDF page as a slide file. All processing happens in your browser - your files stay private.
-          </AlertDescription>
-        </Alert>
+        <div className="max-w-2xl mx-auto space-y-6">
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              Each PDF page is rendered as a high-quality image and packaged in a ZIP file with import instructions for PowerPoint and Google Slides.
+            </AlertDescription>
+          </Alert>
 
-        <FileUpload
-          files={files}
-          onFilesChange={handleFilesChange}
-          colorClass="bg-orange-500"
-        />
+          <FileUpload
+            files={files}
+            onFilesChange={handleFilesChange}
+            colorClass="bg-orange-500"
+          />
 
-        {files.length > 0 && (
-          <div className="text-center space-y-4">
-            <div className="bg-muted/50 rounded-lg p-4">
-              <div className="flex items-center justify-center gap-2 text-foreground">
-                <FileImage className="w-5 h-5 text-orange-500" />
-                <span className="font-medium">{files[0].name}</span>
+          {files.length > 0 && (
+            <div className="text-center space-y-4">
+              <div className="bg-muted/50 rounded-lg p-4">
+                <div className="flex items-center justify-center gap-2 text-foreground">
+                  <FileImage className="w-5 h-5 text-orange-500" />
+                  <span className="font-medium">{files[0].name}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {pageCount} page(s) → {pageCount} high-quality slide image(s)
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                {pageCount} page(s) → {pageCount} slide(s)
-              </p>
-            </div>
-            
-            {isProcessing && (
-              <div className="space-y-2">
-                <Progress value={progress} className="h-2" />
-                <p className="text-sm text-muted-foreground">Converting... {progress}%</p>
-              </div>
-            )}
-            
-            <Button
-              size="lg"
-              onClick={handleConvert}
-              disabled={isProcessing}
-              className="gap-2 bg-orange-500 hover:bg-orange-600"
-            >
-              {isProcessing ? "Converting..." : (
-                <>
-                  <Download className="w-5 h-5" />
-                  Convert to Slides
-                </>
+
+              {isProcessing && (
+                <div className="space-y-2">
+                  <Progress value={progress} className="h-2" />
+                  <p className="text-sm text-muted-foreground">{progressLabel}</p>
+                </div>
               )}
-            </Button>
+
+              <Button
+                size="lg"
+                onClick={handleConvert}
+                disabled={isProcessing}
+                className="gap-2 bg-orange-500 hover:bg-orange-600"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Converting...
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-5 h-5" />
+                    Convert to Slides
+                  </>
+                )}
+              </Button>
+            </div>
+          )}
+
+          <div className="bg-orange-50/50 dark:bg-orange-950/20 rounded-lg p-4 border border-orange-200 dark:border-orange-800">
+            <div className="flex items-start gap-3">
+              <Shield className="w-5 h-5 text-orange-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-foreground">Secure & Private</h4>
+                <p className="text-sm text-muted-foreground">
+                  Your PDF is rendered locally in your browser. No files are uploaded to any server.
+                </p>
+              </div>
+            </div>
           </div>
-        )}
-
-        <div className="bg-muted/30 rounded-lg p-6 space-y-4">
-          <h3 className="font-semibold flex items-center gap-2">
-            <span className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm">1</span>
-            How to Use in PowerPoint
-          </h3>
-          <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-8">
-            <li>Click "Convert to Slides" to download all pages as individual PDFs</li>
-            <li>Open PowerPoint and create a new presentation</li>
-            <li>Drag each downloaded slide PDF directly into PowerPoint</li>
-            <li>Or use Insert → Object → Create from File and select each PDF</li>
-            <li>Resize and position slides as needed</li>
-          </ol>
         </div>
-
-        <div className="bg-muted/30 rounded-lg p-6 space-y-4">
-          <h3 className="font-semibold flex items-center gap-2">
-            <span className="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm">2</span>
-            How to Use in Google Slides
-          </h3>
-          <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground ml-8">
-            <li>Download all slide PDFs from this tool</li>
-            <li>Upload the PDFs to Google Drive</li>
-            <li>Open each PDF in Google Drive (it will open in Drive PDF viewer)</li>
-            <li>Take screenshots or use Insert → Image in Google Slides</li>
-            <li>Arrange your slides in the presentation</li>
-          </ol>
-        </div>
-      </div>
-      <ToolSEOContent {...seoContent} />
+        <ToolSEOContent {...seoContent} />
       </ToolLayout>
     </>
   );

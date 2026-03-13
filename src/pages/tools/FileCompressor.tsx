@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { compressImageFile } from "@/lib/imageCompression";
 import { CanonicalHead } from "@/components/CanonicalHead";
+import ToolSEOContent from "@/components/ToolSEOContent";
 import { Slider } from "@/components/ui/slider";
 import { PDFDocument } from "pdf-lib";
 

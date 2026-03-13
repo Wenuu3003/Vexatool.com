@@ -1,21 +1,26 @@
 import { useState } from "react";
-import { FileText, Download, Table } from "lucide-react";
+import { FileText, Download, Table, Loader2, Shield } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { readExcelFile, sheetToArray } from "@/lib/excelUtils";
+import { Document, Packer, Paragraph, TextRun, Table as DocxTable, TableRow, TableCell, WidthType, HeadingLevel, BorderStyle } from "docx";
 
 const ExcelToWord = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [progressLabel, setProgressLabel] = useState("");
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.xls') || selectedFile.name.endsWith('.xlsx')) {
         setFile(selectedFile);
+        setProgress(0);
       } else {
         toast({
           title: "Invalid file type",
@@ -37,68 +42,121 @@ const ExcelToWord = () => {
     }
 
     setIsProcessing(true);
+    setProgress(10);
+    setProgressLabel("Reading spreadsheet...");
 
     try {
-      // Read Excel file using exceljs
       const { workbook } = await readExcelFile(file);
-      
-      // Get all data from all sheets
-      const allRows: (string | number | boolean | null)[][] = [];
-      
-      workbook.worksheets.forEach(worksheet => {
+      setProgress(40);
+      setProgressLabel("Building Word document...");
+
+      const sections: Paragraph[] = [];
+      const tables: (Paragraph | DocxTable)[] = [];
+
+      // Title
+      tables.push(
+        new Paragraph({
+          text: file.name.replace(/\.(csv|xls|xlsx)$/i, ''),
+          heading: HeadingLevel.TITLE,
+          spacing: { after: 300 },
+        })
+      );
+
+      const defaultBorder = {
+        style: BorderStyle.SINGLE,
+        size: 1,
+        color: "999999",
+      };
+
+      workbook.worksheets.forEach((worksheet, sheetIndex) => {
         const sheetData = sheetToArray(worksheet);
-        if (sheetData.length > 0) {
-          // Add sheet name as header
-          allRows.push([`--- ${worksheet.name} ---`]);
-          allRows.push(...sheetData);
-          allRows.push([]); // Empty row between sheets
+        if (sheetData.length === 0) return;
+
+        // Sheet heading
+        if (workbook.worksheets.length > 1) {
+          tables.push(
+            new Paragraph({
+              text: worksheet.name,
+              heading: HeadingLevel.HEADING_2,
+              spacing: { before: 400, after: 200 },
+            })
+          );
         }
+
+        // Calculate max columns
+        const maxCols = Math.max(...sheetData.map(r => r.length), 1);
+
+        // Build table rows
+        const docxRows = sheetData.map((row, rowIndex) => {
+          const cells: TableCell[] = [];
+          for (let c = 0; c < maxCols; c++) {
+            const cellValue = String(row[c] ?? "");
+            const isHeader = rowIndex === 0;
+            cells.push(
+              new TableCell({
+                children: [
+                  new Paragraph({
+                    children: [
+                      new TextRun({
+                        text: cellValue,
+                        bold: isHeader,
+                        size: isHeader ? 22 : 20,
+                      }),
+                    ],
+                  }),
+                ],
+                width: { size: Math.floor(100 / maxCols), type: WidthType.PERCENTAGE },
+                borders: {
+                  top: defaultBorder,
+                  bottom: defaultBorder,
+                  left: defaultBorder,
+                  right: defaultBorder,
+                },
+              })
+            );
+          }
+          return new TableRow({ children: cells });
+        });
+
+        tables.push(
+          new DocxTable({
+            rows: docxRows,
+            width: { size: 100, type: WidthType.PERCENTAGE },
+          })
+        );
+
+        // Spacer between sheets
+        tables.push(new Paragraph({ text: "", spacing: { after: 200 } }));
       });
 
-      // Create RTF document (Rich Text Format - opens in Word)
-      let rtfContent = '{\\rtf1\\ansi\\deff0\n';
-      rtfContent += '{\\fonttbl{\\f0\\fswiss Helvetica;}}\n';
-      rtfContent += '\\f0\\fs24\n';
-      
-      // Add table
-      if (allRows.length > 0) {
-        const maxCols = Math.max(...allRows.map(r => r.length), 1);
-        const colWidth = Math.floor(9000 / maxCols);
-        
-        for (const row of allRows) {
-          rtfContent += '\\trowd\\trgaph108\n';
-          
-          for (let i = 0; i < maxCols; i++) {
-            rtfContent += `\\cellx${colWidth * (i + 1)}\n`;
-          }
-          
-          for (let i = 0; i < maxCols; i++) {
-            const cell = String(row[i] ?? '');
-            const escapedCell = cell
-              .replace(/\\/g, '\\\\')
-              .replace(/\{/g, '\\{')
-              .replace(/\}/g, '\\}');
-            rtfContent += `\\intbl ${escapedCell}\\cell\n`;
-          }
-          
-          rtfContent += '\\row\n';
-        }
-      }
-      
-      rtfContent += '}';
+      setProgress(70);
+      setProgressLabel("Generating DOCX file...");
 
-      // Download as RTF
-      const blob = new Blob([rtfContent], { type: "application/rtf" });
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: tables,
+        }],
+      });
+
+      const blob = await Packer.toBlob(doc);
+
+      setProgress(90);
+      setProgressLabel("Preparing download...");
+
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = file.name.replace(/\.(csv|xls|xlsx)$/i, '.rtf');
+      link.download = file.name.replace(/\.(csv|xls|xlsx)$/i, '.docx');
       link.click();
       URL.revokeObjectURL(url);
 
+      setProgress(100);
+      setProgressLabel("Done!");
+
       toast({
         title: "Conversion complete!",
-        description: "Your spreadsheet has been converted to RTF format (opens in Word).",
+        description: "Your spreadsheet has been converted to a Word document (.docx).",
       });
 
       setFile(null);
@@ -107,113 +165,142 @@ const ExcelToWord = () => {
         console.error("Convert error:", error);
       }
       toast({
-        title: "Error",
-        description: "Failed to convert file. Please try again.",
+        title: "Conversion Error",
+        description: "Failed to convert file. The file may be corrupted or in an unsupported format.",
         variant: "destructive",
       });
     } finally {
       setIsProcessing(false);
+      setProgress(0);
     }
   };
 
   const seoContent = {
     toolName: "Excel to Word Converter",
-    whatIs: "Excel to Word Converter is a free online tool that transforms Excel spreadsheets and CSV files into Word-compatible documents. This is useful when you need to include tabular data in reports, presentations, or documents. The converter processes your spreadsheet data and creates an RTF file that opens in Microsoft Word, Google Docs, and other word processors while maintaining your table structure.",
+    whatIs: "Excel to Word Converter is a free online tool that transforms Excel spreadsheets and CSV files into genuine Microsoft Word documents (.docx). Unlike basic converters that output RTF, this tool generates real DOCX files with properly formatted tables, preserving your row and column structure. The entire conversion happens in your browser — your spreadsheet data never leaves your device.",
     howToUse: [
       "Click the upload area to select your Excel file (.xls, .xlsx, or .csv).",
       "Review the selected file details shown below the upload area.",
-      "Click 'Convert to Word (RTF)' to start the conversion.",
-      "Your converted RTF file will download automatically.",
-      "Open the file in Microsoft Word or any word processor."
+      "Click 'Convert to Word (.docx)' to start the conversion.",
+      "Monitor the progress bar as your document is generated.",
+      "Your converted DOCX file will download automatically."
     ],
     features: [
+      "Generates real .docx files — not RTF",
       "Converts .xls, .xlsx, and .csv files",
-      "Creates RTF tables compatible with all word processors",
-      "Preserves row and column structure",
-      "Handles multiple sheets in workbooks",
-      "Fast client-side processing",
-      "No file size limits for standard spreadsheets"
+      "Creates formatted Word tables with borders and headers",
+      "Handles multiple sheets with separate tables",
+      "First row is automatically bolded as table header",
+      "Progress tracking during conversion",
+      "100% browser-based — no server upload",
+      "Free with no registration required"
     ],
-    safetyNote: "Your Excel files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring complete privacy for your spreadsheet data. Both original and converted files remain on your device.",
+    safetyNote: "Your Excel files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server, ensuring complete privacy for your spreadsheet data.",
     faqs: [
-      { question: "Will my table formatting be preserved?", answer: "The converter creates a basic table structure in RTF format. While the data and layout are preserved, you may need to adjust styling (colors, fonts, borders) in your word processor after conversion." },
-      { question: "Can I convert files with multiple sheets?", answer: "Yes! The tool now reads all sheets from your Excel workbook and includes them in the RTF output with sheet name headers." },
-      { question: "Why RTF instead of DOCX?", answer: "RTF is universally compatible with all word processors including Microsoft Word, Google Docs, LibreOffice, and others. It ensures your converted file can be opened anywhere." },
-      { question: "What about formulas in my Excel file?", answer: "The converter exports the visible values, not the underlying formulas. If you need to preserve formulas, keep your original Excel file." }
+      { question: "Does this generate a real DOCX file?", answer: "Yes! The converter generates a genuine .docx file (Microsoft Word format) with properly formatted tables. It is not an RTF wrapper — it is a true Word document compatible with Microsoft Word, Google Docs, and LibreOffice." },
+      { question: "Will my table formatting be preserved?", answer: "The converter creates structured Word tables with borders and proper column widths. The first row is automatically bolded as a header. You can further style the table in your word processor." },
+      { question: "Can I convert files with multiple sheets?", answer: "Yes! All sheets from your Excel workbook are included in the output with separate tables and sheet name headings." },
+      { question: "What about formulas in my Excel file?", answer: "The converter exports the visible computed values, not the underlying formulas. Keep your original Excel file if you need to preserve formulas." },
+      { question: "Is there a file size limit?", answer: "There is no strict limit. Standard spreadsheets convert in seconds. Very large files with thousands of rows may take a moment longer." }
     ]
   };
 
   return (
     <>
-      <CanonicalHead 
-        title="Excel to Word Converter Free Online - XLS CSV to DOC | VexaTool"
-        description="Free online Excel to Word converter. Convert XLS, XLSX, and CSV files to Word document format."
-        keywords="excel to word, xls to doc, csv to word, spreadsheet to word, convert excel"
+      <CanonicalHead
+        title="Excel to Word Converter Free Online - XLS to DOCX | VexaTool"
+        description="Free online Excel to Word converter. Convert XLS, XLSX, and CSV files to real Word documents (.docx) with formatted tables."
+        keywords="excel to word, xls to docx, csv to word, spreadsheet to word, convert excel to word"
       />
       <ToolLayout
         title="Excel to Word"
-        description="Convert Excel spreadsheets to Word document format"
+        description="Convert Excel spreadsheets to Word documents (.docx)"
         icon={FileText}
         colorClass="bg-blue-600"
       >
-        <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
-          <input
-            type="file"
-            accept=".csv,.xls,.xlsx"
-            onChange={handleFileChange}
-            className="hidden"
-            id="excel-word-upload"
-          />
-          <label htmlFor="excel-word-upload" className="cursor-pointer">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-600/10 flex items-center justify-center">
-              <Table className="w-8 h-8 text-green-600" />
-            </div>
-            <p className="text-lg font-medium text-foreground mb-2">
-              Click to select Excel file
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Supports .csv, .xls, and .xlsx files
-            </p>
-          </label>
-        </div>
-
-        {file && (
-          <div className="mt-6 space-y-4">
-            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-              <div className="flex items-center gap-3">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
+            <input
+              type="file"
+              accept=".csv,.xls,.xlsx"
+              onChange={handleFileChange}
+              className="hidden"
+              id="excel-word-upload"
+            />
+            <label htmlFor="excel-word-upload" className="cursor-pointer">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-600/10 flex items-center justify-center">
                 <Table className="w-8 h-8 text-green-600" />
-                <div>
-                  <p className="font-medium">{file.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {(file.size / 1024).toFixed(1)} KB
-                  </p>
-                </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setFile(null)}>
-                Remove
-              </Button>
+              <p className="text-lg font-medium text-foreground mb-2">
+                {file ? file.name : "Click to select Excel file"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Supports .csv, .xls, and .xlsx files
+              </p>
+            </label>
+          </div>
+
+          {file && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Table className="w-8 h-8 text-green-600" />
+                  <div>
+                    <p className="font-medium text-foreground">{file.name}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {(file.size / 1024).toFixed(1)} KB
+                    </p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setFile(null)}>
+                  Remove
+                </Button>
+              </div>
+
+              {isProcessing && (
+                <div className="space-y-2">
+                  <Progress value={progress} className="h-2" />
+                  <p className="text-sm text-center text-muted-foreground">{progressLabel}</p>
+                </div>
+              )}
+
+              <div className="text-center">
+                <Button
+                  size="lg"
+                  onClick={handleConvert}
+                  disabled={isProcessing}
+                  className="gap-2"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Converting...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-5 h-5" />
+                      Convert to Word (.docx)
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-            
-            <div className="text-center">
-              <Button
-                size="lg"
-                onClick={handleConvert}
-                disabled={isProcessing}
-                className="gap-2"
-              >
-                {isProcessing ? (
-                  "Converting..."
-                ) : (
-                  <>
-                    <Download className="w-5 h-5" />
-                    Convert to Word (RTF)
-                  </>
-                )}
-              </Button>
+          )}
+
+          <div className="bg-blue-50/50 dark:bg-blue-950/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
+            <div className="flex items-start gap-3">
+              <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-foreground">Secure & Private</h4>
+                <p className="text-sm text-muted-foreground">
+                  Your spreadsheets are processed entirely within your browser. No files are uploaded to any server.
+                </p>
+              </div>
             </div>
           </div>
-        )}
-        <ToolSEOContent {...seoContent} />
+
+          <ToolSEOContent {...seoContent} />
+        </div>
       </ToolLayout>
     </>
   );

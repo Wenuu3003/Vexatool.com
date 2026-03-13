@@ -294,6 +294,33 @@ const FileCompressor = () => {
             </div>
           )}
         </div>
+        <ToolSEOContent
+          toolName="File Compressor"
+          whatIs="File Compressor is a free online tool that reduces the file size of images and PDF documents. Whether you need to shrink a photo for email, compress a PDF for upload to a government portal, or reduce file sizes for faster sharing, this tool handles it directly in your browser. Your files never leave your device."
+          howToUse={[
+            "Click the upload area to select your image or PDF files.",
+            "Adjust the quality slider to control compression level.",
+            "Click 'Compress Files' to process all selected files.",
+            "Review the compression results showing original vs compressed sizes.",
+            "Download each compressed file individually."
+          ]}
+          features={[
+            "Compresses both images (JPG, PNG, WebP) and PDF documents",
+            "Adjustable quality slider for fine-tuned compression",
+            "Batch processing — compress multiple files at once",
+            "Shows original vs compressed size with savings percentage",
+            "100% browser-based — no server uploads",
+            "Free with no registration required"
+          ]}
+          safetyNote="All files are processed entirely in your browser. Nothing is uploaded to any server, ensuring your documents and photos remain private and secure."
+          faqs={[
+            { question: "What file types can I compress?", answer: "The tool supports image files (JPG, PNG, WebP) and PDF documents. For other file types, use format-specific tools like our dedicated Image Compressor or Compress PDF tool." },
+            { question: "How much can file sizes be reduced?", answer: "Image files can typically be reduced by 30-80% depending on quality settings. PDF compression effectiveness depends on the content — image-heavy PDFs see the largest reductions." },
+            { question: "Will compression affect quality?", answer: "At higher quality settings (70-90%), the visual difference is minimal. Lower settings produce smaller files but may reduce image clarity. Use the slider to find your preferred balance." },
+            { question: "Is there a file size limit?", answer: "There is no strict limit, but very large files may take longer to process in the browser. For best performance, we recommend files under 50MB each." },
+            { question: "Are my files stored anywhere?", answer: "No. All processing happens locally in your browser. Your files are never uploaded to any server." }
+          ]}
+        />
       </ToolLayout>
     </>
   );

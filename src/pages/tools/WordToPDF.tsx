@@ -87,26 +87,48 @@ const WordToPDF = () => {
       }
     }
 
-    // Fallback: basic byte scanning for .doc files
+    // Fallback for .doc files: extract readable text from binary
     const arrayBuffer = await file.arrayBuffer();
     const bytes = new Uint8Array(arrayBuffer);
-    let extractedText = "";
+    
+    // For .doc binary files, look for text runs between control sequences
+    // Extract only sequences of printable ASCII that look like real words
+    const textChunks: string[] = [];
+    let currentChunk = "";
+    
     for (let i = 0; i < bytes.length; i++) {
       const char = bytes[i];
       if ((char >= 32 && char <= 126) || char === 10 || char === 13 || char === 9) {
-        extractedText += String.fromCharCode(char);
+        currentChunk += String.fromCharCode(char);
+      } else {
+        if (currentChunk.trim().length > 3) {
+          textChunks.push(currentChunk.trim());
+        }
+        currentChunk = "";
       }
     }
+    if (currentChunk.trim().length > 3) {
+      textChunks.push(currentChunk.trim());
+    }
 
-    const cleaned = extractedText
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ')
-      .replace(/[^\x20-\x7E\n\r\t]/g, '')
-      .replace(/\s+/g, ' ')
-      .replace(/(.)\1{10,}/g, '$1$1$1')
+    // Filter out binary noise: keep only chunks that contain actual words
+    // (at least 2 words with letters, not just symbols/numbers)
+    const wordPattern = /[a-zA-Z]{2,}/;
+    const meaningfulChunks = textChunks.filter(chunk => {
+      const words = chunk.split(/\s+/).filter(w => wordPattern.test(w));
+      return words.length >= 2;
+    });
+
+    // Remove common binary artifacts
+    const cleaned = meaningfulChunks
+      .join('\n')
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+      .replace(/(.)\1{5,}/g, '$1$1$1') // Reduce repeated chars
+      .replace(/\n{3,}/g, '\n\n')
       .trim();
 
     if (cleaned.length < 50) {
-      return `Document: ${file.name}\n\nThis Word document has been converted to PDF format.\n\nNote: For best results with complex Word documents containing images, tables, or special formatting, please use Microsoft Word's built-in PDF export feature (File → Save As → PDF).`;
+      return `Document: ${file.name}\n\nThis is a legacy .doc file format. For best results with .doc files, we recommend:\n\n1. Open the file in Microsoft Word or Google Docs\n2. Save it as .docx format\n3. Upload the .docx file here for accurate text extraction\n\nAlternatively, use Word's built-in PDF export (File → Save As → PDF).`;
     }
 
     return cleaned;

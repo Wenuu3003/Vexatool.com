@@ -1,30 +1,47 @@
 import { CheckCircle, FileText, Image, Globe, Users } from "lucide-react";
 import { Link } from "react-router-dom";
+import pdfWorkflowImg from "@/assets/graphics/pdf-workflow.webp";
+import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 export const HomepageContent = () => {
   return (
     <section className="py-16 sm:py-20 md:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
 
-          {/* Why Choose VexaTool */}
+          {/* Why Choose VexaTool — with visual */}
           <div className="mb-16 sm:mb-20">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 tracking-tight">
-              Why Choose VexaTool?
-            </h2>
-            <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
-              <p>
-                VexaTool processes documents directly in your browser — your files never leave your device. Safe for financial records, legal contracts, and sensitive documents.
-              </p>
-              <p>
-                Simple workflow: upload, process, download. No signup, no subscription, no hidden fees.{" "}
-                <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDFs</Link>,{" "}
-                <Link to="/compress-pdf" className="text-primary hover:underline">compress files</Link>, or{" "}
-                <Link to="/qr-code-generator" className="text-primary hover:underline">generate QR codes</Link> — it just works.
-              </p>
-              <p>
-                Fully responsive. No daily limits. No watermarks. No premium gates.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <div>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 tracking-tight">
+                  Why Choose VexaTool?
+                </h2>
+                <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  <p>
+                    VexaTool processes documents directly in your browser — your files never leave your device. Safe for financial records, legal contracts, and sensitive documents.
+                  </p>
+                  <p>
+                    Simple workflow: upload, process, download. No signup, no subscription, no hidden fees.{" "}
+                    <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDFs</Link>,{" "}
+                    <Link to="/compress-pdf" className="text-primary hover:underline">compress files</Link>, or{" "}
+                    <Link to="/qr-code-generator" className="text-primary hover:underline">generate QR codes</Link> — it just works.
+                  </p>
+                  <p>
+                    Fully responsive. No daily limits. No watermarks. No premium gates.
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <img
+                  src={pdfWorkflowImg}
+                  alt="How VexaTool works: upload, process, and download documents in 3 simple steps"
+                  className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
+                  loading="lazy"
+                  decoding="async"
+                  width={400}
+                  height={256}
+                />
+              </div>
             </div>
           </div>
 
@@ -63,26 +80,41 @@ export const HomepageContent = () => {
             </div>
           </div>
 
-          {/* Security */}
+          {/* Security — with visual */}
           <div className="mb-16 sm:mb-20">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-5 sm:mb-6 tracking-tight">
-              Your Files Stay on Your Device
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {[
-                { title: "Browser-Based Processing", desc: "Files are processed entirely in your browser. Nothing is uploaded." },
-                { title: "No File Storage", desc: "We don't store, cache, or retain any files you process." },
-                { title: "HTTPS Encryption", desc: "All communication uses industry-standard encryption." },
-                { title: "No Third-Party Access", desc: "Your files are never shared with any third party." },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-3.5 sm:p-4 bg-card border border-border/60 rounded-xl">
-                  <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h4 className="font-semibold text-foreground text-xs sm:text-sm">{item.title}</h4>
-                    <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <div className="order-2 md:order-1 flex justify-center">
+                <img
+                  src={securityVisualImg}
+                  alt="Browser-based secure file processing with encryption and privacy protection"
+                  className="w-full max-w-xs rounded-xl shadow-lg border border-border/40"
+                  loading="lazy"
+                  decoding="async"
+                  width={320}
+                  height={256}
+                />
+              </div>
+              <div className="order-1 md:order-2">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-5 sm:mb-6 tracking-tight">
+                  Your Files Stay on Your Device
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  {[
+                    { title: "Browser-Based Processing", desc: "Files are processed entirely in your browser. Nothing is uploaded." },
+                    { title: "No File Storage", desc: "We don't store, cache, or retain any files you process." },
+                    { title: "HTTPS Encryption", desc: "All communication uses industry-standard encryption." },
+                    { title: "No Third-Party Access", desc: "Your files are never shared with any third party." },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-3 p-3.5 sm:p-4 bg-card border border-border/60 rounded-xl">
+                      <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-semibold text-foreground text-xs sm:text-sm">{item.title}</h4>
+                        <p className="text-[11px] sm:text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
 

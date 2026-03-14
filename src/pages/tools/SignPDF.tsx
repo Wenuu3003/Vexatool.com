@@ -11,16 +11,11 @@ import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
-import * as pdfjsLib from "pdfjs-dist";
+import { pdfjsLib } from "@/lib/pdfWorker";
 import SignatureCanvas from "@/components/sign-pdf/SignatureCanvas";
 import PDFPageView from "@/components/sign-pdf/PDFPageView";
 import type { SignatureObject, PageDimensions, SignatureFontStyle } from "@/components/sign-pdf/types";
 import { SIGNATURE_FONTS } from "@/components/sign-pdf/types";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
 
 const SignPDF = () => {
   const [files, setFiles] = useState<File[]>([]);

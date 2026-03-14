@@ -5,13 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
-import * as pdfjsLib from "pdfjs-dist";
-
-// Set up the worker using the installed package version
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+import { pdfjsLib } from "@/lib/pdfWorker";
 
 export interface TextElement {
   id: string;

@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
+import { pdfjsLib } from '@/lib/pdfWorker';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { useToast } from '@/hooks/use-toast';
 import { useFileHistory } from '@/hooks/useFileHistory';
@@ -39,12 +39,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScanText, PanelRightOpen, Layers, AlertTriangle, Edit3 } from 'lucide-react';
-
-// Set up the worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
 
 // Use scale from types
 const MAX_FILE_SIZE_MB = 25;

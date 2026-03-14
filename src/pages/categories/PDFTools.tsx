@@ -3,6 +3,8 @@ import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
 import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image, PenTool, Droplets, FolderSync, FileCheck, FileImage, Code } from "lucide-react";
+import pdfWorkflowImg from "@/assets/graphics/pdf-workflow.webp";
+import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 const tools = [
   { name: "PDF Editor", href: "/edit-pdf", icon: FileEdit, desc: "Edit text, add images, annotate documents", gradient: "from-blue-500 to-indigo-600" },
@@ -26,6 +28,15 @@ const tools = [
   { name: "PDF to HTML", href: "/pdf-to-html", icon: Code, desc: "Convert PDF to HTML web pages", gradient: "from-sky-500 to-blue-600" },
 ];
 
+const faqs = [
+  { q: "Are VexaTool PDF tools really free?", a: "Yes, every PDF tool is 100% free with no daily limits, no signup required, and no watermarks on output files." },
+  { q: "Is it safe to edit sensitive PDFs online?", a: "Absolutely. All processing happens in your browser using JavaScript. Your files are never uploaded to any server, making it safe for contracts, financial records, and legal documents." },
+  { q: "Can I merge password-protected PDFs?", a: "Our Merge PDF tool handles most encrypted PDFs automatically. For fully locked files, use the Unlock PDF tool first, then merge." },
+  { q: "Do PDF tools work on mobile phones?", a: "Yes. All tools are fully responsive and work on smartphones and tablets. No app installation needed." },
+  { q: "What is the maximum file size supported?", a: "Most tools handle PDFs up to 25MB comfortably. Since processing happens on your device, performance depends on your device's capabilities." },
+  { q: "Can I convert scanned PDFs to Word?", a: "For scanned PDFs (image-based), use our PDF Editor with built-in OCR to extract text first, then export. The PDF to Word tool works best with text-based PDFs." },
+];
+
 const PDFTools = () => {
   return (
     <div className="min-h-screen bg-background">
@@ -36,37 +47,13 @@ const PDFTools = () => {
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
-        <h1 className="text-4xl font-bold text-foreground mb-6">Free Online PDF Tools</h1>
-        
-        <div className="prose prose-lg max-w-none mb-12">
-          <p className="text-muted-foreground leading-relaxed">
-            PDF files are everywhere — from school assignments and job applications to business invoices and government forms. But working with them can sometimes feel frustrating, especially when you need to make quick edits or combine multiple documents. That is where VexaTool steps in.
-          </p>
-          <p className="text-muted-foreground leading-relaxed mt-4">
-            Our collection of free PDF tools lets you handle every common PDF task directly in your web browser. Whether you need to merge multiple PDFs into a single file, compress a large document for email, convert between PDF and Word formats, or simply rotate a scanned page, each tool is designed to be straightforward and fast.
-          </p>
-          <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">Why Choose VexaTool for PDF Editing?</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Most PDF editors online either require a paid subscription or limit your free usage to just a few files per day. VexaTool is different. Every PDF tool on this platform is completely free to use, with no daily limits and no account registration required. Your files are processed directly in your browser, which means sensitive documents like financial records, legal agreements, or identification papers never leave your device.
-          </p>
-          <p className="text-muted-foreground leading-relaxed mt-4">
-            Students preparing college assignments, professionals handling contracts, small business owners creating invoices, and government employees managing official paperwork — all benefit from having reliable PDF tools that just work, without the hassle of downloading software or worrying about privacy.
-          </p>
-          <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">How Our PDF Tools Work</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Using any PDF tool on VexaTool follows a simple process: select the tool you need, upload your PDF file (or drag and drop it), make your changes, and download the result. The entire process takes seconds, and because everything happens in your browser, there are no server uploads or waiting times. Your original file stays safe on your device throughout.
-          </p>
-          <p className="text-muted-foreground leading-relaxed mt-4">
-            Each tool is optimized for mobile devices as well, so you can edit, merge, or convert PDFs on the go using your phone or tablet. No app installation needed — just open your browser and start working.
-          </p>
-          <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">Security You Can Trust</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            We take file security seriously. All connections to VexaTool use HTTPS encryption. Our PDF tools process files locally in your browser using JavaScript, which means your documents never get uploaded to any server. There is no cloud storage, no file retention, and no third-party access to your data. Once you close the browser tab, your processed files exist only on your device.
-          </p>
-        </div>
+        <h1 className="text-4xl font-bold text-foreground mb-4">Free Online PDF Tools</h1>
+        <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
+          Edit, merge, split, compress, and convert PDF files directly in your browser. No signup, no watermarks, no server uploads.
+        </p>
 
-        {/* Tool Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Tool Grid — near the top */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {tools.map((tool) => (
             <Link
               key={tool.href}
@@ -82,6 +69,78 @@ const PDFTools = () => {
               <p className="text-sm text-muted-foreground">{tool.desc}</p>
             </Link>
           ))}
+        </div>
+
+        {/* Content + Visual: How it works */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+          <div>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">How VexaTool PDF Tools Work</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              Using any PDF tool follows a simple three-step process: select the tool you need, upload your PDF file, and download the result. The entire process takes seconds.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              Everything happens in your browser — there are no server uploads or waiting times. Your original file stays safe on your device throughout. Each tool is optimized for mobile as well, so you can work on the go.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <img
+              src={pdfWorkflowImg}
+              alt="PDF workflow: upload, process, download in 3 steps"
+              className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
+              loading="lazy"
+              decoding="async"
+              width={400}
+              height={256}
+            />
+          </div>
+        </div>
+
+        {/* Content: Why choose */}
+        <div className="mb-16">
+          <h2 className="text-2xl font-semibold text-foreground mb-4">Why Choose VexaTool for PDF Editing?</h2>
+          <p className="text-muted-foreground leading-relaxed mb-3">
+            Most PDF editors online either require a paid subscription or limit your free usage to just a few files per day. VexaTool is different. Every PDF tool is completely free, with no daily limits and no account registration required.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            Students preparing college assignments, professionals handling contracts, small business owners creating invoices, and government employees managing official paperwork — all benefit from having reliable PDF tools that just work, without downloading software or worrying about privacy.
+          </p>
+        </div>
+
+        {/* Security visual section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+          <div className="flex justify-center order-2 md:order-1">
+            <img
+              src={securityVisualImg}
+              alt="Secure browser-based PDF processing with encryption"
+              className="w-full max-w-xs rounded-xl shadow-lg border border-border/40"
+              loading="lazy"
+              decoding="async"
+              width={320}
+              height={256}
+            />
+          </div>
+          <div className="order-1 md:order-2">
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Security You Can Trust</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              All connections use HTTPS encryption. Our PDF tools process files locally in your browser using JavaScript, which means your documents never get uploaded to any server.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              There is no cloud storage, no file retention, and no third-party access to your data. Once you close the browser tab, your processed files exist only on your device.
+            </p>
+          </div>
+        </div>
+
+        {/* FAQs */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-foreground mb-6">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <div key={i} className="bg-card border border-border/60 rounded-xl p-5">
+                <h3 className="font-semibold text-foreground mb-2">{faq.q}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
       <Footer />

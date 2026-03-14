@@ -1,11 +1,5 @@
 import { PDFDocument } from "pdf-lib";
-import * as pdfjsLib from "pdfjs-dist";
-
-// Configure worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+import { pdfjsLib } from "./pdfWorker";
 
 interface CompressOptions {
   quality: number; // 1-100
@@ -14,7 +8,6 @@ interface CompressOptions {
 
 /**
  * Compress a PDF by rendering each page to canvas and re-embedding as JPEG.
- * This achieves real compression, especially for image-heavy PDFs.
  */
 export async function compressPDF(
   fileBuffer: ArrayBuffer,
@@ -22,19 +15,13 @@ export async function compressPDF(
 ): Promise<Uint8Array> {
   const { quality, onProgress } = options;
 
-  // Scale factor based on quality: lower quality = smaller render = smaller file
   const scale = quality < 40 ? 0.6 : quality < 60 ? 0.75 : quality < 80 ? 0.9 : 1.0;
   const jpegQuality = Math.max(0.1, quality / 100);
 
-  console.log("[CompressPDF] Starting compression, quality:", quality, "scale:", scale);
-
-  // Load with pdfjs-dist for rendering
   const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(fileBuffer) });
   const pdfDoc = await loadingTask.promise;
   const numPages = pdfDoc.numPages;
-  console.log("[CompressPDF] Loaded PDF with", numPages, "pages");
 
-  // Create new PDF with pdf-lib
   const newPdf = await PDFDocument.create();
 
   for (let i = 1; i <= numPages; i++) {
@@ -43,7 +30,6 @@ export async function compressPDF(
     const page = await pdfDoc.getPage(i);
     const viewport = page.getViewport({ scale });
 
-    // Render page to canvas
     const canvas = document.createElement("canvas");
     canvas.width = viewport.width;
     canvas.height = viewport.height;
@@ -51,7 +37,6 @@ export async function compressPDF(
 
     await page.render({ canvasContext: ctx, viewport }).promise;
 
-    // Convert canvas to JPEG blob
     const jpegBlob = await new Promise<Blob>((resolve) => {
       canvas.toBlob(
         (blob) => resolve(blob!),
@@ -61,11 +46,8 @@ export async function compressPDF(
     });
 
     const jpegBytes = new Uint8Array(await jpegBlob.arrayBuffer());
-
-    // Embed JPEG into new PDF
     const jpegImage = await newPdf.embedJpg(jpegBytes);
 
-    // Use original page dimensions (not scaled) for the PDF page
     const origViewport = page.getViewport({ scale: 1 });
     const newPage = newPdf.addPage([origViewport.width, origViewport.height]);
     newPage.drawImage(jpegImage, {
@@ -75,7 +57,6 @@ export async function compressPDF(
       height: origViewport.height,
     });
 
-    // Cleanup
     canvas.width = 0;
     canvas.height = 0;
   }

@@ -3,6 +3,8 @@ import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
 import { Crop, ImageDown, RefreshCw, Image, Eraser, FileDown, Smartphone, CreditCard, Briefcase, FileImage } from "lucide-react";
+import imageToolsVisual from "@/assets/graphics/image-tools-visual.webp";
+import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 const tools = [
   { name: "Image Resize Tool", href: "/image-resizer", icon: Crop, desc: "Resize images to any custom or preset dimension", gradient: "from-orange-500 to-amber-500" },
@@ -17,6 +19,14 @@ const tools = [
   { name: "Passport Photo Resizer", href: "/passport-photo-resize", icon: FileImage, desc: "Resize photos to passport size specs", gradient: "from-red-500 to-rose-600" },
 ];
 
+const faqs = [
+  { q: "What image formats are supported?", a: "Our tools support JPG, PNG, WebP, GIF, and BMP formats. You can convert between any of these formats using the Image Converter." },
+  { q: "Is there a file size limit for image uploads?", a: "Most tools handle images up to 20MB. Since processing happens in your browser, very large images may take a moment depending on your device." },
+  { q: "Will compressing images reduce quality?", a: "Our compressor uses smart algorithms to reduce file size while maintaining visual quality. You can adjust the quality slider to find the perfect balance." },
+  { q: "Can I resize photos to exact dimensions for government forms?", a: "Yes. We offer dedicated resizers for Aadhaar photos, passport photos, and government job application photos with preset dimensions that meet official requirements." },
+  { q: "Is the background remover accurate?", a: "The background remover uses client-side AI to detect subjects. It works well for photos with clear foreground-background separation. For complex scenes, results may vary." },
+];
+
 const ImageTools = () => {
   return (
     <div className="min-h-screen bg-background">
@@ -27,29 +37,13 @@ const ImageTools = () => {
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
-        <h1 className="text-4xl font-bold text-foreground mb-6">Free Online Image Tools</h1>
-        
-        <div className="prose prose-lg max-w-none mb-12">
-          <p className="text-muted-foreground leading-relaxed">
-            Images are a part of daily digital life — from social media posts and website content to job application forms and product listings. But getting images into the right format, size, or quality can be a real challenge without proper tools. VexaTool offers a set of practical image tools that handle these tasks effortlessly.
-          </p>
-          <p className="text-muted-foreground leading-relaxed mt-4">
-            Whether you need to resize a photo for a government form, compress images for faster website loading, convert between file formats, or remove the background from a product photo, our tools are built to deliver fast results without sacrificing quality.
-          </p>
-          <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">Why VexaTool Image Tools Stand Out</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Many image editing platforms require you to create accounts, pay subscription fees, or deal with watermarks on your output. VexaTool takes a different approach. Every image tool is free, unlimited, and processes your files directly in your browser. This means your personal photos, documents, and sensitive images never get uploaded to external servers.
-          </p>
-          <p className="text-muted-foreground leading-relaxed mt-4">
-            Our tools support all major image formats including JPG, PNG, and WebP. The interface is clean and intuitive, designed to work equally well on desktop computers and mobile devices. No software installation needed — just open your browser and start editing.
-          </p>
-          <h2 className="text-2xl font-semibold text-foreground mt-8 mb-4">Practical Uses for Image Tools</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Job seekers frequently need to resize passport-size photos to specific dimensions and file sizes for online applications. E-commerce sellers need background-free product images for their listings. Bloggers and content creators need to compress images for faster page load times. Students preparing presentations need to convert between formats. Whatever your need, these tools help you get the job done quickly and without cost.
-          </p>
-        </div>
+        <h1 className="text-4xl font-bold text-foreground mb-4">Free Online Image Tools</h1>
+        <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
+          Resize, compress, convert, and edit images directly in your browser. All formats supported, no signup required.
+        </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Tool Grid — near the top */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {tools.map((tool) => (
             <Link key={tool.href} to={tool.href} className="group p-5 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200">
               <div className="flex items-center gap-3 mb-2">
@@ -61,6 +55,75 @@ const ImageTools = () => {
               <p className="text-sm text-muted-foreground">{tool.desc}</p>
             </Link>
           ))}
+        </div>
+
+        {/* Content + Visual */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+          <div>
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Why VexaTool Image Tools Stand Out</h2>
+            <p className="text-muted-foreground leading-relaxed mb-3">
+              Many image editing platforms require accounts, subscriptions, or add watermarks. VexaTool is different — every tool is free, unlimited, and processes files directly in your browser.
+            </p>
+            <p className="text-muted-foreground leading-relaxed">
+              Our tools support all major image formats including JPG, PNG, and WebP. The interface works equally well on desktop and mobile devices, with no software installation needed.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <img
+              src={imageToolsVisual}
+              alt="Image editing tools showing resize, crop, color palette and background removal features"
+              className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
+              loading="lazy"
+              decoding="async"
+              width={400}
+              height={256}
+            />
+          </div>
+        </div>
+
+        {/* Practical uses */}
+        <div className="mb-16">
+          <h2 className="text-2xl font-semibold text-foreground mb-4">Practical Uses for Image Tools</h2>
+          <p className="text-muted-foreground leading-relaxed mb-3">
+            Job seekers frequently need to resize passport-size photos to specific dimensions for online applications. E-commerce sellers need background-free product images. Bloggers need to compress images for faster page loads.
+          </p>
+          <p className="text-muted-foreground leading-relaxed">
+            Students preparing presentations need format conversion. Whatever your need, these tools help you get the job done quickly and without cost.
+          </p>
+        </div>
+
+        {/* Security section with image */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
+          <div className="flex justify-center order-2 md:order-1">
+            <img
+              src={securityVisualImg}
+              alt="Secure browser-based image processing"
+              className="w-full max-w-xs rounded-xl shadow-lg border border-border/40"
+              loading="lazy"
+              decoding="async"
+              width={320}
+              height={256}
+            />
+          </div>
+          <div className="order-1 md:order-2">
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Your Photos Stay Private</h2>
+            <p className="text-muted-foreground leading-relaxed">
+              All image processing happens locally in your browser. Your personal photos, documents, and sensitive images never get uploaded to external servers. Complete privacy guaranteed.
+            </p>
+          </div>
+        </div>
+
+        {/* FAQs */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold text-foreground mb-6">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <div key={i} className="bg-card border border-border/60 rounded-xl p-5">
+                <h3 className="font-semibold text-foreground mb-2">{faq.q}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
       <Footer />

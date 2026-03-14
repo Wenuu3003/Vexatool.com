@@ -7,12 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import ToolSEOContent from "@/components/ToolSEOContent";
-import * as pdfjsLib from "pdfjs-dist";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+import { pdfjsLib } from "@/lib/pdfWorker";
 
 const PDFToImage = () => {
   const [file, setFile] = useState<File | null>(null);

@@ -4,16 +4,10 @@ import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
-import * as pdfjsLib from "pdfjs-dist";
+import { pdfjsLib } from "@/lib/pdfWorker";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import DOMPurify from "dompurify";
 import ToolSEOContent from "@/components/ToolSEOContent";
-
-// Set up PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
 
 // Escape HTML special characters to prevent XSS
 const escapeHtml = (text: string): string => {

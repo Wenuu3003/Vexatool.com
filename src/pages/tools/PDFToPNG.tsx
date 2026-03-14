@@ -6,12 +6,7 @@ import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
-import * as pdfjsLib from "pdfjs-dist";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+import { pdfjsLib } from "@/lib/pdfWorker";
 
 const PDFToPNG = () => {
   const [file, setFile] = useState<File | null>(null);

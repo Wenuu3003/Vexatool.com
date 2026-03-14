@@ -1,16 +1,10 @@
-import * as pdfjsLib from "pdfjs-dist";
+import { pdfjsLib } from "@/lib/pdfWorker";
 import { classifyPdfProcessingError, UnlockPdfError } from "./classifier";
 import type { PdfInspectionResult, PdfLogger } from "./types";
 
-let workerConfigured = false;
-
+// Worker is now configured by the centralized pdfWorker module
 export const configurePdfWorker = () => {
-  if (workerConfigured) return;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-  ).toString();
-  workerConfigured = true;
+  // No-op — worker is configured globally by pdfWorker.ts
 };
 
 export const extractPdfSignals = (data: Uint8Array) => {

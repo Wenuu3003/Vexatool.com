@@ -1,4 +1,4 @@
-import { CheckCircle, FileText, Image, Globe, Users } from "lucide-react";
+import { CheckCircle, FileText, Image, Globe, Users, Shield, Zap, MonitorSmartphone } from "lucide-react";
 import { Link } from "react-router-dom";
 import pdfWorkflowImg from "@/assets/graphics/pdf-workflow.webp";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
@@ -9,10 +9,10 @@ export const HomepageContent = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
 
-          {/* Why Choose VexaTool — with visual */}
-          <div className="mb-16 sm:mb-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-              <div>
+          {/* Why Choose VexaTool — Featured Visual Card */}
+          <div className="mb-16 sm:mb-20 rounded-2xl border border-border bg-gradient-to-br from-primary/5 via-card to-primary/5 overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+              <div className="md:col-span-3 p-7 sm:p-8 md:p-10 flex flex-col justify-center">
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 tracking-tight">
                   Why Choose VexaTool?
                 </h2>
@@ -26,20 +26,29 @@ export const HomepageContent = () => {
                     <Link to="/compress-pdf" className="text-primary hover:underline">compress files</Link>, or{" "}
                     <Link to="/qr-code-generator" className="text-primary hover:underline">generate QR codes</Link> — it just works.
                   </p>
-                  <p>
-                    Fully responsive. No daily limits. No watermarks. No premium gates.
-                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2.5 mt-5">
+                  {[
+                    { icon: Zap, label: "Instant Processing" },
+                    { icon: Shield, label: "100% Private" },
+                    { icon: MonitorSmartphone, label: "Any Device" },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium">
+                      <item.icon className="w-3.5 h-3.5" />
+                      {item.label}
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="flex justify-center">
+              <div className="md:col-span-2 flex items-center justify-center p-5 sm:p-6 md:p-8">
                 <img
                   src={pdfWorkflowImg}
                   alt="How VexaTool works: upload, process, and download documents in 3 simple steps"
-                  className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
+                  className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
                   loading="lazy"
                   decoding="async"
-                  width={400}
-                  height={256}
+                  width={480}
+                  height={320}
                 />
               </div>
             </div>
@@ -80,21 +89,21 @@ export const HomepageContent = () => {
             </div>
           </div>
 
-          {/* Security — with visual */}
-          <div className="mb-16 sm:mb-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-              <div className="order-2 md:order-1 flex justify-center">
+          {/* Security — Featured Visual Card */}
+          <div className="mb-16 sm:mb-20 rounded-2xl border border-border bg-gradient-to-br from-green-500/5 via-card to-emerald-500/5 overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+              <div className="md:col-span-2 flex items-center justify-center p-5 sm:p-6 md:p-8 order-2 md:order-1">
                 <img
                   src={securityVisualImg}
                   alt="Browser-based secure file processing with encryption and privacy protection"
-                  className="w-full max-w-xs rounded-xl shadow-lg border border-border/40"
+                  className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
                   loading="lazy"
                   decoding="async"
-                  width={320}
-                  height={256}
+                  width={480}
+                  height={320}
                 />
               </div>
-              <div className="order-1 md:order-2">
+              <div className="md:col-span-3 p-7 sm:p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-5 sm:mb-6 tracking-tight">
                   Your Files Stay on Your Device
                 </h2>

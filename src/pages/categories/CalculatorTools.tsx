@@ -2,8 +2,9 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { Heart, Scale, Cake, Percent, Calculator, DollarSign } from "lucide-react";
+import { Heart, Scale, Cake, Percent, Calculator, DollarSign, Shield, Zap, Smartphone } from "lucide-react";
 import calculatorVisual from "@/assets/graphics/calculator-tools-visual.webp";
+import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 const tools = [
   { name: "Scientific Calculator", href: "/calculator", icon: Calculator, desc: "Full-featured scientific calculator online", gradient: "from-blue-500 to-indigo-500" },
@@ -39,7 +40,7 @@ const CalculatorTools = () => {
           Quick, accurate calculations for health, finance, and everyday math. No signup, instant results.
         </p>
 
-        {/* Tool Grid — near the top */}
+        {/* Tool Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {tools.map((tool) => (
             <Link key={tool.href} to={tool.href} className="group p-5 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200">
@@ -54,27 +55,41 @@ const CalculatorTools = () => {
           ))}
         </div>
 
-        {/* Content + Visual */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Practical Calculators for Everyday Use</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              Our EMI calculator helps you plan home loans, car loans, and personal loans by showing exact monthly payments and total interest. The BMI calculator gives you a clear health category based on your height and weight.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              The age calculator computes your precise age down to days — perfect for official forms and birthday celebrations. The percentage calculator handles everything from simple calculations to percentage increase and decrease.
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <img
-              src={calculatorVisual}
-              alt="Calculator tools showing BMI gauge, scientific calculator, bar chart and percentage functions"
-              className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
-              loading="lazy"
-              decoding="async"
-              width={400}
-              height={256}
-            />
+        {/* Featured Visual: Calculators — FULL WIDTH */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-blue-500/5 via-card to-indigo-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Practical Calculators for Everyday Use</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Our EMI calculator helps you plan home loans, car loans, and personal loans by showing exact monthly payments and total interest. The BMI calculator gives you a clear health category based on your height and weight.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                The age calculator computes your precise age down to days — perfect for official forms and birthday celebrations. The percentage calculator handles everything from simple calculations to percentage increase and decrease.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { icon: Zap, label: "Instant Results" },
+                  { icon: Shield, label: "No Data Collected" },
+                  { icon: Smartphone, label: "Mobile Friendly" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 text-sm font-medium">
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8">
+              <img
+                src={calculatorVisual}
+                alt="Calculator tools showing BMI gauge, scientific calculator, bar chart and percentage functions"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
           </div>
         </div>
 
@@ -84,6 +99,37 @@ const CalculatorTools = () => {
           <p className="text-muted-foreground leading-relaxed">
             Every calculator runs directly in your browser, providing instant results. There are no ads blocking your view, no forced registrations, and no limits on calculations. The tools are designed with accuracy in mind, using standard mathematical formulas and industry-accepted methods.
           </p>
+        </div>
+
+        {/* Featured Visual: Privacy — FULL WIDTH */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-green-500/5 via-card to-emerald-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8 order-2 md:order-1">
+              <img
+                src={securityVisualImg}
+                alt="Secure browser-based calculator processing"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Your Data Stays With You</h2>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                All calculations run locally in your browser. No personal data, health metrics, or financial information is ever sent to any server. Your calculations are private and never tracked or stored.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {["No Data Transmitted", "No Tracking", "Browser-Only Processing", "Complete Privacy"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Shield className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* FAQs */}

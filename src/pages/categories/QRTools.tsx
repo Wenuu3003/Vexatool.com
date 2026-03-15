@@ -2,8 +2,9 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { QrCode, ScanLine } from "lucide-react";
+import { QrCode, ScanLine, Shield, Palette, Smartphone } from "lucide-react";
 import qrToolsVisual from "@/assets/graphics/qr-tools-visual.webp";
+import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 const tools = [
   { name: "QR Code Generator", href: "/qr-code-generator", icon: QrCode, desc: "Create custom QR codes with logos and colors for any URL, text, or data", gradient: "from-blue-500 to-indigo-600" },
@@ -48,36 +49,73 @@ const QRTools = () => {
           ))}
         </div>
 
-        {/* Content + Visual */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Create QR Codes for Any Purpose</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              Our QR code generator supports multiple data types — website URLs, text messages, WiFi credentials, and contact cards. Each code can be customized with brand colors and logos for professional use.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              The scanner works directly in your browser using your device camera or from uploaded images. No app required — it decodes any standard QR code in milliseconds.
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <img
-              src={qrToolsVisual}
-              alt="QR code generation workflow showing customization, QR output, and mobile scanning"
-              className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
-              loading="lazy"
-              decoding="async"
-              width={400}
-              height={256}
-            />
+        {/* Featured Visual: Create QR Codes — FULL WIDTH */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-indigo-500/5 via-card to-violet-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Create QR Codes for Any Purpose</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Our QR code generator supports multiple data types — website URLs, text messages, WiFi credentials, and contact cards. Each code can be customized with brand colors and logos for professional use.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                The scanner works directly in your browser using your device camera or from uploaded images. No app required — it decodes any standard QR code in milliseconds.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { icon: Palette, label: "Custom Colors & Logos" },
+                  { icon: Smartphone, label: "Mobile Camera Scan" },
+                  { icon: Shield, label: "No Data Stored" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-sm font-medium">
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8">
+              <img
+                src={qrToolsVisual}
+                alt="QR code generation workflow showing customization, QR output, and mobile scanning"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Privacy */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-semibold text-foreground mb-4">Privacy and Security</h2>
-          <p className="text-muted-foreground leading-relaxed">
-            Both tools process data entirely in your browser. When you create a QR code, the content is encoded locally — no data is sent to any server. When you scan a QR code, the decoding happens on your device. Your URLs, contact details, and other sensitive information remain completely private.
-          </p>
+        {/* Featured Visual: Privacy — FULL WIDTH */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-green-500/5 via-card to-emerald-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8 order-2 md:order-1">
+              <img
+                src={securityVisualImg}
+                alt="Privacy-first QR code processing"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Privacy and Security</h2>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Both tools process data entirely in your browser. When you create a QR code, the content is encoded locally — no data is sent to any server. When you scan a QR code, the decoding happens on your device. Your URLs, contact details, and other sensitive information remain completely private.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {["No Data Sent", "No Cloud Storage", "Offline After Load", "Complete Privacy"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Shield className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* FAQs */}

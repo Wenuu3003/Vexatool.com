@@ -253,44 +253,94 @@ const Blog = () => {
             </p>
 
             <div className="space-y-8">
-              {blogPosts.map((post) => (
-                <article 
-                  key={post.slug}
-                  className="border rounded-xl p-6 hover:shadow-lg transition-shadow bg-card"
-                >
-                  <Link to={`/blog/${post.slug}`}>
-                    <h2 className="text-2xl font-semibold mb-3 text-foreground hover:text-primary transition-colors">
-                      {post.title}
-                    </h2>
-                  </Link>
-                  
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {new Date(post.date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {post.readTime}
-                    </span>
-                  </div>
+              {blogPosts.map((post) => {
+                const previewMap: Record<string, string> = {
+                  "how-to-merge-pdf-files-online-complete-guide": "/previews/merge-pdf-preview.webp",
+                  "how-to-merge-pdfs-complete-guide": "/previews/merge-pdf-preview.webp",
+                  "compress-pdf-without-losing-quality": "/previews/compress-pdf-preview.webp",
+                  "convert-pdf-to-word-free-guide": "/previews/pdf-to-word-preview.webp",
+                  "pdf-to-word-formatting-tips": "/previews/pdf-to-word-preview.webp",
+                  "digital-signature-guide": "/previews/sign-pdf-preview.webp",
+                  "pdf-security-guide": "/previews/protect-pdf-preview.webp",
+                  "best-free-pdf-tools-online-2026": "/previews/edit-pdf-preview.webp",
+                  "qr-code-generator-complete-guide": "/previews/qr-code-generator-preview.webp",
+                  "background-remover-perfect-product-photos": "/previews/background-remover-preview.webp",
+                  "emi-calculator-home-loan-guide": "/previews/emi-calculator-preview.webp",
+                  "gst-calculator-business-guide": "/previews/gst-calculator-preview.webp",
+                  "best-image-compression-tips": "/previews/compress-image-preview.webp",
+                  "image-compression-web-performance": "/previews/compress-image-preview.webp",
+                  "split-pdf-organize-documents": "/previews/split-pdf-preview.webp",
+                  "bmi-calculator-health-guide": "/previews/bmi-calculator-preview.webp",
+                  "word-to-pdf-professional-documents": "/previews/word-to-pdf-preview.webp",
+                  "currency-converter-travel-guide": "/previews/currency-converter-preview.webp",
+                  "pdf-watermark-protect-documents": "/previews/watermark-pdf-preview.webp",
+                  "image-resizer-social-media-guide": "/previews/image-resizer-preview.webp",
+                  "love-age-calculator-complete-guide": "/previews/love-calculator-preview.webp",
+                  "age-calculator-birthday-planning": "/previews/age-calculator-preview.webp",
+                  "digital-productivity-habits-that-save-time": "/previews/compress-pdf-preview.webp",
+                  "pdf-accessibility-guide": "/previews/edit-pdf-preview.webp",
+                  "unit-converter-complete-reference": "/previews/unit-converter-preview.webp",
+                  "pdf-to-excel-data-extraction": "/previews/pdf-to-excel-preview.webp",
+                  "word-counter-content-optimization": "/previews/word-counter-preview.webp",
+                  "pincode-finder-india-postal-guide": "/previews/pincode-generator-preview.webp",
+                  "pdf-to-jpg-image-conversion": "/previews/pdf-to-jpg-preview.webp",
+                };
+                const previewImg = previewMap[post.slug];
 
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
-                    {post.excerpt}
-                  </p>
-
-                  <Link 
-                    to={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+                return (
+                  <article
+                    key={post.slug}
+                    className="border rounded-xl overflow-hidden hover:shadow-lg transition-shadow bg-card"
                   >
-                    Read More <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </article>
-              ))}
+                    {previewImg && (
+                      <Link to={`/blog/${post.slug}`} className="block">
+                        <img
+                          src={previewImg}
+                          alt={post.title}
+                          className="w-full h-48 object-cover"
+                          loading="lazy"
+                          decoding="async"
+                          width={800}
+                          height={192}
+                        />
+                      </Link>
+                    )}
+                    <div className="p-6">
+                      <Link to={`/blog/${post.slug}`}>
+                        <h2 className="text-2xl font-semibold mb-3 text-foreground hover:text-primary transition-colors">
+                          {post.title}
+                        </h2>
+                      </Link>
+
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4" />
+                          {new Date(post.date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {post.readTime}
+                        </span>
+                      </div>
+
+                      <p className="text-muted-foreground mb-4 leading-relaxed">
+                        {post.excerpt}
+                      </p>
+
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        className="inline-flex items-center gap-2 text-primary font-medium hover:underline"
+                      >
+                        Read More <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </main>

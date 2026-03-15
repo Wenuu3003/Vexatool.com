@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { Crop, ImageDown, RefreshCw, Image, Eraser, FileDown, Smartphone, CreditCard, Briefcase, FileImage } from "lucide-react";
+import { Crop, ImageDown, RefreshCw, Image, Eraser, FileDown, Smartphone, CreditCard, Briefcase, FileImage, Shield, Zap, Monitor } from "lucide-react";
 import imageToolsVisual from "@/assets/graphics/image-tools-visual.webp";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
@@ -42,7 +42,7 @@ const ImageTools = () => {
           Resize, compress, convert, and edit images directly in your browser. All formats supported, no signup required.
         </p>
 
-        {/* Tool Grid — near the top */}
+        {/* Tool Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {tools.map((tool) => (
             <Link key={tool.href} to={tool.href} className="group p-5 bg-card border border-border rounded-xl hover:border-primary/50 hover:shadow-lg transition-all duration-200">
@@ -57,27 +57,41 @@ const ImageTools = () => {
           ))}
         </div>
 
-        {/* Content + Visual */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Why VexaTool Image Tools Stand Out</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              Many image editing platforms require accounts, subscriptions, or add watermarks. VexaTool is different — every tool is free, unlimited, and processes files directly in your browser.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Our tools support all major image formats including JPG, PNG, and WebP. The interface works equally well on desktop and mobile devices, with no software installation needed.
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <img
-              src={imageToolsVisual}
-              alt="Image editing tools showing resize, crop, color palette and background removal features"
-              className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
-              loading="lazy"
-              decoding="async"
-              width={400}
-              height={256}
-            />
+        {/* Featured Visual: Why VexaTool — FULL WIDTH */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-orange-500/5 via-card to-amber-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Why VexaTool Image Tools Stand Out</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Many image editing platforms require accounts, subscriptions, or add watermarks. VexaTool is different — every tool is free, unlimited, and processes files directly in your browser.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Our tools support all major image formats including JPG, PNG, and WebP. The interface works equally well on desktop and mobile devices, with no software installation needed.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { icon: Zap, label: "Instant Results" },
+                  { icon: Shield, label: "Files Stay Local" },
+                  { icon: Monitor, label: "Works on Any Device" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 text-sm font-medium">
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8">
+              <img
+                src={imageToolsVisual}
+                alt="Image editing tools showing resize, crop, color palette and background removal features"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
           </div>
         </div>
 
@@ -92,24 +106,34 @@ const ImageTools = () => {
           </p>
         </div>
 
-        {/* Security section with image */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-          <div className="flex justify-center order-2 md:order-1">
-            <img
-              src={securityVisualImg}
-              alt="Secure browser-based image processing"
-              className="w-full max-w-xs rounded-xl shadow-lg border border-border/40"
-              loading="lazy"
-              decoding="async"
-              width={320}
-              height={256}
-            />
-          </div>
-          <div className="order-1 md:order-2">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Your Photos Stay Private</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              All image processing happens locally in your browser. Your personal photos, documents, and sensitive images never get uploaded to external servers. Complete privacy guaranteed.
-            </p>
+        {/* Featured Visual: Privacy — FULL WIDTH */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-green-500/5 via-card to-emerald-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8 order-2 md:order-1">
+              <img
+                src={securityVisualImg}
+                alt="Secure browser-based image processing"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Your Photos Stay Private</h2>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                All image processing happens locally in your browser. Your personal photos, documents, and sensitive images never get uploaded to external servers. Complete privacy guaranteed.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {["No Server Uploads", "No File Storage", "HTTPS Encrypted", "Zero Third-Party Access"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Shield className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

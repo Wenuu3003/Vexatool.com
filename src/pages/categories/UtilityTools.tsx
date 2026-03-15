@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { MapPin, AlignLeft, Ruler } from "lucide-react";
+import { MapPin, AlignLeft, Ruler, Shield, Zap, Wifi } from "lucide-react";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 const tools = [
@@ -59,24 +59,39 @@ const UtilityTools = () => {
           </p>
         </div>
 
-        {/* Security with image */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-          <div className="flex justify-center order-2 md:order-1">
-            <img
-              src={securityVisualImg}
-              alt="Secure browser-based utility tools"
-              className="w-full max-w-xs rounded-xl shadow-lg border border-border/40"
-              loading="lazy"
-              decoding="async"
-              width={320}
-              height={256}
-            />
-          </div>
-          <div className="order-1 md:order-2">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Always Free, Always Available</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Like all VexaTool products, these utility tools are completely free with no registration required. They work on any device and deliver results instantly without server processing. Your data stays in your browser.
-            </p>
+        {/* Featured Visual: Privacy — FULL WIDTH */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-purple-500/5 via-card to-pink-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8 order-2 md:order-1">
+              <img
+                src={securityVisualImg}
+                alt="Secure browser-based utility tools"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Always Free, Always Available</h2>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Like all VexaTool products, these utility tools are completely free with no registration required. They work on any device and deliver results instantly without server processing.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { icon: Zap, label: "Instant Results" },
+                  { icon: Shield, label: "No Data Stored" },
+                  { icon: Wifi, label: "Works Offline*" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium">
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">*Word Counter and Unit Converter work offline after page load</p>
+            </div>
           </div>
         </div>
 

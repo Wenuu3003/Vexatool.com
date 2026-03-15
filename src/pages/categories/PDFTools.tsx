@@ -2,7 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
-import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image, PenTool, Droplets, FolderSync, FileCheck, FileImage, Code } from "lucide-react";
+import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image, PenTool, Droplets, FolderSync, FileCheck, FileImage, Code, Shield, Zap, Globe } from "lucide-react";
 import pdfWorkflowImg from "@/assets/graphics/pdf-workflow.webp";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
@@ -52,7 +52,7 @@ const PDFTools = () => {
           Edit, merge, split, compress, and convert PDF files directly in your browser. No signup, no watermarks, no server uploads.
         </p>
 
-        {/* Tool Grid — near the top */}
+        {/* Tool Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {tools.map((tool) => (
             <Link
@@ -71,27 +71,41 @@ const PDFTools = () => {
           ))}
         </div>
 
-        {/* Content + Visual: How it works */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-          <div>
-            <h2 className="text-2xl font-semibold text-foreground mb-4">How VexaTool PDF Tools Work</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              Using any PDF tool follows a simple three-step process: select the tool you need, upload your PDF file, and download the result. The entire process takes seconds.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              Everything happens in your browser — there are no server uploads or waiting times. Your original file stays safe on your device throughout. Each tool is optimized for mobile as well, so you can work on the go.
-            </p>
-          </div>
-          <div className="flex justify-center">
-            <img
-              src={pdfWorkflowImg}
-              alt="PDF workflow: upload, process, download in 3 steps"
-              className="w-full max-w-sm rounded-xl shadow-lg border border-border/40"
-              loading="lazy"
-              decoding="async"
-              width={400}
-              height={256}
-            />
+        {/* Featured Visual: How it works — FULL WIDTH prominent */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-primary/5 via-card to-primary/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">How VexaTool PDF Tools Work</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Using any PDF tool follows a simple three-step process: select the tool you need, upload your PDF file, and download the result. The entire process takes seconds.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Everything happens in your browser — there are no server uploads or waiting times. Your original file stays safe on your device throughout.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { icon: Zap, label: "Instant Processing" },
+                  { icon: Shield, label: "100% Private" },
+                  { icon: Globe, label: "Works Everywhere" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8">
+              <img
+                src={pdfWorkflowImg}
+                alt="PDF workflow: upload, process, download in 3 steps"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
           </div>
         </div>
 
@@ -106,27 +120,37 @@ const PDFTools = () => {
           </p>
         </div>
 
-        {/* Security visual section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mb-16">
-          <div className="flex justify-center order-2 md:order-1">
-            <img
-              src={securityVisualImg}
-              alt="Secure browser-based PDF processing with encryption"
-              className="w-full max-w-xs rounded-xl shadow-lg border border-border/40"
-              loading="lazy"
-              decoding="async"
-              width={320}
-              height={256}
-            />
-          </div>
-          <div className="order-1 md:order-2">
-            <h2 className="text-2xl font-semibold text-foreground mb-4">Security You Can Trust</h2>
-            <p className="text-muted-foreground leading-relaxed mb-3">
-              All connections use HTTPS encryption. Our PDF tools process files locally in your browser using JavaScript, which means your documents never get uploaded to any server.
-            </p>
-            <p className="text-muted-foreground leading-relaxed">
-              There is no cloud storage, no file retention, and no third-party access to your data. Once you close the browser tab, your processed files exist only on your device.
-            </p>
+        {/* Featured Visual: Security — FULL WIDTH prominent */}
+        <div className="mb-16 rounded-2xl border border-border bg-gradient-to-br from-green-500/5 via-card to-emerald-500/5 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+            <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8 order-2 md:order-1">
+              <img
+                src={securityVisualImg}
+                alt="Secure browser-based PDF processing with encryption"
+                className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
+                loading="lazy"
+                decoding="async"
+                width={480}
+                height={320}
+              />
+            </div>
+            <div className="md:col-span-3 p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Security You Can Trust</h2>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                All connections use HTTPS encryption. Our PDF tools process files locally in your browser using JavaScript, which means your documents never get uploaded to any server.
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                There is no cloud storage, no file retention, and no third-party access to your data. Once you close the browser tab, your processed files exist only on your device.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {["No Server Uploads", "No File Storage", "HTTPS Encrypted", "Zero Third-Party Access"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm text-foreground">
+                    <Shield className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

@@ -1006,7 +1006,7 @@ const BlogPost = () => {
               <header className="mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{post.title}</h1>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     {new Date(post.date).toLocaleDateString("en-US", {
@@ -1020,6 +1020,55 @@ const BlogPost = () => {
                     {post.readTime}
                   </span>
                 </div>
+
+                {/* Featured blog image */}
+                {(() => {
+                  const imageMap: Record<string, { src: string; alt: string }> = {
+                    "how-to-merge-pdf-files-online-complete-guide": { src: "/previews/merge-pdf-preview.webp", alt: "How to merge PDF files online step by step" },
+                    "how-to-merge-pdfs-complete-guide": { src: "/previews/merge-pdf-preview.webp", alt: "Complete guide to merging PDF files" },
+                    "compress-pdf-without-losing-quality": { src: "/previews/compress-pdf-preview.webp", alt: "Compress PDF files without quality loss" },
+                    "convert-pdf-to-word-free-guide": { src: "/previews/pdf-to-word-preview.webp", alt: "Convert PDF to Word document guide" },
+                    "pdf-to-word-formatting-tips": { src: "/previews/pdf-to-word-preview.webp", alt: "PDF to Word formatting best practices" },
+                    "digital-signature-guide": { src: "/previews/sign-pdf-preview.webp", alt: "How to add digital signatures to PDFs" },
+                    "pdf-security-guide": { src: "/previews/protect-pdf-preview.webp", alt: "PDF security and password protection guide" },
+                    "best-free-pdf-tools-online-2026": { src: "/previews/edit-pdf-preview.webp", alt: "Best free PDF tools available online" },
+                    "qr-code-generator-complete-guide": { src: "/previews/qr-code-generator-preview.webp", alt: "QR code generator complete guide" },
+                    "background-remover-perfect-product-photos": { src: "/previews/background-remover-preview.webp", alt: "Background remover for product photos" },
+                    "emi-calculator-home-loan-guide": { src: "/previews/emi-calculator-preview.webp", alt: "EMI calculator for home loans" },
+                    "gst-calculator-business-guide": { src: "/previews/gst-calculator-preview.webp", alt: "GST calculator for Indian businesses" },
+                    "best-image-compression-tips": { src: "/previews/compress-image-preview.webp", alt: "Image compression tips and techniques" },
+                    "image-compression-web-performance": { src: "/previews/compress-image-preview.webp", alt: "Optimize images for web performance" },
+                    "split-pdf-organize-documents": { src: "/previews/split-pdf-preview.webp", alt: "Split PDF and organize documents" },
+                    "bmi-calculator-health-guide": { src: "/previews/bmi-calculator-preview.webp", alt: "BMI calculator health guide" },
+                    "word-to-pdf-professional-documents": { src: "/previews/word-to-pdf-preview.webp", alt: "Word to PDF conversion for professional docs" },
+                    "currency-converter-travel-guide": { src: "/previews/currency-converter-preview.webp", alt: "Currency converter for travel" },
+                    "pdf-watermark-protect-documents": { src: "/previews/watermark-pdf-preview.webp", alt: "Add watermark to PDF documents" },
+                    "image-resizer-social-media-guide": { src: "/previews/image-resizer-preview.webp", alt: "Image resizer for social media" },
+                    "unit-converter-complete-reference": { src: "/previews/unit-converter-preview.webp", alt: "Unit converter reference guide" },
+                    "pdf-to-excel-data-extraction": { src: "/previews/pdf-to-excel-preview.webp", alt: "Extract data from PDF to Excel" },
+                    "word-counter-content-optimization": { src: "/previews/word-counter-preview.webp", alt: "Word counter for content optimization" },
+                    "pincode-finder-india-postal-guide": { src: "/previews/pincode-generator-preview.webp", alt: "Indian PIN code finder guide" },
+                    "pdf-to-jpg-image-conversion": { src: "/previews/pdf-to-jpg-preview.webp", alt: "Convert PDF to JPG images" },
+                    "love-age-calculator-complete-guide": { src: "/previews/love-calculator-preview.webp", alt: "Love and age calculator guide" },
+                    "age-calculator-birthday-planning": { src: "/previews/age-calculator-preview.webp", alt: "Age calculator for birthday planning" },
+                    "pdf-accessibility-guide": { src: "/previews/edit-pdf-preview.webp", alt: "PDF accessibility guide" },
+                    "digital-productivity-habits-that-save-time": { src: "/previews/compress-pdf-preview.webp", alt: "Digital productivity habits to save time" },
+                  };
+                  const img = slug ? imageMap[slug] : null;
+                  return img ? (
+                    <div className="rounded-xl overflow-hidden border border-border/40 shadow-lg mb-8">
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        className="w-full h-auto object-cover"
+                        loading="eager"
+                        decoding="async"
+                        width={800}
+                        height={420}
+                      />
+                    </div>
+                  ) : null;
+                })()}
               </header>
 
               {post.content}

@@ -25,5 +25,4 @@ Allow: /
 User-agent: AdsBot-Google-Mobile
 Allow: /
 
-Host: https://vexatool.com
 Sitemap: https://vexatool.com/sitemap.xml

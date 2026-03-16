@@ -998,6 +998,7 @@ const BlogPost = () => {
 
         <main className="container mx-auto px-4 py-12">
           <div className="max-w-3xl mx-auto">
+            <Breadcrumb items={[{ name: "Blog", path: "/blog" }, { name: post.title, path: `/blog/${slug}` }]} className="mb-6" />
             <Link to="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-8">
               <ArrowLeft className="w-4 h-4" />
               Back to Blog

@@ -7,10 +7,11 @@ import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner
 import { SidebarAd, InArticleAd } from "@/components/SidebarAd";
 import { LucideIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
+import { getCategoryForTool } from "@/components/Breadcrumb";
 
 interface ToolLayoutProps {
   title: string;

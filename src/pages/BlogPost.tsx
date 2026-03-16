@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Calendar, Clock, ArrowLeft } from "lucide-react";
 import { newBlogPosts } from "@/data/blogContent";
+import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface BlogPostContent {
   title: string;

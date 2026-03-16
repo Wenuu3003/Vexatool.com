@@ -38,6 +38,7 @@ const ImageTools = () => {
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
+        <Breadcrumb items={[{ name: "Image Tools", path: "/image-tools" }]} className="mb-6" />
         <h1 className="text-4xl font-bold text-foreground mb-4">Free Online Image Tools</h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
           Resize, compress, convert, and edit images directly in your browser. All formats supported, no signup required.

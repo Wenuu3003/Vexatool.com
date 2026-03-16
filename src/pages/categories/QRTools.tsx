@@ -30,6 +30,7 @@ const QRTools = () => {
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
+        <Breadcrumb items={[{ name: "QR Tools", path: "/qr-tools" }]} className="mb-6" />
         <h1 className="text-4xl font-bold text-foreground mb-4">Free QR Code Tools</h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
           Create custom QR codes with logos and colors, or scan any QR code instantly. Free, private, no app needed.

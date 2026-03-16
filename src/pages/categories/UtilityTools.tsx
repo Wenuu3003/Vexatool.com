@@ -29,6 +29,7 @@ const UtilityTools = () => {
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
+        <Breadcrumb items={[{ name: "Utility Tools", path: "/utility-tools" }]} className="mb-6" />
         <h1 className="text-4xl font-bold text-foreground mb-4">Free Online Utility Tools</h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
           Practical everyday tools for word counting, PIN code lookup, and unit conversion. Simple, fast, and free.

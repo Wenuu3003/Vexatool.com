@@ -36,6 +36,7 @@ const CalculatorTools = () => {
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
+        <Breadcrumb items={[{ name: "Calculator Tools", path: "/calculator-tools" }]} className="mb-6" />
         <h1 className="text-4xl font-bold text-foreground mb-4">Free Online Calculators</h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
           Quick, accurate calculations for health, finance, and everyday math. No signup, instant results.

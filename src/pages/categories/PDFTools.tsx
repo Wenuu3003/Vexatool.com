@@ -2,6 +2,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { Home, ArrowLeft } from "lucide-react";
 import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image, PenTool, Droplets, FolderSync, FileCheck, FileImage, Code, Shield, Zap, Globe } from "lucide-react";
 import pdfWorkflowImg from "@/assets/graphics/pdf-workflow.webp";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
@@ -47,6 +49,7 @@ const PDFTools = () => {
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
+        <Breadcrumb items={[{ name: "PDF Tools", path: "/pdf-tools" }]} className="mb-6" />
         <h1 className="text-4xl font-bold text-foreground mb-4">Free Online PDF Tools</h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
           Edit, merge, split, compress, and convert PDF files directly in your browser. No signup, no watermarks, no server uploads.

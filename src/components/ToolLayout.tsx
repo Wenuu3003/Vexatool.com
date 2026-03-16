@@ -7,10 +7,11 @@ import { AdBanner, MobileAdBanner, DesktopAdBanner } from "@/components/AdBanner
 import { SidebarAd, InArticleAd } from "@/components/SidebarAd";
 import { LucideIcon, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Helmet } from "react-helmet";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
+import { getCategoryForTool } from "@/components/Breadcrumb";
 
 interface ToolLayoutProps {
   title: string;
@@ -30,6 +31,9 @@ export const ToolLayout = ({
   category = "UtilitiesApplication",
   }: ToolLayoutProps) => {
   const canonicalUrl = useCanonicalUrl();
+  const location = useLocation();
+  const toolSlug = location.pathname.split("/").filter(Boolean)[0] || "";
+  const categoryInfo = getCategoryForTool(toolSlug);
   const [showAds, setShowAds] = useState(false);
 
   useEffect(() => {
@@ -87,10 +91,10 @@ export const ToolLayout = ({
               {/* Breadcrumb Navigation */}
               <Breadcrumb className="mb-4" />
               
-              <Link to="/">
+              <Link to={categoryInfo?.path || "/"}>
                 <Button variant="ghost" className="mb-4 md:mb-6 gap-2 text-muted-foreground hover:text-foreground text-sm md:text-base">
                   <ArrowLeft className="w-4 h-4" />
-                  Back to all tools
+                  {categoryInfo ? `Back to ${categoryInfo.name}` : "Back to all tools"}
                 </Button>
               </Link>
               <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">

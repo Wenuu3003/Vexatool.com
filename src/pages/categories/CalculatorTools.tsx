@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { Heart, Scale, Cake, Percent, Calculator, DollarSign, Shield, Zap, Smartphone } from "lucide-react";
 import calculatorVisual from "@/assets/graphics/calculator-tools-visual.webp";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";

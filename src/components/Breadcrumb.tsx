@@ -101,8 +101,8 @@ export const Breadcrumb = ({ items, className = "" }: BreadcrumbProps) => {
     
     if (category) {
       result.push({
-        name: category,
-        path: `/#${category.toLowerCase().replace(/\s+/g, "-")}`
+        name: category.name,
+        path: category.path
       });
     }
     

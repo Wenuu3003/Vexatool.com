@@ -91,10 +91,10 @@ export const ToolLayout = ({
               {/* Breadcrumb Navigation */}
               <Breadcrumb className="mb-4" />
               
-              <Link to="/">
+              <Link to={categoryInfo?.path || "/"}>
                 <Button variant="ghost" className="mb-4 md:mb-6 gap-2 text-muted-foreground hover:text-foreground text-sm md:text-base">
                   <ArrowLeft className="w-4 h-4" />
-                  Back to all tools
+                  {categoryInfo ? `Back to ${categoryInfo.name}` : "Back to all tools"}
                 </Button>
               </Link>
               <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">

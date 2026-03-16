@@ -31,6 +31,9 @@ export const ToolLayout = ({
   category = "UtilitiesApplication",
   }: ToolLayoutProps) => {
   const canonicalUrl = useCanonicalUrl();
+  const location = useLocation();
+  const toolSlug = location.pathname.split("/").filter(Boolean)[0] || "";
+  const categoryInfo = getCategoryForTool(toolSlug);
   const [showAds, setShowAds] = useState(false);
 
   useEffect(() => {

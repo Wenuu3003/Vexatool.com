@@ -2,6 +2,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { Home, ArrowLeft } from "lucide-react";
 import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image, PenTool, Droplets, FolderSync, FileCheck, FileImage, Code, Shield, Zap, Globe } from "lucide-react";
 import pdfWorkflowImg from "@/assets/graphics/pdf-workflow.webp";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";

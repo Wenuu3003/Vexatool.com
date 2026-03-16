@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Link } from "react-router-dom";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { MapPin, AlignLeft, Ruler, Shield, Zap, Wifi } from "lucide-react";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
 

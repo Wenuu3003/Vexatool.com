@@ -23,11 +23,13 @@ interface OCRPanelProps {
   totalPages: number;
 }
 
-const SEGMENTATION_OPTIONS: { value: TextSegmentationMode; label: string }[] = [
-  { value: 'auto', label: 'Auto' },
-  { value: 'paragraph', label: 'Paragraph' },
-  { value: 'table', label: 'Table' },
-  { value: 'form', label: 'Form' },
+const SEGMENTATION_OPTIONS: { value: TextSegmentationMode; label: string; desc: string }[] = [
+  { value: 'auto', label: 'Auto', desc: 'Auto-detect layout' },
+  { value: 'line', label: 'Line', desc: 'Each line is editable' },
+  { value: 'word', label: 'Word', desc: 'Click individual words' },
+  { value: 'paragraph', label: 'Paragraph', desc: 'Group into paragraphs' },
+  { value: 'table', label: 'Table', desc: 'Tabular cell layout' },
+  { value: 'form', label: 'Form', desc: 'Form field layout' },
 ];
 
 export const OCRPanel = memo(({

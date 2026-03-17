@@ -3,8 +3,9 @@ import { TextRegion } from './useTextBlocks';
 import { OCRTextBlock } from './useOCR';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Check, X, Trash2, Edit3, MousePointer, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -79,16 +80,17 @@ export const BlockEditPanel = memo(({
           </Badge>
         </div>
         <p className="text-[11px] text-muted-foreground mt-1">
-          Click a block to highlight it on the page. Edit or delete entire text regions.
+          Click a block to select it. Use segmentation modes (Line, Word) for precise editing.
         </p>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-2 space-y-1.5">
+        <div className="p-2 space-y-1">
           {regions.map((region, idx) => {
             const isSelected = selectedRegion === region.id;
             const isEditing = editingRegion === region.id;
             const isExpanded = expandedRegions.has(region.id);
+            const isWord = region.kind === 'word';
             const previewText = region.text.length > 80
               ? region.text.slice(0, 80) + '…'
               : region.text;
@@ -104,16 +106,32 @@ export const BlockEditPanel = memo(({
                 }`}
                 onClick={() => !isEditing && onSelectRegion(isSelected ? null : region.id)}
               >
-                <CardContent className="p-2.5">
+                <CardContent className="p-2">
                   {isEditing ? (
                     <div className="space-y-2" onClick={e => e.stopPropagation()}>
-                      <Textarea
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        className="min-h-[80px] text-xs font-mono resize-y"
-                        autoFocus
-                        placeholder="Enter replacement text..."
-                      />
+                      {isWord || region.text.length < 100 ? (
+                        <Input
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          className="h-8 text-xs font-mono"
+                          autoFocus
+                          placeholder="Enter replacement text..."
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              handleSave(region);
+                            }
+                          }}
+                        />
+                      ) : (
+                        <Textarea
+                          value={editText}
+                          onChange={(e) => setEditText(e.target.value)}
+                          className="min-h-[60px] text-xs font-mono resize-y"
+                          autoFocus
+                          placeholder="Enter replacement text..."
+                        />
+                      )}
                       <div className="flex gap-1.5">
                         <Button
                           size="sm"
@@ -135,12 +153,9 @@ export const BlockEditPanel = memo(({
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       <div className="flex items-start justify-between gap-1">
                         <div className="flex items-center gap-1">
-                          <span className="text-[10px] font-medium text-muted-foreground">
-                            Block {idx + 1}
-                          </span>
                           <Badge variant="outline" className="text-[9px] h-4 px-1 capitalize">
                             {region.kind}
                           </Badge>

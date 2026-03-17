@@ -944,23 +944,37 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       return;
     }
 
+    // Use the average height of source blocks for precise font sizing
     const avgHeight = region.sourceBlocks.length
       ? region.sourceBlocks.reduce((sum, block) => sum + block.height, 0) / region.sourceBlocks.length
       : region.height;
 
     const fontSize = Math.max(9, Math.round(avgHeight));
-    const lineHeightMultiplier = 1.2;
+    const isWordLevel = region.kind === 'word';
+    const isLineLevel = region.kind === 'line';
+    
+    // Tighter padding for word/line edits vs paragraph edits
+    const padX = isWordLevel ? 1 : isLineLevel ? 2 : 2;
+    const padY = isWordLevel ? 0 : 1;
+    const lineHeightMultiplier = isWordLevel ? 1 : 1.15;
     const lineCount = Math.max(1, cleanText.split(/\r?\n/).length);
-    const estimatedTextHeight = Math.max(region.height, fontSize * lineHeightMultiplier * lineCount);
+    
+    // For word-level, estimate width based on character count
+    const estimatedWidth = isWordLevel
+      ? Math.max(region.width, cleanText.length * (fontSize * 0.6))
+      : Math.max(region.width, 40);
+    const estimatedTextHeight = isWordLevel
+      ? fontSize
+      : Math.max(region.height, fontSize * lineHeightMultiplier * lineCount);
 
     const redactElement: RedactElement = {
       id: `redact-region-${Date.now()}`,
       type: 'redact',
       page: region.pageIndex,
-      x: region.x - 2,
-      y: region.y - 1,
-      width: region.width + 6,
-      height: Math.max(region.height + 4, estimatedTextHeight + 2),
+      x: region.x - padX,
+      y: region.y - padY,
+      width: Math.max(region.width + padX * 2, estimatedWidth + padX * 2),
+      height: Math.max(region.height + padY * 2, estimatedTextHeight + padY * 2),
       rotation: 0,
       opacity: 1,
       locked: false,
@@ -974,7 +988,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       page: region.pageIndex,
       x: region.x,
       y: region.y,
-      width: Math.max(region.width, 40),
+      width: estimatedWidth,
       height: estimatedTextHeight,
       rotation: 0,
       opacity: 1,
@@ -1010,8 +1024,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     saveToHistory();
 
     toast({
-      title: 'Block Replaced',
-      description: 'Only the selected region was replaced with matched block styling.',
+      title: isWordLevel ? 'Word Replaced' : isLineLevel ? 'Line Replaced' : 'Block Replaced',
+      description: 'Text replaced with matched styling. Fine-tune in Properties panel.',
     });
   }, [saveToHistory, toast]);
 

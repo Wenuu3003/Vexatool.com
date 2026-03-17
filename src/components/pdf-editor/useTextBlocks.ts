@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { OCRTextBlock } from './useOCR';
 
-export type TextSegmentationMode = 'auto' | 'paragraph' | 'table' | 'form';
+export type TextSegmentationMode = 'auto' | 'paragraph' | 'line' | 'word' | 'table' | 'form';
 export type ResolvedSegmentationMode = Exclude<TextSegmentationMode, 'auto'>;
-export type TextRegionKind = 'paragraph' | 'line' | 'cell' | 'field';
+export type TextRegionKind = 'paragraph' | 'line' | 'word' | 'cell' | 'field';
 
 /**
- * A merged text region that groups nearby words into a readable paragraph/line block.
+ * A merged text region that groups nearby words into a readable paragraph/line/word block.
  */
 export interface TextRegion {
   id: string;
@@ -191,16 +191,16 @@ const resolveSegmentationMode = (
   pageWidth: number
 ): ResolvedSegmentationMode => {
   if (requestedMode !== 'auto') return requestedMode;
-  if (!lines.length) return 'paragraph';
+  if (!lines.length) return 'line';
 
+  // Default to line mode for better precision — user can switch to paragraph if needed
   const multiSegmentLines = lines.filter(line => line.segments.length > 1).length;
   const multiSegmentRatio = multiSegmentLines / lines.length;
   const avgSegments = lines.reduce((sum, line) => sum + line.segments.length, 0) / lines.length;
-  const compactLineRatio = lines.filter(line => line.width < pageWidth * 0.68).length / lines.length;
 
   if (multiSegmentRatio >= 0.35 || avgSegments >= 1.45) return 'table';
-  if (compactLineRatio >= 0.55 && multiSegmentRatio < 0.25) return 'form';
-  return 'paragraph';
+  // Default to 'line' instead of 'paragraph' for better editing precision
+  return 'line';
 };
 
 const overlapRatio = (aStart: number, aEnd: number, bStart: number, bEnd: number): number => {
@@ -218,6 +218,9 @@ const shouldMerge = (
   firstSegmentY: number
 ): boolean => {
   if (current.lineIndex === previous.lineIndex) return false;
+
+  // Line and word modes never merge across lines
+  if (mode === 'line' || mode === 'word') return false;
 
   const prevBottom = previous.y + previous.height;
   const verticalGap = current.y - prevBottom;
@@ -284,9 +287,11 @@ const buildRegion = ({ segments, pageIndex, mode }: RegionBuildInput): TextRegio
     ? 'cell'
     : mode === 'form'
       ? 'field'
-      : lineKeys.length > 1
-        ? 'paragraph'
-        : 'line';
+      : mode === 'word'
+        ? 'word'
+        : lineKeys.length > 1
+          ? 'paragraph'
+          : 'line';
 
   return {
     id: `region-${pageIndex}-${hashString(idSeed)}`,
@@ -303,6 +308,27 @@ const buildRegion = ({ segments, pageIndex, mode }: RegionBuildInput): TextRegio
   };
 };
 
+/**
+ * Word mode: each individual word block becomes its own region.
+ */
+function buildWordRegions(blocks: OCRTextBlock[], pageIndex: number): TextRegion[] {
+  return blocks
+    .filter(b => b.pageIndex === pageIndex && b.text.trim())
+    .map(block => ({
+      id: `region-${pageIndex}-w-${hashString(block.id)}`,
+      text: block.text.trim(),
+      x: block.x,
+      y: block.y,
+      width: block.width,
+      height: block.height,
+      pageIndex,
+      confidence: Math.round(block.confidence),
+      kind: 'word' as TextRegionKind,
+      lineCount: 1,
+      sourceBlocks: [block],
+    }));
+}
+
 function groupIntoRegions(
   blocks: OCRTextBlock[],
   pageIndex: number,
@@ -313,7 +339,12 @@ function groupIntoRegions(
     .sort((a, b) => a.y - b.y || a.x - b.x);
 
   if (!pageBlocks.length) {
-    return { regions: [], modeUsed: requestedMode === 'auto' ? 'paragraph' : requestedMode };
+    return { regions: [], modeUsed: requestedMode === 'auto' ? 'line' : (requestedMode === 'word' ? 'word' : requestedMode as ResolvedSegmentationMode) };
+  }
+
+  // Word mode: bypass all grouping, each word is its own region
+  if (requestedMode === 'word') {
+    return { regions: buildWordRegions(blocks, pageIndex), modeUsed: 'word' };
   }
 
   const minX = Math.min(...pageBlocks.map(b => b.x));
@@ -325,6 +356,11 @@ function groupIntoRegions(
 
   const lines = buildLines(pageBlocks, pageWidth);
   const modeUsed = resolveSegmentationMode(lines, requestedMode, pageWidth);
+
+  // If resolved to word mode
+  if (modeUsed === 'word') {
+    return { regions: buildWordRegions(blocks, pageIndex), modeUsed: 'word' };
+  }
 
   const allSegments = lines.flatMap(line => line.segments).sort((a, b) => a.y - b.y || a.x - b.x);
   if (!allSegments.length) {
@@ -359,7 +395,7 @@ function groupIntoRegions(
 }
 
 /**
- * Hook that groups word-level text blocks into paragraph/row/cell regions.
+ * Hook that groups word-level text blocks into paragraph/line/word regions.
  */
 export function useTextBlocks(
   textBlocks: OCRTextBlock[],

@@ -23,11 +23,13 @@ interface OCRPanelProps {
   totalPages: number;
 }
 
-const SEGMENTATION_OPTIONS: { value: TextSegmentationMode; label: string }[] = [
-  { value: 'auto', label: 'Auto' },
-  { value: 'paragraph', label: 'Paragraph' },
-  { value: 'table', label: 'Table' },
-  { value: 'form', label: 'Form' },
+const SEGMENTATION_OPTIONS: { value: TextSegmentationMode; label: string; desc: string }[] = [
+  { value: 'auto', label: 'Auto', desc: 'Auto-detect layout' },
+  { value: 'line', label: 'Line', desc: 'Each line is editable' },
+  { value: 'word', label: 'Word', desc: 'Click individual words' },
+  { value: 'paragraph', label: 'Paragraph', desc: 'Group into paragraphs' },
+  { value: 'table', label: 'Table', desc: 'Tabular cell layout' },
+  { value: 'form', label: 'Form', desc: 'Form field layout' },
 ];
 
 export const OCRPanel = memo(({
@@ -76,16 +78,17 @@ export const OCRPanel = memo(({
               Active: {resolvedSegmentationMode}
             </Badge>
           </div>
-          <div className="grid grid-cols-2 gap-1">
+          <div className="grid grid-cols-3 gap-1">
             {SEGMENTATION_OPTIONS.map((option) => (
               <Button
                 key={option.value}
                 type="button"
                 size="sm"
                 variant={segmentationMode === option.value ? 'default' : 'outline'}
-                className="h-7 text-[11px]"
+                className="h-7 text-[10px] px-1.5"
                 onClick={() => onSegmentationModeChange(option.value)}
                 disabled={isProcessing}
+                title={option.desc}
               >
                 {option.label}
               </Button>

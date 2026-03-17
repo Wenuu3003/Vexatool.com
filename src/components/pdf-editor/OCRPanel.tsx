@@ -78,16 +78,17 @@ export const OCRPanel = memo(({
               Active: {resolvedSegmentationMode}
             </Badge>
           </div>
-          <div className="grid grid-cols-2 gap-1">
+          <div className="grid grid-cols-3 gap-1">
             {SEGMENTATION_OPTIONS.map((option) => (
               <Button
                 key={option.value}
                 type="button"
                 size="sm"
                 variant={segmentationMode === option.value ? 'default' : 'outline'}
-                className="h-7 text-[11px]"
+                className="h-7 text-[10px] px-1.5"
                 onClick={() => onSegmentationModeChange(option.value)}
                 disabled={isProcessing}
+                title={option.desc}
               >
                 {option.label}
               </Button>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { PenTool, Download, Type, ZoomIn, ZoomOut, Plus } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
@@ -17,6 +17,11 @@ import PDFPageView from "@/components/sign-pdf/PDFPageView";
 import type { SignatureObject, PageDimensions, SignatureFontStyle } from "@/components/sign-pdf/types";
 import { SIGNATURE_FONTS } from "@/components/sign-pdf/types";
 
+const SIGNATURE_BOX = {
+  width: 0.25,
+  height: 0.08,
+};
+
 const SignPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -28,12 +33,10 @@ const SignPDF = () => {
   const [numPages, setNumPages] = useState(0);
   const [zoom, setZoom] = useState(1);
   const [signatures, setSignatures] = useState<SignatureObject[]>([]);
-  const [pageDimensions, setPageDimensions] = useState<Map<number, PageDimensions>>(new Map());
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { saveFileHistory } = useFileHistory();
 
-  // Load PDF when file changes
   useEffect(() => {
     if (files.length === 0) {
       setPdfDoc(null);
@@ -43,163 +46,252 @@ const SignPDF = () => {
     }
 
     let cancelled = false;
+    let loadedDoc: pdfjsLib.PDFDocumentProxy | null = null;
+
     const loadPdf = async () => {
       setIsLoading(true);
       try {
         const arrayBuffer = await files[0].arrayBuffer();
-        const doc = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+        const doc = await pdfjsLib.getDocument({
+          data: new Uint8Array(arrayBuffer),
+          useSystemFonts: true,
+          stopAtErrors: false,
+        }).promise;
+
+        loadedDoc = doc;
+
         if (!cancelled) {
           setPdfDoc(doc);
           setNumPages(doc.numPages);
           setSignatures([]);
         }
-      } catch {
+      } catch (error) {
         if (!cancelled) {
-          toast({ title: "Error", description: "Failed to load PDF", variant: "destructive" });
+          const message = error instanceof Error ? error.message.toLowerCase() : "";
+          const description = message.includes("password") || message.includes("encrypted")
+            ? "This PDF is protected. Please unlock it first, then sign it."
+            : "This PDF could not be opened. Try a different file or repair it first.";
+
+          toast({ title: "Unable to open PDF", description, variant: "destructive" });
+          setFiles([]);
         }
       } finally {
-        if (!cancelled) setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
+
     loadPdf();
-    return () => { cancelled = true; };
-  }, [files]);
 
-  const handlePageClick = useCallback((pageIndex: number, xRatio: number, yRatio: number) => {
-    const hasSignature = signatureType === "draw" ? signatureDataUrl : typedSignature.trim();
-    if (!hasSignature) {
-      toast({ title: "No signature", description: "Create a signature first, then click on the page to place it", variant: "destructive" });
-      return;
-    }
-
-    const sigWidth = 0.25;
-    const sigHeight = 0.08;
-    const newSig: SignatureObject = {
-      id: `sig-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      type: signatureType,
-      dataUrl: signatureType === "draw" ? signatureDataUrl! : undefined,
-      text: signatureType === "type" ? typedSignature : undefined,
-      fontStyle: signatureType === "type" ? fontStyle : undefined,
-      pageIndex,
-      x: Math.max(0, Math.min(1 - sigWidth, xRatio - sigWidth / 2)),
-      y: Math.max(0, Math.min(1 - sigHeight, yRatio - sigHeight / 2)),
-      width: sigWidth,
-      height: sigHeight,
-      locked: false,
+    return () => {
+      cancelled = true;
+      if (loadedDoc) {
+        void loadedDoc.destroy();
+      }
     };
-    setSignatures(prev => [...prev, newSig]);
-    toast({ title: "Signature placed!", description: "Drag to reposition, or click the page again to add another." });
-  }, [signatureType, signatureDataUrl, typedSignature, toast]);
+  }, [files, toast]);
 
-  const handleSignatureMoved = useCallback((id: string, x: number, y: number) => {
-    setSignatures(prev => prev.map(s => s.id === id ? { ...s, x, y } : s));
+  const loadSignatureFont = useCallback(async (style: SignatureFontStyle) => {
+    const fontDef = SIGNATURE_FONTS[style];
+    if (!("fonts" in document)) return;
+
+    try {
+      await Promise.race([
+        Promise.all([
+          document.fonts.load(`600 96px ${fontDef.fontFamily}`),
+          document.fonts.ready,
+        ]),
+        new Promise<void>((resolve) => window.setTimeout(resolve, 1500)),
+      ]);
+    } catch {
+      // Fall back to the closest available local font if the webfont is delayed.
+    }
   }, []);
 
-  const handleSignatureRemoved = useCallback((id: string) => {
-    setSignatures(prev => prev.filter(s => s.id !== id));
-  }, []);
-
-  const handleSignatureToggleLock = useCallback((id: string) => {
-    setSignatures(prev => prev.map(s => s.id === id ? { ...s, locked: !s.locked } : s));
-  }, []);
-
-  const handlePageDimensions = useCallback((pageIndex: number, dims: PageDimensions) => {
-    setPageDimensions(prev => {
-      const next = new Map(prev);
-      next.set(pageIndex, dims);
-      return next;
-    });
-  }, []);
-
-  /**
-   * Render a typed signature to a PNG data-URL using an off-screen canvas,
-   * so the chosen font style is baked into the image and preserved in the PDF.
-   */
-  const renderTypedSignatureToImage = (
+  const renderTypedSignatureToImage = useCallback(async (
     text: string,
     style: SignatureFontStyle,
     widthPx: number,
     heightPx: number
-  ): string => {
-    const canvas = document.createElement("canvas");
-    const scale = 3; // hi-DPI sharpness
-    canvas.width = widthPx * scale;
-    canvas.height = heightPx * scale;
-    const ctx = canvas.getContext("2d")!;
-    ctx.scale(scale, scale);
-    ctx.clearRect(0, 0, widthPx, heightPx);
+  ): Promise<string> => {
+    await loadSignatureFont(style);
 
-    const fontDef = SIGNATURE_FONTS[style];
-    const fontSize = Math.max(16, heightPx * 0.5);
-    const italic = fontDef.className.includes("italic") ? "italic " : "";
-    ctx.font = `${italic}${fontSize}px ${fontDef.fontFamily}`;
-    ctx.fillStyle = "rgb(0, 0, 128)";
+    const canvas = document.createElement("canvas");
+    const scale = 3;
+    const safeWidth = Math.max(1, widthPx);
+    const safeHeight = Math.max(1, heightPx);
+
+    canvas.width = safeWidth * scale;
+    canvas.height = safeHeight * scale;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("Signature canvas could not be created");
+    }
+
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    ctx.clearRect(0, 0, safeWidth, safeHeight);
+    ctx.imageSmoothingEnabled = true;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(text, widthPx / 2, heightPx / 2);
+    ctx.fillStyle = "hsl(221 39% 18%)";
+
+    const fontDef = SIGNATURE_FONTS[style];
+    const italic = fontDef.className.includes("italic") ? "italic " : "";
+    const maxTextWidth = safeWidth * 0.9;
+    let fontSize = Math.max(24, safeHeight * 0.72);
+
+    while (fontSize > 18) {
+      ctx.font = `${italic}${fontSize}px ${fontDef.fontFamily}`;
+      if (ctx.measureText(text).width <= maxTextWidth) {
+        break;
+      }
+      fontSize -= 2;
+    }
+
+    ctx.font = `${italic}${fontSize}px ${fontDef.fontFamily}`;
+    ctx.fillText(text, safeWidth / 2, safeHeight / 2 + fontSize * 0.06);
 
     return canvas.toDataURL("image/png");
-  };
+  }, [loadSignatureFont]);
+
+  const handlePageClick = useCallback(async (pageIndex: number, xRatio: number, yRatio: number) => {
+    const signatureText = typedSignature.trim();
+    const hasSignature = signatureType === "draw" ? signatureDataUrl : signatureText;
+
+    if (!hasSignature) {
+      toast({
+        title: "No signature",
+        description: "Create a signature first, then click on the page to place it.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    let renderedSignature = signatureType === "draw" ? signatureDataUrl ?? undefined : undefined;
+
+    if (signatureType === "type") {
+      try {
+        renderedSignature = await renderTypedSignatureToImage(signatureText, fontStyle, 1200, 360);
+      } catch {
+        toast({
+          title: "Signature rendering failed",
+          description: "We couldn't prepare that typed signature. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    const newSig: SignatureObject = {
+      id: `sig-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      type: signatureType,
+      dataUrl: renderedSignature,
+      text: signatureType === "type" ? signatureText : undefined,
+      fontStyle: signatureType === "type" ? fontStyle : undefined,
+      pageIndex,
+      x: Math.max(0, Math.min(1 - SIGNATURE_BOX.width, xRatio - SIGNATURE_BOX.width / 2)),
+      y: Math.max(0, Math.min(1 - SIGNATURE_BOX.height, yRatio - SIGNATURE_BOX.height / 2)),
+      width: SIGNATURE_BOX.width,
+      height: SIGNATURE_BOX.height,
+      locked: false,
+    };
+
+    setSignatures((prev) => [...prev, newSig]);
+    toast({ title: "Signature placed", description: "Drag to reposition or click again to add another." });
+  }, [fontStyle, renderTypedSignatureToImage, signatureDataUrl, signatureType, toast, typedSignature]);
+
+  const handleSignatureMoved = useCallback((id: string, x: number, y: number) => {
+    setSignatures((prev) => prev.map((signature) => signature.id === id ? { ...signature, x, y } : signature));
+  }, []);
+
+  const handleSignatureRemoved = useCallback((id: string) => {
+    setSignatures((prev) => prev.filter((signature) => signature.id !== id));
+  }, []);
+
+  const handleSignatureToggleLock = useCallback((id: string) => {
+    setSignatures((prev) => prev.map((signature) => signature.id === id ? { ...signature, locked: !signature.locked } : signature));
+  }, []);
+
+  const handlePageDimensions = useCallback((_pageIndex: number, _dims: PageDimensions) => {
+    // Dimensions are tracked inside each page view; keep the callback for component compatibility.
+  }, []);
 
   const handleExport = async () => {
     if (files.length === 0 || signatures.length === 0) {
-      toast({ title: "Nothing to export", description: "Please add at least one signature", variant: "destructive" });
+      toast({ title: "Nothing to export", description: "Please place at least one signature first.", variant: "destructive" });
       return;
     }
 
     setIsProcessing(true);
+
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdfLibDoc = await PDFDocument.load(arrayBuffer);
+      const pdfLibDoc = await PDFDocument.load(arrayBuffer, {
+        ignoreEncryption: true,
+        updateMetadata: false,
+      });
       const pages = pdfLibDoc.getPages();
 
       for (const sig of signatures) {
         const page = pages[sig.pageIndex];
         if (!page) continue;
-        const { width: pw, height: ph } = page.getSize();
-        const sigW = sig.width * pw;
-        const sigH = sig.height * ph;
 
-        if (sig.type === "type" && sig.text) {
-          // Render typed signature as an image so the chosen font style is preserved
-          const dataUrl = renderTypedSignatureToImage(
+        const { width: pageWidth, height: pageHeight } = page.getSize();
+        const signatureWidth = sig.width * pageWidth;
+        const signatureHeight = sig.height * pageHeight;
+
+        let imageDataUrl = sig.dataUrl;
+
+        if (!imageDataUrl && sig.type === "type" && sig.text) {
+          imageDataUrl = await renderTypedSignatureToImage(
             sig.text,
             sig.fontStyle || "script",
-            Math.round(sigW),
-            Math.round(sigH)
+            Math.max(900, Math.round(signatureWidth * 4)),
+            Math.max(260, Math.round(signatureHeight * 4))
           );
-          const sigImage = await pdfLibDoc.embedPng(dataUrl);
-          page.drawImage(sigImage, {
-            x: sig.x * pw,
-            y: ph - (sig.y + sig.height) * ph,
-            width: sigW,
-            height: sigH,
-          });
-        } else if (sig.type === "draw" && sig.dataUrl) {
-          const sigImage = await pdfLibDoc.embedPng(sig.dataUrl);
-          page.drawImage(sigImage, {
-            x: sig.x * pw,
-            y: ph - (sig.y + sig.height) * ph,
-            width: sigW,
-            height: sigH,
-          });
         }
+
+        if (!imageDataUrl) continue;
+
+        const signatureImage = await pdfLibDoc.embedPng(imageDataUrl);
+        page.drawImage(signatureImage, {
+          x: sig.x * pageWidth,
+          y: pageHeight - (sig.y + sig.height) * pageHeight,
+          width: signatureWidth,
+          height: signatureHeight,
+        });
       }
 
-      const pdfBytes = await pdfLibDoc.save();
+      const pdfBytes = await pdfLibDoc.save({ useObjectStreams: false });
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
+
       link.href = url;
       link.download = `signed_${files[0].name}`;
+      document.body.appendChild(link);
       link.click();
-      URL.revokeObjectURL(url);
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 
       await saveFileHistory(files[0].name, "pdf", "sign");
-      toast({ title: "Success!", description: "Signed PDF downloaded" });
+      toast({ title: "Signed PDF ready", description: "Your signed PDF was downloaded successfully." });
     } catch (error) {
-      console.error("Export error:", error);
-      toast({ title: "Error", description: "Failed to export signed PDF", variant: "destructive" });
+      const message = error instanceof Error ? error.message.toLowerCase() : "";
+      let description = "We couldn't finish signing this PDF. Please try again.";
+
+      if (message.includes("password") || message.includes("encrypted")) {
+        description = "This PDF has editing restrictions. Unlock it first, then sign it.";
+      } else if (message.includes("invalid") || message.includes("parse") || message.includes("corrupt")) {
+        description = "This PDF appears damaged. Repair it first, then try signing again.";
+      } else if (message.includes("png") || message.includes("image") || message.includes("canvas")) {
+        description = "The signature image could not be prepared. Please redraw or retype the signature and try again.";
+      }
+
+      console.error("Sign PDF export error:", error);
+      toast({ title: "Sign PDF failed", description, variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }

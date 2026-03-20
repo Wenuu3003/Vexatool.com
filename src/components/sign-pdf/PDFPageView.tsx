@@ -2,11 +2,11 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import type { SignatureObject, PageDimensions } from "./types";
 import { SIGNATURE_FONTS } from "./types";
-import { Lock, Unlock, X, Move } from "lucide-react";
+import { Lock, Unlock, X } from "lucide-react";
 
 interface PDFPageViewProps {
   pdf: pdfjsLib.PDFDocumentProxy;
-  pageNumber: number; // 1-based
+  pageNumber: number;
   zoom: number;
   signatures: SignatureObject[];
   onSignatureMoved: (id: string, x: number, y: number) => void;
@@ -29,38 +29,45 @@ const PDFPageView = ({
 }: PDFPageViewProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [rendered, setRendered] = useState(false);
   const renderTaskRef = useRef<any>(null);
   const [pageDims, setPageDims] = useState<PageDimensions>({ width: 0, height: 0 });
-
-  // Dragging state
   const [draggingId, setDraggingId] = useState<string | null>(null);
-  const dragStartRef = useRef<{ startX: number; startY: number; sigX: number; sigY: number } | null>(null);
+  const dragStartRef = useRef<{
+    startX: number;
+    startY: number;
+    sigX: number;
+    sigY: number;
+    sigWidth: number;
+    sigHeight: number;
+  } | null>(null);
 
-  // Render PDF page once
   useEffect(() => {
     let cancelled = false;
 
     const renderPage = async () => {
       const page = await pdf.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: 1.5 }); // Render at 1.5x for quality
+      const viewport = page.getViewport({ scale: 1.5 });
       const canvas = canvasRef.current;
       if (!canvas || cancelled) return;
 
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      // Cancel previous render
       if (renderTaskRef.current) {
-        try { renderTaskRef.current.cancel(); } catch {}
+        try {
+          renderTaskRef.current.cancel();
+        } catch {
+          // Ignore stale render cancellations.
+        }
       }
 
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = viewport.width * dpr;
-      canvas.height = viewport.height * dpr;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(viewport.width * dpr);
+      canvas.height = Math.floor(viewport.height * dpr);
       canvas.style.width = `${viewport.width}px`;
       canvas.style.height = `${viewport.height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const dims = { width: viewport.width, height: viewport.height };
       setPageDims(dims);
@@ -71,48 +78,73 @@ const PDFPageView = ({
 
       try {
         await renderTask.promise;
-        if (!cancelled) setRendered(true);
-      } catch (err: any) {
-        if (err?.name !== "RenderingCancelled") console.error(err);
+      } catch (error: any) {
+        if (error?.name !== "RenderingCancelled") {
+          console.error("Sign PDF page render error:", error);
+        }
       }
     };
 
-    renderPage();
-    return () => { cancelled = true; };
-  }, [pdf, pageNumber]); // Only re-render when pdf or page changes, NOT on zoom
+    void renderPage();
 
-  const handleContainerClick = (e: React.MouseEvent) => {
+    return () => {
+      cancelled = true;
+      if (renderTaskRef.current) {
+        try {
+          renderTaskRef.current.cancel();
+        } catch {
+          // Ignore stale render cancellations.
+        }
+      }
+    };
+  }, [onPageDimensions, pageNumber, pdf]);
+
+  const handleContainerClick = (event: React.MouseEvent) => {
     if (draggingId) return;
     const container = containerRef.current;
     if (!container) return;
+
     const rect = container.getBoundingClientRect();
-    const xRatio = (e.clientX - rect.left) / rect.width;
-    const yRatio = (e.clientY - rect.top) / rect.height;
+    const xRatio = (event.clientX - rect.left) / rect.width;
+    const yRatio = (event.clientY - rect.top) / rect.height;
     onPageClick(pageNumber - 1, xRatio, yRatio);
   };
 
-  // Drag handlers
-  const handleDragStart = (e: React.MouseEvent | React.TouchEvent, sig: SignatureObject) => {
-    if (sig.locked) return;
-    e.stopPropagation();
-    e.preventDefault();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    setDraggingId(sig.id);
-    dragStartRef.current = { startX: clientX, startY: clientY, sigX: sig.x, sigY: sig.y };
+  const handleDragStart = (event: React.MouseEvent | React.TouchEvent, signature: SignatureObject) => {
+    if (signature.locked) return;
+
+    event.stopPropagation();
+    event.preventDefault();
+
+    const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+    const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+
+    setDraggingId(signature.id);
+    dragStartRef.current = {
+      startX: clientX,
+      startY: clientY,
+      sigX: signature.x,
+      sigY: signature.y,
+      sigWidth: signature.width,
+      sigHeight: signature.height,
+    };
   };
 
-  const handleDragMove = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+  const handleDragMove = useCallback((event: React.MouseEvent | React.TouchEvent) => {
     if (!draggingId || !dragStartRef.current || !containerRef.current) return;
-    e.preventDefault();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+    event.preventDefault();
+
+    const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+    const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
     const rect = containerRef.current.getBoundingClientRect();
     const dx = (clientX - dragStartRef.current.startX) / rect.width;
     const dy = (clientY - dragStartRef.current.startY) / rect.height;
-    const newX = Math.max(0, Math.min(1, dragStartRef.current.sigX + dx));
-    const newY = Math.max(0, Math.min(1, dragStartRef.current.sigY + dy));
-    onSignatureMoved(draggingId, newX, newY);
+
+    const nextX = Math.max(0, Math.min(1 - dragStartRef.current.sigWidth, dragStartRef.current.sigX + dx));
+    const nextY = Math.max(0, Math.min(1 - dragStartRef.current.sigHeight, dragStartRef.current.sigY + dy));
+
+    onSignatureMoved(draggingId, nextX, nextY);
   }, [draggingId, onSignatureMoved]);
 
   const handleDragEnd = useCallback(() => {
@@ -120,7 +152,7 @@ const PDFPageView = ({
     dragStartRef.current = null;
   }, []);
 
-  const pageSignatures = signatures.filter(s => s.pageIndex === pageNumber - 1);
+  const pageSignatures = signatures.filter((signature) => signature.pageIndex === pageNumber - 1);
 
   return (
     <div className="relative mb-4">
@@ -131,7 +163,8 @@ const PDFPageView = ({
         style={{
           width: pageDims.width * zoom,
           height: pageDims.height * zoom,
-          overflow: 'hidden',
+          overflow: "hidden",
+          touchAction: "none",
         }}
         onClick={handleContainerClick}
         onMouseMove={handleDragMove}
@@ -141,72 +174,76 @@ const PDFPageView = ({
         onTouchEnd={handleDragEnd}
         onTouchCancel={handleDragEnd}
       >
-        {/* PDF Canvas - rendered once, scaled via CSS transform */}
         <canvas
           ref={canvasRef}
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            transformOrigin: 'top left',
+            transformOrigin: "top left",
             transform: `scale(${zoom})`,
-            pointerEvents: 'none',
+            pointerEvents: "none",
           }}
         />
 
-        {/* Signature overlays */}
-        {pageSignatures.map((sig) => (
+        {pageSignatures.map((signature) => (
           <div
-            key={sig.id}
+            key={signature.id}
             className="absolute group"
             style={{
-              left: `${sig.x * 100}%`,
-              top: `${sig.y * 100}%`,
-              width: `${sig.width * 100}%`,
-              height: `${sig.height * 100}%`,
-              border: sig.locked ? '1px solid transparent' : '2px dashed hsl(var(--primary))',
-              cursor: sig.locked ? 'default' : 'move',
+              left: `${signature.x * 100}%`,
+              top: `${signature.y * 100}%`,
+              width: `${signature.width * 100}%`,
+              height: `${signature.height * 100}%`,
+              border: signature.locked ? "1px solid transparent" : "2px dashed hsl(var(--primary))",
+              cursor: signature.locked ? "default" : "move",
               zIndex: 10,
             }}
-            onMouseDown={(e) => handleDragStart(e, sig)}
-            onTouchStart={(e) => handleDragStart(e, sig)}
+            onMouseDown={(event) => handleDragStart(event, signature)}
+            onTouchStart={(event) => handleDragStart(event, signature)}
           >
-            {sig.type === 'draw' && sig.dataUrl && (
+            {signature.dataUrl ? (
               <img
-                src={sig.dataUrl}
+                src={signature.dataUrl}
                 alt="Signature"
                 className="w-full h-full object-contain pointer-events-none"
                 draggable={false}
               />
-            )}
-            {sig.type === 'type' && sig.text && (
+            ) : signature.type === "type" && signature.text ? (
               <div className="w-full h-full flex items-center justify-center pointer-events-none">
                 <span
-                    className={sig.fontStyle ? SIGNATURE_FONTS[sig.fontStyle].className : 'italic'}
-                    style={{
-                      fontSize: `${Math.max(12, sig.height * pageDims.height * zoom * 0.5)}px`,
-                      color: 'rgb(0, 0, 128)',
-                      fontFamily: sig.fontStyle ? SIGNATURE_FONTS[sig.fontStyle].fontFamily : "'Times New Roman', serif",
-                      whiteSpace: 'nowrap',
-                    }}
+                  className={signature.fontStyle ? SIGNATURE_FONTS[signature.fontStyle].className : "italic"}
+                  style={{
+                    fontSize: `${Math.max(12, signature.height * pageDims.height * zoom * 0.5)}px`,
+                    color: "hsl(var(--foreground))",
+                    fontFamily: signature.fontStyle
+                      ? SIGNATURE_FONTS[signature.fontStyle].fontFamily
+                      : "'Times New Roman', serif",
+                    whiteSpace: "nowrap",
+                  }}
                 >
-                  {sig.text}
+                  {signature.text}
                 </span>
               </div>
-            )}
+            ) : null}
 
-            {/* Controls */}
-            {!sig.locked && (
+            {!signature.locked && (
               <div className="absolute -top-8 right-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
-                  onClick={(e) => { e.stopPropagation(); onSignatureToggleLock(sig.id); }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSignatureToggleLock(signature.id);
+                  }}
                   className="p-1 rounded bg-card border border-border shadow-sm hover:bg-muted"
                   title="Lock signature"
                 >
                   <Unlock className="w-3 h-3" />
                 </button>
                 <button
-                  onClick={(e) => { e.stopPropagation(); onSignatureRemoved(sig.id); }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSignatureRemoved(signature.id);
+                  }}
                   className="p-1 rounded bg-card border border-border shadow-sm hover:bg-destructive hover:text-destructive-foreground"
                   title="Remove signature"
                 >
@@ -214,10 +251,14 @@ const PDFPageView = ({
                 </button>
               </div>
             )}
-            {sig.locked && (
+
+            {signature.locked && (
               <div className="absolute -top-8 right-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
-                  onClick={(e) => { e.stopPropagation(); onSignatureToggleLock(sig.id); }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSignatureToggleLock(signature.id);
+                  }}
                   className="p-1 rounded bg-card border border-border shadow-sm hover:bg-muted"
                   title="Unlock signature"
                 >

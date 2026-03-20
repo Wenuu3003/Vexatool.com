@@ -111,6 +111,36 @@ const SignPDF = () => {
     });
   }, []);
 
+  /**
+   * Render a typed signature to a PNG data-URL using an off-screen canvas,
+   * so the chosen font style is baked into the image and preserved in the PDF.
+   */
+  const renderTypedSignatureToImage = (
+    text: string,
+    style: SignatureFontStyle,
+    widthPx: number,
+    heightPx: number
+  ): string => {
+    const canvas = document.createElement("canvas");
+    const scale = 3; // hi-DPI sharpness
+    canvas.width = widthPx * scale;
+    canvas.height = heightPx * scale;
+    const ctx = canvas.getContext("2d")!;
+    ctx.scale(scale, scale);
+    ctx.clearRect(0, 0, widthPx, heightPx);
+
+    const fontDef = SIGNATURE_FONTS[style];
+    const fontSize = Math.max(16, heightPx * 0.5);
+    const italic = fontDef.className.includes("italic") ? "italic " : "";
+    ctx.font = `${italic}${fontSize}px ${fontDef.fontFamily}`;
+    ctx.fillStyle = "rgb(0, 0, 128)";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, widthPx / 2, heightPx / 2);
+
+    return canvas.toDataURL("image/png");
+  };
+
   const handleExport = async () => {
     if (files.length === 0 || signatures.length === 0) {
       toast({ title: "Nothing to export", description: "Please add at least one signature", variant: "destructive" });
@@ -127,21 +157,26 @@ const SignPDF = () => {
         const page = pages[sig.pageIndex];
         if (!page) continue;
         const { width: pw, height: ph } = page.getSize();
+        const sigW = sig.width * pw;
+        const sigH = sig.height * ph;
 
         if (sig.type === "type" && sig.text) {
-          const font = await pdfLibDoc.embedFont(StandardFonts.TimesRomanItalic);
-          const fontSize = Math.max(14, ph * sig.height * 0.5);
-          page.drawText(sig.text, {
+          // Render typed signature as an image so the chosen font style is preserved
+          const dataUrl = renderTypedSignatureToImage(
+            sig.text,
+            sig.fontStyle || "script",
+            Math.round(sigW),
+            Math.round(sigH)
+          );
+          const sigImage = await pdfLibDoc.embedPng(dataUrl);
+          page.drawImage(sigImage, {
             x: sig.x * pw,
             y: ph - (sig.y + sig.height) * ph,
-            size: fontSize,
-            font,
-            color: rgb(0, 0, 0.5),
+            width: sigW,
+            height: sigH,
           });
         } else if (sig.type === "draw" && sig.dataUrl) {
           const sigImage = await pdfLibDoc.embedPng(sig.dataUrl);
-          const sigW = sig.width * pw;
-          const sigH = sig.height * ph;
           page.drawImage(sigImage, {
             x: sig.x * pw,
             y: ph - (sig.y + sig.height) * ph,

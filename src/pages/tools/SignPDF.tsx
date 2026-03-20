@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { CanonicalHead } from "@/components/CanonicalHead";

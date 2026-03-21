@@ -9,23 +9,26 @@ const SITE_HOST = "vexatool.com";
 
 // All sitemap URLs (synced with src/config/routes.ts)
 const ALL_PATHS = [
-  "/", "/blog", "/about-us", "/privacy-policy", "/terms-and-conditions", "/contact",
-  "/pdf-tools", "/image-tools", "/calculator-tools", "/qr-tools", "/utility-tools",
-  "/tools/compress-pdf", "/tools/merge-pdf", "/tools/split-pdf", "/tools/pdf-to-word",
-  "/tools/word-to-pdf", "/tools/pdf-to-jpg", "/tools/jpg-to-pdf", "/tools/pdf-to-png",
-  "/tools/png-to-pdf", "/tools/pdf-to-excel", "/tools/excel-to-pdf", "/tools/pdf-to-ppt",
-  "/tools/ppt-to-pdf", "/tools/pdf-to-html", "/tools/html-to-pdf", "/tools/image-to-pdf",
-  "/tools/pdf-to-image", "/tools/rotate-pdf", "/tools/unlock-pdf", "/tools/protect-pdf",
-  "/tools/sign-pdf", "/tools/watermark-pdf", "/tools/edit-pdf", "/tools/organize-pdf",
-  "/tools/repair-pdf", "/tools/convert-pdf", "/tools/compress-image", "/tools/resize-image",
-  "/tools/image-format-converter", "/tools/background-remover", "/tools/qr-code-generator",
-  "/tools/qr-code-scanner", "/tools/word-counter", "/tools/calculator", "/tools/unit-converter",
-  "/tools/currency-converter", "/tools/love-calculator", "/tools/bmi-calculator",
-  "/tools/emi-calculator", "/tools/gst-calculator", "/tools/pin-code-generator",
-  "/tools/file-compressor", "/tools/excel-to-word", "/tools/word-to-excel",
-  "/tools/google-drive-to-pdf", "/tools/age-calculator", "/tools/percentage-calculator",
-  "/tools/passport-photo-resizer", "/tools/aadhaar-photo-resizer",
-  "/tools/govt-job-photo-resizer", "/tools/whatsapp-dp-resizer",
+  "/", "/blog", "/about-us", "/privacy-policy", "/terms-and-conditions", "/contact", "/disclaimer",
+  "/all-tools", "/pdf-tools", "/image-tools", "/calculator-tools", "/qr-tools", "/utility-tools",
+  // PDF Tools
+  "/merge-pdf", "/split-pdf", "/compress-pdf", "/pdf-to-word", "/word-to-pdf",
+  "/edit-pdf", "/sign-pdf", "/watermark-pdf", "/rotate-pdf", "/unlock-pdf", "/protect-pdf",
+  "/organize-pdf", "/repair-pdf", "/pdf-to-image", "/pdf-to-jpg", "/pdf-to-png",
+  "/pdf-to-html", "/pdf-to-powerpoint", "/pdf-to-excel", "/jpg-to-pdf", "/png-to-pdf",
+  "/image-to-pdf",
+  // Image Tools
+  "/compress-image", "/image-resizer", "/image-format-converter", "/background-remover",
+  "/file-compressor", "/whatsapp-dp-resize", "/aadhaar-photo-resize",
+  "/govt-job-photo-resize", "/passport-photo-resize",
+  // Calculator Tools
+  "/calculator", "/bmi-calculator", "/emi-calculator", "/gst-calculator",
+  "/love-calculator", "/age-calculator", "/percentage-calculator", "/currency-converter",
+  // QR & Utility Tools
+  "/qr-code-generator", "/qr-code-scanner", "/word-counter", "/unit-converter", "/pincode-generator",
+  // Document Converters
+  "/word-to-excel", "/excel-to-word", "/excel-to-pdf", "/ppt-to-pdf", "/html-to-pdf",
+  "/google-drive-to-pdf",
   // Blog posts
   "/blog/digital-productivity-habits-that-save-time",
   "/blog/how-to-merge-pdf-files-online-complete-guide",

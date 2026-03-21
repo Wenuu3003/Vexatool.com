@@ -41,12 +41,6 @@ const CONFIG = {
 
 // Tool routes to capture
 const TOOLS = [
-  { id: 'ai-text-generator', path: '/ai-text-generator' },
-  { id: 'ai-grammar-tool', path: '/ai-grammar-tool' },
-  { id: 'ai-resume-builder', path: '/ai-resume-builder' },
-  { id: 'hashtag-generator', path: '/hashtag-generator' },
-  { id: 'youtube-generator', path: '/youtube-generator' },
-  { id: 'whatsapp-analyzer', path: '/whatsapp-analyzer' },
   { id: 'image-resizer', path: '/image-resizer' },
   { id: 'image-converter', path: '/image-format-converter' },
   { id: 'background-remover', path: '/background-remover' },
@@ -61,7 +55,6 @@ const TOOLS = [
   { id: 'qr-code-scanner', path: '/qr-code-scanner' },
   { id: 'qr-code-generator', path: '/qr-code-generator' },
   { id: 'currency-converter', path: '/currency-converter' },
-  { id: 'seo-tool', path: '/seo-tool' },
   { id: 'calculator', path: '/calculator' },
   { id: 'pincode-generator', path: '/pincode-generator' },
   { id: 'file-compressor', path: '/file-compressor' },
@@ -93,6 +86,11 @@ const TOOLS = [
   { id: 'jpg-to-pdf', path: '/jpg-to-pdf' },
   { id: 'png-to-pdf', path: '/png-to-pdf' },
   { id: 'google-drive-to-pdf', path: '/google-drive-to-pdf' },
+  { id: 'percentage-calculator', path: '/percentage-calculator' },
+  { id: 'whatsapp-dp-resize', path: '/whatsapp-dp-resize' },
+  { id: 'aadhaar-photo-resize', path: '/aadhaar-photo-resize' },
+  { id: 'govt-job-photo-resize', path: '/govt-job-photo-resize' },
+  { id: 'passport-photo-resize', path: '/passport-photo-resize' },
 ];
 
 /**

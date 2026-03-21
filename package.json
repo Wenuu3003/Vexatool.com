@@ -61,7 +61,7 @@
     "html2canvas": "^1.4.1",
     "input-otp": "^1.4.2",
     "jsdom": "^27.4.0",
-    "jspdf": "4.2.0",
+    "jspdf": "4.2.1",
     "jsqr": "^1.4.0",
     "jszip": "^3.10.1",
     "lucide-react": "^0.462.0",

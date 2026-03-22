@@ -28,7 +28,7 @@ const PDFToExcel = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [extractedData, setExtractedData] = useState<string[][]>([]);
+  const [extractedData, setExtractedData] = useState<{ sheets: { name: string; data: string[][] }[] } | null>(null);
   const [preserveFormatting, setPreserveFormatting] = useState(true);
   const [detectTables, setDetectTables] = useState(true);
   const [batchMode, setBatchMode] = useState(false);

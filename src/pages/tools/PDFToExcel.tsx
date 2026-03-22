@@ -210,7 +210,7 @@ const PDFToExcel = () => {
           ));
         });
 
-        const excelBuffer = await createExcel(data);
+        const excelBuffer = await createExcelFromSheets(data.sheets);
         const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         
         const url = URL.createObjectURL(blob);

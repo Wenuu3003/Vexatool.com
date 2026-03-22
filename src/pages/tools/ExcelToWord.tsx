@@ -86,6 +86,10 @@ const ExcelToWord = () => {
         // Calculate max columns
         const maxCols = Math.max(...sheetData.map(r => r.length), 1);
 
+        // Calculate column widths proportionally using DXA
+        const tableWidthDxa = 9360; // US Letter with 1" margins
+        const colWidthDxa = Math.floor(tableWidthDxa / maxCols);
+
         // Build table rows
         const docxRows = sheetData.map((row, rowIndex) => {
           const cells: TableCell[] = [];
@@ -101,11 +105,13 @@ const ExcelToWord = () => {
                         text: cellValue,
                         bold: isHeader,
                         size: isHeader ? 22 : 20,
+                        font: "Arial",
                       }),
                     ],
                   }),
                 ],
-                width: { size: Math.floor(100 / maxCols), type: WidthType.PERCENTAGE },
+                width: { size: colWidthDxa, type: WidthType.DXA },
+                margins: { top: 40, bottom: 40, left: 80, right: 80 },
                 borders: {
                   top: defaultBorder,
                   bottom: defaultBorder,
@@ -118,10 +124,13 @@ const ExcelToWord = () => {
           return new TableRow({ children: cells });
         });
 
+        const columnWidths = Array(maxCols).fill(colWidthDxa);
+
         tables.push(
           new DocxTable({
             rows: docxRows,
-            width: { size: 100, type: WidthType.PERCENTAGE },
+            width: { size: tableWidthDxa, type: WidthType.DXA },
+            columnWidths,
           })
         );
 

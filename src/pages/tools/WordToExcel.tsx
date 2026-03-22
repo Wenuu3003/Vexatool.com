@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { FileSpreadsheet, Download, FileText, Loader2, Trash2 } from "lucide-react";
+import { FileSpreadsheet, Download, FileText, Loader2, Trash2, Shield, Table } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import { parseDocxContent, extractDocText } from "@/lib/docxTableParser";
+import ExcelJS from "exceljs";
 
 const WordToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -41,109 +43,109 @@ const WordToExcel = () => {
     setProgressLabel("Reading document...");
 
     try {
-      let text = "";
       const fileName = file.name.toLowerCase();
+      const workbook = new ExcelJS.Workbook();
+      workbook.creator = 'VexaTool';
+      workbook.created = new Date();
 
-      if (fileName.endsWith('.txt')) {
-        text = await file.text();
-      } else if (fileName.endsWith('.docx')) {
-        // Proper DOCX extraction using JSZip
+      if (fileName.endsWith('.docx')) {
+        // Try proper table extraction first
         try {
-          const arrayBuffer = await file.arrayBuffer();
-          const JSZip = (await import('jszip')).default;
-          const zip = await JSZip.loadAsync(arrayBuffer);
-          const docXml = await zip.file('word/document.xml')?.async('text');
+          const content = await parseDocxContent(file);
+          setProgress(50);
+          setProgressLabel("Building spreadsheet...");
 
-          if (docXml) {
-            const paragraphs: string[] = [];
-            const paraMatches = docXml.match(/<w:p[\s>][\s\S]*?<\/w:p>/g) || [];
-            for (const para of paraMatches) {
-              const textParts = para.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) || [];
-              const paraText = textParts.map(t => t.replace(/<[^>]+>/g, '')).join('');
-              paragraphs.push(paraText);
+          let sheetIndex = 1;
+
+          // Add each table as a separate sheet
+          if (content.tables.length > 0) {
+            for (const table of content.tables) {
+              const ws = workbook.addWorksheet(content.tables.length === 1 ? "Table Data" : `Table ${sheetIndex}`);
+              const maxCols = Math.max(...table.rows.map(r => r.length), 1);
+
+              for (const row of table.rows) {
+                const padded = [...row];
+                while (padded.length < maxCols) padded.push('');
+                ws.addRow(padded);
+              }
+
+              // Bold header row
+              if (table.rows.length > 0) {
+                const headerRow = ws.getRow(1);
+                headerRow.font = { bold: true };
+                headerRow.eachCell(cell => {
+                  cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F0FE' } };
+                });
+              }
+
+              // Auto-fit columns
+              for (let i = 1; i <= maxCols; i++) {
+                const col = ws.getColumn(i);
+                let maxWidth = 10;
+                col.eachCell({ includeEmpty: false }, cell => {
+                  const len = String(cell.value ?? '').length;
+                  if (len > maxWidth) maxWidth = Math.min(len, 50);
+                });
+                col.width = maxWidth + 2;
+              }
+              sheetIndex++;
             }
-            text = paragraphs.join('\n').trim();
+          }
+
+          // Add paragraph content as a separate sheet if present
+          if (content.paragraphs.length > 0) {
+            const ws = workbook.addWorksheet("Text Content");
+            for (const para of content.paragraphs) {
+              ws.addRow([para]);
+            }
+            ws.getColumn(1).width = 80;
+          }
+
+          // If no tables and no paragraphs, try text fallback
+          if (content.tables.length === 0 && content.paragraphs.length === 0) {
+            throw new Error("No content found, trying fallback");
           }
         } catch {
-          // Fallback
-        }
-
-        if (!text) {
-          // Fallback byte scanning
-          const bytes = new Uint8Array(await file.arrayBuffer());
-          let extracted = "";
-          for (let i = 0; i < bytes.length; i++) {
-            const c = bytes[i];
-            if ((c >= 32 && c <= 126) || c === 10 || c === 13 || c === 9) extracted += String.fromCharCode(c);
+          // Fallback: extract raw text and parse into rows
+          const text = await extractDocText(file);
+          if (!text || text.length < 5) {
+            toast({ title: "No text found", description: "Could not extract content from this document.", variant: "destructive" });
+            setIsProcessing(false);
+            return;
           }
-          text = extracted.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').trim();
+          addTextAsSheet(workbook, text);
         }
       } else {
-        // .doc fallback
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        let extracted = "";
-        for (let i = 0; i < bytes.length; i++) {
-          const c = bytes[i];
-          if ((c >= 32 && c <= 126) || c === 10 || c === 13 || c === 9) extracted += String.fromCharCode(c);
+        // .doc or .txt - text extraction
+        const text = fileName.endsWith('.txt') ? await file.text() : await extractDocText(file);
+        if (!text || text.length < 5) {
+          toast({ title: "No text found", description: "Could not extract content from this document.", variant: "destructive" });
+          setIsProcessing(false);
+          return;
         }
-        text = extracted.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '').trim();
-      }
-
-      if (!text || text.length < 10) {
-        toast({
-          title: "No text found",
-          description: "Could not extract text from this document. It may contain only images or be in an unsupported format.",
-          variant: "destructive",
-        });
-        setIsProcessing(false);
-        return;
-      }
-
-      setProgress(50);
-      setProgressLabel("Building spreadsheet...");
-
-      // Parse text into rows and columns
-      const lines = text.split('\n').filter(line => line.trim());
-      const rows: string[][] = [];
-
-      for (const line of lines) {
-        let columns: string[];
-        if (line.includes('\t')) {
-          columns = line.split('\t').map(c => c.trim());
-        } else if (line.includes('  ')) {
-          columns = line.split(/\s{2,}/).map(c => c.trim());
-        } else {
-          columns = [line.trim()];
-        }
-        rows.push(columns);
+        addTextAsSheet(workbook, text);
       }
 
       setProgress(80);
-      setProgressLabel("Creating CSV...");
+      setProgressLabel("Creating Excel file...");
 
-      const escapeCSV = (str: string): string => {
-        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-          return `"${str.replace(/"/g, '""')}"`;
-        }
-        return str;
-      };
-
-      const csvContent = rows.map(row => row.map(cell => escapeCSV(cell)).join(',')).join('\n');
-
-      const blob = new Blob(['\ufeff' + csvContent], { type: "text/csv;charset=utf-8" });
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = file.name.replace(/\.(doc|docx|txt)$/i, '.csv');
+      link.download = file.name.replace(/\.(doc|docx|txt)$/i, '.xlsx');
       link.click();
       URL.revokeObjectURL(url);
 
       setProgress(100);
       setProgressLabel("Done!");
 
+      const sheetCount = workbook.worksheets.length;
+      const totalRows = workbook.worksheets.reduce((sum, ws) => sum + ws.rowCount, 0);
       toast({
         title: "Conversion complete!",
-        description: `Extracted ${rows.length} rows to CSV format.`,
+        description: `Extracted ${totalRows} rows across ${sheetCount} sheet(s) to Excel (.xlsx).`,
       });
 
       setFile(null);
@@ -159,39 +161,71 @@ const WordToExcel = () => {
     }
   };
 
+  /** Parse text lines into a worksheet with intelligent column detection */
+  function addTextAsSheet(workbook: ExcelJS.Workbook, text: string) {
+    const ws = workbook.addWorksheet("Extracted Data");
+    const lines = text.split('\n').filter(line => line.trim());
+
+    for (const line of lines) {
+      let columns: string[];
+      if (line.includes('\t')) {
+        columns = line.split('\t').map(c => c.trim());
+      } else if (line.includes('  ')) {
+        columns = line.split(/\s{2,}/).map(c => c.trim());
+      } else {
+        columns = [line.trim()];
+      }
+      ws.addRow(columns);
+    }
+
+    // Auto-fit columns
+    const maxCols = ws.columnCount || 1;
+    for (let i = 1; i <= maxCols; i++) {
+      const col = ws.getColumn(i);
+      let maxWidth = 10;
+      col.eachCell({ includeEmpty: false }, cell => {
+        const len = String(cell.value ?? '').length;
+        if (len > maxWidth) maxWidth = Math.min(len, 60);
+      });
+      col.width = maxWidth + 2;
+    }
+  }
+
   const seoContent = {
     toolName: "Word to Excel Converter",
-    whatIs: "Word to Excel Converter is a free online tool that transforms Word documents and text files into Excel-compatible CSV format. For .docx files, it uses proper ZIP-based extraction to accurately read document content. The tool intelligently detects column separators (tabs, multiple spaces) to properly structure your data.",
+    whatIs: "Word to Excel Converter is a free online tool that transforms Word documents into proper Excel spreadsheets (.xlsx). For .docx files with tables, it extracts each table into a separate Excel sheet with formatted headers. Paragraph content is placed in a dedicated sheet. The entire conversion happens in your browser — no files are uploaded.",
     howToUse: [
       "Click the upload area to select your Word document (.doc, .docx) or text file (.txt).",
       "Review the selected file details.",
-      "Click 'Convert to Excel (CSV)' to start the conversion.",
-      "Your CSV file will download automatically.",
-      "Open the CSV file in Microsoft Excel, Google Sheets, or any spreadsheet app.",
+      "Click 'Convert to Excel (.xlsx)' to start the conversion.",
+      "Your Excel file will download automatically.",
+      "Open the file in Microsoft Excel, Google Sheets, or any spreadsheet app.",
     ],
     features: [
-      "Proper DOCX text extraction using ZIP parsing",
-      "Converts .doc, .docx, and .txt files to CSV",
-      "Automatic detection of columns (tabs, spaces)",
-      "UTF-8 encoding with BOM for international characters",
-      "Progress tracking during conversion",
-      "No registration required",
+      "Extracts actual Word tables into structured Excel sheets",
+      "Each table becomes a separate sheet with bold headers",
+      "Paragraph content exported to a dedicated sheet",
+      "Generates real .xlsx files (not CSV)",
+      "Auto-fit column widths",
+      "Supports .doc, .docx, and .txt files",
+      "100% browser-based — no server upload",
+      "Free with no registration required",
     ],
     safetyNote: "Your documents are processed entirely in your browser. No files are uploaded to any server.",
     faqs: [
-      { question: "How does the converter detect columns?", answer: "The tool looks for tab characters and multiple consecutive spaces to separate columns." },
-      { question: "Why CSV instead of XLS format?", answer: "CSV is universally compatible with all spreadsheet applications including Excel, Google Sheets, and LibreOffice." },
-      { question: "Will tables in my Word document be converted?", answer: "The tool extracts text content and preserves tab/space structure. Complex tables may need manual adjustment." },
-      { question: "Can I convert documents with images?", answer: "The converter focuses on text content. Images are not transferred to CSV output." },
+      { question: "How does the converter handle Word tables?", answer: "For .docx files, the tool extracts actual table elements from the document XML. Each table becomes a separate Excel sheet with proper rows and columns." },
+      { question: "Why .xlsx instead of CSV?", answer: "XLSX supports multiple sheets, formatting, and auto-fitted columns — providing a much better result than flat CSV files." },
+      { question: "Will tables in my Word document be converted accurately?", answer: "Yes — actual Word tables are parsed cell-by-cell. Complex merged cells may need minor adjustment." },
+      { question: "Can I convert documents with images?", answer: "The converter focuses on text and table content. Images are not transferred to Excel output." },
     ],
   };
 
   return (
     <>
       <CanonicalHead
-        title="Word to Excel Converter Free Online - DOC to XLS CSV | VexaTool"
-        description="Free online Word to Excel converter. Convert DOC and DOCX files to Excel CSV format with proper text extraction."
-        keywords="word to excel, doc to xls, docx to csv, word to csv, convert word to excel"
+        title="Word to Excel Converter Free Online - DOC to XLSX | VexaTool"
+        description="Free online Word to Excel converter. Extract tables from Word documents into proper Excel spreadsheets (.xlsx) with formatted headers."
+        keywords="word to excel, doc to xlsx, docx to excel, word to spreadsheet, convert word to excel"
       />
       <ToolLayout
         title="Word to Excel"
@@ -199,60 +233,75 @@ const WordToExcel = () => {
         icon={FileSpreadsheet}
         colorClass="bg-green-600"
       >
-        <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
-          <input type="file" accept=".doc,.docx,.txt" onChange={handleFileChange} className="hidden" id="word-excel-upload" />
-          <label htmlFor="word-excel-upload" className="cursor-pointer">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-600/10 flex items-center justify-center">
-              <FileText className="w-8 h-8 text-green-600" />
-            </div>
-            <p className="text-lg font-medium text-foreground mb-2">
-              {file ? file.name : "Click to select Word document"}
-            </p>
-            <p className="text-sm text-muted-foreground">Supports .doc, .docx, and .txt files</p>
-          </label>
-        </div>
-
-        {file && (
-          <div className="mt-6 space-y-4">
-            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-              <div className="flex items-center gap-3">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
+            <input type="file" accept=".doc,.docx,.txt" onChange={handleFileChange} className="hidden" id="word-excel-upload" />
+            <label htmlFor="word-excel-upload" className="cursor-pointer">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-600/10 flex items-center justify-center">
                 <FileText className="w-8 h-8 text-green-600" />
-                <div>
-                  <p className="font-medium">{file.name}</p>
-                  <p className="text-sm text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
+              </div>
+              <p className="text-lg font-medium text-foreground mb-2">
+                {file ? file.name : "Click to select Word document"}
+              </p>
+              <p className="text-sm text-muted-foreground">Supports .doc, .docx, and .txt files</p>
+            </label>
+          </div>
+
+          {file && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-8 h-8 text-green-600" />
+                  <div>
+                    <p className="font-medium text-foreground">{file.name}</p>
+                    <p className="text-sm text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
+                  </div>
                 </div>
+                <Button variant="ghost" size="sm" onClick={() => { setFile(null); setProgress(0); }}>
+                  <Trash2 className="w-4 h-4 mr-1" />
+                  Remove
+                </Button>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => { setFile(null); setProgress(0); }}>
-                <Trash2 className="w-4 h-4 mr-1" />
-                Remove
-              </Button>
+
+              {isProcessing && (
+                <div className="space-y-2">
+                  <Progress value={progress} className="h-2" />
+                  <p className="text-sm text-center text-muted-foreground">{progressLabel}</p>
+                </div>
+              )}
+
+              <div className="text-center">
+                <Button size="lg" onClick={handleConvert} disabled={isProcessing} className="gap-2">
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Converting...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-5 h-5" />
+                      Convert to Excel (.xlsx)
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
+          )}
 
-            {isProcessing && (
-              <div className="space-y-2">
-                <Progress value={progress} className="h-2" />
-                <p className="text-sm text-center text-muted-foreground">{progressLabel}</p>
+          <div className="bg-muted/50 rounded-lg p-4 border border-border">
+            <div className="flex items-start gap-3">
+              <Shield className="w-5 h-5 text-primary mt-0.5" />
+              <div>
+                <h4 className="font-medium text-foreground">Secure & Private</h4>
+                <p className="text-sm text-muted-foreground">
+                  Your documents are processed entirely within your browser. No files are uploaded to any server.
+                </p>
               </div>
-            )}
-
-            <div className="text-center">
-              <Button size="lg" onClick={handleConvert} disabled={isProcessing} className="gap-2">
-                {isProcessing ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Converting...
-                  </>
-                ) : (
-                  <>
-                    <Download className="w-5 h-5" />
-                    Convert to Excel (CSV)
-                  </>
-                )}
-              </Button>
             </div>
           </div>
-        )}
-        <ToolSEOContent {...seoContent} />
+
+          <ToolSEOContent {...seoContent} />
+        </div>
       </ToolLayout>
     </>
   );

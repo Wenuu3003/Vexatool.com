@@ -243,7 +243,7 @@ const PDFToExcel = () => {
   const handleReset = () => {
     setFiles([]);
     setBatchFiles([]);
-    setExtractedData([]);
+    setExtractedData(null);
     setProgress(0);
     setPageCount(0);
   };

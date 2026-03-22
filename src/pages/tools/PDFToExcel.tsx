@@ -60,7 +60,7 @@ const PDFToExcel = () => {
     } else {
       // Single file mode
       setFiles(newFiles);
-      setExtractedData([]);
+      setExtractedData(null);
       setProgress(0);
       if (newFiles.length > 0) {
         try {

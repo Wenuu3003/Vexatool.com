@@ -83,70 +83,54 @@ const PDFToExcel = () => {
     setBatchFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<string[][]> => {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const allData: string[][] = [];
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      if (onProgress) onProgress((i / pdf.numPages) * 80);
-      else setProgress((i / pdf.numPages) * 80);
-      
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      
-      const items = textContent.items as { str: string; transform: number[] }[];
-      
-      if (detectTables) {
-        const rows: Map<number, { x: number; text: string }[]> = new Map();
-        
-        items.forEach((item) => {
-          if (item.str.trim()) {
-            const y = Math.round(item.transform[5] / 5) * 5;
-            const x = item.transform[4];
-            
-            if (!rows.has(y)) {
-              rows.set(y, []);
-            }
-            rows.get(y)!.push({ x, text: item.str.trim() });
-          }
+  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<{ sheets: { name: string; data: string[][] }[] }> => {
+    const result = await extractPDFToTableData(file, (p) => {
+      if (onProgress) onProgress(p);
+      else setProgress(p);
+    });
+    return result;
+  }, []);
+
+  const createExcelFromSheets = useCallback(async (sheets: { name: string; data: string[][] }[]): Promise<ArrayBuffer> => {
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'VexaTool';
+    workbook.created = new Date();
+
+    for (const sheet of sheets) {
+      const ws = workbook.addWorksheet(sheet.name);
+      const maxCols = Math.max(...sheet.data.map(r => r.length), 1);
+
+      for (const row of sheet.data) {
+        const padded = [...row];
+        while (padded.length < maxCols) padded.push('');
+        ws.addRow(padded);
+      }
+
+      // Bold first row as header
+      if (sheet.data.length > 0) {
+        const headerRow = ws.getRow(1);
+        headerRow.font = { bold: true };
+        headerRow.eachCell(cell => {
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F0FE' } };
         });
-        
-        const sortedRows = Array.from(rows.entries())
-          .sort((a, b) => b[0] - a[0]);
-        
-        sortedRows.forEach(([, cells]) => {
-          cells.sort((a, b) => a.x - b.x);
-          const rowData = cells.map(c => c.text);
-          if (rowData.length > 0) {
-            allData.push(rowData);
-          }
-        });
-      } else {
-        let currentLine = "";
-        items.forEach((item) => {
-          if (item.str.trim()) {
-            currentLine += item.str + " ";
-          }
-        });
-        if (currentLine.trim()) {
-          allData.push([currentLine.trim()]);
+      }
+
+      // Auto-fit columns
+      if (preserveFormatting) {
+        for (let i = 1; i <= maxCols; i++) {
+          const col = ws.getColumn(i);
+          let maxWidth = 10;
+          col.eachCell({ includeEmpty: false }, cell => {
+            const len = String(cell.value ?? '').length;
+            if (len > maxWidth) maxWidth = Math.min(len, 50);
+          });
+          col.width = maxWidth + 2;
         }
       }
-      
-      if (i < pdf.numPages) {
-        allData.push([`--- Page ${i + 1} ---`]);
-      }
     }
-    
-    return allData;
-  }, [detectTables]);
 
-  const createExcel = useCallback(async (data: string[][]): Promise<ArrayBuffer> => {
-    return await createExcelFromData(data, {
-      sheetName: 'Extracted Data',
-      preserveFormatting
-    });
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer as ArrayBuffer;
   }, [preserveFormatting]);
 
   const handleConvert = async () => {

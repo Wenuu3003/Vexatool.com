@@ -9,8 +9,8 @@ import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
-import { pdfjsLib } from "@/lib/pdfWorker";
-import { createExcelFromData } from "@/lib/excelUtils";
+import { extractPDFToTableData } from "@/lib/pdfTableExtractor";
+import ExcelJS from "exceljs";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
@@ -28,7 +28,7 @@ const PDFToExcel = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [extractedData, setExtractedData] = useState<string[][]>([]);
+  const [extractedData, setExtractedData] = useState<{ sheets: { name: string; data: string[][] }[] } | null>(null);
   const [preserveFormatting, setPreserveFormatting] = useState(true);
   const [detectTables, setDetectTables] = useState(true);
   const [batchMode, setBatchMode] = useState(false);
@@ -60,7 +60,7 @@ const PDFToExcel = () => {
     } else {
       // Single file mode
       setFiles(newFiles);
-      setExtractedData([]);
+      setExtractedData(null);
       setProgress(0);
       if (newFiles.length > 0) {
         try {
@@ -83,70 +83,54 @@ const PDFToExcel = () => {
     setBatchFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<string[][]> => {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const allData: string[][] = [];
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      if (onProgress) onProgress((i / pdf.numPages) * 80);
-      else setProgress((i / pdf.numPages) * 80);
-      
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      
-      const items = textContent.items as { str: string; transform: number[] }[];
-      
-      if (detectTables) {
-        const rows: Map<number, { x: number; text: string }[]> = new Map();
-        
-        items.forEach((item) => {
-          if (item.str.trim()) {
-            const y = Math.round(item.transform[5] / 5) * 5;
-            const x = item.transform[4];
-            
-            if (!rows.has(y)) {
-              rows.set(y, []);
-            }
-            rows.get(y)!.push({ x, text: item.str.trim() });
-          }
+  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<{ sheets: { name: string; data: string[][] }[] }> => {
+    const result = await extractPDFToTableData(file, (p) => {
+      if (onProgress) onProgress(p);
+      else setProgress(p);
+    });
+    return result;
+  }, []);
+
+  const createExcelFromSheets = useCallback(async (sheets: { name: string; data: string[][] }[]): Promise<ArrayBuffer> => {
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'VexaTool';
+    workbook.created = new Date();
+
+    for (const sheet of sheets) {
+      const ws = workbook.addWorksheet(sheet.name);
+      const maxCols = Math.max(...sheet.data.map(r => r.length), 1);
+
+      for (const row of sheet.data) {
+        const padded = [...row];
+        while (padded.length < maxCols) padded.push('');
+        ws.addRow(padded);
+      }
+
+      // Bold first row as header
+      if (sheet.data.length > 0) {
+        const headerRow = ws.getRow(1);
+        headerRow.font = { bold: true };
+        headerRow.eachCell(cell => {
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F0FE' } };
         });
-        
-        const sortedRows = Array.from(rows.entries())
-          .sort((a, b) => b[0] - a[0]);
-        
-        sortedRows.forEach(([, cells]) => {
-          cells.sort((a, b) => a.x - b.x);
-          const rowData = cells.map(c => c.text);
-          if (rowData.length > 0) {
-            allData.push(rowData);
-          }
-        });
-      } else {
-        let currentLine = "";
-        items.forEach((item) => {
-          if (item.str.trim()) {
-            currentLine += item.str + " ";
-          }
-        });
-        if (currentLine.trim()) {
-          allData.push([currentLine.trim()]);
+      }
+
+      // Auto-fit columns
+      if (preserveFormatting) {
+        for (let i = 1; i <= maxCols; i++) {
+          const col = ws.getColumn(i);
+          let maxWidth = 10;
+          col.eachCell({ includeEmpty: false }, cell => {
+            const len = String(cell.value ?? '').length;
+            if (len > maxWidth) maxWidth = Math.min(len, 50);
+          });
+          col.width = maxWidth + 2;
         }
       }
-      
-      if (i < pdf.numPages) {
-        allData.push([`--- Page ${i + 1} ---`]);
-      }
     }
-    
-    return allData;
-  }, [detectTables]);
 
-  const createExcel = useCallback(async (data: string[][]): Promise<ArrayBuffer> => {
-    return await createExcelFromData(data, {
-      sheetName: 'Extracted Data',
-      preserveFormatting
-    });
+    const buffer = await workbook.xlsx.writeBuffer();
+    return buffer as ArrayBuffer;
   }, [preserveFormatting]);
 
   const handleConvert = async () => {
@@ -163,11 +147,11 @@ const PDFToExcel = () => {
     setProgress(0);
 
     try {
-      const data = await extractTextFromPDF(files[0]);
-      setExtractedData(data);
+      const result = await extractTextFromPDF(files[0]);
+      setExtractedData(result);
       setProgress(90);
 
-      const excelBuffer = await createExcel(data);
+      const excelBuffer = await createExcelFromSheets(result.sheets);
       const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       
       const url = URL.createObjectURL(blob);
@@ -180,9 +164,10 @@ const PDFToExcel = () => {
       setProgress(100);
       await saveFileHistory(files[0].name, "pdf", "pdf-to-excel");
 
+      const totalRows = result.sheets.reduce((sum, s) => sum + s.data.length, 0);
       toast({
         title: "Conversion Complete!",
-        description: `Successfully extracted ${data.length} rows to Excel.`,
+        description: `Successfully extracted ${totalRows} rows across ${result.sheets.length} sheet(s) to Excel.`,
       });
 
     } catch (error) {
@@ -225,7 +210,7 @@ const PDFToExcel = () => {
           ));
         });
 
-        const excelBuffer = await createExcel(data);
+        const excelBuffer = await createExcelFromSheets(data.sheets);
         const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         
         const url = URL.createObjectURL(blob);
@@ -258,7 +243,7 @@ const PDFToExcel = () => {
   const handleReset = () => {
     setFiles([]);
     setBatchFiles([]);
-    setExtractedData([]);
+    setExtractedData(null);
     setProgress(0);
     setPageCount(0);
   };
@@ -397,13 +382,13 @@ const PDFToExcel = () => {
                 </div>
               )}
 
-              {extractedData.length > 0 && !isProcessing && (
+              {extractedData && extractedData.sheets.length > 0 && !isProcessing && (
                 <div className="bg-card p-4 rounded-lg border border-border">
                   <h3 className="font-semibold text-foreground mb-3">Preview (first 10 rows)</h3>
                   <div className="overflow-auto max-h-48 text-sm">
                     <table className="w-full border-collapse">
                       <tbody>
-                        {extractedData.slice(0, 10).map((row, i) => (
+                        {extractedData.sheets[0].data.slice(0, 10).map((row, i) => (
                           <tr key={i} className="border-b border-border">
                             {row.map((cell, j) => (
                               <td key={j} className="p-2 text-muted-foreground">

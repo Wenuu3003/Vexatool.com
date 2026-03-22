@@ -143,9 +143,8 @@ const ExcelToPDF = () => {
       : (orientation === "portrait" ? 792 : 612);
     
     const margin = 40;
-    const fontSize = 10;
+    const fontSize = 9;
     const headerFontSize = 12;
-    const lineHeight = fontSize * 1.5;
     const cellPadding = 4;
     
     let sheetsProcessed = 0;
@@ -168,15 +167,16 @@ const ExcelToPDF = () => {
       
       const numCols = Math.max(...cleanedData.map(row => row.length), 1);
       const availableWidth = pageWidth - (margin * 2);
-      let colWidths: number[] = [];
-      
+
+      // Compute column widths based on content
+      const colWidths: number[] = [];
       if (autoFitColumns) {
         for (let col = 0; col < numCols; col++) {
           let maxWidth = 30;
           cleanedData.forEach(row => {
             const cellValue = String(row[col] ?? '');
-            const cellWidth = font.widthOfTextAtSize(cellValue.substring(0, 30), fontSize) + cellPadding * 2;
-            if (cellWidth > maxWidth) maxWidth = Math.min(cellWidth, 150);
+            const textWidth = font.widthOfTextAtSize(cellValue.substring(0, 60), fontSize) + cellPadding * 2;
+            if (textWidth > maxWidth) maxWidth = Math.min(textWidth, 200);
           });
           colWidths.push(maxWidth);
         }
@@ -184,17 +184,43 @@ const ExcelToPDF = () => {
         const totalWidth = colWidths.reduce((a, b) => a + b, 0);
         if (totalWidth > availableWidth) {
           const scale = availableWidth / totalWidth;
-          colWidths = colWidths.map(w => w * scale);
+          for (let i = 0; i < colWidths.length; i++) {
+            colWidths[i] = Math.max(colWidths[i] * scale, 25);
+          }
         }
       } else {
         const colWidth = availableWidth / numCols;
-        colWidths = Array(numCols).fill(colWidth);
+        for (let i = 0; i < numCols; i++) colWidths.push(colWidth);
       }
+
+      // Helper: wrap text into lines that fit within a column width
+      const wrapText = (text: string, maxTextWidth: number): string[] => {
+        if (!text) return [''];
+        const words = text.split(/\s+/);
+        const lines: string[] = [];
+        let currentLine = '';
+
+        for (const word of words) {
+          const testLine = currentLine ? currentLine + ' ' + word : word;
+          const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+          if (testWidth > maxTextWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else {
+            currentLine = testLine;
+          }
+        }
+        if (currentLine) lines.push(currentLine);
+        return lines.length > 0 ? lines : [''];
+      };
+
+      // Store first row as header for repeat
+      const headerRow = cleanedData.length > 0 ? cleanedData[0] : null;
       
       let page = pdfDoc.addPage([pageWidth, pageHeight]);
       let y = pageHeight - margin;
-      let rowIndex = 0;
       
+      // Sheet title
       page.drawText(sheetName, {
         x: margin,
         y: y,
@@ -203,61 +229,77 @@ const ExcelToPDF = () => {
         color: rgb(0.2, 0.2, 0.2),
       });
       y -= headerFontSize + 10;
-      
-      for (const row of cleanedData) {
-        const rowHeight = lineHeight + cellPadding;
-        
-        if (y - rowHeight < margin) {
-          page = pdfDoc.addPage([pageWidth, pageHeight]);
-          y = pageHeight - margin;
-          
-          if (oneSheetPerPage && rowIndex === 0) {
-            page.drawText(sheetName, {
-              x: margin,
-              y: y,
-              size: headerFontSize,
-              font: boldFont,
-              color: rgb(0.2, 0.2, 0.2),
-            });
-            y -= headerFontSize + 10;
+
+      const drawTableRow = (rowCells: (string | number | boolean | null)[], isHeader: boolean, currentPage: ReturnType<typeof pdfDoc.addPage>, startY: number): { page: ReturnType<typeof pdfDoc.addPage>; endY: number } => {
+        let pg = currentPage;
+        let yPos = startY;
+
+        // Calculate row height based on wrapped text
+        const wrappedCells: string[][] = [];
+        let maxLines = 1;
+        for (let col = 0; col < numCols; col++) {
+          const cellValue = String(rowCells[col] ?? '');
+          const maxTextWidth = colWidths[col] - cellPadding * 2;
+          const lines = wrapText(cellValue, maxTextWidth);
+          wrappedCells.push(lines);
+          if (lines.length > maxLines) maxLines = lines.length;
+        }
+
+        const lineHeight = fontSize + 3;
+        const rowHeight = maxLines * lineHeight + cellPadding * 2;
+
+        // Check if row fits on current page
+        if (yPos - rowHeight < margin) {
+          pg = pdfDoc.addPage([pageWidth, pageHeight]);
+          yPos = pageHeight - margin;
+
+          // Repeat header on new page
+          if (headerRow && !isHeader) {
+            const headerResult = drawTableRow(headerRow, true, pg, yPos);
+            pg = headerResult.page;
+            yPos = headerResult.endY;
           }
         }
-        
+
+        // Draw cells
         let x = margin;
-        const isHeader = rowIndex === 0;
-        
         for (let col = 0; col < numCols; col++) {
-          const cellValue = String(row[col] ?? '');
           const colWidth = colWidths[col];
-          
-          page.drawRectangle({
+
+          // Cell background
+          pg.drawRectangle({
             x: x,
-            y: y - rowHeight,
+            y: yPos - rowHeight,
             width: colWidth,
             height: rowHeight,
-            borderColor: rgb(0.8, 0.8, 0.8),
+            borderColor: rgb(0.75, 0.75, 0.75),
             borderWidth: 0.5,
-            color: isHeader ? rgb(0.95, 0.95, 0.95) : undefined,
+            color: isHeader ? rgb(0.93, 0.95, 0.98) : undefined,
           });
-          
-          const truncatedText = cellValue.length > 25 
-            ? cellValue.substring(0, 22) + '...'
-            : cellValue;
-          
-          page.drawText(truncatedText, {
-            x: x + cellPadding,
-            y: y - rowHeight + cellPadding + 2,
-            size: fontSize,
-            font: isHeader ? boldFont : font,
-            color: rgb(0.1, 0.1, 0.1),
-            maxWidth: colWidth - cellPadding * 2,
-          });
-          
+
+          // Draw wrapped text lines
+          const lines = wrappedCells[col];
+          for (let li = 0; li < lines.length; li++) {
+            pg.drawText(lines[li], {
+              x: x + cellPadding,
+              y: yPos - cellPadding - (li + 1) * lineHeight + 2,
+              size: fontSize,
+              font: isHeader ? boldFont : font,
+              color: rgb(0.1, 0.1, 0.1),
+            });
+          }
           x += colWidth;
         }
-        
-        y -= rowHeight;
-        rowIndex++;
+
+        return { page: pg, endY: yPos - rowHeight };
+      };
+      
+      for (let rowIdx = 0; rowIdx < cleanedData.length; rowIdx++) {
+        const row = cleanedData[rowIdx];
+        const isHeader = rowIdx === 0;
+        const result = drawTableRow(row, isHeader, page, y);
+        page = result.page;
+        y = result.endY;
       }
       
       sheetsProcessed++;

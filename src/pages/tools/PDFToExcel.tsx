@@ -382,13 +382,13 @@ const PDFToExcel = () => {
                 </div>
               )}
 
-              {extractedData.length > 0 && !isProcessing && (
+              {extractedData && extractedData.sheets.length > 0 && !isProcessing && (
                 <div className="bg-card p-4 rounded-lg border border-border">
                   <h3 className="font-semibold text-foreground mb-3">Preview (first 10 rows)</h3>
                   <div className="overflow-auto max-h-48 text-sm">
                     <table className="w-full border-collapse">
                       <tbody>
-                        {extractedData.slice(0, 10).map((row, i) => (
+                        {extractedData.sheets[0].data.slice(0, 10).map((row, i) => (
                           <tr key={i} className="border-b border-border">
                             {row.map((cell, j) => (
                               <td key={j} className="p-2 text-muted-foreground">

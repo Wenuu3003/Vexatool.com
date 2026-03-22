@@ -147,11 +147,11 @@ const PDFToExcel = () => {
     setProgress(0);
 
     try {
-      const data = await extractTextFromPDF(files[0]);
-      setExtractedData(data);
+      const result = await extractTextFromPDF(files[0]);
+      setExtractedData(result);
       setProgress(90);
 
-      const excelBuffer = await createExcel(data);
+      const excelBuffer = await createExcelFromSheets(result.sheets);
       const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       
       const url = URL.createObjectURL(blob);
@@ -164,9 +164,10 @@ const PDFToExcel = () => {
       setProgress(100);
       await saveFileHistory(files[0].name, "pdf", "pdf-to-excel");
 
+      const totalRows = result.sheets.reduce((sum, s) => sum + s.data.length, 0);
       toast({
         title: "Conversion Complete!",
-        description: `Successfully extracted ${data.length} rows to Excel.`,
+        description: `Successfully extracted ${totalRows} rows across ${result.sheets.length} sheet(s) to Excel.`,
       });
 
     } catch (error) {

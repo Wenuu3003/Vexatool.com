@@ -38,11 +38,25 @@ const PDFToExcel = () => {
   const [batchMode, setBatchMode] = useState(false);
   const { saveFileHistory } = useFileHistory();
 
+  const validateFile = (file: File): string | null => {
+    if (file.size > MAX_FILE_SIZE) {
+      return `File "${file.name}" exceeds ${MAX_FILE_SIZE_MB}MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB).`;
+    }
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      return `File "${file.name}" is not a PDF file.`;
+    }
+    return null;
+  };
+
   const handleFilesChange = async (newFiles: File[]) => {
     if (batchMode) {
-      // Batch mode - add multiple files
       const newBatchFiles: BatchFile[] = [];
       for (const file of newFiles) {
+        const error = validateFile(file);
+        if (error) {
+          toast({ title: "Invalid file", description: error, variant: "destructive" });
+          continue;
+        }
         try {
           const arrayBuffer = await file.arrayBuffer();
           const pdfDoc = await PDFDocument.load(arrayBuffer);
@@ -53,32 +67,29 @@ const PDFToExcel = () => {
             progress: 0
           });
         } catch {
-          toast({
-            title: "Error loading file",
-            description: `Failed to load ${file.name}`,
-            variant: "destructive",
-          });
+          toast({ title: "Error loading file", description: `Failed to load ${file.name}. It may be corrupted.`, variant: "destructive" });
         }
       }
       setBatchFiles(prev => [...prev, ...newBatchFiles]);
     } else {
-      // Single file mode
+      const selectedFile = newFiles[0];
+      if (!selectedFile) { setFiles([]); setPageCount(0); return; }
+      const error = validateFile(selectedFile);
+      if (error) {
+        toast({ title: "Invalid file", description: error, variant: "destructive" });
+        return;
+      }
       setFiles(newFiles);
       setExtractedData(null);
       setProgress(0);
-      if (newFiles.length > 0) {
-        try {
-          const arrayBuffer = await newFiles[0].arrayBuffer();
-          const pdfDoc = await PDFDocument.load(arrayBuffer);
-          setPageCount(pdfDoc.getPageCount());
-        } catch (error) {
-          if (import.meta.env.DEV) {
-            console.error("Error loading PDF:", error);
-          }
-          setPageCount(0);
-        }
-      } else {
+      try {
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        setPageCount(pdfDoc.getPageCount());
+      } catch {
         setPageCount(0);
+        toast({ title: "Error", description: "Could not read PDF. The file may be corrupted or password-protected.", variant: "destructive" });
+        setFiles([]);
       }
     }
   };

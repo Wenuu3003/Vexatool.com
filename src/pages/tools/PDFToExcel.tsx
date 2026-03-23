@@ -150,21 +150,43 @@ const PDFToExcel = () => {
 
   const handleConvert = async () => {
     if (files.length === 0) {
-      toast({
-        title: "No file selected",
-        description: "Please select a PDF file to convert.",
-        variant: "destructive",
-      });
+      toast({ title: "No file selected", description: "Please select a PDF file to convert.", variant: "destructive" });
       return;
     }
 
     setIsProcessing(true);
     setProgress(0);
+    setProgressLabel("Reading PDF...");
 
     try {
       const result = await extractTextFromPDF(files[0]);
+
+      // Handle image-only PDFs
+      if (result.isImageOnly) {
+        toast({
+          title: "Image-based PDF detected",
+          description: "This PDF contains scanned images instead of text. Please use an OCR tool first to extract text, then convert.",
+          variant: "destructive",
+        });
+        setIsProcessing(false);
+        return;
+      }
+
+      // Handle empty extraction
+      const totalRows = result.sheets.reduce((sum, s) => sum + s.data.length, 0);
+      if (totalRows === 0) {
+        toast({
+          title: "No data extracted",
+          description: "Could not find any tabular data in this PDF. The file may contain only images or unstructured text.",
+          variant: "destructive",
+        });
+        setIsProcessing(false);
+        return;
+      }
+
       setExtractedData(result);
       setProgress(90);
+      setProgressLabel("Creating Excel file...");
 
       const excelBuffer = await createExcelFromSheets(result.sheets);
       const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -177,23 +199,19 @@ const PDFToExcel = () => {
       URL.revokeObjectURL(url);
       
       setProgress(100);
+      setProgressLabel("Complete!");
       await saveFileHistory(files[0].name, "pdf", "pdf-to-excel");
 
-      const totalRows = result.sheets.reduce((sum, s) => sum + s.data.length, 0);
       toast({
         title: "Conversion Complete!",
         description: `Successfully extracted ${totalRows} rows across ${result.sheets.length} sheet(s) to Excel.`,
       });
-
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Conversion error:", error);
-      }
-      toast({
-        title: "Conversion Error",
-        description: "Failed to convert PDF to Excel. Please try again.",
-        variant: "destructive",
-      });
+      if (import.meta.env.DEV) console.error("Conversion error:", error);
+      const msg = error instanceof Error && error.message.includes("password")
+        ? "This PDF is password-protected. Please unlock it first."
+        : "Failed to convert PDF to Excel. The file may be corrupted or unsupported.";
+      toast({ title: "Conversion Error", description: msg, variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }

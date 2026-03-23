@@ -122,9 +122,10 @@ const ExcelToWord = () => {
                         font: "Arial",
                       }),
                     ],
+                    spacing: { after: 0 },
                   }),
                 ],
-                width: { size: colWidthDxa, type: WidthType.DXA },
+                width: { size: columnWidthsDxa[c], type: WidthType.DXA },
                 margins: { top: 40, bottom: 40, left: 80, right: 80 },
                 borders: {
                   top: defaultBorder,

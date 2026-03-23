@@ -134,13 +134,26 @@ const ExcelToPDF = () => {
     const pdfDoc = await PDFDocument.create();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    // Auto-detect orientation for wide sheets if user selected portrait
+    let effectiveOrientation = orientation;
+    if (orientation === "portrait") {
+      // Check if any sheet has many columns suggesting landscape is better
+      for (const sheetName of sheetsToConvert) {
+        const ws = wb.getWorksheet(sheetName);
+        if (ws && ws.columnCount > 6) {
+          effectiveOrientation = "landscape";
+          break;
+        }
+      }
+    }
     
     const pageWidth = pageSize === "a4" 
-      ? (orientation === "portrait" ? 595 : 842)
-      : (orientation === "portrait" ? 612 : 792);
+      ? (effectiveOrientation === "portrait" ? 595 : 842)
+      : (effectiveOrientation === "portrait" ? 612 : 792);
     const pageHeight = pageSize === "a4"
-      ? (orientation === "portrait" ? 842 : 595)
-      : (orientation === "portrait" ? 792 : 612);
+      ? (effectiveOrientation === "portrait" ? 842 : 595)
+      : (effectiveOrientation === "portrait" ? 792 : 612);
     
     const margin = 40;
     const fontSize = 9;
@@ -194,6 +207,7 @@ const ExcelToPDF = () => {
       }
 
       // Helper: wrap text into lines that fit within a column width
+      // Handles long strings without spaces (URLs, IDs, PNRs) via character-level breaking
       const wrapText = (text: string, maxTextWidth: number): string[] => {
         if (!text) return [''];
         const words = text.split(/\s+/);
@@ -210,7 +224,25 @@ const ExcelToPDF = () => {
             currentLine = testLine;
           }
         }
-        if (currentLine) lines.push(currentLine);
+        if (currentLine) {
+          // Character-level break for very long words that don't fit
+          const lineWidth = font.widthOfTextAtSize(currentLine, fontSize);
+          if (lineWidth > maxTextWidth && !currentLine.includes(' ')) {
+            let chunk = '';
+            for (const char of currentLine) {
+              const chunkWidth = font.widthOfTextAtSize(chunk + char, fontSize);
+              if (chunkWidth > maxTextWidth && chunk) {
+                lines.push(chunk);
+                chunk = char;
+              } else {
+                chunk += char;
+              }
+            }
+            if (chunk) lines.push(chunk);
+          } else {
+            lines.push(currentLine);
+          }
+        }
         return lines.length > 0 ? lines : [''];
       };
 

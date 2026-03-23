@@ -86,9 +86,23 @@ const ExcelToWord = () => {
         // Calculate max columns
         const maxCols = Math.max(...sheetData.map(r => r.length), 1);
 
-        // Calculate column widths proportionally using DXA
+        // Calculate column widths based on content, with DXA units
         const tableWidthDxa = 9360; // US Letter with 1" margins
-        const colWidthDxa = Math.floor(tableWidthDxa / maxCols);
+        
+        // Measure content widths per column
+        const contentWidths: number[] = Array(maxCols).fill(0);
+        for (const row of sheetData) {
+          for (let c = 0; c < maxCols; c++) {
+            const len = String(row[c] ?? "").length;
+            if (len > contentWidths[c]) contentWidths[c] = len;
+          }
+        }
+        // Ensure minimum width and cap maximum
+        const totalContent = contentWidths.reduce((s, w) => s + Math.max(w, 3), 0);
+        const columnWidthsDxa = contentWidths.map(w => {
+          const proportion = Math.max(w, 3) / totalContent;
+          return Math.max(Math.floor(tableWidthDxa * proportion), 500);
+        });
 
         // Build table rows
         const docxRows = sheetData.map((row, rowIndex) => {
@@ -108,9 +122,10 @@ const ExcelToWord = () => {
                         font: "Arial",
                       }),
                     ],
+                    spacing: { after: 0 },
                   }),
                 ],
-                width: { size: colWidthDxa, type: WidthType.DXA },
+                width: { size: columnWidthsDxa[c], type: WidthType.DXA },
                 margins: { top: 40, bottom: 40, left: 80, right: 80 },
                 borders: {
                   top: defaultBorder,
@@ -124,13 +139,11 @@ const ExcelToWord = () => {
           return new TableRow({ children: cells });
         });
 
-        const columnWidths = Array(maxCols).fill(colWidthDxa);
-
         tables.push(
           new DocxTable({
             rows: docxRows,
             width: { size: tableWidthDxa, type: WidthType.DXA },
-            columnWidths,
+            columnWidths: columnWidthsDxa,
           })
         );
 

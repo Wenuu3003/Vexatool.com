@@ -9,6 +9,9 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { readExcelFile, sheetToArray } from "@/lib/excelUtils";
 import { Document, Packer, Paragraph, TextRun, Table as DocxTable, TableRow, TableCell, WidthType, HeadingLevel, BorderStyle } from "docx";
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const ExcelToWord = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);

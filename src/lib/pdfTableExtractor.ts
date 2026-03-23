@@ -1,5 +1,6 @@
 /**
  * Advanced PDF table extraction with column clustering and multi-table detection.
+ * Handles invoices, bank statements, messy PDFs, and wide tables.
  */
 import { pdfjsLib } from "@/lib/pdfWorker";
 
@@ -18,9 +19,20 @@ interface ExtractedTable {
 
 /**
  * Cluster X positions into column boundaries using gap analysis.
+ * Adaptive minGap based on average character width.
  */
-function clusterColumns(items: TextItem[], minGap = 8): number[] {
+function clusterColumns(items: TextItem[], minGap?: number): number[] {
   if (items.length === 0) return [];
+
+  // Calculate adaptive gap if not provided
+  if (!minGap) {
+    const avgCharWidth = items.reduce((sum, it) => {
+      const charW = it.str.length > 0 ? it.width / it.str.length : 5;
+      return sum + charW;
+    }, 0) / items.length;
+    minGap = Math.max(avgCharWidth * 1.5, 6);
+  }
+
   const xPositions = [...new Set(items.map(it => Math.round(it.x)))].sort((a, b) => a - b);
   if (xPositions.length <= 1) return xPositions;
 
@@ -51,10 +63,16 @@ function getColumnIndex(x: number, boundaries: number[]): number {
 
 /**
  * Group items into rows by Y-coordinate proximity.
+ * Uses adaptive tolerance based on item heights.
  */
-function groupIntoRows(items: TextItem[], yTolerance = 4): Map<number, TextItem[]> {
+function groupIntoRows(items: TextItem[]): Map<number, TextItem[]> {
   const rows = new Map<number, TextItem[]>();
   const sortedItems = [...items].sort((a, b) => b.y - a.y); // top to bottom
+
+  // Adaptive tolerance: half of median item height, minimum 3
+  const heights = items.map(it => it.height).filter(h => h > 0).sort((a, b) => a - b);
+  const medianHeight = heights.length > 0 ? heights[Math.floor(heights.length / 2)] : 10;
+  const yTolerance = Math.max(medianHeight * 0.5, 3);
 
   for (const item of sortedItems) {
     let matched = false;
@@ -74,8 +92,9 @@ function groupIntoRows(items: TextItem[], yTolerance = 4): Map<number, TextItem[
 
 /**
  * Merge adjacent text items on the same row that are very close together.
+ * Adaptive gap based on font size.
  */
-function mergeAdjacentItems(items: TextItem[], maxGap = 3): TextItem[] {
+function mergeAdjacentItems(items: TextItem[]): TextItem[] {
   if (items.length <= 1) return items;
   const sorted = [...items].sort((a, b) => a.x - b.x);
   const merged: TextItem[] = [{ ...sorted[0] }];
@@ -85,16 +104,65 @@ function mergeAdjacentItems(items: TextItem[], maxGap = 3): TextItem[] {
     const curr = sorted[i];
     const gap = curr.x - (prev.x + prev.width);
 
+    // Adaptive max gap: use height as proxy for font size
+    const avgHeight = (prev.height + curr.height) / 2;
+    const maxGap = Math.max(avgHeight * 0.4, 3);
+
     if (gap < maxGap) {
-      // Merge: append text, extend width
       const space = gap > 0.5 ? " " : "";
       prev.str += space + curr.str;
       prev.width = (curr.x + curr.width) - prev.x;
+      prev.height = Math.max(prev.height, curr.height);
     } else {
       merged.push({ ...curr });
     }
   }
   return merged;
+}
+
+/**
+ * Detect if a set of rows looks like a table (has consistent column structure).
+ */
+function detectTableRegions(
+  rowMap: Map<number, TextItem[]>,
+  sortedYKeys: number[]
+): { tableRows: number[]; nonTableRows: number[] } {
+  const tableRows: number[] = [];
+  const nonTableRows: number[] = [];
+
+  // Count items per row
+  const itemCounts = sortedYKeys.map(key => rowMap.get(key)!.length);
+
+  // Find the most common item count (≥2) as likely table column count
+  const countFreq = new Map<number, number>();
+  for (const count of itemCounts) {
+    if (count >= 2) {
+      countFreq.set(count, (countFreq.get(count) || 0) + 1);
+    }
+  }
+
+  let dominantCount = 0;
+  let dominantFreq = 0;
+  for (const [count, freq] of countFreq) {
+    if (freq > dominantFreq) {
+      dominantCount = count;
+      dominantFreq = freq;
+    }
+  }
+
+  for (let i = 0; i < sortedYKeys.length; i++) {
+    const count = itemCounts[i];
+    // Allow ±1 column variance from dominant count
+    if (dominantCount >= 2 && Math.abs(count - dominantCount) <= 1) {
+      tableRows.push(i);
+    } else if (count >= 2) {
+      tableRows.push(i); // still multi-column
+    } else {
+      nonTableRows.push(i);
+    }
+  }
+
+  return { tableRows, nonTableRows };
 }
 
 /**
@@ -170,11 +238,12 @@ export async function extractPDFToTableData(
     const items: TextItem[] = [];
     for (const item of textContent.items as any[]) {
       if (item.str && item.str.trim()) {
+        const charWidth = item.str.length > 0 ? (item.width || item.str.length * 5) / item.str.length : 5;
         items.push({
           str: item.str,
           x: item.transform[4],
-          y: viewport.height - item.transform[5], // flip Y for top-down
-          width: item.width || (item.str.length * 5),
+          y: viewport.height - item.transform[5],
+          width: item.width || (item.str.length * charWidth),
           height: item.height || 10,
         });
       }
@@ -186,13 +255,12 @@ export async function extractPDFToTableData(
       if (pdf.numPages === 1) {
         allSheets.push({ name: "Sheet1", data: pageData });
       } else {
-        // Check if this page's columns match previous page (same table continues)
         const lastSheet = allSheets.length > 0 ? allSheets[allSheets.length - 1] : null;
         const lastColCount = lastSheet ? (lastSheet.data[0]?.length ?? 0) : 0;
         const thisColCount = pageData[0]?.length ?? 0;
 
         if (lastSheet && thisColCount === lastColCount && thisColCount > 1) {
-          // Same table structure - merge into existing sheet
+          // Same table structure continues across pages
           lastSheet.data.push(...pageData);
         } else {
           allSheets.push({
@@ -204,7 +272,6 @@ export async function extractPDFToTableData(
     }
   }
 
-  // If no data extracted at all, return empty sheet
   if (allSheets.length === 0) {
     allSheets.push({ name: "Sheet1", data: [] });
   }

@@ -194,6 +194,7 @@ const ExcelToPDF = () => {
       }
 
       // Helper: wrap text into lines that fit within a column width
+      // Handles long strings without spaces (URLs, IDs, PNRs) via character-level breaking
       const wrapText = (text: string, maxTextWidth: number): string[] => {
         if (!text) return [''];
         const words = text.split(/\s+/);
@@ -210,7 +211,25 @@ const ExcelToPDF = () => {
             currentLine = testLine;
           }
         }
-        if (currentLine) lines.push(currentLine);
+        if (currentLine) {
+          // Character-level break for very long words that don't fit
+          const lineWidth = font.widthOfTextAtSize(currentLine, fontSize);
+          if (lineWidth > maxTextWidth && !currentLine.includes(' ')) {
+            let chunk = '';
+            for (const char of currentLine) {
+              const chunkWidth = font.widthOfTextAtSize(chunk + char, fontSize);
+              if (chunkWidth > maxTextWidth && chunk) {
+                lines.push(chunk);
+                chunk = char;
+              } else {
+                chunk += char;
+              }
+            }
+            if (chunk) lines.push(chunk);
+          } else {
+            lines.push(currentLine);
+          }
+        }
         return lines.length > 0 ? lines : [''];
       };
 

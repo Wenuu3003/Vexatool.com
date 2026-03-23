@@ -139,13 +139,11 @@ const ExcelToWord = () => {
           return new TableRow({ children: cells });
         });
 
-        const columnWidths = Array(maxCols).fill(colWidthDxa);
-
         tables.push(
           new DocxTable({
             rows: docxRows,
             width: { size: tableWidthDxa, type: WidthType.DXA },
-            columnWidths,
+            columnWidths: columnWidthsDxa,
           })
         );
 

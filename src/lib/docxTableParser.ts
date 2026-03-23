@@ -1,6 +1,6 @@
 /**
  * Parse tables and structured content from DOCX files.
- * Extracts actual <w:tbl> table elements rather than dumping raw text.
+ * Handles nested tables, merged cells, and complex document structures.
  */
 import JSZip from "jszip";
 
@@ -22,29 +22,102 @@ function extractRunText(runXml: string): string {
 }
 
 /**
- * Extract text from a w:p paragraph element.
+ * Extract text from a w:p paragraph element (not recursing into nested tables).
  */
 function extractParagraphText(paraXml: string): string {
-  const runs = paraXml.match(/<w:r[\s>][\s\S]*?<\/w:r>/g) || [];
+  // Remove any nested table content from the paragraph before extracting runs
+  const cleanPara = paraXml.replace(/<w:tbl[\s>][\s\S]*?<\/w:tbl>/g, "");
+  const runs = cleanPara.match(/<w:r[\s>][\s\S]*?<\/w:r>/g) || [];
   return runs.map(extractRunText).join("").trim();
 }
 
 /**
+ * Find top-level XML elements by tag name using balanced matching.
+ * This properly handles nested elements of the same tag.
+ */
+function findTopLevelElements(xml: string, tagName: string): string[] {
+  const results: string[] = [];
+  const openTag = `<${tagName}`;
+  const closeTag = `</${tagName}>`;
+  let searchStart = 0;
+
+  while (searchStart < xml.length) {
+    const openIdx = xml.indexOf(openTag, searchStart);
+    if (openIdx === -1) break;
+
+    // Verify it's a real tag (followed by space, >, or /)
+    const charAfter = xml[openIdx + openTag.length];
+    if (charAfter !== ' ' && charAfter !== '>' && charAfter !== '/') {
+      searchStart = openIdx + 1;
+      continue;
+    }
+
+    // Find the matching close tag using depth counting
+    let depth = 1;
+    let pos = openIdx + openTag.length;
+
+    while (depth > 0 && pos < xml.length) {
+      const nextOpen = xml.indexOf(openTag, pos);
+      const nextClose = xml.indexOf(closeTag, pos);
+
+      if (nextClose === -1) break; // malformed XML
+
+      if (nextOpen !== -1 && nextOpen < nextClose) {
+        // Check if it's a real open tag
+        const nc = xml[nextOpen + openTag.length];
+        if (nc === ' ' || nc === '>' || nc === '/') {
+          depth++;
+        }
+        pos = nextOpen + openTag.length;
+      } else {
+        depth--;
+        if (depth === 0) {
+          results.push(xml.substring(openIdx, nextClose + closeTag.length));
+        }
+        pos = nextClose + closeTag.length;
+      }
+    }
+
+    searchStart = pos;
+  }
+
+  return results;
+}
+
+/**
  * Parse a <w:tbl> element into rows and cells.
+ * Handles gridSpan (horizontal merge) for column spanning.
  */
 function parseTable(tableXml: string): DocxTable {
   const rows: string[][] = [];
-  const rowMatches = tableXml.match(/<w:tr[\s>][\s\S]*?<\/w:tr>/g) || [];
+  const rowElements = findTopLevelElements(tableXml, "w:tr");
 
-  for (const rowXml of rowMatches) {
-    const cellMatches = rowXml.match(/<w:tc[\s>][\s\S]*?<\/w:tc>/g) || [];
+  for (const rowXml of rowElements) {
+    const cellElements = findTopLevelElements(rowXml, "w:tc");
     const cellTexts: string[] = [];
 
-    for (const cellXml of cellMatches) {
-      // Each cell can have multiple paragraphs
-      const paraMatches = cellXml.match(/<w:p[\s>][\s\S]*?<\/w:p>/g) || [];
-      const cellText = paraMatches.map(extractParagraphText).filter(Boolean).join("\n");
+    for (const cellXml of cellElements) {
+      // Check for gridSpan (merged columns)
+      const gridSpanMatch = cellXml.match(/<w:gridSpan\s+w:val="(\d+)"/);
+      const spanCount = gridSpanMatch ? parseInt(gridSpanMatch[1], 10) : 1;
+
+      // Check for vMerge (vertical merge continuation - skip content)
+      const vMergeMatch = cellXml.match(/<w:vMerge\s*\/>/);
+      const isVMergeContinue = vMergeMatch !== null;
+
+      // Extract paragraphs (but not from nested tables)
+      const cellContent = cellXml.replace(/<w:tbl[\s>][\s\S]*?<\/w:tbl>/g, "");
+      const paraMatches = findTopLevelElements(cellContent, "w:p");
+      const cellText = isVMergeContinue
+        ? ""
+        : paraMatches.map(extractParagraphText).filter(Boolean).join("\n");
+
       cellTexts.push(cellText);
+
+      // Add empty cells for spanned columns
+      for (let s = 1; s < spanCount; s++) {
+        cellTexts.push("");
+      }
     }
 
     if (cellTexts.length > 0) {
@@ -56,7 +129,7 @@ function parseTable(tableXml: string): DocxTable {
 }
 
 /**
- * Parse a DOCX file and extract tables + paragraph content.
+ * Parse a DOCX file and extract tables + paragraph content in document order.
  */
 export async function parseDocxContent(file: File): Promise<DocxContent> {
   const arrayBuffer = await file.arrayBuffer();
@@ -70,8 +143,6 @@ export async function parseDocxContent(file: File): Promise<DocxContent> {
   const tables: DocxTable[] = [];
   const paragraphs: string[] = [];
 
-  // Find all tables and paragraphs in document order
-  // We'll process the body content sequentially
   const bodyMatch = docXml.match(/<w:body>([\s\S]*)<\/w:body>/);
   if (!bodyMatch) {
     throw new Error("Could not find document body");
@@ -79,9 +150,9 @@ export async function parseDocxContent(file: File): Promise<DocxContent> {
 
   const body = bodyMatch[1];
 
-  // Extract tables first
-  const tableMatches = body.match(/<w:tbl[\s>][\s\S]*?<\/w:tbl>/g) || [];
-  for (const tableXml of tableMatches) {
+  // Extract top-level tables using balanced matching
+  const tableElements = findTopLevelElements(body, "w:tbl");
+  for (const tableXml of tableElements) {
     const parsed = parseTable(tableXml);
     if (parsed.rows.length > 0) {
       tables.push(parsed);
@@ -90,12 +161,13 @@ export async function parseDocxContent(file: File): Promise<DocxContent> {
 
   // Extract paragraphs that are NOT inside tables
   let bodyWithoutTables = body;
-  for (const tableXml of tableMatches) {
+  for (const tableXml of tableElements) {
     bodyWithoutTables = bodyWithoutTables.replace(tableXml, "\n__TABLE_PLACEHOLDER__\n");
   }
 
-  const paraMatches = bodyWithoutTables.match(/<w:p[\s>][\s\S]*?<\/w:p>/g) || [];
-  for (const paraXml of paraMatches) {
+  const paraElements = findTopLevelElements(bodyWithoutTables, "w:p");
+  for (const paraXml of paraElements) {
+    if (paraXml.includes("__TABLE_PLACEHOLDER__")) continue;
     const text = extractParagraphText(paraXml);
     if (text) {
       paragraphs.push(text);
@@ -120,7 +192,6 @@ export async function extractDocText(file: File): Promise<string> {
       const content = await parseDocxContent(file);
       const parts: string[] = [];
 
-      // Rebuild text with tables as tab-separated
       for (const para of content.paragraphs) {
         parts.push(para);
       }

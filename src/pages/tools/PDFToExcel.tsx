@@ -22,13 +22,17 @@ interface BatchFile {
   progress: number;
 }
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const PDFToExcel = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [batchFiles, setBatchFiles] = useState<BatchFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [progressLabel, setProgressLabel] = useState("");
   const [pageCount, setPageCount] = useState<number>(0);
-  const [extractedData, setExtractedData] = useState<{ sheets: { name: string; data: string[][] }[] } | null>(null);
+  const [extractedData, setExtractedData] = useState<ExtractionResult | null>(null);
   const [preserveFormatting, setPreserveFormatting] = useState(true);
   const [detectTables, setDetectTables] = useState(true);
   const [batchMode, setBatchMode] = useState(false);

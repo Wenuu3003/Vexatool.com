@@ -9,6 +9,9 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { parseDocxContent, extractDocText } from "@/lib/docxTableParser";
 import ExcelJS from "exceljs";
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const WordToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -18,16 +21,16 @@ const WordToExcel = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        toast({ title: "File too large", description: `Maximum file size is ${MAX_FILE_SIZE_MB}MB.`, variant: "destructive" });
+        return;
+      }
       const valid = ['.doc', '.docx', '.txt'].some(ext => selectedFile.name.toLowerCase().endsWith(ext));
       if (valid) {
         setFile(selectedFile);
         setProgress(0);
       } else {
-        toast({
-          title: "Invalid file type",
-          description: "Please select a Word document (.doc, .docx) or text file (.txt)",
-          variant: "destructive",
-        });
+        toast({ title: "Invalid file type", description: "Please select a Word document (.doc, .docx) or text file (.txt)", variant: "destructive" });
       }
     }
   };

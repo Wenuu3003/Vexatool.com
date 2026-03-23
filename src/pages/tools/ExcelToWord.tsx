@@ -9,6 +9,9 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { readExcelFile, sheetToArray } from "@/lib/excelUtils";
 import { Document, Packer, Paragraph, TextRun, Table as DocxTable, TableRow, TableCell, WidthType, HeadingLevel, BorderStyle } from "docx";
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const ExcelToWord = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -18,15 +21,15 @@ const ExcelToWord = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      if (selectedFile.size > MAX_FILE_SIZE) {
+        toast({ title: "File too large", description: `Maximum file size is ${MAX_FILE_SIZE_MB}MB.`, variant: "destructive" });
+        return;
+      }
       if (selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.xls') || selectedFile.name.endsWith('.xlsx')) {
         setFile(selectedFile);
         setProgress(0);
       } else {
-        toast({
-          title: "Invalid file type",
-          description: "Please select an Excel file (.csv, .xls, .xlsx)",
-          variant: "destructive",
-        });
+        toast({ title: "Invalid file type", description: "Please select an Excel file (.csv, .xls, .xlsx)", variant: "destructive" });
       }
     }
   };

@@ -17,6 +17,12 @@ interface ExtractedTable {
   rows: string[][];
 }
 
+export interface ExtractionResult {
+  sheets: { name: string; data: string[][] }[];
+  isImageOnly: boolean;
+  totalTextItems: number;
+}
+
 /**
  * Cluster X positions into column boundaries using gap analysis.
  * Adaptive minGap based on average character width.
@@ -222,11 +228,12 @@ function extractPageData(items: TextItem[]): string[][] {
 export async function extractPDFToTableData(
   file: File,
   onProgress?: (percent: number) => void
-): Promise<{ sheets: { name: string; data: string[][] }[] }> {
+): Promise<ExtractionResult> {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
 
   const allSheets: { name: string; data: string[][] }[] = [];
+  let totalTextItems = 0;
 
   for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
     if (onProgress) onProgress((pageNum / pdf.numPages) * 80);
@@ -249,6 +256,7 @@ export async function extractPDFToTableData(
       }
     }
 
+    totalTextItems += items.length;
     const pageData = extractPageData(items);
 
     if (pageData.length > 0) {
@@ -260,7 +268,6 @@ export async function extractPDFToTableData(
         const thisColCount = pageData[0]?.length ?? 0;
 
         if (lastSheet && thisColCount === lastColCount && thisColCount > 1) {
-          // Same table structure continues across pages
           lastSheet.data.push(...pageData);
         } else {
           allSheets.push({
@@ -270,11 +277,18 @@ export async function extractPDFToTableData(
         }
       }
     }
+
+    // Yield to main thread every 5 pages to prevent UI freezing on large files
+    if (pageNum % 5 === 0) {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
   }
 
   if (allSheets.length === 0) {
     allSheets.push({ name: "Sheet1", data: [] });
   }
 
-  return { sheets: allSheets };
+  const isImageOnly = totalTextItems === 0 && pdf.numPages > 0;
+
+  return { sheets: allSheets, isImageOnly, totalTextItems };
 }

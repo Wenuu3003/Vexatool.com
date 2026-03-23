@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
-import { extractPDFToTableData } from "@/lib/pdfTableExtractor";
+import { extractPDFToTableData, type ExtractionResult } from "@/lib/pdfTableExtractor";
 import ExcelJS from "exceljs";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
@@ -22,23 +22,41 @@ interface BatchFile {
   progress: number;
 }
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const PDFToExcel = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [batchFiles, setBatchFiles] = useState<BatchFile[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [progressLabel, setProgressLabel] = useState("");
   const [pageCount, setPageCount] = useState<number>(0);
-  const [extractedData, setExtractedData] = useState<{ sheets: { name: string; data: string[][] }[] } | null>(null);
+  const [extractedData, setExtractedData] = useState<ExtractionResult | null>(null);
   const [preserveFormatting, setPreserveFormatting] = useState(true);
   const [detectTables, setDetectTables] = useState(true);
   const [batchMode, setBatchMode] = useState(false);
   const { saveFileHistory } = useFileHistory();
 
+  const validateFile = (file: File): string | null => {
+    if (file.size > MAX_FILE_SIZE) {
+      return `File "${file.name}" exceeds ${MAX_FILE_SIZE_MB}MB limit (${(file.size / 1024 / 1024).toFixed(1)}MB).`;
+    }
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      return `File "${file.name}" is not a PDF file.`;
+    }
+    return null;
+  };
+
   const handleFilesChange = async (newFiles: File[]) => {
     if (batchMode) {
-      // Batch mode - add multiple files
       const newBatchFiles: BatchFile[] = [];
       for (const file of newFiles) {
+        const error = validateFile(file);
+        if (error) {
+          toast({ title: "Invalid file", description: error, variant: "destructive" });
+          continue;
+        }
         try {
           const arrayBuffer = await file.arrayBuffer();
           const pdfDoc = await PDFDocument.load(arrayBuffer);
@@ -49,32 +67,29 @@ const PDFToExcel = () => {
             progress: 0
           });
         } catch {
-          toast({
-            title: "Error loading file",
-            description: `Failed to load ${file.name}`,
-            variant: "destructive",
-          });
+          toast({ title: "Error loading file", description: `Failed to load ${file.name}. It may be corrupted.`, variant: "destructive" });
         }
       }
       setBatchFiles(prev => [...prev, ...newBatchFiles]);
     } else {
-      // Single file mode
+      const selectedFile = newFiles[0];
+      if (!selectedFile) { setFiles([]); setPageCount(0); return; }
+      const error = validateFile(selectedFile);
+      if (error) {
+        toast({ title: "Invalid file", description: error, variant: "destructive" });
+        return;
+      }
       setFiles(newFiles);
       setExtractedData(null);
       setProgress(0);
-      if (newFiles.length > 0) {
-        try {
-          const arrayBuffer = await newFiles[0].arrayBuffer();
-          const pdfDoc = await PDFDocument.load(arrayBuffer);
-          setPageCount(pdfDoc.getPageCount());
-        } catch (error) {
-          if (import.meta.env.DEV) {
-            console.error("Error loading PDF:", error);
-          }
-          setPageCount(0);
-        }
-      } else {
+      try {
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        setPageCount(pdfDoc.getPageCount());
+      } catch {
         setPageCount(0);
+        toast({ title: "Error", description: "Could not read PDF. The file may be corrupted or password-protected.", variant: "destructive" });
+        setFiles([]);
       }
     }
   };
@@ -83,7 +98,7 @@ const PDFToExcel = () => {
     setBatchFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<{ sheets: { name: string; data: string[][] }[] }> => {
+  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<ExtractionResult> => {
     const result = await extractPDFToTableData(file, (p) => {
       if (onProgress) onProgress(p);
       else setProgress(p);
@@ -135,21 +150,43 @@ const PDFToExcel = () => {
 
   const handleConvert = async () => {
     if (files.length === 0) {
-      toast({
-        title: "No file selected",
-        description: "Please select a PDF file to convert.",
-        variant: "destructive",
-      });
+      toast({ title: "No file selected", description: "Please select a PDF file to convert.", variant: "destructive" });
       return;
     }
 
     setIsProcessing(true);
     setProgress(0);
+    setProgressLabel("Reading PDF...");
 
     try {
       const result = await extractTextFromPDF(files[0]);
+
+      // Handle image-only PDFs
+      if (result.isImageOnly) {
+        toast({
+          title: "Image-based PDF detected",
+          description: "This PDF contains scanned images instead of text. Please use an OCR tool first to extract text, then convert.",
+          variant: "destructive",
+        });
+        setIsProcessing(false);
+        return;
+      }
+
+      // Handle empty extraction
+      const totalRows = result.sheets.reduce((sum, s) => sum + s.data.length, 0);
+      if (totalRows === 0) {
+        toast({
+          title: "No data extracted",
+          description: "Could not find any tabular data in this PDF. The file may contain only images or unstructured text.",
+          variant: "destructive",
+        });
+        setIsProcessing(false);
+        return;
+      }
+
       setExtractedData(result);
       setProgress(90);
+      setProgressLabel("Creating Excel file...");
 
       const excelBuffer = await createExcelFromSheets(result.sheets);
       const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -162,23 +199,19 @@ const PDFToExcel = () => {
       URL.revokeObjectURL(url);
       
       setProgress(100);
+      setProgressLabel("Complete!");
       await saveFileHistory(files[0].name, "pdf", "pdf-to-excel");
 
-      const totalRows = result.sheets.reduce((sum, s) => sum + s.data.length, 0);
       toast({
         title: "Conversion Complete!",
         description: `Successfully extracted ${totalRows} rows across ${result.sheets.length} sheet(s) to Excel.`,
       });
-
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Conversion error:", error);
-      }
-      toast({
-        title: "Conversion Error",
-        description: "Failed to convert PDF to Excel. Please try again.",
-        variant: "destructive",
-      });
+      if (import.meta.env.DEV) console.error("Conversion error:", error);
+      const msg = error instanceof Error && error.message.includes("password")
+        ? "This PDF is password-protected. Please unlock it first."
+        : "Failed to convert PDF to Excel. The file may be corrupted or unsupported.";
+      toast({ title: "Conversion Error", description: msg, variant: "destructive" });
     } finally {
       setIsProcessing(false);
     }
@@ -377,7 +410,7 @@ const PDFToExcel = () => {
                 <div className="space-y-2">
                   <Progress value={progress} className="h-2" />
                   <p className="text-sm text-center text-muted-foreground">
-                    {progress < 80 ? "Extracting text..." : progress < 100 ? "Creating Excel file..." : "Complete!"}
+                    {progressLabel || "Processing..."}
                   </p>
                 </div>
               )}

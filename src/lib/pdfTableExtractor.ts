@@ -17,6 +17,12 @@ interface ExtractedTable {
   rows: string[][];
 }
 
+export interface ExtractionResult {
+  sheets: { name: string; data: string[][] }[];
+  isImageOnly: boolean;
+  totalTextItems: number;
+}
+
 /**
  * Cluster X positions into column boundaries using gap analysis.
  * Adaptive minGap based on average character width.

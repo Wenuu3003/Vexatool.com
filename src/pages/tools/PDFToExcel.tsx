@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
-import { extractPDFToTableData } from "@/lib/pdfTableExtractor";
+import { extractPDFToTableData, type ExtractionResult } from "@/lib/pdfTableExtractor";
 import ExcelJS from "exceljs";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";

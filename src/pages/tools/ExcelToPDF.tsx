@@ -48,25 +48,22 @@ const ExcelToPDF = () => {
   const { saveFileHistory } = useFileHistory();
 
   const processExcelFile = async (selectedFile: File): Promise<{ workbook: ExcelJS.Workbook; sheetNames: string[] } | null> => {
-    const validExtensions = ['.xlsx', '.xls', '.csv'];
-    const isValid = validExtensions.some(ext => selectedFile.name.toLowerCase().endsWith(ext));
-    
-    if (!isValid) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an Excel file (.xls, .xlsx) or CSV file (.csv)",
-        variant: "destructive",
-      });
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      toast({ title: "File too large", description: `Maximum file size is ${MAX_FILE_SIZE_MB}MB. Your file is ${(selectedFile.size / 1024 / 1024).toFixed(1)}MB.`, variant: "destructive" });
       return null;
     }
-    
+    const validExtensions = ['.xlsx', '.xls', '.csv'];
+    const isValid = validExtensions.some(ext => selectedFile.name.toLowerCase().endsWith(ext));
+    if (!isValid) {
+      toast({ title: "Invalid file type", description: "Please select an Excel file (.xls, .xlsx) or CSV file (.csv)", variant: "destructive" });
+      return null;
+    }
     try {
       const result = await readExcelFile(selectedFile);
       return result;
     } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Error reading Excel file:", error);
-      }
+      if (import.meta.env.DEV) console.error("Error reading Excel file:", error);
+      toast({ title: "File read error", description: "Could not read the file. It may be corrupted or in an unsupported format.", variant: "destructive" });
       return null;
     }
   };

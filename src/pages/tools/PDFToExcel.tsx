@@ -98,7 +98,7 @@ const PDFToExcel = () => {
     setBatchFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<{ sheets: { name: string; data: string[][] }[] }> => {
+  const extractTextFromPDF = useCallback(async (file: File, onProgress?: (p: number) => void): Promise<ExtractionResult> => {
     const result = await extractPDFToTableData(file, (p) => {
       if (onProgress) onProgress(p);
       else setProgress(p);

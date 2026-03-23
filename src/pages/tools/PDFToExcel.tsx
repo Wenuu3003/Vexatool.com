@@ -410,7 +410,7 @@ const PDFToExcel = () => {
                 <div className="space-y-2">
                   <Progress value={progress} className="h-2" />
                   <p className="text-sm text-center text-muted-foreground">
-                    {progress < 80 ? "Extracting text..." : progress < 100 ? "Creating Excel file..." : "Complete!"}
+                    {progressLabel || "Processing..."}
                   </p>
                 </div>
               )}

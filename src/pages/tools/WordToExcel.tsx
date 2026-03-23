@@ -9,6 +9,9 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { parseDocxContent, extractDocText } from "@/lib/docxTableParser";
 import ExcelJS from "exceljs";
 
+const MAX_FILE_SIZE_MB = 50;
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
+
 const WordToExcel = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);

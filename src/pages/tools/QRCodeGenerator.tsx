@@ -21,6 +21,7 @@ interface BatchQRItem {
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [finalDataUrl, setFinalDataUrl] = useState<string | null>(null);
   const [size, setSize] = useState(256);
   const [logo, setLogo] = useState<string | null>(null);
   const [logoSize, setLogoSize] = useState([30]);
@@ -34,6 +35,12 @@ const QRCodeGenerator = () => {
   const [batchUrls, setBatchUrls] = useState("");
   const [batchQRCodes, setBatchQRCodes] = useState<BatchQRItem[]>([]);
   const [isBatchGenerating, setIsBatchGenerating] = useState(false);
+  // Label below QR
+  const [labelText, setLabelText] = useState("");
+  const [labelFontSize, setLabelFontSize] = useState([16]);
+  const [labelBold, setLabelBold] = useState(false);
+  const [labelColor, setLabelColor] = useState("#000000");
+  const [labelSpacing, setLabelSpacing] = useState([12]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);

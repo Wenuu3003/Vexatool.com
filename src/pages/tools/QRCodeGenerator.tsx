@@ -802,7 +802,7 @@ const QRCodeGenerator = () => {
             ) : qrDataUrl ? (
               <>
                 <div className="p-4 bg-white rounded-xl shadow-lg">
-                  <img src={qrDataUrl} alt="QR Code" className="max-w-full" />
+                  <img src={finalDataUrl || qrDataUrl} alt="QR Code" className="max-w-full" />
                 </div>
                 
                 <div className="flex gap-4">

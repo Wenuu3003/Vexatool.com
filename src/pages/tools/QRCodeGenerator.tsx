@@ -496,8 +496,8 @@ const QRCodeGenerator = () => {
         keywords="QR code generator free, QR code with logo, QR code with text below, custom QR code maker, QR code label, QR code generator India, WhatsApp QR code, UPI QR code, branded QR code"
       />
       <ToolLayout
-        title="Free QR Code Generator Online"
-        description="Create custom QR codes for URLs, WhatsApp, UPI payments & contacts. Add logos, customize colors, download PNG/SVG."
+        title="Free QR Code Generator — Logo, Label & Colors"
+        description="Generate branded QR codes with center logos, custom text labels below, and color customization. Download as PNG or SVG — 100% free and private."
         icon={QrCode}
         colorClass="bg-purple-500"
       >

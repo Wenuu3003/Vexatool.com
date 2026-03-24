@@ -58,15 +58,86 @@ const QRCodeGenerator = () => {
     }
   }, [activeTab, text, driveLink, uploadedImageUrl]);
 
+  // Compose QR image + optional label into final image
+  const composeFinalImage = useCallback((qrDataUrlSrc: string) => {
+    const trimmedLabel = labelText.trim();
+    if (!trimmedLabel) {
+      setFinalDataUrl(qrDataUrlSrc);
+      return;
+    }
+
+    const img = new window.Image();
+    img.onload = () => {
+      const padding = 16;
+      const spacing = labelSpacing[0];
+      const fontSize = labelFontSize[0];
+      const fontWeight = labelBold ? 'bold' : 'normal';
+      const maxTextWidth = size - padding * 2;
+
+      // Measure text to handle wrapping
+      const measureCanvas = document.createElement('canvas');
+      const mCtx = measureCanvas.getContext('2d')!;
+      mCtx.font = `${fontWeight} ${fontSize}px Arial, sans-serif`;
+
+      // Word-wrap
+      const words = trimmedLabel.split(/\s+/);
+      const lines: string[] = [];
+      let currentLine = '';
+      for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        if (mCtx.measureText(testLine).width > maxTextWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+      // Truncate to max 3 lines
+      if (lines.length > 3) {
+        lines.length = 3;
+        lines[2] = lines[2].slice(0, -3) + '...';
+      }
+
+      const lineHeight = fontSize * 1.3;
+      const textBlockHeight = lines.length * lineHeight;
+      const totalHeight = size + spacing + textBlockHeight + padding;
+
+      const finalCanvas = document.createElement('canvas');
+      finalCanvas.width = size;
+      finalCanvas.height = totalHeight;
+      const ctx = finalCanvas.getContext('2d')!;
+
+      // Background
+      ctx.fillStyle = lightColor;
+      ctx.fillRect(0, 0, size, totalHeight);
+
+      // Draw QR
+      ctx.drawImage(img, 0, 0, size, size);
+
+      // Draw label
+      ctx.fillStyle = labelColor;
+      ctx.font = `${fontWeight} ${fontSize}px Arial, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      const textY = size + spacing;
+      lines.forEach((line, i) => {
+        ctx.fillText(line, size / 2, textY + i * lineHeight);
+      });
+
+      setFinalDataUrl(finalCanvas.toDataURL('image/png'));
+    };
+    img.src = qrDataUrlSrc;
+  }, [labelText, labelFontSize, labelBold, labelColor, labelSpacing, size, lightColor]);
+
   const generateQR = useCallback(async () => {
     const content = getQRContent();
     if (!content) {
       setQrDataUrl(null);
+      setFinalDataUrl(null);
       return;
     }
 
-    // QR codes have a max data capacity. Data URLs are too long.
-    // For image tab, we should inform the user this feature needs a hosted URL
     if (activeTab === "image" && content.startsWith("data:")) {
       toast({
         title: "Image QR Limitation",
@@ -74,10 +145,10 @@ const QRCodeGenerator = () => {
         variant: "destructive",
       });
       setQrDataUrl(null);
+      setFinalDataUrl(null);
       return;
     }
 
-    // Check content length - QR codes have practical limits (~2000 chars for reliable scanning)
     if (content.length > 2000) {
       toast({
         title: "Content too long",
@@ -85,6 +156,7 @@ const QRCodeGenerator = () => {
         variant: "destructive",
       });
       setQrDataUrl(null);
+      setFinalDataUrl(null);
       return;
     }
 
@@ -117,15 +189,21 @@ const QRCodeGenerator = () => {
             ctx.fillRect(logoX - 4, logoY - 4, logoSizeValue + 8, logoSizeValue + 8);
             ctx.drawImage(img, logoX, logoY, logoSizeValue, logoSizeValue);
             
-            setQrDataUrl(canvas.toDataURL("image/png"));
+            const qrOnly = canvas.toDataURL("image/png");
+            setQrDataUrl(qrOnly);
+            composeFinalImage(qrOnly);
           };
           img.onerror = () => {
-            setQrDataUrl(canvas.toDataURL("image/png"));
+            const qrOnly = canvas.toDataURL("image/png");
+            setQrDataUrl(qrOnly);
+            composeFinalImage(qrOnly);
           };
           img.src = logo;
         }
       } else {
-        setQrDataUrl(canvas.toDataURL("image/png"));
+        const qrOnly = canvas.toDataURL("image/png");
+        setQrDataUrl(qrOnly);
+        composeFinalImage(qrOnly);
       }
     } catch (error) {
       if (import.meta.env.DEV) {
@@ -137,8 +215,9 @@ const QRCodeGenerator = () => {
         variant: "destructive",
       });
       setQrDataUrl(null);
+      setFinalDataUrl(null);
     }
-  }, [getQRContent, activeTab, size, logo, logoSize, darkColor, lightColor]);
+  }, [getQRContent, activeTab, size, logo, logoSize, darkColor, lightColor, composeFinalImage]);
 
   useEffect(() => {
     generateQR();

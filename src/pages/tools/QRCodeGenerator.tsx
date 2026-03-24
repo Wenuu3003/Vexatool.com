@@ -679,6 +679,63 @@ const QRCodeGenerator = () => {
                 </div>
               )}
             </div>
+
+            {/* Label Below QR */}
+            <div className="space-y-3 border-t border-border pt-4">
+              <Label htmlFor="label-text">Label Below QR Code</Label>
+              <Input
+                id="label-text"
+                placeholder="e.g. Scan to visit our website"
+                value={labelText}
+                onChange={(e) => setLabelText(e.target.value)}
+                maxLength={120}
+              />
+              {labelText.trim() && (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Font Size: {labelFontSize[0]}px</Label>
+                      <Slider
+                        value={labelFontSize}
+                        onValueChange={setLabelFontSize}
+                        min={10}
+                        max={28}
+                        step={1}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Spacing: {labelSpacing[0]}px</Label>
+                      <Slider
+                        value={labelSpacing}
+                        onValueChange={setLabelSpacing}
+                        min={4}
+                        max={32}
+                        step={2}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={labelColor}
+                        onChange={(e) => setLabelColor(e.target.value)}
+                        className="w-8 h-8 rounded cursor-pointer border"
+                      />
+                      <span className="text-xs text-muted-foreground">Color</span>
+                    </div>
+                    <Button
+                      variant={labelBold ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setLabelBold(!labelBold)}
+                      className="h-8 px-3 text-xs font-bold"
+                    >
+                      B
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Preview */}

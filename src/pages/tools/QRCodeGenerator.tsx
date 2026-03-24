@@ -301,7 +301,7 @@ const QRCodeGenerator = () => {
 
     if (format === 'png') {
       const link = document.createElement("a");
-      link.href = qrDataUrl;
+      link.href = finalDataUrl || qrDataUrl;
       link.download = "qrcode.png";
       link.click();
     } else {

@@ -21,6 +21,7 @@ interface BatchQRItem {
 const QRCodeGenerator = () => {
   const [text, setText] = useState("");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [finalDataUrl, setFinalDataUrl] = useState<string | null>(null);
   const [size, setSize] = useState(256);
   const [logo, setLogo] = useState<string | null>(null);
   const [logoSize, setLogoSize] = useState([30]);
@@ -34,6 +35,12 @@ const QRCodeGenerator = () => {
   const [batchUrls, setBatchUrls] = useState("");
   const [batchQRCodes, setBatchQRCodes] = useState<BatchQRItem[]>([]);
   const [isBatchGenerating, setIsBatchGenerating] = useState(false);
+  // Label below QR
+  const [labelText, setLabelText] = useState("");
+  const [labelFontSize, setLabelFontSize] = useState([16]);
+  const [labelBold, setLabelBold] = useState(false);
+  const [labelColor, setLabelColor] = useState("#000000");
+  const [labelSpacing, setLabelSpacing] = useState([12]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -51,15 +58,86 @@ const QRCodeGenerator = () => {
     }
   }, [activeTab, text, driveLink, uploadedImageUrl]);
 
+  // Compose QR image + optional label into final image
+  const composeFinalImage = useCallback((qrDataUrlSrc: string) => {
+    const trimmedLabel = labelText.trim();
+    if (!trimmedLabel) {
+      setFinalDataUrl(qrDataUrlSrc);
+      return;
+    }
+
+    const img = new window.Image();
+    img.onload = () => {
+      const padding = 16;
+      const spacing = labelSpacing[0];
+      const fontSize = labelFontSize[0];
+      const fontWeight = labelBold ? 'bold' : 'normal';
+      const maxTextWidth = size - padding * 2;
+
+      // Measure text to handle wrapping
+      const measureCanvas = document.createElement('canvas');
+      const mCtx = measureCanvas.getContext('2d')!;
+      mCtx.font = `${fontWeight} ${fontSize}px Arial, sans-serif`;
+
+      // Word-wrap
+      const words = trimmedLabel.split(/\s+/);
+      const lines: string[] = [];
+      let currentLine = '';
+      for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        if (mCtx.measureText(testLine).width > maxTextWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = word;
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+      // Truncate to max 3 lines
+      if (lines.length > 3) {
+        lines.length = 3;
+        lines[2] = lines[2].slice(0, -3) + '...';
+      }
+
+      const lineHeight = fontSize * 1.3;
+      const textBlockHeight = lines.length * lineHeight;
+      const totalHeight = size + spacing + textBlockHeight + padding;
+
+      const finalCanvas = document.createElement('canvas');
+      finalCanvas.width = size;
+      finalCanvas.height = totalHeight;
+      const ctx = finalCanvas.getContext('2d')!;
+
+      // Background
+      ctx.fillStyle = lightColor;
+      ctx.fillRect(0, 0, size, totalHeight);
+
+      // Draw QR
+      ctx.drawImage(img, 0, 0, size, size);
+
+      // Draw label
+      ctx.fillStyle = labelColor;
+      ctx.font = `${fontWeight} ${fontSize}px Arial, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      const textY = size + spacing;
+      lines.forEach((line, i) => {
+        ctx.fillText(line, size / 2, textY + i * lineHeight);
+      });
+
+      setFinalDataUrl(finalCanvas.toDataURL('image/png'));
+    };
+    img.src = qrDataUrlSrc;
+  }, [labelText, labelFontSize, labelBold, labelColor, labelSpacing, size, lightColor]);
+
   const generateQR = useCallback(async () => {
     const content = getQRContent();
     if (!content) {
       setQrDataUrl(null);
+      setFinalDataUrl(null);
       return;
     }
 
-    // QR codes have a max data capacity. Data URLs are too long.
-    // For image tab, we should inform the user this feature needs a hosted URL
     if (activeTab === "image" && content.startsWith("data:")) {
       toast({
         title: "Image QR Limitation",
@@ -67,10 +145,10 @@ const QRCodeGenerator = () => {
         variant: "destructive",
       });
       setQrDataUrl(null);
+      setFinalDataUrl(null);
       return;
     }
 
-    // Check content length - QR codes have practical limits (~2000 chars for reliable scanning)
     if (content.length > 2000) {
       toast({
         title: "Content too long",
@@ -78,6 +156,7 @@ const QRCodeGenerator = () => {
         variant: "destructive",
       });
       setQrDataUrl(null);
+      setFinalDataUrl(null);
       return;
     }
 
@@ -110,15 +189,21 @@ const QRCodeGenerator = () => {
             ctx.fillRect(logoX - 4, logoY - 4, logoSizeValue + 8, logoSizeValue + 8);
             ctx.drawImage(img, logoX, logoY, logoSizeValue, logoSizeValue);
             
-            setQrDataUrl(canvas.toDataURL("image/png"));
+            const qrOnly = canvas.toDataURL("image/png");
+            setQrDataUrl(qrOnly);
+            composeFinalImage(qrOnly);
           };
           img.onerror = () => {
-            setQrDataUrl(canvas.toDataURL("image/png"));
+            const qrOnly = canvas.toDataURL("image/png");
+            setQrDataUrl(qrOnly);
+            composeFinalImage(qrOnly);
           };
           img.src = logo;
         }
       } else {
-        setQrDataUrl(canvas.toDataURL("image/png"));
+        const qrOnly = canvas.toDataURL("image/png");
+        setQrDataUrl(qrOnly);
+        composeFinalImage(qrOnly);
       }
     } catch (error) {
       if (import.meta.env.DEV) {
@@ -130,8 +215,9 @@ const QRCodeGenerator = () => {
         variant: "destructive",
       });
       setQrDataUrl(null);
+      setFinalDataUrl(null);
     }
-  }, [getQRContent, activeTab, size, logo, logoSize, darkColor, lightColor]);
+  }, [getQRContent, activeTab, size, logo, logoSize, darkColor, lightColor, composeFinalImage]);
 
   useEffect(() => {
     generateQR();
@@ -215,7 +301,7 @@ const QRCodeGenerator = () => {
 
     if (format === 'png') {
       const link = document.createElement("a");
-      link.href = qrDataUrl;
+      link.href = finalDataUrl || qrDataUrl;
       link.download = "qrcode.png";
       link.click();
     } else {
@@ -593,6 +679,63 @@ const QRCodeGenerator = () => {
                 </div>
               )}
             </div>
+
+            {/* Label Below QR */}
+            <div className="space-y-3 border-t border-border pt-4">
+              <Label htmlFor="label-text">Label Below QR Code</Label>
+              <Input
+                id="label-text"
+                placeholder="e.g. Scan to visit our website"
+                value={labelText}
+                onChange={(e) => setLabelText(e.target.value)}
+                maxLength={120}
+              />
+              {labelText.trim() && (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Font Size: {labelFontSize[0]}px</Label>
+                      <Slider
+                        value={labelFontSize}
+                        onValueChange={setLabelFontSize}
+                        min={10}
+                        max={28}
+                        step={1}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Spacing: {labelSpacing[0]}px</Label>
+                      <Slider
+                        value={labelSpacing}
+                        onValueChange={setLabelSpacing}
+                        min={4}
+                        max={32}
+                        step={2}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={labelColor}
+                        onChange={(e) => setLabelColor(e.target.value)}
+                        className="w-8 h-8 rounded cursor-pointer border"
+                      />
+                      <span className="text-xs text-muted-foreground">Color</span>
+                    </div>
+                    <Button
+                      variant={labelBold ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setLabelBold(!labelBold)}
+                      className="h-8 px-3 text-xs font-bold"
+                    >
+                      B
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Preview */}
@@ -659,7 +802,7 @@ const QRCodeGenerator = () => {
             ) : qrDataUrl ? (
               <>
                 <div className="p-4 bg-white rounded-xl shadow-lg">
-                  <img src={qrDataUrl} alt="QR Code" className="max-w-full" />
+                  <img src={finalDataUrl || qrDataUrl} alt="QR Code" className="max-w-full" />
                 </div>
                 
                 <div className="flex gap-4">

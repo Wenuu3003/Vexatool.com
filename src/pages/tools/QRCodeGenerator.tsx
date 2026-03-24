@@ -887,36 +887,40 @@ const QRCodeGenerator = () => {
         <canvas ref={canvasRef} className="hidden" />
 
         <ToolSEOContent
-          toolName="Free QR Code Generator Online"
-          whatIs="QR (Quick Response) codes are two-dimensional barcodes that can store various types of information including URLs, text, WhatsApp links, UPI payment details, contact information, and more. Our free QR code generator creates custom codes instantly that can be scanned by any smartphone camera. Perfect for business cards, restaurant menus, UPI payment collection, WhatsApp business links, product packaging, event tickets, and digital marketing campaigns. Whether you need a simple URL QR code, a WhatsApp direct message QR, a contact vCard QR, or a UPI payment QR code — VexaTool generates them all for free, with logo support and color customization. Used by thousands of small businesses and professionals across India."
+          toolName="Free QR Code Generator with Logo & Label"
+          whatIs="VexaTool's QR Code Generator lets you create fully branded QR codes in seconds — right inside your browser, with no sign-up and no data leaving your device. You can encode any URL, plain text, WhatsApp link, UPI payment address, WiFi credentials, or contact card (vCard) into a scannable QR code. What sets this tool apart is the ability to add a custom center logo and a readable text label below the QR code, making it ideal for business cards, product packaging, restaurant table tents, event passes, and shop counters. Customize foreground and background colors to match your brand palette, adjust logo size for optimal scan reliability, and choose font size, weight, color, and spacing for the label text. Download your finished QR code as a high-resolution PNG for digital sharing or as a scalable SVG for professional print at any size — both formats include your logo and label exactly as previewed. The batch mode handles up to 50 QR codes at once for larger campaigns. Used daily by shop owners, event organizers, freelancers, and marketing teams across India."
           howToUse={[
-            "Choose the type of content: URL/Text, Batch, Image, or Google Drive link.",
-            "Enter your URL, text, WhatsApp link (wa.me/91XXXXXXXXXX), UPI link, or contact details.",
-            "Customize colors and add your brand logo if desired using the options panel.",
-            "Preview your QR code in real-time as you make changes.",
-            "Download your QR code in PNG (for digital) or SVG (for print) format.",
-            "For bulk generation, use the Batch tab to create up to 50 QR codes at once."
+            "Select your input type — URL/Text, Batch, Image, or Google Drive link — using the tabs at the top.",
+            "Type or paste the content you want to encode (a website URL, WhatsApp link, UPI address, or any text).",
+            "Optionally upload a brand logo — it will be placed in the center of the QR code automatically.",
+            "Add a text label below the QR code (e.g. your business name, 'Scan to Pay', or a product label). Adjust font size, weight, color, and spacing.",
+            "Customize foreground and background colors to match your brand identity.",
+            "Preview the QR code live as you make changes — what you see is exactly what you'll download.",
+            "Click Download PNG for digital use or Download SVG for print-quality output. Both include the logo and label."
           ]}
           features={[
-            "Generate QR codes for URLs, text, WhatsApp links, UPI payments, and contact details.",
-            "Batch generation — create up to 50 QR codes at once for marketing campaigns.",
-            "Add your brand logo to the center of the QR code for professional branding.",
-            "Customizable foreground and background colors to match your brand identity.",
-            "Adjustable size and logo dimensions for any use case.",
-            "Download in PNG (for digital) or SVG (for print at any size without quality loss).",
-            "100% free with no daily limits, no account required, and no watermarks.",
-            "Complete privacy — all QR codes generated in your browser, no data sent to servers."
+            "Custom text label below the QR code — perfect for adding a business name, product label, or call-to-action like 'Scan to Pay'.",
+            "Center logo merge — upload any image to place your brand logo inside the QR code without breaking scannability.",
+            "Full label formatting — choose font size, bold/normal weight, text color, and spacing between QR and label.",
+            "Color customization — set foreground (dark) and background (light) colors to match any brand palette.",
+            "Multiple input types — encode URLs, plain text, WhatsApp links, UPI payment addresses, WiFi details, and contact cards.",
+            "Batch generation — create up to 50 QR codes at once from a list of URLs for marketing campaigns or inventory.",
+            "Dual download formats — PNG for digital (social media, websites, emails) and SVG for print (business cards, posters, banners).",
+            "Real-time live preview — see your QR code update instantly as you change text, colors, logo, or label.",
+            "100% browser-based and private — no data is uploaded to any server, no account required, no watermarks."
           ]}
-          safetyNote="All QR code generation happens directly in your browser using client-side JavaScript. The URLs, WhatsApp links, UPI details, and text you encode are never sent to any external server. Your data remains completely private throughout the generation process. Safe for generating QR codes with sensitive payment or business information."
+          safetyNote="Every QR code is generated entirely in your browser using client-side JavaScript. The URLs, WhatsApp numbers, UPI addresses, logos, and labels you use are never sent to any external server. Your data stays on your device from start to finish. This makes VexaTool safe for encoding sensitive business information, payment details, and private contact data."
           faqs={[
-            { question: "What can I encode in a QR code?", answer: "You can encode URLs, plain text, email addresses, phone numbers, WhatsApp links (wa.me format), UPI payment links, WiFi credentials, vCard contacts, and more. QR codes can store up to about 2,000 characters of text." },
-            { question: "How do I create a WhatsApp QR code?", answer: "Enter your WhatsApp link in the format https://wa.me/91XXXXXXXXXX (replace with your number including country code). The generated QR code will open WhatsApp with a direct message when scanned." },
-            { question: "Can I create a UPI payment QR code?", answer: "Yes! Enter your UPI payment link (upi://pay?pa=yourUPI@bank&pn=YourName) in the text field. The QR code will open the payment app when scanned. Ideal for small businesses and shops." },
-            { question: "Should I use PNG or SVG format?", answer: "PNG is best for digital use like websites, social media, and emails. SVG is scalable and ideal for print materials like business cards, posters, and banners where you need the QR code at various sizes without quality loss." },
-            { question: "Will adding a logo affect scanning?", answer: "QR codes have built-in error correction that allows them to scan even with logos. Keep logos at 30% or smaller of the QR code size for reliable scanning. Always test your code after adding a logo." },
-            { question: "How small can I print my QR code?", answer: "For reliable scanning, QR codes should be at least 2cm x 2cm (0.8 inches) for close-range scanning. For billboards or signs viewed from a distance, scale up proportionally." },
-            { question: "Can I generate multiple QR codes at once?", answer: "Yes! Use the Batch tab to enter up to 50 URLs (one per line) and generate all QR codes simultaneously. You can download them individually or all at once." },
-            { question: "Is this QR code generator free forever?", answer: "Yes, completely free with no hidden costs, no daily limits, and no premium tiers. We don't add watermarks or branding to your generated QR codes." }
+            { question: "How do I add text below the QR code?", answer: "After generating your QR code, scroll down to the 'Label Below QR Code' section in the controls panel. Type your desired text — for example, your business name or 'Scan Me'. The label appears below the QR in the live preview and is included in both PNG and SVG downloads." },
+            { question: "Will the label appear in downloaded PNG and SVG?", answer: "Yes. The text label you add is composited directly into the downloaded image. Both PNG and SVG exports include the label with the exact font size, color, weight, and spacing you set in the preview." },
+            { question: "Can I add a logo in the center of the QR code?", answer: "Yes. Click 'Upload Logo' and select any image file (PNG, JPG, or SVG). The logo is placed in the center of the QR code. You can adjust its size using the logo size slider. Keep the logo at 30% or smaller for reliable scanning." },
+            { question: "Will the QR still scan after adding a logo and label?", answer: "Yes. QR codes use error correction that tolerates partial obstruction. The logo stays within the safe center area, and the label is placed outside the QR code entirely — below it, with proper spacing. Always do a quick scan test on your phone after generating." },
+            { question: "What can I encode in a QR code?", answer: "You can encode website URLs, plain text, email addresses, phone numbers, WhatsApp links (wa.me format), UPI payment links (upi://pay?pa=...), WiFi credentials, and vCard contacts. QR codes support up to about 2,000 characters." },
+            { question: "Can I create WhatsApp, UPI, or contact QR codes?", answer: "Yes. For WhatsApp, enter https://wa.me/91XXXXXXXXXX. For UPI, enter upi://pay?pa=yourUPI@bank&pn=YourName. For contacts, paste a vCard string. The generated QR opens the correct app when scanned." },
+            { question: "Is QR generation private and browser-based?", answer: "Completely. All processing happens in your browser — no data, logos, or labels are uploaded to any server. Your URLs, payment details, and business information remain 100% private." },
+            { question: "Should I download PNG or SVG?", answer: "Use PNG for digital channels like websites, social media, and email signatures. Use SVG when you need the QR code for print — it scales to any size (business cards, banners, posters) without losing quality. Both include your logo and label." },
+            { question: "Can I generate multiple QR codes at once?", answer: "Yes. Switch to the Batch tab, paste up to 50 URLs (one per line), and generate all QR codes simultaneously. You can download each one individually." },
+            { question: "Is this QR code generator really free?", answer: "Yes — completely free with no hidden costs, no daily limits, no premium tier, and no watermarks on your generated QR codes. Use it as often as you need." }
           ]}
         />
       </div>

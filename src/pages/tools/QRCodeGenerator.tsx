@@ -305,7 +305,7 @@ const QRCodeGenerator = () => {
       link.download = "qrcode.png";
       link.click();
     } else {
-      QRCode.toString(content, { type: 'svg', width: size, color: { dark: darkColor, light: lightColor } }, (err, svg) => {
+      QRCode.toString(content, { type: 'svg', width: size, color: { dark: darkColor, light: lightColor } }, (err, svgContent) => {
         if (err) {
           toast({
             title: "Error",
@@ -314,7 +314,62 @@ const QRCodeGenerator = () => {
           });
           return;
         }
-        const blob = new Blob([svg], { type: "image/svg+xml" });
+
+        // Inject label text into SVG if present
+        const trimmedLabel = labelText.trim();
+        let finalSvg = svgContent;
+        if (trimmedLabel) {
+          const fontSize = labelFontSize[0];
+          const fontWeight = labelBold ? 'bold' : 'normal';
+          const spacing = labelSpacing[0];
+          // Parse original SVG dimensions
+          const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/);
+          const widthMatch = svgContent.match(/width="(\d+)"/);
+          const svgW = widthMatch ? parseInt(widthMatch[1]) : size;
+          const vb = viewBoxMatch ? viewBoxMatch[1].split(/\s+/).map(Number) : [0, 0, svgW, svgW];
+          const scale = vb[2] / svgW;
+          const scaledFontSize = fontSize * scale;
+          const scaledSpacing = spacing * scale;
+          const lineHeight = scaledFontSize * 1.3;
+
+          // Word-wrap label
+          const maxCharsPerLine = Math.floor((vb[2] - 16 * scale) / (scaledFontSize * 0.6));
+          const words = trimmedLabel.split(/\s+/);
+          const lines: string[] = [];
+          let currentLine = '';
+          for (const word of words) {
+            const testLine = currentLine ? `${currentLine} ${word}` : word;
+            if (testLine.length > maxCharsPerLine && currentLine) {
+              lines.push(currentLine);
+              currentLine = word;
+            } else {
+              currentLine = testLine;
+            }
+          }
+          if (currentLine) lines.push(currentLine);
+          if (lines.length > 3) {
+            lines.length = 3;
+            lines[2] = lines[2].slice(0, -3) + '...';
+          }
+
+          const textBlockHeight = lines.length * lineHeight + scaledSpacing;
+          const newHeight = vb[3] + textBlockHeight;
+
+          // Build text elements
+          const textElements = lines.map((line, i) => {
+            const y = vb[3] + scaledSpacing + i * lineHeight + scaledFontSize;
+            const escaped = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return `<text x="${vb[2] / 2}" y="${y}" text-anchor="middle" font-family="Arial, sans-serif" font-size="${scaledFontSize}" font-weight="${fontWeight}" fill="${labelColor}">${escaped}</text>`;
+          }).join('\n');
+
+          // Update SVG: expand viewBox/height and append text
+          finalSvg = svgContent
+            .replace(/viewBox="[^"]*"/, `viewBox="${vb[0]} ${vb[1]} ${vb[2]} ${newHeight}"`)
+            .replace(/height="[^"]*"/, `height="${Math.ceil(newHeight / scale)}"`)
+            .replace('</svg>', `${textElements}\n</svg>`);
+        }
+
+        const blob = new Blob([finalSvg], { type: "image/svg+xml" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;

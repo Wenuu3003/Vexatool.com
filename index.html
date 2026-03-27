@@ -178,10 +178,19 @@
 </head>
 
   <body>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-473NX43VJ4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-473NX43VJ4', { send_page_view: false });
+    </script>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Clarity & analytics deferred to after page load -->
+    <!-- Clarity deferred to after page load -->
     <script>
       window.addEventListener('load', function() {
         setTimeout(function() {

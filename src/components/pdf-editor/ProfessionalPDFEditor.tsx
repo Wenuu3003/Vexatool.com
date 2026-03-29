@@ -689,9 +689,12 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           page.setRotation({ angle: pageInfo.rotation, type: 'degrees' } as any);
         }
         
-        const pageElements = elements.filter(el => 
-          el.page === i || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all')
-        );
+        const pageElements = elements
+          .filter(el => 
+            el.page === i || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all')
+          )
+          // Sort by zIndex so redact/mask layers are drawn before text
+          .sort((a, b) => a.zIndex - b.zIndex);
         
         const scaleFactor = pageWidth / pageInfo.width;
         

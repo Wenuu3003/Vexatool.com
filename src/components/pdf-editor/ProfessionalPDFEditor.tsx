@@ -725,12 +725,17 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
 
             // Draw white background mask if enabled
             if (textEl.backgroundMask) {
-              const maskX = textEl.x * scaleFactor - 1;
-              const maskTop = pageHeight - (textEl.y * scaleFactor);
+              // Use the element's own dimensions + generous padding to fully cover original text
+              const maskPad = 3;
+              const maskX = textEl.x * scaleFactor - maskPad;
+              const maskW = textEl.width * scaleFactor + maskPad * 2;
+              // Use the larger of: element height or computed line height
               const maskLineCount = Math.max(1, textLines.length);
-              const maskW = textEl.width * scaleFactor + 2;
-              const maskH = lineHeight * maskLineCount + 2;
-              const maskY = maskTop - maskH;
+              const computedH = lineHeight * maskLineCount;
+              const elementH = textEl.height * scaleFactor;
+              const maskH = Math.max(computedH, elementH) + maskPad * 2;
+              const maskTop = pageHeight - (textEl.y * scaleFactor);
+              const maskY = maskTop - maskH + maskPad;
 
               page.drawRectangle({
                 x: maskX,

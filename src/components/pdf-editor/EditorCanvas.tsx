@@ -606,11 +606,14 @@ export const EditorCanvas = memo(({
               ...baseStyle,
               ...textStyle,
               minWidth: 50,
-              height: 'auto',
+              // When backgroundMask is on, use explicit height to fully cover original text
+              height: textEl.backgroundMask ? textEl.height : 'auto',
               minHeight: textEl.fontSize,
               display: 'flex',
               alignItems: 'flex-start',
               backgroundColor: textEl.backgroundMask ? '#FFFFFF' : undefined,
+              // Extend mask slightly beyond element bounds via box-shadow
+              boxShadow: textEl.backgroundMask ? '0 0 0 3px #FFFFFF' : undefined,
             }}
             onMouseDown={(e) => handleElementMouseDown(e, element.id)}
             onDoubleClick={(e) => handleTextDoubleClick(e, element.id)}

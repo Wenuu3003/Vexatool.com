@@ -359,10 +359,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       id: `redact-${Date.now()}`,
       type: 'redact',
       page: block.pageIndex,
-      x: block.x,
-      y: block.y,
-      width: block.width + 4,
-      height: block.height + 2,
+      x: block.x - 4,
+      y: block.y - 3,
+      width: block.width + 10,
+      height: block.height + 8,
       rotation: 0,
       opacity: 1,
       locked: false,
@@ -385,10 +385,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       id: `redact-${Date.now()}`,
       type: 'redact',
       page: originalBlock.pageIndex,
-      x: originalBlock.x - 2,
-      y: originalBlock.y - 1,
-      width: originalBlock.width + 6,
-      height: originalBlock.height + 4,
+      x: originalBlock.x - 4,
+      y: originalBlock.y - 3,
+      width: originalBlock.width + 10,
+      height: originalBlock.height + 8,
       rotation: 0,
       opacity: 1,
       locked: false,
@@ -689,9 +689,12 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           page.setRotation({ angle: pageInfo.rotation, type: 'degrees' } as any);
         }
         
-        const pageElements = elements.filter(el => 
-          el.page === i || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all')
-        );
+        const pageElements = elements
+          .filter(el => 
+            el.page === i || (el.type === 'watermark' && (el as WatermarkElement).applyTo === 'all')
+          )
+          // Sort by zIndex so redact/mask layers are drawn before text
+          .sort((a, b) => a.zIndex - b.zIndex);
         
         const scaleFactor = pageWidth / pageInfo.width;
         
@@ -722,12 +725,17 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
 
             // Draw white background mask if enabled
             if (textEl.backgroundMask) {
-              const maskX = textEl.x * scaleFactor - 1;
-              const maskTop = pageHeight - (textEl.y * scaleFactor);
+              // Use the element's own dimensions + generous padding to fully cover original text
+              const maskPad = 3;
+              const maskX = textEl.x * scaleFactor - maskPad;
+              const maskW = textEl.width * scaleFactor + maskPad * 2;
+              // Use the larger of: element height or computed line height
               const maskLineCount = Math.max(1, textLines.length);
-              const maskW = textEl.width * scaleFactor + 2;
-              const maskH = lineHeight * maskLineCount + 2;
-              const maskY = maskTop - maskH;
+              const computedH = lineHeight * maskLineCount;
+              const elementH = textEl.height * scaleFactor;
+              const maskH = Math.max(computedH, elementH) + maskPad * 2;
+              const maskTop = pageHeight - (textEl.y * scaleFactor);
+              const maskY = maskTop - maskH + maskPad;
 
               page.drawRectangle({
                 x: maskX,
@@ -953,9 +961,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     const isWordLevel = region.kind === 'word';
     const isLineLevel = region.kind === 'line';
     
-    // Tighter padding for word/line edits vs paragraph edits
-    const padX = isWordLevel ? 1 : isLineLevel ? 2 : 2;
-    const padY = isWordLevel ? 0 : 1;
+    // Generous padding to fully cover original text including anti-aliased edges
+    const padX = isWordLevel ? 4 : isLineLevel ? 4 : 4;
+    const padY = isWordLevel ? 3 : isLineLevel ? 3 : 3;
     const lineHeightMultiplier = isWordLevel ? 1 : 1.15;
     const lineCount = Math.max(1, cleanText.split(/\r?\n/).length);
     
@@ -1034,10 +1042,10 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       id: `redact-region-${Date.now()}`,
       type: 'redact',
       page: region.pageIndex,
-      x: region.x - 2,
-      y: region.y - 1,
-      width: region.width + 6,
-      height: region.height + 4,
+      x: region.x - 4,
+      y: region.y - 3,
+      width: region.width + 10,
+      height: region.height + 8,
       rotation: 0,
       opacity: 1,
       locked: false,

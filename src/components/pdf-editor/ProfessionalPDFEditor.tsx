@@ -961,9 +961,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     const isWordLevel = region.kind === 'word';
     const isLineLevel = region.kind === 'line';
     
-    // Tighter padding for word/line edits vs paragraph edits
-    const padX = isWordLevel ? 1 : isLineLevel ? 2 : 2;
-    const padY = isWordLevel ? 0 : 1;
+    // Generous padding to fully cover original text including anti-aliased edges
+    const padX = isWordLevel ? 4 : isLineLevel ? 4 : 4;
+    const padY = isWordLevel ? 3 : isLineLevel ? 3 : 3;
     const lineHeightMultiplier = isWordLevel ? 1 : 1.15;
     const lineCount = Math.max(1, cleanText.split(/\r?\n/).length);
     

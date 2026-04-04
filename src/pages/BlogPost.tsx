@@ -1051,6 +1051,7 @@ const BlogPost = () => {
                     "word-counter-content-optimization": { src: "/previews/word-counter-preview.webp", alt: "Word counter for content optimization" },
                     "pincode-finder-india-postal-guide": { src: "/previews/pincode-generator-preview.webp", alt: "Indian PIN code finder guide" },
                     "pdf-to-jpg-image-conversion": { src: "/previews/pdf-to-jpg-preview.webp", alt: "Convert PDF to JPG images" },
+                    "pdf-to-excel-converter-guide": { src: "/previews/pdf-to-excel-preview.webp", alt: "How to convert PDF to Excel online for free" },
                     "love-age-calculator-complete-guide": { src: "/previews/love-calculator-preview.webp", alt: "Love and age calculator guide" },
                     "age-calculator-birthday-planning": { src: "/previews/age-calculator-preview.webp", alt: "Age calculator for birthday planning" },
                     "pdf-accessibility-guide": { src: "/previews/edit-pdf-preview.webp", alt: "PDF accessibility guide" },

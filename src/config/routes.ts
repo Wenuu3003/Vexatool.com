@@ -34,6 +34,7 @@ export const blogPosts = [
   'word-counter-content-optimization',
   'pincode-finder-india-postal-guide',
   'pdf-to-jpg-image-conversion',
+  'pdf-to-excel-converter-guide',
 ];
 
 export const routes: RouteConfig[] = [

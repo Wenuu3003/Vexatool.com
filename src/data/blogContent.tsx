@@ -1986,7 +1986,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
   "pdf-to-excel-converter-guide": {
     title: "How to Convert PDF to Excel Online for Free (Step-by-Step Guide)",
     date: "2026-04-04",
-    readTime: "9 min read",
+    readTime: "14 min read",
     relatedTools: [
       { name: "PDF to Excel", href: "/pdf-to-excel" },
       { name: "PDF to Word", href: "/pdf-to-word" },
@@ -2002,7 +2002,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           Whether you are a student extracting research data, an accountant pulling numbers from financial reports, or a small business owner working with supplier invoices, converting PDF tables into editable Excel sheets saves you enormous amounts of time. In this guide, we will walk through everything you need to know about PDF to Excel conversion — what it is, why it matters, and how to do it for free using VexaTool.
         </p>
 
-        <img src="/assets/blog/pdf-to-excel-upload.jpg" alt="Upload PDF file to convert to Excel on VexaTool" loading="lazy" width={800} height={512} className="rounded-lg border my-6" />
+        <img src="/assets/blog/pdf-to-excel-upload.jpg" alt="Upload PDF file to convert to Excel spreadsheet online for free using VexaTool" loading="lazy" width={800} height={512} className="rounded-lg border my-6" />
 
         <h2>What is a PDF to Excel Converter?</h2>
         <p>
@@ -2030,7 +2030,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           The common thread? PDFs are great for sharing information but terrible for working with it. Excel gives you the power to manipulate, analyze, and visualize data — but only if you can get it out of the PDF first.
         </p>
 
-        <img src="/assets/blog/pdf-to-excel-conversion.jpg" alt="PDF to Excel conversion process illustration" loading="lazy" width={800} height={512} className="rounded-lg border my-6" />
+        <img src="/assets/blog/pdf-to-excel-conversion.jpg" alt="PDF to Excel conversion process showing document transformation from PDF format to editable Excel spreadsheet" loading="lazy" width={800} height={512} className="rounded-lg border my-6" />
 
         <h2>How to Convert PDF to Excel Using VexaTool</h2>
         <p>
@@ -2071,7 +2071,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           <li><strong>Multiple page support:</strong> If your PDF has tables spread across several pages, all of them are extracted and organized in the output file.</li>
         </ul>
 
-        <img src="/assets/blog/pdf-to-excel-output.jpg" alt="Excel output preview after PDF conversion" loading="lazy" width={800} height={512} className="rounded-lg border my-6" />
+        <img src="/assets/blog/pdf-to-excel-output.jpg" alt="Excel spreadsheet output preview showing organized data after PDF to Excel conversion" loading="lazy" width={800} height={512} className="rounded-lg border my-6" />
 
         <h2>Benefits of Using Online PDF to Excel Tools</h2>
         <p>

@@ -19,7 +19,7 @@ const blogPosts: BlogPost[] = [
     title: "How to Convert PDF to Excel Online for Free (Step-by-Step Guide)",
     excerpt: "Learn how to convert PDF tables to editable Excel spreadsheets for free using VexaTool. Step-by-step instructions, tips for accurate conversion, and FAQs answered.",
     date: "2026-04-04",
-    readTime: "9 min read",
+    readTime: "14 min read",
   },
   // NEW: AdSense-safe humanity-focused article
   {
@@ -50,6 +50,13 @@ const blogPosts: BlogPost[] = [
     title: "Age Calculator: Beyond Numbers - Understanding Life Milestones in 2026",
     excerpt: "Calculate your exact age in years, months, days, hours, and more. Discover legal age milestones in India, fascinating birthday facts, and create beautiful shareable cards.",
     date: "2026-01-27",
+    readTime: "10 min read",
+  },
+  {
+    slug: "age-calculator-birthday-wishes-motivation",
+    title: "Age Calculator with Birthday Wishes & Motivation Tips – Complete Guide 2026",
+    excerpt: "Celebrate birthdays with personalized wishes, motivational quotes, and fun age facts. Use our age calculator to discover milestones and create shareable birthday cards.",
+    date: "2026-01-29",
     readTime: "10 min read",
   },
   // New SEO-optimized posts for top 20 tools

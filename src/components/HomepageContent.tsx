@@ -18,13 +18,19 @@ export const HomepageContent = () => {
                 </h2>
                 <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
                   <p>
-                    VexaTool processes documents directly in your browser — your files never leave your device. Safe for financial records, legal contracts, and sensitive documents.
+                    VexaTool processes documents directly in your browser — your files never leave your device. This makes it safe for financial records, legal contracts, Aadhaar cards, salary slips, and any sensitive document you need to handle online. Unlike competitors that upload your files to remote servers, VexaTool uses client-side JavaScript and WebAssembly to do all the work locally.
                   </p>
                   <p>
-                    Simple workflow: upload, process, download. No signup, no subscription, no hidden fees.{" "}
-                    <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDFs</Link>,{" "}
-                    <Link to="/compress-pdf" className="text-primary hover:underline">compress files</Link>, or{" "}
-                    <Link to="/qr-code-generator" className="text-primary hover:underline">generate QR codes</Link> — it just works.
+                    Simple workflow: upload, process, download. No signup, no subscription, no hidden fees. Whether you need to{" "}
+                    <Link to="/merge-pdf" className="text-primary hover:underline">merge PDFs</Link> for a job application,{" "}
+                    <Link to="/compress-pdf" className="text-primary hover:underline">compress files</Link> for email attachments,{" "}
+                    <Link to="/qr-code-generator" className="text-primary hover:underline">generate QR codes</Link> for your business, or{" "}
+                    <Link to="/pdf-to-excel" className="text-primary hover:underline">convert PDF to Excel</Link> for data analysis — it just works. Every tool is tested on budget smartphones, slow networks, and older browsers to ensure accessibility for everyone.
+                  </p>
+                  <p>
+                    Built by a team of experienced developers and security professionals, VexaTool serves hundreds of thousands of users across India and 50+ countries. Read our{" "}
+                    <Link to="/blog" className="text-primary hover:underline">expert guides and tutorials</Link> to get the most out of every tool, or visit our{" "}
+                    <Link to="/about-us" className="text-primary hover:underline">About Us</Link> page to learn about our commitment to privacy and quality.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2.5 mt-5">

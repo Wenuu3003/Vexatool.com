@@ -19,7 +19,7 @@ const blogPosts: BlogPost[] = [
     title: "How to Convert PDF to Excel Online for Free (Step-by-Step Guide)",
     excerpt: "Learn how to convert PDF tables to editable Excel spreadsheets for free using VexaTool. Step-by-step instructions, tips for accurate conversion, and FAQs answered.",
     date: "2026-04-04",
-    readTime: "9 min read",
+    readTime: "14 min read",
   },
   // NEW: AdSense-safe humanity-focused article
   {

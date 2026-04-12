@@ -52,6 +52,13 @@ const blogPosts: BlogPost[] = [
     date: "2026-01-27",
     readTime: "10 min read",
   },
+  {
+    slug: "age-calculator-birthday-wishes-motivation",
+    title: "Age Calculator with Birthday Wishes & Motivation Tips – Complete Guide 2026",
+    excerpt: "Celebrate birthdays with personalized wishes, motivational quotes, and fun age facts. Use our age calculator to discover milestones and create shareable birthday cards.",
+    date: "2026-01-29",
+    readTime: "10 min read",
+  },
   // New SEO-optimized posts for top 20 tools
   {
     slug: "qr-code-generator-complete-guide",

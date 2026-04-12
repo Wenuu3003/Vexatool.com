@@ -151,13 +151,8 @@ const blogPosts: BlogPost[] = [
     date: "2026-01-10",
     readTime: "10 min read",
   },
-  {
-    slug: "pdf-to-excel-data-extraction",
-    title: "PDF to Excel: Extract Tables and Data Without Manual Entry",
-    excerpt: "Convert PDF tables to Excel spreadsheets automatically. Save hours of manual data entry with smart extraction techniques.",
-    date: "2026-01-09",
-    readTime: "8 min read",
-  },
+
+
   {
     slug: "word-counter-content-optimization",
     title: "Word Counter: Optimize Your Content Length for SEO and Readability",
@@ -180,13 +175,8 @@ const blogPosts: BlogPost[] = [
     readTime: "14 min read",
   },
   // Existing posts
-  {
-    slug: "convert-pdf-to-word-free-guide",
-    title: "Convert PDF to Word Free: Ultimate Guide for 2026",
-    excerpt: "Learn how to convert PDF to Word documents for free. Step-by-step instructions for accurate PDF to DOCX conversion while preserving formatting and layout.",
-    date: "2026-01-05",
-    readTime: "7 min read",
-  },
+
+
   {
     slug: "digital-signature-guide",
     title: "How to Add Digital Signatures to PDF: Complete Guide",
@@ -201,20 +191,10 @@ const blogPosts: BlogPost[] = [
     date: "2026-01-05",
     readTime: "9 min read",
   },
-  {
-    slug: "how-to-merge-pdfs-complete-guide",
-    title: "How to Merge PDFs: Complete Guide to Combining PDF Files",
-    excerpt: "Learn how to combine multiple PDF files into one document easily. Step-by-step guide with tips for merging PDFs online without losing quality.",
-    date: "2026-01-04",
-    readTime: "6 min read",
-  },
-  {
-    slug: "best-image-compression-tips",
-    title: "Best Image Compression Tips: Reduce File Size Without Losing Quality",
-    excerpt: "Master image compression with expert tips. Learn the best techniques to reduce image file sizes while maintaining visual quality for web and print.",
-    date: "2026-01-04",
-    readTime: "7 min read",
-  },
+
+
+
+
   {
     slug: "pdf-security-guide",
     title: "PDF Security Guide: How to Protect Your Documents",

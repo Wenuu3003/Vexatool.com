@@ -960,6 +960,57 @@ const blogContent: Record<string, BlogPostContent> = {
   },
 };
 
+// Related articles mapping
+const relatedArticles: Record<string, { title: string; slug: string }[]> = {
+  "pdf-to-excel-converter-guide": [
+    { title: "PDF to Excel: Extract Tables Without Manual Entry", slug: "pdf-to-excel-data-extraction" },
+    { title: "Convert PDF to Word Free: Ultimate Guide", slug: "convert-pdf-to-word-free-guide" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  ],
+  "how-to-merge-pdf-files-online-complete-guide": [
+    { title: "How to Compress PDF Without Losing Quality", slug: "compress-pdf-without-losing-quality" },
+    { title: "Split PDF: Organize Pages Efficiently", slug: "split-pdf-organize-documents" },
+    { title: "PDF Security Guide: Protect Your Documents", slug: "pdf-security-guide" },
+  ],
+  "compress-pdf-without-losing-quality": [
+    { title: "How to Merge PDF Files Online", slug: "how-to-merge-pdf-files-online-complete-guide" },
+    { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  ],
+  "convert-pdf-to-word-free-guide": [
+    { title: "PDF to Word: Preserve Formatting Like a Pro", slug: "pdf-to-word-formatting-tips" },
+    { title: "Word to PDF: Create Professional Documents", slug: "word-to-pdf-professional-documents" },
+    { title: "PDF to Excel Converter Guide", slug: "pdf-to-excel-converter-guide" },
+  ],
+  "qr-code-generator-complete-guide": [
+    { title: "10 Digital Productivity Habits That Save Time", slug: "digital-productivity-habits-that-save-time" },
+    { title: "Image Resizer: Perfect Dimensions for Social Media", slug: "image-resizer-social-media-guide" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  ],
+  "emi-calculator-home-loan-guide": [
+    { title: "GST Calculator: Guide for Indian Businesses", slug: "gst-calculator-business-guide" },
+    { title: "BMI Calculator: Understanding Your Health", slug: "bmi-calculator-health-guide" },
+    { title: "Currency Converter: Essential Travel Guide", slug: "currency-converter-travel-guide" },
+  ],
+  "gst-calculator-business-guide": [
+    { title: "EMI Calculator: Master Your Loan Payments", slug: "emi-calculator-home-loan-guide" },
+    { title: "Percentage Calculator Tips", slug: "word-counter-content-optimization" },
+    { title: "PIN Code Finder: Indian Postal Guide", slug: "pincode-finder-india-postal-guide" },
+  ],
+  "background-remover-perfect-product-photos": [
+    { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
+    { title: "Image Resizer: Perfect Dimensions for Social Media", slug: "image-resizer-social-media-guide" },
+    { title: "Best Image Compression Tips", slug: "best-image-compression-tips" },
+  ],
+};
+
+// Default related articles if no specific mapping exists
+const defaultRelated = [
+  { title: "How to Merge PDF Files Online", slug: "how-to-merge-pdf-files-online-complete-guide" },
+  { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  { title: "10 Digital Productivity Habits That Save Time", slug: "digital-productivity-habits-that-save-time" },
+];
+
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
 
@@ -968,6 +1019,50 @@ const BlogPost = () => {
   }
 
   const post = blogContent[slug];
+
+  // BlogPosting schema
+  const blogPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "author": {
+      "@type": "Organization",
+      "name": "VexaTool Editorial Team",
+      "url": "https://vexatool.com/about-us"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "VexaTool",
+      "url": "https://vexatool.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://vexatool.com/favicon.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://vexatool.com/blog/${slug}`
+    },
+    "description": `${post.title}. Expert tips, step-by-step guides, and best practices.`,
+    "url": `https://vexatool.com/blog/${slug}`,
+    "image": `https://vexatool.com/og-image.png`,
+    "wordCount": "2000",
+    "inLanguage": "en-US"
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://vexatool.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://vexatool.com/blog" },
+      { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://vexatool.com/blog/${slug}` },
+    ]
+  };
+
+  const related = relatedArticles[slug] || defaultRelated;
 
   return (
     <>
@@ -990,7 +1085,10 @@ const BlogPost = () => {
         <meta name="twitter:description" content={`${post.title}. Expert tips and guides for PDF management.`} />
         <meta name="robots" content="index, follow" />
         <meta name="article:published_time" content={post.date} />
-        <meta name="author" content="VexaTool Team" />
+        <meta name="article:modified_time" content={post.date} />
+        <meta name="author" content="VexaTool Editorial Team" />
+        <script type="application/ld+json">{JSON.stringify(blogPostingSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -1008,7 +1106,7 @@ const BlogPost = () => {
               <header className="mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{post.title}</h1>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     {new Date(post.date).toLocaleDateString("en-US", {
@@ -1021,6 +1119,17 @@ const BlogPost = () => {
                     <Clock className="w-4 h-4" />
                     {post.readTime}
                   </span>
+                </div>
+
+                {/* Author byline */}
+                <div className="flex items-center gap-3 mb-6 p-3 bg-muted/30 rounded-lg border border-border/40">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">VexaTool Editorial Team</p>
+                    <p className="text-xs text-muted-foreground">Document Processing & Digital Productivity Experts</p>
+                  </div>
                 </div>
 
                 {/* Featured blog image */}
@@ -1075,35 +1184,70 @@ const BlogPost = () => {
               </header>
 
               {post.content}
+
+              {/* Author Bio */}
+              <div className="bg-card border border-border rounded-xl p-6 mt-10">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <User className="w-7 h-7 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-base mb-1">VexaTool Editorial Team</h3>
+                    <p className="text-sm text-primary mb-2">Digital Tools Specialists & PDF Workflow Experts</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      With over a decade of combined experience in document management, workflow automation, and online productivity tools, our editorial team has helped hundreds of thousands of users simplify their document workflows. From guiding students through competitive exam applications to advising businesses on secure document handling, we focus on practical solutions that save time and protect privacy. Every guide we publish is tested, verified, and written to help real people solve real problems.
+                    </p>
+                    <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
+                      <span>Published: {new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                      <span>•</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </article>
 
+            {/* Related Articles */}
             <div className="mt-12 pt-8 border-t">
+              <h3 className="text-xl font-semibold mb-4 text-foreground">Related Articles</h3>
+              <div className="grid gap-3">
+                {related
+                  .filter((r) => r.slug !== slug && blogContent[r.slug])
+                  .map((article) => (
+                    <Link
+                      key={article.slug}
+                      to={`/blog/${article.slug}`}
+                      className="flex items-center gap-3 p-4 bg-card border border-border/60 rounded-xl hover:border-primary/30 hover:shadow-sm transition-all"
+                    >
+                      <div className="flex-1">
+                        <h4 className="font-medium text-foreground text-sm hover:text-primary transition-colors">
+                          {article.title}
+                        </h4>
+                      </div>
+                      <ArrowLeft className="w-4 h-4 text-muted-foreground rotate-180 flex-shrink-0" />
+                    </Link>
+                  ))}
+              </div>
+            </div>
+
+            {/* Related Tools */}
+            <div className="mt-8 pt-8 border-t">
               <h3 className="text-xl font-semibold mb-4">Related Tools</h3>
               <div className="flex flex-wrap gap-3">
-                <Link
-                  to="/compress-pdf"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  Compress PDF
-                </Link>
-                <Link
-                  to="/merge-pdf"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  Merge PDF
-                </Link>
-                <Link
-                  to="/pdf-to-word"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  PDF to Word
-                </Link>
-                <Link
-                  to="/split-pdf"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  Split PDF
-                </Link>
+                {(post.relatedTools || [
+                  { name: "Compress PDF", href: "/compress-pdf" },
+                  { name: "Merge PDF", href: "/merge-pdf" },
+                  { name: "PDF to Word", href: "/pdf-to-word" },
+                  { name: "Split PDF", href: "/split-pdf" },
+                ]).map((tool) => (
+                  <Link
+                    key={tool.href}
+                    to={tool.href}
+                    className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
+                  >
+                    {tool.name}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>

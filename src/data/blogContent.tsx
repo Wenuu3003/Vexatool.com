@@ -1493,16 +1493,6 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
   },
 
 
-
-
-        <h2>Conclusion</h2>
-        <p>
-          Our Age Calculator transforms a simple calculation into an engaging, celebratory experience. With automatic birthday wishes in English and Telugu, age-appropriate motivation tips, and beautiful share cards for social media, it's the most comprehensive age tool available. Calculate your age today and discover not just numbers, but inspiration for your life journey!
-        </p>
-      </div>
-    ),
-  },
-  "pdf-to-excel-converter-guide": {
     title: "How to Convert PDF to Excel Online for Free (Step-by-Step Guide)",
     date: "2026-04-04",
     readTime: "14 min read",

@@ -396,18 +396,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://vexatool.com/blog/age-calculator-birthday-planning</loc>
-    <lastmod>2026-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://vexatool.com/blog/age-calculator-birthday-wishes-motivation</loc>
-    <lastmod>2026-01-29</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
+
+
   <url>
     <loc>https://vexatool.com/blog/qr-code-generator-complete-guide</loc>
     <lastmod>2026-01-24</lastmod>
@@ -486,12 +476,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://vexatool.com/blog/pdf-to-excel-data-extraction</loc>
-    <lastmod>2026-01-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
+
+
   <url>
     <loc>https://vexatool.com/blog/word-counter-content-optimization</loc>
     <lastmod>2026-01-08</lastmod>

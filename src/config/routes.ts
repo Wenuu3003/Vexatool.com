@@ -15,8 +15,6 @@ export const blogPosts = [
   'digital-productivity-habits-that-save-time',
   'how-to-merge-pdf-files-online-complete-guide',
   'love-age-calculator-complete-guide',
-  'age-calculator-birthday-planning',
-  'age-calculator-birthday-wishes-motivation',
   'qr-code-generator-complete-guide',
   'background-remover-perfect-product-photos',
   'emi-calculator-home-loan-guide',
@@ -30,11 +28,15 @@ export const blogPosts = [
   'pdf-watermark-protect-documents',
   'image-resizer-social-media-guide',
   'unit-converter-complete-reference',
-  'pdf-to-excel-data-extraction',
   'word-counter-content-optimization',
   'pincode-finder-india-postal-guide',
   'pdf-to-jpg-image-conversion',
   'pdf-to-excel-converter-guide',
+  'compress-pdf-without-losing-quality',
+  'pdf-security-guide',
+  'digital-signature-guide',
+  'pdf-accessibility-guide',
+  'best-free-pdf-tools-online-2026',
 ];
 
 export const routes: RouteConfig[] = [

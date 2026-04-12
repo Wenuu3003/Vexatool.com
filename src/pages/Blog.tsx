@@ -218,9 +218,9 @@ const blogPosts: BlogPost[] = [
   {
     slug: "compress-pdf-without-losing-quality",
     title: "How to Compress PDF Without Losing Quality (Free & Online)",
-    excerpt: "Learn the best techniques to reduce PDF file size while maintaining document quality. Discover free online methods and expert tips for efficient PDF compression.",
+    excerpt: "Learn the best techniques to reduce PDF file size while maintaining document quality. Covers compression methods, real-world scenarios, government portal limits, and expert tips for efficient PDF compression.",
     date: "2026-01-02",
-    readTime: "5 min read",
+    readTime: "14 min read",
   },
   {
     slug: "best-free-pdf-tools-online-2026",

@@ -2,7 +2,7 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Calendar, Clock, ArrowLeft } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, User } from "lucide-react";
 import { newBlogPosts } from "@/data/blogContent";
 import { Breadcrumb } from "@/components/Breadcrumb";
 
@@ -759,88 +759,177 @@ const blogContent: Record<string, BlogPostContent> = {
     ),
   },
   "compress-pdf-without-losing-quality": {
-    title: "How to Compress PDF Without the best Quality (Free & Online)",
+    title: "How to Compress PDF Without Losing Quality (Free & Online)",
     date: "2026-01-03",
-    readTime: "5 min read",
+    readTime: "14 min read",
+    relatedTools: [
+      { name: "Compress PDF", href: "/compress-pdf" },
+      { name: "Merge PDF", href: "/merge-pdf" },
+      { name: "Image Compressor", href: "/compress-image" },
+    ],
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">
         <p className="lead text-xl text-muted-foreground mb-6">
           PDF files are essential for sharing documents, but large file sizes can be problematic when emailing or
-          uploading. This comprehensive guide explains how to compress PDF files effectively while maintaining quality.
+          uploading. This comprehensive guide explains how to compress PDF files effectively while maintaining quality —
+          covering everything from how compression works to advanced techniques used by professionals.
         </p>
 
         <h2>Why Compress PDF Files?</h2>
         <p>
-          Large PDF files can create several challenges in your workflow. Email providers typically limit attachment
-          sizes to 25MB or less, making it difficult to share large documents. Cloud storage fills up quickly with bulky
-          files, and slow upload and download speeds waste valuable time. Compressed PDFs are easier to manage while
-          retaining all essential information.
+          Large PDF files create several real-world challenges that affect millions of users daily. Email providers like Gmail and Outlook limit attachments to 25MB, which means a scanned multi-page document or a design-heavy report often cannot be shared directly. Government portals in India — for UPSC applications, university admissions, and GST filing — frequently impose 2MB or even 500KB upload limits. Cloud storage fills up faster with unoptimized PDFs, and downloading large files over slow mobile networks wastes both time and data.
+        </p>
+        <p>
+          Compressed PDFs solve all these problems without sacrificing the information your document contains. A well-compressed 15MB PDF can typically be reduced to under 2MB while remaining visually indistinguishable from the original — especially when viewed on screens rather than printed at high resolution.
         </p>
 
-        <h2>Understanding PDF Compression</h2>
+        <h2>Understanding How PDF Compression Works</h2>
         <p>
-          PDF compression works by optimizing various elements within the document. Images are the primary target since
-          they often account for most of a PDF file size. Modern compression algorithms can reduce image file sizes by
-          50-90% with minimal visible quality loss. Text and fonts are also optimized, and redundant data is removed.
+          PDF files are containers that hold multiple types of content: text, fonts, images, vector graphics, metadata, and structural information. Compression targets each of these elements differently:
+        </p>
+        <ul>
+          <li><strong>Images</strong> are the biggest culprits — they often account for 80-95% of a PDF's total file size. Compression reduces image resolution and applies lossy or lossless algorithms to shrink them dramatically.</li>
+          <li><strong>Embedded fonts</strong> can be subsetted to include only the characters actually used in the document, rather than the entire font family.</li>
+          <li><strong>Metadata</strong> like author information, creation software details, and edit history can be stripped to save a few kilobytes.</li>
+          <li><strong>Redundant objects</strong> — duplicate images, unused resources, and orphaned bookmarks — are cleaned up during compression.</li>
+          <li><strong>Stream compression</strong> applies algorithms like Flate (similar to ZIP) to the internal data streams that make up the PDF structure.</li>
+        </ul>
+        <p>
+          Modern compression engines like the one used in VexaTool analyze each element individually and apply the optimal compression strategy. This is why intelligent tools produce much better results than simply re-saving a PDF at lower quality.
         </p>
 
         <h2>Methods to Compress PDF Without Losing Quality</h2>
 
         <h3>1. Use Online PDF Compression Tools</h3>
         <p>
-          Online tools like VexaTool Compress PDF offer a convenient way to reduce file sizes without installing software.
-          These browser-based solutions use advanced compression algorithms that intelligently reduce file size while
-          preserving document quality. Simply upload your PDF, select your preferred compression level, and download the
-          optimized file.
+          Online tools like <a href="/compress-pdf" className="text-primary hover:underline">VexaTool Compress PDF</a> offer the most convenient way to reduce file sizes. These browser-based solutions use advanced compression algorithms that intelligently reduce file size while preserving document quality. Simply upload your PDF, select your preferred compression level, and download the optimized file. No installation, no registration, no cost.
+        </p>
+        <p>
+          The key advantage of browser-based tools is privacy. VexaTool processes your PDF entirely in your browser — the file never leaves your device. This makes it safe for confidential documents like salary slips, legal contracts, Aadhaar copies, and medical records.
         </p>
 
-        <h3>2. Adjust Compression Settings</h3>
+        <h3>2. Choose the Right Compression Level</h3>
         <p>
-          Most PDF compression tools offer different quality levels. For documents that will be viewed on screen, medium
-          compression typically provides the best balance between file size and quality. For printing, choose low
-          compression to maintain higher image resolution. Experiment with different settings to find the optimal
-          balance for your needs.
+          Most PDF compression tools offer different quality levels. Understanding when to use each level saves you from unnecessary quality loss:
         </p>
+        <ul>
+          <li><strong>Low compression (high quality):</strong> Reduces file size by 20-40%. Best for documents that will be printed professionally — brochures, portfolios, and design proofs.</li>
+          <li><strong>Medium compression (balanced):</strong> Reduces file size by 50-70%. The sweet spot for most use cases — email attachments, portal uploads, and general sharing. Quality remains excellent on screens.</li>
+          <li><strong>High compression (smaller size):</strong> Reduces file size by 70-90%. Best for documents viewed only on screens, archival purposes, or when strict file size limits apply. Some quality loss may be noticeable in high-resolution images.</li>
+        </ul>
 
         <h3>3. Optimize Images Before Creating PDFs</h3>
         <p>
-          If you are creating PDFs from scratch, optimize images before including them. Resize images to the actual
-          dimensions needed in the document. Convert high-resolution photos to web-friendly resolutions when screen
-          viewing is the primary use case. Use appropriate image formats such as JPEG for photos and PNG for graphics
-          with transparency.
+          Prevention is better than cure. If you are creating PDFs from scratch, optimize images before including them. Resize images to the actual dimensions they will display at — a 4000×3000 pixel photo embedded in an A4 page does not need to be that large. Use the <a href="/compress-image" className="text-primary hover:underline">VexaTool Image Compressor</a> to reduce image file sizes before building your PDF.
+        </p>
+        <p>
+          Use JPEG format for photographs and PNG only when transparency is required. WebP format offers even better compression for modern workflows.
         </p>
 
         <h3>4. Remove Unnecessary Elements</h3>
         <p>
-          PDFs often contain hidden elements that increase file size. Embedded fonts can be subset to include only the
-          characters used. Remove any embedded thumbnails, metadata, or annotations that are not needed. Delete blank
-          pages and consolidate content where possible.
+          PDFs often contain hidden bloat that dramatically increases file size. Embedded thumbnails (common in older PDFs), duplicate fonts, edit history, attached files, and excessive metadata all contribute to unnecessary bulk. Good compression tools automatically strip these elements.
+        </p>
+
+        <h3>5. Reduce Font Embedding</h3>
+        <p>
+          A fully embedded font can add 200KB-2MB per font to your PDF. Font subsetting keeps only the characters actually used — if your document uses 50 different characters from a font, only those 50 glyphs are embedded instead of the entire 500-character set.
+        </p>
+
+        <h2>Real-World Compression Scenarios</h2>
+
+        <h3>Government Portal Uploads (India)</h3>
+        <p>
+          Indian government portals are notorious for strict file size limits. UPSC applications typically require documents under 2MB. University admission portals often cap at 500KB-1MB. GST filing attachments have similar restrictions. For these scenarios, use medium-to-high compression and verify the output looks clear enough for official review.
+        </p>
+
+        <h3>Email Attachments</h3>
+        <p>
+          Gmail allows up to 25MB attachments, but sending a 20MB PDF to someone on a slow connection is inconsiderate. Aim for under 5MB for email attachments. Medium compression typically achieves this for most documents while keeping quality professional.
+        </p>
+
+        <h3>Scanned Documents</h3>
+        <p>
+          Scanned PDFs are the most compressible because they are essentially images. A 10-page scanned document at 300 DPI can easily be 50MB+. Compression can reduce this to under 3MB while keeping text readable. If text clarity is critical, scan at 300 DPI but compress aggressively — modern algorithms handle scanned text well.
+        </p>
+
+        <h3>Design and Photography Portfolios</h3>
+        <p>
+          Creative portfolios need a balance between file size and visual quality. Use low-to-medium compression to keep images looking sharp. For web sharing, medium compression is usually sufficient. For print submissions, use low compression or send originals.
+        </p>
+
+        <h2>Common Mistakes to Avoid</h2>
+        <ul>
+          <li><strong>Compressing multiple times:</strong> Each compression pass degrades quality further. Always compress from the original file, not a previously compressed version.</li>
+          <li><strong>Not keeping backups:</strong> Always save the original before compressing. You cannot restore quality that has been removed.</li>
+          <li><strong>Using the wrong tool:</strong> Some free tools add watermarks or require sign-ups. VexaTool does neither — the output is clean and the tool is genuinely free.</li>
+          <li><strong>Ignoring the preview:</strong> Always check the compressed output before sharing. A quick visual review catches any quality issues.</li>
+          <li><strong>Over-compressing for print:</strong> Documents destined for professional printing need higher quality than screen-only documents.</li>
+        </ul>
+
+        <h2>PDF Compression vs. ZIP Compression</h2>
+        <p>
+          People sometimes confuse PDF compression with ZIP compression. They are fundamentally different:
+        </p>
+        <ul>
+          <li><strong>PDF compression</strong> reduces the internal content of the PDF — optimizing images, fonts, and data streams. The output is still a normal PDF file.</li>
+          <li><strong>ZIP compression</strong> wraps the entire file in a compressed archive. The PDF inside is unchanged — it is just stored more efficiently. Recipients must extract it before viewing.</li>
+        </ul>
+        <p>
+          For sharing documents, PDF compression is almost always better because recipients can open the file directly without extraction.
         </p>
 
         <h2>Best Practices for PDF Compression</h2>
         <ul>
           <li>Always keep a backup of the original file before compression</li>
           <li>Test compressed files to ensure all content remains readable</li>
-          <li>Consider your audience when choosing compression levels</li>
+          <li>Consider your audience and purpose when choosing compression levels</li>
           <li>Use batch compression for multiple files to save time</li>
-          <li>Check file size requirements before compressing</li>
+          <li>Check file size requirements of your target platform before compressing</li>
+          <li>For recurring tasks, establish a standard compression level that works for your use case</li>
+          <li>Combine compression with other optimization: remove blank pages, crop margins, and delete unused pages before compressing</li>
         </ul>
 
         <h2>When to Avoid Heavy Compression</h2>
         <p>
           While compression is generally beneficial, there are situations where you should use minimal compression or
-          none at all. Professional print documents require high-resolution images. Legal and official documents may
-          need to maintain exact formatting. Documents with fine details, charts, or technical diagrams should preserve
-          clarity.
+          none at all. Professional print documents require high-resolution images (300+ DPI). Legal and official documents may
+          need to maintain exact formatting and every pixel of clarity. Documents with fine engineering diagrams, medical imaging, or detailed charts should preserve maximum clarity. When in doubt, use the lowest compression level that meets your file size requirement.
+        </p>
+
+        <h2>Frequently Asked Questions</h2>
+
+        <h3>Does compressing a PDF reduce its quality?</h3>
+        <p>
+          It depends on the compression level. Medium compression typically produces no visible quality difference on screens. Heavy compression may reduce image sharpness, but text remains readable. VexaTool's intelligent compression minimizes quality loss by analyzing each element individually.
+        </p>
+
+        <h3>Can I compress a password-protected PDF?</h3>
+        <p>
+          You need to remove the password first (if you have it) using a tool like <a href="/unlock-pdf" className="text-primary hover:underline">Unlock PDF</a>, then compress, and optionally re-protect with <a href="/protect-pdf" className="text-primary hover:underline">Protect PDF</a>.
+        </p>
+
+        <h3>How much can I reduce a PDF's file size?</h3>
+        <p>
+          Results vary dramatically based on content. Image-heavy PDFs can be reduced by 70-90%. Text-only PDFs may only compress by 10-20% since text is already compact. Scanned documents typically see the largest reductions.
+        </p>
+
+        <h3>Is online PDF compression safe for sensitive documents?</h3>
+        <p>
+          With VexaTool, yes — files are processed entirely in your browser and never uploaded to any server. This makes it safe for confidential, financial, and personal documents.
+        </p>
+
+        <h3>Can I compress multiple PDFs at once?</h3>
+        <p>
+          VexaTool supports batch compression. Upload multiple files and compress them simultaneously, saving significant time when processing large document sets.
         </p>
 
         <h2>Conclusion</h2>
         <p>
           Compressing PDFs does not have to mean sacrificing quality. By using the right tools and techniques, you can
-          significantly reduce file sizes while maintaining document integrity. Online tools like VexaTool make this
+          significantly reduce file sizes while maintaining document integrity. Online tools like <a href="/compress-pdf" className="text-primary hover:underline">VexaTool Compress PDF</a> make this
           process simple and accessible, allowing you to compress PDFs directly in your browser without installing any
-          software. Start optimizing your PDFs today and enjoy faster sharing, easier storage, and improved document
-          management.
+          software. Whether you are a student uploading documents to government portals, a professional sharing reports via email, or a business managing invoice archives — smart PDF compression saves time, storage, and frustration.
         </p>
       </div>
     ),
@@ -960,6 +1049,57 @@ const blogContent: Record<string, BlogPostContent> = {
   },
 };
 
+// Related articles mapping
+const relatedArticles: Record<string, { title: string; slug: string }[]> = {
+  "pdf-to-excel-converter-guide": [
+    { title: "PDF to Excel: Extract Tables Without Manual Entry", slug: "pdf-to-excel-data-extraction" },
+    { title: "Convert PDF to Word Free: Ultimate Guide", slug: "convert-pdf-to-word-free-guide" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  ],
+  "how-to-merge-pdf-files-online-complete-guide": [
+    { title: "How to Compress PDF Without Losing Quality", slug: "compress-pdf-without-losing-quality" },
+    { title: "Split PDF: Organize Pages Efficiently", slug: "split-pdf-organize-documents" },
+    { title: "PDF Security Guide: Protect Your Documents", slug: "pdf-security-guide" },
+  ],
+  "compress-pdf-without-losing-quality": [
+    { title: "How to Merge PDF Files Online", slug: "how-to-merge-pdf-files-online-complete-guide" },
+    { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  ],
+  "convert-pdf-to-word-free-guide": [
+    { title: "PDF to Word: Preserve Formatting Like a Pro", slug: "pdf-to-word-formatting-tips" },
+    { title: "Word to PDF: Create Professional Documents", slug: "word-to-pdf-professional-documents" },
+    { title: "PDF to Excel Converter Guide", slug: "pdf-to-excel-converter-guide" },
+  ],
+  "qr-code-generator-complete-guide": [
+    { title: "10 Digital Productivity Habits That Save Time", slug: "digital-productivity-habits-that-save-time" },
+    { title: "Image Resizer: Perfect Dimensions for Social Media", slug: "image-resizer-social-media-guide" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  ],
+  "emi-calculator-home-loan-guide": [
+    { title: "GST Calculator: Guide for Indian Businesses", slug: "gst-calculator-business-guide" },
+    { title: "BMI Calculator: Understanding Your Health", slug: "bmi-calculator-health-guide" },
+    { title: "Currency Converter: Essential Travel Guide", slug: "currency-converter-travel-guide" },
+  ],
+  "gst-calculator-business-guide": [
+    { title: "EMI Calculator: Master Your Loan Payments", slug: "emi-calculator-home-loan-guide" },
+    { title: "Percentage Calculator Tips", slug: "word-counter-content-optimization" },
+    { title: "PIN Code Finder: Indian Postal Guide", slug: "pincode-finder-india-postal-guide" },
+  ],
+  "background-remover-perfect-product-photos": [
+    { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
+    { title: "Image Resizer: Perfect Dimensions for Social Media", slug: "image-resizer-social-media-guide" },
+    { title: "Best Image Compression Tips", slug: "best-image-compression-tips" },
+  ],
+};
+
+// Default related articles if no specific mapping exists
+const defaultRelated = [
+  { title: "How to Merge PDF Files Online", slug: "how-to-merge-pdf-files-online-complete-guide" },
+  { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
+  { title: "10 Digital Productivity Habits That Save Time", slug: "digital-productivity-habits-that-save-time" },
+];
+
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
 
@@ -968,6 +1108,50 @@ const BlogPost = () => {
   }
 
   const post = blogContent[slug];
+
+  // BlogPosting schema
+  const blogPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "author": {
+      "@type": "Organization",
+      "name": "VexaTool Editorial Team",
+      "url": "https://vexatool.com/about-us"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "VexaTool",
+      "url": "https://vexatool.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://vexatool.com/favicon.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://vexatool.com/blog/${slug}`
+    },
+    "description": `${post.title}. Expert tips, step-by-step guides, and best practices.`,
+    "url": `https://vexatool.com/blog/${slug}`,
+    "image": `https://vexatool.com/og-image.png`,
+    "wordCount": "2000",
+    "inLanguage": "en-US"
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://vexatool.com" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://vexatool.com/blog" },
+      { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://vexatool.com/blog/${slug}` },
+    ]
+  };
+
+  const related = relatedArticles[slug] || defaultRelated;
 
   return (
     <>
@@ -990,7 +1174,10 @@ const BlogPost = () => {
         <meta name="twitter:description" content={`${post.title}. Expert tips and guides for PDF management.`} />
         <meta name="robots" content="index, follow" />
         <meta name="article:published_time" content={post.date} />
-        <meta name="author" content="VexaTool Team" />
+        <meta name="article:modified_time" content={post.date} />
+        <meta name="author" content="VexaTool Editorial Team" />
+        <script type="application/ld+json">{JSON.stringify(blogPostingSchema)}</script>
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -1008,7 +1195,7 @@ const BlogPost = () => {
               <header className="mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">{post.title}</h1>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     {new Date(post.date).toLocaleDateString("en-US", {
@@ -1021,6 +1208,17 @@ const BlogPost = () => {
                     <Clock className="w-4 h-4" />
                     {post.readTime}
                   </span>
+                </div>
+
+                {/* Author byline */}
+                <div className="flex items-center gap-3 mb-6 p-3 bg-muted/30 rounded-lg border border-border/40">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">VexaTool Editorial Team</p>
+                    <p className="text-xs text-muted-foreground">Document Processing & Digital Productivity Experts</p>
+                  </div>
                 </div>
 
                 {/* Featured blog image */}
@@ -1075,35 +1273,70 @@ const BlogPost = () => {
               </header>
 
               {post.content}
+
+              {/* Author Bio */}
+              <div className="bg-card border border-border rounded-xl p-6 mt-10">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <User className="w-7 h-7 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground text-base mb-1">VexaTool Editorial Team</h3>
+                    <p className="text-sm text-primary mb-2">Digital Tools Specialists & PDF Workflow Experts</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      With over a decade of combined experience in document management, workflow automation, and online productivity tools, our editorial team has helped hundreds of thousands of users simplify their document workflows. From guiding students through competitive exam applications to advising businesses on secure document handling, we focus on practical solutions that save time and protect privacy. Every guide we publish is tested, verified, and written to help real people solve real problems.
+                    </p>
+                    <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
+                      <span>Published: {new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+                      <span>•</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </article>
 
+            {/* Related Articles */}
             <div className="mt-12 pt-8 border-t">
+              <h3 className="text-xl font-semibold mb-4 text-foreground">Related Articles</h3>
+              <div className="grid gap-3">
+                {related
+                  .filter((r) => r.slug !== slug && blogContent[r.slug])
+                  .map((article) => (
+                    <Link
+                      key={article.slug}
+                      to={`/blog/${article.slug}`}
+                      className="flex items-center gap-3 p-4 bg-card border border-border/60 rounded-xl hover:border-primary/30 hover:shadow-sm transition-all"
+                    >
+                      <div className="flex-1">
+                        <h4 className="font-medium text-foreground text-sm hover:text-primary transition-colors">
+                          {article.title}
+                        </h4>
+                      </div>
+                      <ArrowLeft className="w-4 h-4 text-muted-foreground rotate-180 flex-shrink-0" />
+                    </Link>
+                  ))}
+              </div>
+            </div>
+
+            {/* Related Tools */}
+            <div className="mt-8 pt-8 border-t">
               <h3 className="text-xl font-semibold mb-4">Related Tools</h3>
               <div className="flex flex-wrap gap-3">
-                <Link
-                  to="/compress-pdf"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  Compress PDF
-                </Link>
-                <Link
-                  to="/merge-pdf"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  Merge PDF
-                </Link>
-                <Link
-                  to="/pdf-to-word"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  PDF to Word
-                </Link>
-                <Link
-                  to="/split-pdf"
-                  className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                >
-                  Split PDF
-                </Link>
+                {(post.relatedTools || [
+                  { name: "Compress PDF", href: "/compress-pdf" },
+                  { name: "Merge PDF", href: "/merge-pdf" },
+                  { name: "PDF to Word", href: "/pdf-to-word" },
+                  { name: "Split PDF", href: "/split-pdf" },
+                ]).map((tool) => (
+                  <Link
+                    key={tool.href}
+                    to={tool.href}
+                    className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
+                  >
+                    {tool.name}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>

@@ -45,20 +45,8 @@ const blogPosts: BlogPost[] = [
     date: "2026-01-27",
     readTime: "15 min read",
   },
-  {
-    slug: "age-calculator-birthday-planning",
-    title: "Age Calculator: Beyond Numbers - Understanding Life Milestones in 2026",
-    excerpt: "Calculate your exact age in years, months, days, hours, and more. Discover legal age milestones in India, fascinating birthday facts, and create beautiful shareable cards.",
-    date: "2026-01-27",
-    readTime: "10 min read",
-  },
-  {
-    slug: "age-calculator-birthday-wishes-motivation",
-    title: "Age Calculator with Birthday Wishes & Motivation Tips – Complete Guide 2026",
-    excerpt: "Celebrate birthdays with personalized wishes, motivational quotes, and fun age facts. Use our age calculator to discover milestones and create shareable birthday cards.",
-    date: "2026-01-29",
-    readTime: "10 min read",
-  },
+
+
   // New SEO-optimized posts for top 20 tools
   {
     slug: "qr-code-generator-complete-guide",
@@ -151,13 +139,8 @@ const blogPosts: BlogPost[] = [
     date: "2026-01-10",
     readTime: "10 min read",
   },
-  {
-    slug: "pdf-to-excel-data-extraction",
-    title: "PDF to Excel: Extract Tables and Data Without Manual Entry",
-    excerpt: "Convert PDF tables to Excel spreadsheets automatically. Save hours of manual data entry with smart extraction techniques.",
-    date: "2026-01-09",
-    readTime: "8 min read",
-  },
+
+
   {
     slug: "word-counter-content-optimization",
     title: "Word Counter: Optimize Your Content Length for SEO and Readability",
@@ -180,13 +163,8 @@ const blogPosts: BlogPost[] = [
     readTime: "14 min read",
   },
   // Existing posts
-  {
-    slug: "convert-pdf-to-word-free-guide",
-    title: "Convert PDF to Word Free: Ultimate Guide for 2026",
-    excerpt: "Learn how to convert PDF to Word documents for free. Step-by-step instructions for accurate PDF to DOCX conversion while preserving formatting and layout.",
-    date: "2026-01-05",
-    readTime: "7 min read",
-  },
+
+
   {
     slug: "digital-signature-guide",
     title: "How to Add Digital Signatures to PDF: Complete Guide",
@@ -201,20 +179,10 @@ const blogPosts: BlogPost[] = [
     date: "2026-01-05",
     readTime: "9 min read",
   },
-  {
-    slug: "how-to-merge-pdfs-complete-guide",
-    title: "How to Merge PDFs: Complete Guide to Combining PDF Files",
-    excerpt: "Learn how to combine multiple PDF files into one document easily. Step-by-step guide with tips for merging PDFs online without losing quality.",
-    date: "2026-01-04",
-    readTime: "6 min read",
-  },
-  {
-    slug: "best-image-compression-tips",
-    title: "Best Image Compression Tips: Reduce File Size Without Losing Quality",
-    excerpt: "Master image compression with expert tips. Learn the best techniques to reduce image file sizes while maintaining visual quality for web and print.",
-    date: "2026-01-04",
-    readTime: "7 min read",
-  },
+
+
+
+
   {
     slug: "pdf-security-guide",
     title: "PDF Security Guide: How to Protect Your Documents",
@@ -270,9 +238,7 @@ const Blog = () => {
               {blogPosts.map((post) => {
                 const previewMap: Record<string, string> = {
                   "how-to-merge-pdf-files-online-complete-guide": "/previews/merge-pdf-preview.webp",
-                  "how-to-merge-pdfs-complete-guide": "/previews/merge-pdf-preview.webp",
                   "compress-pdf-without-losing-quality": "/previews/compress-pdf-preview.webp",
-                  "convert-pdf-to-word-free-guide": "/previews/pdf-to-word-preview.webp",
                   "pdf-to-word-formatting-tips": "/previews/pdf-to-word-preview.webp",
                   "digital-signature-guide": "/previews/sign-pdf-preview.webp",
                   "pdf-security-guide": "/previews/protect-pdf-preview.webp",
@@ -281,7 +247,6 @@ const Blog = () => {
                   "background-remover-perfect-product-photos": "/previews/background-remover-preview.webp",
                   "emi-calculator-home-loan-guide": "/previews/emi-calculator-preview.webp",
                   "gst-calculator-business-guide": "/previews/gst-calculator-preview.webp",
-                  "best-image-compression-tips": "/previews/compress-image-preview.webp",
                   "image-compression-web-performance": "/previews/compress-image-preview.webp",
                   "split-pdf-organize-documents": "/previews/split-pdf-preview.webp",
                   "bmi-calculator-health-guide": "/previews/bmi-calculator-preview.webp",
@@ -290,14 +255,13 @@ const Blog = () => {
                   "pdf-watermark-protect-documents": "/previews/watermark-pdf-preview.webp",
                   "image-resizer-social-media-guide": "/previews/image-resizer-preview.webp",
                   "love-age-calculator-complete-guide": "/previews/love-calculator-preview.webp",
-                  "age-calculator-birthday-planning": "/previews/age-calculator-preview.webp",
                   "digital-productivity-habits-that-save-time": "/previews/compress-pdf-preview.webp",
                   "pdf-accessibility-guide": "/previews/edit-pdf-preview.webp",
                   "unit-converter-complete-reference": "/previews/unit-converter-preview.webp",
-                  "pdf-to-excel-data-extraction": "/previews/pdf-to-excel-preview.webp",
                   "word-counter-content-optimization": "/previews/word-counter-preview.webp",
                   "pincode-finder-india-postal-guide": "/previews/pincode-generator-preview.webp",
                   "pdf-to-jpg-image-conversion": "/previews/pdf-to-jpg-preview.webp",
+                  "pdf-to-excel-converter-guide": "/previews/pdf-to-excel-preview.webp",
                 };
                 const previewImg = previewMap[post.slug];
 

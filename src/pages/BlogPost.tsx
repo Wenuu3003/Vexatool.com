@@ -16,118 +16,8 @@ interface BlogPostContent {
 
 // Merge new blog posts with existing ones
 const blogContent: Record<string, BlogPostContent> = {
-  ...newBlogPosts,
-  "convert-pdf-to-word-free-guide": {
-    title: "Convert PDF to Word Free: Ultimate Guide for 2026",
-    date: "2026-01-05",
-    readTime: "7 min read",
-    content: (
-      <div className="prose prose-gray dark:prose-invert max-w-none">
-        <p className="lead text-xl text-muted-foreground mb-6">
-          Converting PDF files to editable Word documents is one of the most requested document tasks. This
-          comprehensive guide shows you how to convert PDF to Word for free while preserving formatting, fonts, and
-          layout.
-        </p>
 
-        <h2>Why Convert PDF to Word?</h2>
-        <p>
-          PDFs are excellent for sharing and printing, but they are not designed for editing. When you need to modify
-          content, update information, or reformat a document, converting to Word makes these tasks simple. Word
-          documents allow full text editing, formatting changes, and content restructuring.
-        </p>
 
-        <h2>Common Scenarios for PDF to Word Conversion</h2>
-        <ul>
-          <li>Updating resume or CV content received as PDF</li>
-          <li>Editing contracts and agreements for negotiation</li>
-          <li>Modifying reports and presentations</li>
-          <li>Extracting text from scanned documents</li>
-          <li>Reformatting academic papers or articles</li>
-        </ul>
-
-        <h2>Step-by-Step: Convert PDF to Word Using VexaTool</h2>
-
-        <h3>Step 1: Upload Your PDF</h3>
-        <p>
-          Navigate to the PDF to Word converter on VexaTool. Click the upload button or drag and drop your PDF file. The
-          tool accepts PDFs of any size and complexity.
-        </p>
-
-        <h3>Step 2: Wait for Processing</h3>
-        <p>
-          The conversion engine analyzes your PDF structure, recognizes text, images, and formatting. Complex documents
-          with multiple columns, tables, or graphics may take slightly longer to process accurately.
-        </p>
-
-        <h3>Step 3: Download Your Word Document</h3>
-        <p>
-          Once conversion completes, download your editable Word document. Open it in Microsoft Word, Google Docs, or
-          any compatible word processor to begin editing.
-        </p>
-
-        <h2>Tips for Better Conversion Results</h2>
-
-        <h3>Use High-Quality Source PDFs</h3>
-        <p>
-          The quality of your converted document depends on the original PDF. Text-based PDFs convert more accurately
-          than scanned documents. If working with scans, ensure they are clear and high resolution.
-        </p>
-
-        <h3>Check Formatting After Conversion</h3>
-        <p>
-          Always review converted documents for formatting issues. Tables, columns, and special layouts may need minor
-          adjustments. Headers, footers, and page numbers might require manual correction.
-        </p>
-
-        <h3>Handle Images Properly</h3>
-        <p>
-          Images embedded in PDFs are preserved during conversion but may shift position slightly. Verify image
-          placement and resize if necessary in the Word document.
-        </p>
-
-        <h2>Dealing with Scanned PDFs</h2>
-        <p>
-          Scanned documents require OCR (Optical Character Recognition) to extract text. While basic conversions may not
-          include OCR, advanced tools recognize text from images. For best results with scanned documents, ensure scans
-          are clear, straight, and high contrast.
-        </p>
-
-        <h2>Preserving Document Structure</h2>
-
-        <h3>Tables and Columns</h3>
-        <p>
-          Complex table structures usually convert well but may need minor cell adjustments. Multi-column layouts are
-          recognized and preserved as columns in Word.
-        </p>
-
-        <h3>Fonts and Styling</h3>
-        <p>
-          Standard fonts convert accurately. Custom or unusual fonts may be substituted with similar alternatives. Bold,
-          italic, and underline formatting is preserved throughout the document.
-        </p>
-
-        <h2>Privacy and Security</h2>
-        <p>
-          When converting sensitive documents online, choose tools that prioritize privacy. VexaTool processes files
-          securely and automatically deletes them after conversion. Never upload confidential documents to untrusted
-          services.
-        </p>
-
-        <h2>Alternative Formats</h2>
-        <p>
-          Besides Word (.docx), you might consider other editable formats. Rich Text Format (.rtf) offers broad
-          compatibility. Plain text (.txt) works when only content matters without formatting.
-        </p>
-
-        <h2>Conclusion</h2>
-        <p>
-          Converting PDF to Word does not have to be complicated or expensive. Free online tools like VexaTool make the
-          process simple while maintaining document quality. Whether updating resumes, editing contracts, or modifying
-          reports, PDF to Word conversion gives you full control over your document content.
-        </p>
-      </div>
-    ),
-  },
   "digital-signature-guide": {
     title: "How to Add Digital Signatures to PDF: Complete Guide",
     date: "2026-01-05",
@@ -376,246 +266,7 @@ const blogContent: Record<string, BlogPostContent> = {
       </div>
     ),
   },
-  "how-to-merge-pdfs-complete-guide": {
-    title: "How to Merge PDFs: Complete Guide to Combining PDF Files",
-    date: "2026-01-05",
-    readTime: "6 min read",
-    content: (
-      <div className="prose prose-gray dark:prose-invert max-w-none">
-        <p className="lead text-xl text-muted-foreground mb-6">
-          Merging PDF files is one of the most common document management tasks. Whether you are combining reports,
-          assembling portfolios, or organizing documents, this guide covers everything you need to know about merging
-          PDFs efficiently.
-        </p>
 
-        <h2>Why Merge PDF Files?</h2>
-        <p>
-          Combining multiple PDFs into a single document offers numerous benefits. It simplifies document organization
-          by keeping related files together. It makes sharing easier since you only need to send one file instead of
-          multiple attachments. It also creates a more professional presentation for reports, proposals, and portfolios.
-        </p>
-
-        <h2>Common Use Cases for PDF Merging</h2>
-        <ul>
-          <li>Combining scanned documents into a single file</li>
-          <li>Assembling multi-chapter reports or books</li>
-          <li>Creating portfolios from individual project files</li>
-          <li>Consolidating invoices or receipts for record-keeping</li>
-          <li>Merging application documents (resume, cover letter, certificates)</li>
-        </ul>
-
-        <h2>How to Merge PDFs Using VexaTool</h2>
-
-        <h3>Step 1: Upload Your Files</h3>
-        <p>
-          Navigate to the Merge PDF tool on VexaTool. You can upload multiple PDF files by clicking the upload button or
-          dragging and dropping files directly into the browser. The tool supports uploading numerous files at once.
-        </p>
-
-        <h3>Step 2: Arrange Your Pages</h3>
-        <p>
-          Once uploaded, you can rearrange the order of your PDF files by dragging them into the desired sequence. This
-          ensures your final merged document has pages in the correct order.
-        </p>
-
-        <h3>Step 3: Merge and Download</h3>
-        <p>
-          Click the merge button to combine all files into a single PDF. The process typically takes just seconds. Once
-          complete, download your merged document immediately.
-        </p>
-
-        <h2>Tips for Better PDF Merging</h2>
-
-        <h3>Organize Files Before Merging</h3>
-        <p>
-          Name your files logically before uploading. Using numbered prefixes like 01_, 02_, 03_ helps maintain proper
-          order. This makes it easier to arrange documents correctly in the merger tool.
-        </p>
-
-        <h3>Check Page Orientation</h3>
-        <p>
-          Before merging, ensure all pages have consistent orientation. Mixed portrait and landscape pages can look
-          unprofessional. Use the Rotate PDF tool if you need to correct any page orientations first.
-        </p>
-
-        <h3>Compress Before or After</h3>
-        <p>
-          If your source files are large, consider compressing them before merging. Alternatively, compress the final
-          merged document to reduce file size. This is especially important when the merged file will be shared via
-          email.
-        </p>
-
-        <h2>Maintaining Quality When Merging</h2>
-        <p>
-          A good PDF merger preserves the original quality of each document. Text remains searchable, images retain
-          their resolution, and interactive elements like links and bookmarks stay functional. VexaTool merge tool
-          maintains full document fidelity throughout the process.
-        </p>
-
-        <h2>Security Considerations</h2>
-        <p>
-          When merging sensitive documents, security matters. VexaTool processes files securely and automatically deletes
-          them after merging. For confidential documents, consider adding password protection to the final merged file
-          using the Protect PDF tool.
-        </p>
-
-        <h2>Troubleshooting Common Issues</h2>
-
-        <h3>File Upload Errors</h3>
-        <p>
-          If files fail to upload, check that they are valid PDF documents. Corrupted files may need repair first using
-          the Repair PDF tool. Also ensure you have a stable internet connection.
-        </p>
-
-        <h3>Slow Merging Speed</h3>
-        <p>
-          Large files or many documents may take longer to merge. Be patient with files over 100MB. For faster
-          processing, consider compressing large files before merging.
-        </p>
-
-        <h2>Conclusion</h2>
-        <p>
-          Merging PDFs does not have to be complicated. With the right tools and techniques, you can combine documents
-          quickly while maintaining quality. VexaTool makes the process simple, secure, and completely free. Start merging
-          your PDFs today and experience streamlined document management.
-        </p>
-      </div>
-    ),
-  },
-  "best-image-compression-tips": {
-    title: "Best Image Compression Tips: Reduce File Size Without Losing Quality",
-    date: "2026-01-04",
-    readTime: "7 min read",
-    content: (
-      <div className="prose prose-gray dark:prose-invert max-w-none">
-        <p className="lead text-xl text-muted-foreground mb-6">
-          Image compression is essential for web performance, storage optimization, and faster file sharing. This guide
-          reveals expert techniques to reduce image file sizes while preserving visual quality.
-        </p>
-
-        <h2>Why Image Compression Matters</h2>
-        <p>
-          Large image files slow down websites, consume storage space, and make sharing difficult. Properly compressed
-          images load faster, improve user experience, and reduce bandwidth costs. Understanding compression helps you
-          find the perfect balance between file size and quality.
-        </p>
-
-        <h2>Understanding Image Formats</h2>
-
-        <h3>JPEG (JPG)</h3>
-        <p>
-          JPEG is ideal for photographs and complex images with many colors. It uses lossy compression, meaning some
-          data is permanently removed. JPEG supports various quality levels, allowing you to choose between smaller
-          files and higher quality.
-        </p>
-
-        <h3>PNG</h3>
-        <p>
-          PNG uses lossless compression, preserving all image data. It is best for graphics, logos, and images requiring
-          transparency. PNG files are typically larger than JPEGs for photographs but maintain perfect quality.
-        </p>
-
-        <h3>WebP</h3>
-        <p>
-          WebP offers superior compression for both lossy and lossless images. It produces smaller files than JPEG and
-          PNG while maintaining quality. Most modern browsers support WebP, making it excellent for web use.
-        </p>
-
-        <h2>Essential Compression Techniques</h2>
-
-        <h3>1. Choose the Right Format</h3>
-        <p>
-          Select the format that matches your content. Use JPEG for photos, PNG for graphics with transparency, and WebP
-          when broad browser support exists. Wrong format choices lead to unnecessarily large files.
-        </p>
-
-        <h3>2. Resize Before Compressing</h3>
-        <p>
-          Never upload images larger than needed. If displaying images at 800 pixels wide, do not upload 4000-pixel
-          originals. Resizing first dramatically reduces file size without any quality loss at display size.
-        </p>
-
-        <h3>3. Use Appropriate Quality Settings</h3>
-        <p>
-          For web images, JPEG quality between 70-85% typically provides excellent results. Lower quality for smaller
-          thumbnails, higher for hero images. Always preview before finalizing to ensure acceptable quality.
-        </p>
-
-        <h3>4. Remove Metadata</h3>
-        <p>
-          Images often contain hidden metadata including camera settings, GPS coordinates, and editing history.
-          Stripping this data reduces file size and improves privacy. Most compression tools remove metadata
-          automatically.
-        </p>
-
-        <h2>Tools for Image Compression</h2>
-
-        <h3>Online Tools</h3>
-        <p>
-          Browser-based tools like VexaTool Compress Image offer convenient compression without software installation.
-          Simply upload images, choose compression settings, and download optimized files. These tools are perfect for
-          quick tasks and occasional use.
-        </p>
-
-        <h3>Desktop Applications</h3>
-        <p>
-          For frequent or batch compression, desktop applications offer more control and faster processing. Professional
-          tools provide advanced options for fine-tuning compression algorithms and quality settings.
-        </p>
-
-        <h2>Compression for Different Uses</h2>
-
-        <h3>Website Images</h3>
-        <p>
-          Web images should balance quality and loading speed. Aim for files under 200KB for most images, under 100KB
-          for thumbnails. Use responsive images that serve different sizes based on screen resolution.
-        </p>
-
-        <h3>Email Attachments</h3>
-        <p>
-          Email providers limit attachment sizes. Compress images significantly when sharing via email. A 5MB photo can
-          often be reduced to 500KB while remaining viewable.
-        </p>
-
-        <h3>Social Media</h3>
-        <p>
-          Social platforms recompress uploads, sometimes reducing quality. Upload at recommended dimensions and
-          compression levels to maintain control. Over-compressing before upload may result in poor quality after
-          platform processing.
-        </p>
-
-        <h2>Advanced Compression Strategies</h2>
-
-        <h3>Batch Processing</h3>
-        <p>
-          When compressing multiple images, batch processing saves significant time. Most tools allow uploading and
-          compressing many files simultaneously with consistent settings.
-        </p>
-
-        <h3>Progressive Loading</h3>
-        <p>
-          Progressive JPEGs load gradually from blurry to sharp, improving perceived loading speed. This technique is
-          especially valuable for larger images on slow connections.
-        </p>
-
-        <h2>Common Mistakes to Avoid</h2>
-        <ul>
-          <li>Compressing already compressed images repeatedly</li>
-          <li>Using the wrong format for your content type</li>
-          <li>Setting quality too low and losing important details</li>
-          <li>Ignoring image dimensions before compression</li>
-          <li>Not keeping original files as backups</li>
-        </ul>
-
-        <h2>Conclusion</h2>
-        <p>
-          Effective image compression balances file size reduction with quality preservation. By understanding formats,
-          using appropriate settings, and following best practices, you can optimize images for any purpose. Start
-          compressing your images today with VexaTool and enjoy faster websites, easier sharing, and efficient storage.
-        </p>
-      </div>
-    ),
-  },
   "pdf-security-guide": {
     title: "PDF Security Guide: How to Protect Your Documents",
     date: "2026-01-04",
@@ -942,8 +593,8 @@ const blogContent: Record<string, BlogPostContent> = {
 // Related articles mapping
 const relatedArticles: Record<string, { title: string; slug: string }[]> = {
   "pdf-to-excel-converter-guide": [
-    { title: "PDF to Excel: Extract Tables Without Manual Entry", slug: "pdf-to-excel-data-extraction" },
-    { title: "Convert PDF to Word Free: Ultimate Guide", slug: "convert-pdf-to-word-free-guide" },
+    { title: "PDF to Word: Preserve Formatting Like a Pro", slug: "pdf-to-word-formatting-tips" },
+    { title: "Word to PDF: Create Professional Documents", slug: "word-to-pdf-professional-documents" },
     { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
   ],
   "how-to-merge-pdf-files-online-complete-guide": [
@@ -955,11 +606,6 @@ const relatedArticles: Record<string, { title: string; slug: string }[]> = {
     { title: "How to Merge PDF Files Online", slug: "how-to-merge-pdf-files-online-complete-guide" },
     { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
     { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
-  ],
-  "convert-pdf-to-word-free-guide": [
-    { title: "PDF to Word: Preserve Formatting Like a Pro", slug: "pdf-to-word-formatting-tips" },
-    { title: "Word to PDF: Create Professional Documents", slug: "word-to-pdf-professional-documents" },
-    { title: "PDF to Excel Converter Guide", slug: "pdf-to-excel-converter-guide" },
   ],
   "qr-code-generator-complete-guide": [
     { title: "10 Digital Productivity Habits That Save Time", slug: "digital-productivity-habits-that-save-time" },
@@ -979,7 +625,7 @@ const relatedArticles: Record<string, { title: string; slug: string }[]> = {
   "background-remover-perfect-product-photos": [
     { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
     { title: "Image Resizer: Perfect Dimensions for Social Media", slug: "image-resizer-social-media-guide" },
-    { title: "Best Image Compression Tips", slug: "best-image-compression-tips" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
   ],
 };
 
@@ -1115,9 +761,7 @@ const BlogPost = () => {
                 {(() => {
                   const imageMap: Record<string, { src: string; alt: string }> = {
                     "how-to-merge-pdf-files-online-complete-guide": { src: "/previews/merge-pdf-preview.webp", alt: "How to merge PDF files online step by step" },
-                    "how-to-merge-pdfs-complete-guide": { src: "/previews/merge-pdf-preview.webp", alt: "Complete guide to merging PDF files" },
                     "compress-pdf-without-losing-quality": { src: "/previews/compress-pdf-preview.webp", alt: "Compress PDF files without quality loss" },
-                    "convert-pdf-to-word-free-guide": { src: "/previews/pdf-to-word-preview.webp", alt: "Convert PDF to Word document guide" },
                     "pdf-to-word-formatting-tips": { src: "/previews/pdf-to-word-preview.webp", alt: "PDF to Word formatting best practices" },
                     "digital-signature-guide": { src: "/previews/sign-pdf-preview.webp", alt: "How to add digital signatures to PDFs" },
                     "pdf-security-guide": { src: "/previews/protect-pdf-preview.webp", alt: "PDF security and password protection guide" },
@@ -1126,7 +770,6 @@ const BlogPost = () => {
                     "background-remover-perfect-product-photos": { src: "/previews/background-remover-preview.webp", alt: "Background remover for product photos" },
                     "emi-calculator-home-loan-guide": { src: "/previews/emi-calculator-preview.webp", alt: "EMI calculator for home loans" },
                     "gst-calculator-business-guide": { src: "/previews/gst-calculator-preview.webp", alt: "GST calculator for Indian businesses" },
-                    "best-image-compression-tips": { src: "/previews/compress-image-preview.webp", alt: "Image compression tips and techniques" },
                     "image-compression-web-performance": { src: "/previews/compress-image-preview.webp", alt: "Optimize images for web performance" },
                     "split-pdf-organize-documents": { src: "/previews/split-pdf-preview.webp", alt: "Split PDF and organize documents" },
                     "bmi-calculator-health-guide": { src: "/previews/bmi-calculator-preview.webp", alt: "BMI calculator health guide" },
@@ -1135,13 +778,11 @@ const BlogPost = () => {
                     "pdf-watermark-protect-documents": { src: "/previews/watermark-pdf-preview.webp", alt: "Add watermark to PDF documents" },
                     "image-resizer-social-media-guide": { src: "/previews/image-resizer-preview.webp", alt: "Image resizer for social media" },
                     "unit-converter-complete-reference": { src: "/previews/unit-converter-preview.webp", alt: "Unit converter reference guide" },
-                    "pdf-to-excel-data-extraction": { src: "/previews/pdf-to-excel-preview.webp", alt: "Extract data from PDF to Excel" },
                     "word-counter-content-optimization": { src: "/previews/word-counter-preview.webp", alt: "Word counter for content optimization" },
                     "pincode-finder-india-postal-guide": { src: "/previews/pincode-generator-preview.webp", alt: "Indian PIN code finder guide" },
                     "pdf-to-jpg-image-conversion": { src: "/previews/pdf-to-jpg-preview.webp", alt: "Convert PDF to JPG images" },
                     "pdf-to-excel-converter-guide": { src: "/previews/pdf-to-excel-preview.webp", alt: "How to convert PDF to Excel online for free" },
                     "love-age-calculator-complete-guide": { src: "/previews/love-calculator-preview.webp", alt: "Love and age calculator guide" },
-                    "age-calculator-birthday-planning": { src: "/previews/age-calculator-preview.webp", alt: "Age calculator for birthday planning" },
                     "pdf-accessibility-guide": { src: "/previews/edit-pdf-preview.webp", alt: "PDF accessibility guide" },
                     "digital-productivity-habits-that-save-time": { src: "/previews/compress-pdf-preview.webp", alt: "Digital productivity habits to save time" },
                   };

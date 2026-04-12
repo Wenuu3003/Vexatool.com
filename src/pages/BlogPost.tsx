@@ -2,7 +2,7 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Calendar, Clock, ArrowLeft } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, User } from "lucide-react";
 import { newBlogPosts } from "@/data/blogContent";
 import { Breadcrumb } from "@/components/Breadcrumb";
 

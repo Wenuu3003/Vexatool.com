@@ -238,9 +238,7 @@ const Blog = () => {
               {blogPosts.map((post) => {
                 const previewMap: Record<string, string> = {
                   "how-to-merge-pdf-files-online-complete-guide": "/previews/merge-pdf-preview.webp",
-                  "how-to-merge-pdfs-complete-guide": "/previews/merge-pdf-preview.webp",
                   "compress-pdf-without-losing-quality": "/previews/compress-pdf-preview.webp",
-                  "convert-pdf-to-word-free-guide": "/previews/pdf-to-word-preview.webp",
                   "pdf-to-word-formatting-tips": "/previews/pdf-to-word-preview.webp",
                   "digital-signature-guide": "/previews/sign-pdf-preview.webp",
                   "pdf-security-guide": "/previews/protect-pdf-preview.webp",
@@ -249,7 +247,6 @@ const Blog = () => {
                   "background-remover-perfect-product-photos": "/previews/background-remover-preview.webp",
                   "emi-calculator-home-loan-guide": "/previews/emi-calculator-preview.webp",
                   "gst-calculator-business-guide": "/previews/gst-calculator-preview.webp",
-                  "best-image-compression-tips": "/previews/compress-image-preview.webp",
                   "image-compression-web-performance": "/previews/compress-image-preview.webp",
                   "split-pdf-organize-documents": "/previews/split-pdf-preview.webp",
                   "bmi-calculator-health-guide": "/previews/bmi-calculator-preview.webp",
@@ -258,14 +255,13 @@ const Blog = () => {
                   "pdf-watermark-protect-documents": "/previews/watermark-pdf-preview.webp",
                   "image-resizer-social-media-guide": "/previews/image-resizer-preview.webp",
                   "love-age-calculator-complete-guide": "/previews/love-calculator-preview.webp",
-                  "age-calculator-birthday-planning": "/previews/age-calculator-preview.webp",
                   "digital-productivity-habits-that-save-time": "/previews/compress-pdf-preview.webp",
                   "pdf-accessibility-guide": "/previews/edit-pdf-preview.webp",
                   "unit-converter-complete-reference": "/previews/unit-converter-preview.webp",
-                  "pdf-to-excel-data-extraction": "/previews/pdf-to-excel-preview.webp",
                   "word-counter-content-optimization": "/previews/word-counter-preview.webp",
                   "pincode-finder-india-postal-guide": "/previews/pincode-generator-preview.webp",
                   "pdf-to-jpg-image-conversion": "/previews/pdf-to-jpg-preview.webp",
+                  "pdf-to-excel-converter-guide": "/previews/pdf-to-excel-preview.webp",
                 };
                 const previewImg = previewMap[post.slug];
 

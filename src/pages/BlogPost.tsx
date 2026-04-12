@@ -268,6 +268,7 @@ const blogContent: Record<string, BlogPostContent> = {
   },
 
 
+
     title: "Best Image Compression Tips: Reduce File Size Without Losing Quality",
     date: "2026-01-04",
     readTime: "7 min read",

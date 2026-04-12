@@ -1,5 +1,6 @@
 import React from "react";
 import { mergePdfBlogContent } from "./mergePdfBlogContent";
+import { expandedBlogPosts } from "./expandedBlogPosts";
 
 interface BlogPostContent {
   title: string;
@@ -1430,65 +1431,6 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     ),
   },
 
-  "word-to-pdf-professional-documents": {
-    title: "Word to PDF: Creating Professional Documents That Impress",
-    date: "2026-01-14",
-    readTime: "7 min read",
-    relatedTools: [
-      { name: "Word to PDF", href: "/word-to-pdf" },
-      { name: "PDF to Word", href: "/pdf-to-word" },
-    ],
-    content: (
-      <div className="prose prose-gray dark:prose-invert max-w-none">
-        <p className="lead text-xl text-muted-foreground mb-6">
-          Converting Word to PDF ensures documents display correctly on any device. Learn professional techniques for creating PDFs that maintain formatting, embed fonts, and look polished everywhere.
-        </p>
-
-        <h2>Why Convert to PDF?</h2>
-        <p>
-          Word documents display differently across devices and software versions. PDFs preserve exact formatting regardless of viewer software. Recipients see exactly what you created—fonts, spacing, and layout intact.
-        </p>
-
-        <h2>Preparing Word Documents</h2>
-
-        <h3>Use Standard Fonts</h3>
-        <p>
-          Fonts like Arial, Times New Roman, and Calibri embed reliably. Custom fonts may not display correctly if recipients lack them. When using special fonts, ensure they are embedable.
-        </p>
-
-        <h3>Finalize Formatting</h3>
-        <p>
-          Check page breaks, headers, footers, and margins before conversion. What you see in Word is what appears in the PDF. Resolve any layout issues beforehand.
-        </p>
-
-        <h2>Conversion Best Practices</h2>
-
-        <h3>Quality Settings</h3>
-        <p>
-          For print documents, use high-quality settings that preserve image resolution. For web sharing, optimize for smaller file size with acceptable quality. The VexaTool converter balances quality and size intelligently.
-        </p>
-
-        <h3>Preserve Hyperlinks</h3>
-        <p>
-          Ensure clickable links remain functional after conversion. Most converters maintain hyperlinks, but verify important links work in the final PDF.
-        </p>
-
-        <h2>Document Types Benefiting from PDF</h2>
-        <ul>
-          <li>Resumes and cover letters</li>
-          <li>Contracts and legal documents</li>
-          <li>Reports and proposals</li>
-          <li>Marketing materials and brochures</li>
-          <li>Invoices and receipts</li>
-        </ul>
-
-        <h2>Conclusion</h2>
-        <p>
-          Word to PDF conversion creates universally readable documents that maintain professional appearance. Proper preparation and quality conversion ensure recipients see polished, correctly formatted documents every time.
-        </p>
-      </div>
-    ),
-  },
 
   "currency-converter-travel-guide": {
     title: "Currency Converter: Essential Guide for International Travelers",
@@ -1786,60 +1728,6 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     ),
   },
 
-  "word-counter-content-optimization": {
-    title: "Word Counter: Optimize Your Content Length for SEO and Readability",
-    date: "2026-01-08",
-    readTime: "7 min read",
-    relatedTools: [
-      { name: "Word Counter", href: "/word-counter" },
-      { name: "PDF Editor", href: "/edit-pdf" },
-    ],
-    content: (
-      <div className="prose prose-gray dark:prose-invert max-w-none">
-        <p className="lead text-xl text-muted-foreground mb-6">
-          Content length impacts SEO rankings, reader engagement, and platform requirements. Understand optimal word counts for different content types and platforms.
-        </p>
-
-        <h2>Optimal Content Lengths</h2>
-
-        <h3>Blog Posts</h3>
-        <ul>
-          <li><strong>Standard posts:</strong> 1,000-1,500 words</li>
-          <li><strong>In-depth guides:</strong> 2,000-3,000 words</li>
-          <li><strong>Pillar content:</strong> 3,000-5,000+ words</li>
-        </ul>
-
-        <h3>Social Media</h3>
-        <ul>
-          <li><strong>Twitter/X:</strong> 280 characters max</li>
-          <li><strong>Instagram caption:</strong> 138-150 characters optimal</li>
-          <li><strong>LinkedIn post:</strong> 50-100 words</li>
-        </ul>
-
-        <h3>Academic Writing</h3>
-        <ul>
-          <li><strong>Abstract:</strong> 150-300 words</li>
-          <li><strong>Essay:</strong> Institution-specific (often 500-3,000)</li>
-          <li><strong>Thesis:</strong> 10,000-50,000+ words</li>
-        </ul>
-
-        <h2>Using the Word Counter</h2>
-        <p>
-          The VexaTool Word Counter provides instant word, character, sentence, and paragraph counts. Track reading time and character limits for various platforms. Real-time counting as you type.
-        </p>
-
-        <h2>Beyond Word Count</h2>
-        <p>
-          Quality matters more than quantity. Well-researched 1,500-word articles outperform thin 3,000-word content. Use word count as a guideline, not a goal.
-        </p>
-
-        <h2>Conclusion</h2>
-        <p>
-          Word count tools help meet platform requirements and optimize content length. Use VexaTool Word Counter to ensure your content fits where it needs to go.
-        </p>
-      </div>
-    ),
-  },
 
   "pincode-finder-india-postal-guide": {
     title: "PIN Code Finder: Complete Guide to Indian Postal Codes",
@@ -1891,54 +1779,6 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     ),
   },
 
-  "pdf-to-jpg-image-conversion": {
-    title: "PDF to JPG: Convert Documents to High-Quality Images",
-    date: "2026-01-06",
-    readTime: "6 min read",
-    relatedTools: [
-      { name: "PDF to JPG", href: "/pdf-to-jpg" },
-      { name: "PDF to PNG", href: "/pdf-to-png" },
-    ],
-    content: (
-      <div className="prose prose-gray dark:prose-invert max-w-none">
-        <p className="lead text-xl text-muted-foreground mb-6">
-          Converting PDF pages to images enables sharing on platforms that do not support PDFs and allows embedding in presentations. Learn to extract high-quality JPG images from any PDF.
-        </p>
-
-        <h2>When to Convert PDF to JPG</h2>
-        <ul>
-          <li>Sharing on social media platforms</li>
-          <li>Embedding in presentations</li>
-          <li>Creating thumbnails and previews</li>
-          <li>Web page integration</li>
-          <li>Converting for image-only applications</li>
-        </ul>
-
-        <h2>Quality Considerations</h2>
-        <p>
-          Higher DPI produces clearer images but larger files. 150 DPI suits screen display; 300 DPI is standard for printing. Balance quality needs with file size requirements.
-        </p>
-
-        <h2>Using the PDF to JPG Converter</h2>
-        <ol>
-          <li>Upload PDF to VexaTool</li>
-          <li>Select pages to convert (all or specific)</li>
-          <li>Choose quality/DPI settings</li>
-          <li>Download individual images or zip archive</li>
-        </ol>
-
-        <h2>JPG vs PNG for Converted Pages</h2>
-        <p>
-          JPG offers smaller files for photographs and complex images. PNG preserves text sharpness and supports transparency. Choose based on content type and use case.
-        </p>
-
-        <h2>Conclusion</h2>
-        <p>
-          PDF to JPG conversion expands document usability across platforms. The VexaTool converter produces high-quality images with customizable settings for any purpose.
-        </p>
-      </div>
-    ),
-  },
 
   "age-calculator-birthday-wishes-motivation": {
     title: "Age Calculator with Birthday Wishes & Motivation Tips – Complete Guide 2026",

@@ -2144,4 +2144,5 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
       </div>
     ),
   },
+  ...expandedBlogPosts,
 };

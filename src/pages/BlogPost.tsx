@@ -16,18 +16,8 @@ interface BlogPostContent {
 
 // Merge new blog posts with existing ones
 const blogContent: Record<string, BlogPostContent> = {
-  ...newBlogPosts,
 
 
-        <h2>Conclusion</h2>
-        <p>
-          Converting PDF to Word does not have to be complicated or expensive. Free online tools like VexaTool make the
-          process simple while maintaining document quality. Whether updating resumes, editing contracts, or modifying
-          reports, PDF to Word conversion gives you full control over your document content.
-        </p>
-      </div>
-    ),
-  },
   "digital-signature-guide": {
     title: "How to Add Digital Signatures to PDF: Complete Guide",
     date: "2026-01-05",

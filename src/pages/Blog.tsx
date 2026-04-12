@@ -114,7 +114,7 @@ const blogPosts: BlogPost[] = [
     title: "Word to PDF: Creating Professional Documents That Impress",
     excerpt: "Convert Word to PDF like a pro. Tips for maintaining formatting, embedding fonts, and creating universally compatible documents.",
     date: "2026-01-14",
-    readTime: "7 min read",
+    readTime: "15 min read",
   },
   {
     slug: "currency-converter-travel-guide",
@@ -156,7 +156,7 @@ const blogPosts: BlogPost[] = [
     title: "Word Counter: Optimize Your Content Length for SEO and Readability",
     excerpt: "Perfect word counts for blogs, social media, and academic writing. Learn ideal lengths for different content types and platforms.",
     date: "2026-01-08",
-    readTime: "7 min read",
+    readTime: "14 min read",
   },
   {
     slug: "pincode-finder-india-postal-guide",
@@ -170,7 +170,7 @@ const blogPosts: BlogPost[] = [
     title: "PDF to JPG: Convert Documents to High-Quality Images",
     excerpt: "Transform PDF pages into JPG images for presentations, social media, and web use. Quality settings and batch conversion tips.",
     date: "2026-01-06",
-    readTime: "6 min read",
+    readTime: "14 min read",
   },
   // Existing posts
   {
@@ -227,7 +227,7 @@ const blogPosts: BlogPost[] = [
     title: "Best Free PDF Tools Online in 2026",
     excerpt: "Discover the top free PDF tools available online in 2026. From compression to conversion, explore the best options for managing your PDF documents efficiently.",
     date: "2026-01-01",
-    readTime: "6 min read",
+    readTime: "16 min read",
   },
 ];
 

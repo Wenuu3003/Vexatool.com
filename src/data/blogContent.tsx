@@ -1492,7 +1492,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
     ),
   },
 
-
+  "pdf-to-excel-converter-guide": {
     title: "How to Convert PDF to Excel Online for Free (Step-by-Step Guide)",
     date: "2026-04-04",
     readTime: "14 min read",

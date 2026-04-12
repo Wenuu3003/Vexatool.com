@@ -942,8 +942,8 @@ const blogContent: Record<string, BlogPostContent> = {
 // Related articles mapping
 const relatedArticles: Record<string, { title: string; slug: string }[]> = {
   "pdf-to-excel-converter-guide": [
-    { title: "PDF to Excel: Extract Tables Without Manual Entry", slug: "pdf-to-excel-data-extraction" },
-    { title: "Convert PDF to Word Free: Ultimate Guide", slug: "convert-pdf-to-word-free-guide" },
+    { title: "PDF to Word: Preserve Formatting Like a Pro", slug: "pdf-to-word-formatting-tips" },
+    { title: "Word to PDF: Create Professional Documents", slug: "word-to-pdf-professional-documents" },
     { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
   ],
   "how-to-merge-pdf-files-online-complete-guide": [
@@ -955,11 +955,6 @@ const relatedArticles: Record<string, { title: string; slug: string }[]> = {
     { title: "How to Merge PDF Files Online", slug: "how-to-merge-pdf-files-online-complete-guide" },
     { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
     { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
-  ],
-  "convert-pdf-to-word-free-guide": [
-    { title: "PDF to Word: Preserve Formatting Like a Pro", slug: "pdf-to-word-formatting-tips" },
-    { title: "Word to PDF: Create Professional Documents", slug: "word-to-pdf-professional-documents" },
-    { title: "PDF to Excel Converter Guide", slug: "pdf-to-excel-converter-guide" },
   ],
   "qr-code-generator-complete-guide": [
     { title: "10 Digital Productivity Habits That Save Time", slug: "digital-productivity-habits-that-save-time" },
@@ -979,7 +974,7 @@ const relatedArticles: Record<string, { title: string; slug: string }[]> = {
   "background-remover-perfect-product-photos": [
     { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
     { title: "Image Resizer: Perfect Dimensions for Social Media", slug: "image-resizer-social-media-guide" },
-    { title: "Best Image Compression Tips", slug: "best-image-compression-tips" },
+    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
   ],
 };
 

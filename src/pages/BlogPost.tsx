@@ -268,11 +268,6 @@ const blogContent: Record<string, BlogPostContent> = {
   },
 
 
-
-    title: "Best Image Compression Tips: Reduce File Size Without Losing Quality",
-    date: "2026-01-04",
-    readTime: "7 min read",
-    content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">
         <p className="lead text-xl text-muted-foreground mb-6">
           Image compression is essential for web performance, storage optimization, and faster file sharing. This guide

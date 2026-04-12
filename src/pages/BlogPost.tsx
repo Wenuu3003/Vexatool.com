@@ -973,7 +973,7 @@ const relatedArticles: Record<string, { title: string; slug: string }[]> = {
   ],
   "gst-calculator-business-guide": [
     { title: "EMI Calculator: Master Your Loan Payments", slug: "emi-calculator-home-loan-guide" },
-    { title: "Percentage Calculator Tips", slug: "word-counter-content-optimization" },
+    { title: "Word Counter: Optimize Content for SEO", slug: "word-counter-content-optimization" },
     { title: "PIN Code Finder: Indian Postal Guide", slug: "pincode-finder-india-postal-guide" },
   ],
   "background-remover-perfect-product-photos": [

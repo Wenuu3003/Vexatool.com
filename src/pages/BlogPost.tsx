@@ -761,9 +761,7 @@ const BlogPost = () => {
                 {(() => {
                   const imageMap: Record<string, { src: string; alt: string }> = {
                     "how-to-merge-pdf-files-online-complete-guide": { src: "/previews/merge-pdf-preview.webp", alt: "How to merge PDF files online step by step" },
-                    "how-to-merge-pdfs-complete-guide": { src: "/previews/merge-pdf-preview.webp", alt: "Complete guide to merging PDF files" },
                     "compress-pdf-without-losing-quality": { src: "/previews/compress-pdf-preview.webp", alt: "Compress PDF files without quality loss" },
-                    "convert-pdf-to-word-free-guide": { src: "/previews/pdf-to-word-preview.webp", alt: "Convert PDF to Word document guide" },
                     "pdf-to-word-formatting-tips": { src: "/previews/pdf-to-word-preview.webp", alt: "PDF to Word formatting best practices" },
                     "digital-signature-guide": { src: "/previews/sign-pdf-preview.webp", alt: "How to add digital signatures to PDFs" },
                     "pdf-security-guide": { src: "/previews/protect-pdf-preview.webp", alt: "PDF security and password protection guide" },
@@ -772,7 +770,6 @@ const BlogPost = () => {
                     "background-remover-perfect-product-photos": { src: "/previews/background-remover-preview.webp", alt: "Background remover for product photos" },
                     "emi-calculator-home-loan-guide": { src: "/previews/emi-calculator-preview.webp", alt: "EMI calculator for home loans" },
                     "gst-calculator-business-guide": { src: "/previews/gst-calculator-preview.webp", alt: "GST calculator for Indian businesses" },
-                    "best-image-compression-tips": { src: "/previews/compress-image-preview.webp", alt: "Image compression tips and techniques" },
                     "image-compression-web-performance": { src: "/previews/compress-image-preview.webp", alt: "Optimize images for web performance" },
                     "split-pdf-organize-documents": { src: "/previews/split-pdf-preview.webp", alt: "Split PDF and organize documents" },
                     "bmi-calculator-health-guide": { src: "/previews/bmi-calculator-preview.webp", alt: "BMI calculator health guide" },
@@ -781,13 +778,11 @@ const BlogPost = () => {
                     "pdf-watermark-protect-documents": { src: "/previews/watermark-pdf-preview.webp", alt: "Add watermark to PDF documents" },
                     "image-resizer-social-media-guide": { src: "/previews/image-resizer-preview.webp", alt: "Image resizer for social media" },
                     "unit-converter-complete-reference": { src: "/previews/unit-converter-preview.webp", alt: "Unit converter reference guide" },
-                    "pdf-to-excel-data-extraction": { src: "/previews/pdf-to-excel-preview.webp", alt: "Extract data from PDF to Excel" },
                     "word-counter-content-optimization": { src: "/previews/word-counter-preview.webp", alt: "Word counter for content optimization" },
                     "pincode-finder-india-postal-guide": { src: "/previews/pincode-generator-preview.webp", alt: "Indian PIN code finder guide" },
                     "pdf-to-jpg-image-conversion": { src: "/previews/pdf-to-jpg-preview.webp", alt: "Convert PDF to JPG images" },
                     "pdf-to-excel-converter-guide": { src: "/previews/pdf-to-excel-preview.webp", alt: "How to convert PDF to Excel online for free" },
                     "love-age-calculator-complete-guide": { src: "/previews/love-calculator-preview.webp", alt: "Love and age calculator guide" },
-                    "age-calculator-birthday-planning": { src: "/previews/age-calculator-preview.webp", alt: "Age calculator for birthday planning" },
                     "pdf-accessibility-guide": { src: "/previews/edit-pdf-preview.webp", alt: "PDF accessibility guide" },
                     "digital-productivity-habits-that-save-time": { src: "/previews/compress-pdf-preview.webp", alt: "Digital productivity habits to save time" },
                   };

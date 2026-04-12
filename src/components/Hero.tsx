@@ -132,9 +132,13 @@ export const Hero = () => {
             </span>
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg max-w-md mx-auto mb-8 md:mb-10 leading-relaxed text-muted-foreground">
+          <p className="text-sm sm:text-base md:text-lg max-w-lg mx-auto mb-4 md:mb-5 leading-relaxed text-muted-foreground">
             Merge, edit, compress and convert documents in seconds.
-            No signup. 100% private.
+            No signup. 100% private. Your files never leave your browser.
+          </p>
+          <p className="text-xs sm:text-sm max-w-md mx-auto mb-8 md:mb-10 leading-relaxed text-muted-foreground/80">
+            VexaTool offers 50+ free tools for professionals, students, and businesses.
+            Browser-based processing means zero file uploads — safe for contracts, IDs, and sensitive documents.
           </p>
 
           <Link

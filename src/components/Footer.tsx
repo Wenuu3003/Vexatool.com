@@ -12,7 +12,9 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       { name: "Split PDF", path: "/split-pdf" },
       { name: "Compress PDF", path: "/compress-pdf" },
       { name: "PDF to Word", path: "/pdf-to-word" },
+      { name: "PDF to Excel", path: "/pdf-to-excel" },
       { name: "Rotate PDF", path: "/rotate-pdf" },
+      { name: "Sign PDF", path: "/sign-pdf" },
     ],
     "Image & QR Tools": [
       { name: "Image Resizer", path: "/image-resizer" },
@@ -23,9 +25,10 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       { name: "QR Code Scanner", path: "/qr-code-scanner" },
     ],
     Calculators: [
-      { name: "Love Calculator", path: "/love-calculator" },
-      { name: "BMI Calculator", path: "/bmi-calculator" },
       { name: "EMI Calculator", path: "/emi-calculator" },
+      { name: "BMI Calculator", path: "/bmi-calculator" },
+      { name: "GST Calculator", path: "/gst-calculator" },
+      { name: "Love Calculator", path: "/love-calculator" },
       { name: "Percentage Calculator", path: "/percentage-calculator" },
       { name: "Word Counter", path: "/word-counter" },
     ],
@@ -33,11 +36,20 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       { name: "About Us", path: "/about-us" },
       { name: "Contact Us", path: "/contact" },
       { name: "Blog", path: "/blog" },
+      { name: "All Tools", path: "/all-tools" },
       { name: "Privacy Policy", path: "/privacy-policy" },
       { name: "Terms & Conditions", path: "/terms-and-conditions" },
       { name: "Disclaimer", path: "/disclaimer" },
     ],
   };
+
+  const popularPosts = [
+    { name: "How to Merge PDF Files Online", path: "/blog/how-to-merge-pdf-files-online-complete-guide" },
+    { name: "PDF to Excel Converter Guide", path: "/blog/pdf-to-excel-converter-guide" },
+    { name: "QR Code Generator Guide", path: "/blog/qr-code-generator-complete-guide" },
+    { name: "EMI Calculator for Home Loans", path: "/blog/emi-calculator-home-loan-guide" },
+    { name: "Image Compression for Web", path: "/blog/image-compression-web-performance" },
+  ];
 
   return (
     <footer ref={ref} className="bg-card border-t border-border pt-12 sm:pt-16 pb-6 sm:pb-8" role="contentinfo" aria-label="Site footer">
@@ -51,8 +63,11 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
                 Vexa<span className="text-primary">Tool</span>
               </span>
             </Link>
-            <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground max-w-xs">
-              Free online PDF tools, image converters, calculators, and QR code tools. Secure browser-based processing.
+            <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground max-w-xs mb-4">
+              Free online PDF tools, image converters, calculators, and QR code tools. Secure browser-based processing — your files never leave your device.
+            </p>
+            <p className="text-[11px] text-muted-foreground">
+              Trusted by 100,000+ users across India and 50+ countries.
             </p>
           </div>
 
@@ -71,6 +86,22 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               </ul>
             </nav>
           ))}
+        </div>
+
+        {/* Popular Blog Posts */}
+        <div className="mb-8 sm:mb-10 pt-6 border-t border-border/60">
+          <h4 className="font-semibold mb-3 text-foreground text-sm">Popular Guides & Tutorials</h4>
+          <div className="flex flex-wrap gap-2">
+            {popularPosts.map((post) => (
+              <Link
+                key={post.path}
+                to={post.path}
+                className="text-xs px-3 py-1.5 rounded-lg bg-muted/50 border border-border/60 text-muted-foreground hover:text-primary hover:border-primary/30 transition-colors"
+              >
+                {post.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* Trust Badges */}

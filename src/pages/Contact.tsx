@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Mail, Send, MessageCircle } from "lucide-react";
+import { Mail, Send, MessageCircle, Facebook } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,13 @@ const Contact = () => {
       description: "Get in touch via email",
       value: "support@vexatool.com",
       link: "mailto:support@vexatool.com"
+    },
+    {
+      icon: Facebook,
+      title: "Facebook",
+      description: "Follow us on Facebook",
+      value: "Vexatool.com",
+      link: "https://www.facebook.com/Vexatool.com"
     },
     {
       icon: Send,

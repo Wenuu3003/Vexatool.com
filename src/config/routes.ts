@@ -231,7 +231,7 @@ export const routes: RouteConfig[] = [
     category: 'Calculator Tools'
   },
   
-  // Calculator Tools (Age Calculator merged into Love Calculator - redirect handled in App.tsx)
+  // Calculator Tools
   { 
     path: '/bmi-calculator', 
     priority: 0.8, 

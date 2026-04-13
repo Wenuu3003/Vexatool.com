@@ -85,7 +85,7 @@ const Contact = () => {
       {
         "@type": "Question",
         "name": "How do I report a bug or suggest a feature?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Use the contact form, email us at support@vexatool.com, or reach out via our Telegram channel @VexaTool." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Use the contact form, email us at support@vexatool.com, reach out via our Telegram channel @VexaTool, or message us on our Facebook page Vexatool.com." }
       },
       {
         "@type": "Question",
@@ -154,7 +154,7 @@ const Contact = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6 mb-12">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {contactMethods.map((method) => (
                 <a key={method.title} href={method.link} target="_blank" rel="noopener noreferrer"
                   className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-md transition-shadow">

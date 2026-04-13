@@ -26,10 +26,10 @@ export const SocialShare = ({ title, url, description }: SocialShareProps) => {
       color: "hover:bg-blue-600 hover:text-white",
     },
     {
-      name: "Twitter",
+      name: "X",
       icon: Twitter,
-      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
-      color: "hover:bg-sky-500 hover:text-white",
+      url: `https://x.com/intent/post?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+      color: "hover:bg-black hover:text-white",
     },
     {
       name: "LinkedIn",

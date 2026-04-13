@@ -95,7 +95,7 @@ Word Count Statistics:
       "Speaking time estimation (based on 150 words per minute).",
       "Character count with and without spaces.",
       "Average word length and longest word detection.",
-      "Social media platform character limit checking (Twitter, Instagram, LinkedIn)."
+      "Social media platform character limit checking (X, Instagram, LinkedIn)."
     ],
     safetyNote: "All text processing happens locally in your browser. Your content is never sent to external servers or stored anywhere. This ensures complete privacy for sensitive documents and personal writing.",
     faqs: [
@@ -113,7 +113,7 @@ Word Count Statistics:
       },
       {
         question: "Why check social media character limits?",
-        answer: "Different platforms have different character limits. Twitter allows 280 characters, Instagram captions allow 2,200, and LinkedIn posts allow 3,000. The tool helps you ensure your content fits within these limits before posting."
+        answer: "Different platforms have different character limits. X (formerly Twitter) allows 280 characters, Instagram captions allow 2,200, and LinkedIn posts allow 3,000. The tool helps you ensure your content fits within these limits before posting."
       }
     ]
   };
@@ -231,7 +231,7 @@ Word Count Statistics:
               <h4 className="font-semibold">Platform Limits</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Twitter/X</span>
+                  <span className="text-muted-foreground">X (formerly Twitter)</span>
                   <span className={`font-medium ${stats.characters > 280 ? "text-red-500" : "text-green-500"}`}>
                     {stats.characters}/280
                   </span>

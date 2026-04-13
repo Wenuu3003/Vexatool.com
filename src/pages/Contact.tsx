@@ -49,8 +49,8 @@ const Contact = () => {
     },
     {
       icon: MessageCircle,
-      title: "Twitter/X",
-      description: "Follow us on Twitter",
+      title: "X (formerly Twitter)",
+      description: "Follow us on X",
       value: "@VexaTool",
       link: "https://x.com/VexaTool"
     }
@@ -97,7 +97,7 @@ const Contact = () => {
     <>
       <Helmet>
         <title>Contact Us - VexaTool | Get in Touch for Support</title>
-        <meta name="description" content="Contact VexaTool for support, feedback, or business inquiries. Reach us via email, Telegram, or Twitter. We typically respond within 24 hours." />
+        <meta name="description" content="Contact VexaTool for support, feedback, or business inquiries. Reach us via email, Telegram, or X. We typically respond within 24 hours." />
         <meta name="keywords" content="contact vexatool, vexatool support, pdf tools support, contact us, help desk" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href={canonicalUrl} />

@@ -29,6 +29,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
       { name: "BMI Calculator", path: "/bmi-calculator" },
       { name: "GST Calculator", path: "/gst-calculator" },
       { name: "Love Calculator", path: "/love-calculator" },
+      { name: "Age Calculator", path: "/age-calculator" },
       { name: "Percentage Calculator", path: "/percentage-calculator" },
       { name: "Word Counter", path: "/word-counter" },
     ],

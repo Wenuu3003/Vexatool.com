@@ -414,16 +414,16 @@ export const toolsData: ToolData[] = [
   // Calculator Tools
   {
     id: "love-calculator",
-    title: "Love & Age Calculator",
-    description: "Calculate love compatibility with zodiac & numerology. Find your exact age with birthday wishes and life wisdom tips.",
-    shortDescription: "Calculate love compatibility and exact age.",
+    title: "Love Calculator",
+    description: "Calculate love compatibility with zodiac sign matching, numerology life path analysis, and name compatibility scoring.",
+    shortDescription: "Calculate love compatibility with zodiac & numerology.",
     icon: Heart,
     colorClass: "bg-gradient-to-br from-pink-500 to-rose-500",
     href: "/love-calculator",
     category: "calculator",
     previewImage: "/previews/love-calculator-preview.webp",
-    features: ["Love percentage", "Zodiac match", "Age calculator", "Birthday wishes"],
-    seoKeywords: ["love calculator", "compatibility test", "zodiac compatibility", "age calculator"]
+    features: ["Love percentage", "Zodiac match", "Numerology score", "Shareable cards"],
+    seoKeywords: ["love calculator", "compatibility test", "zodiac compatibility", "numerology love"]
   },
   {
     id: "bmi-calculator",

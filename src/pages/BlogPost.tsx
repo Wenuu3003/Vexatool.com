@@ -793,7 +793,8 @@ const BlogPost = () => {
                     "pincode-finder-india-postal-guide": { src: "/previews/pincode-generator-preview.webp", alt: "Indian PIN code finder guide" },
                     "pdf-to-jpg-image-conversion": { src: "/previews/pdf-to-jpg-preview.webp", alt: "Convert PDF to JPG images" },
                     "pdf-to-excel-converter-guide": { src: "/previews/pdf-to-excel-preview.webp", alt: "How to convert PDF to Excel online for free" },
-                    "love-age-calculator-complete-guide": { src: "/previews/love-calculator-preview.webp", alt: "Love and age calculator guide" },
+                    "love-calculator-guide": { src: "/previews/love-calculator-preview.webp", alt: "Love Calculator complete guide" },
+                    "age-calculator-guide": { src: "/previews/love-calculator-preview.webp", alt: "Age Calculator complete guide" },
                     "pdf-accessibility-guide": { src: "/previews/edit-pdf-preview.webp", alt: "PDF accessibility guide" },
                     "digital-productivity-habits-that-save-time": { src: "/previews/compress-pdf-preview.webp", alt: "Digital productivity habits to save time" },
                   };

@@ -321,7 +321,7 @@ const Blog = () => {
                   "pdf-watermark-protect-documents": "/previews/watermark-pdf-preview.webp",
                   "image-resizer-social-media-guide": "/previews/image-resizer-preview.webp",
                   "love-calculator-guide": "/previews/love-calculator-preview.webp",
-                  "age-calculator-guide": "/previews/love-calculator-preview.webp",
+                  "age-calculator-guide": "/previews/age-calculator-preview.webp",
                   "digital-productivity-habits-that-save-time": "/previews/compress-pdf-preview.webp",
                   "pdf-accessibility-guide": "/previews/edit-pdf-preview.webp",
                   "unit-converter-complete-reference": "/previews/unit-converter-preview.webp",

@@ -650,11 +650,11 @@ const defaultRelated = [
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
 
-  if (!slug || !blogContent[slug]) {
+  if (!slug || !allBlogContent[slug]) {
     return <Navigate to="/blog" replace />;
   }
 
-  const post = blogContent[slug];
+  const post = allBlogContent[slug];
 
   // BlogPosting schema
   const blogPostingSchema = {

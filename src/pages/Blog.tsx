@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { phase3BlogListings } from "@/data/phase3BlogPosts";
 
 interface BlogPost {
   slug: string;
@@ -212,6 +213,70 @@ const blogPosts: BlogPost[] = [
     date: "2026-01-01",
     readTime: "16 min read",
   },
+  // Phase 3 — newly added long-form posts
+  {
+    slug: "secure-pdf-processing-browser-based",
+    title: "Secure PDF Processing: Why Browser-Based Tools Matter in 2026",
+    excerpt: "Why client-side PDF tools are safer in 2026: how browser-based processing works, how to verify it, and why it matters for sensitive Indian documents.",
+    date: "2026-04-10",
+    readTime: "11 min read",
+  },
+  {
+    slug: "pdf-vs-word-when-to-use-each",
+    title: "PDF vs Word: When to Use Each Format (Complete 2026 Guide)",
+    excerpt: "PDF vs Word in 2026 — when to use each format, how to convert without losing formatting, and a quick decision cheatsheet for every common scenario.",
+    date: "2026-04-08",
+    readTime: "10 min read",
+  },
+  {
+    slug: "best-free-document-conversion-tools",
+    title: "Best Free Tools for Document Conversion in 2026",
+    excerpt: "The best free document conversion tools of 2026 — what to look for, what to avoid, and which tool to use for each common Word, Excel, PDF and image workflow.",
+    date: "2026-04-06",
+    readTime: "12 min read",
+  },
+  {
+    slug: "digital-privacy-guide-file-safety",
+    title: "Digital Privacy Guide: How to Keep Your Files Safe Online",
+    excerpt: "A practical, no-nonsense playbook for keeping personal files safe online in 2026 — passwords, encryption, redaction, sharing, and browser-based tools.",
+    date: "2026-04-04",
+    readTime: "12 min read",
+  },
+  {
+    slug: "student-guide-to-pdf-tools",
+    title: "The Student's Guide to PDF Tools: Study Smarter in 2026",
+    excerpt: "Five free PDF tools that cover almost every student task in India — combining, splitting, compressing, signing and converting documents for any portal submission.",
+    date: "2026-04-02",
+    readTime: "11 min read",
+  },
+  {
+    slug: "business-document-workflow-guide",
+    title: "Business Document Workflow Guide: From Draft to Sign-Off",
+    excerpt: "A repeatable workflow from draft to sign-off — templates, conversion, signatures, secure sharing and archive structure that scales from solo to team.",
+    date: "2026-03-30",
+    readTime: "12 min read",
+  },
+  {
+    slug: "batch-processing-documents-guide",
+    title: "Batch Processing Documents: Save Hours with the Right Workflow",
+    excerpt: "Apply one workflow to many files at once — batch compression, merging, conversion, resizing — and turn a Sunday afternoon into a coffee break.",
+    date: "2026-03-28",
+    readTime: "10 min read",
+  },
+  {
+    slug: "image-optimization-for-seo",
+    title: "Image Optimization for SEO: Speed, Rankings & Core Web Vitals",
+    excerpt: "Modern image optimization for Core Web Vitals — formats, dimensions, compression, lazy loading and alt text, with the right free tools to implement each step.",
+    date: "2026-03-26",
+    readTime: "11 min read",
+  },
+  {
+    slug: "convert-images-to-pdf-online",
+    title: "How to Convert Images to PDF Online (JPG, PNG & HEIC Guide)",
+    excerpt: "Turn JPG, PNG and HEIC photos into a clean single PDF — page order, page size, orientation tips and a privacy-first browser-based workflow.",
+    date: "2026-03-24",
+    readTime: "9 min read",
+  },
 ];
 
 const Blog = () => {
@@ -271,6 +336,16 @@ const Blog = () => {
                   "pincode-finder-india-postal-guide": "/previews/pincode-generator-preview.webp",
                   "pdf-to-jpg-image-conversion": "/previews/pdf-to-jpg-preview.webp",
                   "pdf-to-excel-converter-guide": "/previews/pdf-to-excel-preview.webp",
+                  // Phase 3
+                  "secure-pdf-processing-browser-based": "/previews/protect-pdf-preview.webp",
+                  "pdf-vs-word-when-to-use-each": "/previews/word-to-pdf-preview.webp",
+                  "best-free-document-conversion-tools": "/previews/pdf-to-word-preview.webp",
+                  "digital-privacy-guide-file-safety": "/previews/protect-pdf-preview.webp",
+                  "student-guide-to-pdf-tools": "/previews/edit-pdf-preview.webp",
+                  "business-document-workflow-guide": "/previews/sign-pdf-preview.webp",
+                  "batch-processing-documents-guide": "/previews/merge-pdf-preview.webp",
+                  "image-optimization-for-seo": "/previews/compress-image-preview.webp",
+                  "convert-images-to-pdf-online": "/previews/image-to-pdf-preview.webp",
                 };
                 const previewImg = previewMap[post.slug];
 

@@ -14,6 +14,10 @@
 import { generateSitemapXml } from '../src/config/routes';
 import * as fs from 'fs';
 import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const generateSitemap = () => {
   console.log('🗺️  Generating sitemap.xml...');

@@ -6,6 +6,8 @@ import { Calendar, Clock, ArrowLeft, User } from "lucide-react";
 import { newBlogPosts } from "@/data/blogContent";
 import { expandedBlogPosts } from "@/data/expandedBlogPosts";
 import { mergePdfBlogContent } from "@/data/mergePdfBlogContent";
+import { phase3BlogPosts } from "@/data/phase3BlogPosts";
+import { AdBanner } from "@/components/AdBanner";
 import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface BlogPostContent {
@@ -597,6 +599,7 @@ const blogContent: Record<string, BlogPostContent> = {
 const allBlogContent: Record<string, BlogPostContent> = {
   ...expandedBlogPosts,
   ...newBlogPosts,
+  ...phase3BlogPosts,
   "how-to-merge-pdf-files-online-complete-guide": mergePdfBlogContent as BlogPostContent,
   ...blogContent,
 };
@@ -802,6 +805,15 @@ const BlogPost = () => {
                     "age-calculator-guide": { src: "/previews/love-calculator-preview.webp", alt: "Age Calculator complete guide" },
                     "pdf-accessibility-guide": { src: "/previews/edit-pdf-preview.webp", alt: "PDF accessibility guide" },
                     "digital-productivity-habits-that-save-time": { src: "/previews/compress-pdf-preview.webp", alt: "Digital productivity habits to save time" },
+                    "secure-pdf-processing-browser-based": { src: "/previews/protect-pdf-preview.webp", alt: "Browser-based secure PDF processing" },
+                    "pdf-vs-word-when-to-use-each": { src: "/previews/word-to-pdf-preview.webp", alt: "PDF vs Word format comparison" },
+                    "best-free-document-conversion-tools": { src: "/previews/pdf-to-word-preview.webp", alt: "Best free document conversion tools" },
+                    "digital-privacy-guide-file-safety": { src: "/previews/protect-pdf-preview.webp", alt: "Digital privacy and file safety guide" },
+                    "student-guide-to-pdf-tools": { src: "/previews/edit-pdf-preview.webp", alt: "Student guide to PDF tools" },
+                    "business-document-workflow-guide": { src: "/previews/sign-pdf-preview.webp", alt: "Business document workflow" },
+                    "batch-processing-documents-guide": { src: "/previews/merge-pdf-preview.webp", alt: "Batch processing documents" },
+                    "image-optimization-for-seo": { src: "/previews/compress-image-preview.webp", alt: "Image optimization for SEO" },
+                    "convert-images-to-pdf-online": { src: "/previews/image-to-pdf-preview.webp", alt: "Convert images to PDF online" },
                   };
                   const img = slug ? imageMap[slug] : null;
                   return img ? (
@@ -820,7 +832,13 @@ const BlogPost = () => {
                 })()}
               </header>
 
+              {/* Ad slot — after intro */}
+              <AdBanner slot="8307043387" format="responsive" className="my-6" />
+
               {post.content}
+
+              {/* Ad slot — before related/author */}
+              <AdBanner slot="8307043387" format="responsive" className="my-8" />
 
               {/* Author Bio */}
               <div className="bg-card border border-border rounded-xl p-6 mt-10">

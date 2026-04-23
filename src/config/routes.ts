@@ -14,7 +14,8 @@ export interface RouteConfig {
 export const blogPosts = [
   'digital-productivity-habits-that-save-time',
   'how-to-merge-pdf-files-online-complete-guide',
-  'love-age-calculator-complete-guide',
+  'love-calculator-guide',
+  'age-calculator-guide',
   'qr-code-generator-complete-guide',
   'background-remover-perfect-product-photos',
   'emi-calculator-home-loan-guide',
@@ -37,6 +38,16 @@ export const blogPosts = [
   'digital-signature-guide',
   'pdf-accessibility-guide',
   'best-free-pdf-tools-online-2026',
+  // Phase 3 — new posts
+  'secure-pdf-processing-browser-based',
+  'pdf-vs-word-when-to-use-each',
+  'best-free-document-conversion-tools',
+  'digital-privacy-guide-file-safety',
+  'student-guide-to-pdf-tools',
+  'business-document-workflow-guide',
+  'batch-processing-documents-guide',
+  'image-optimization-for-seo',
+  'convert-images-to-pdf-online',
 ];
 
 export const routes: RouteConfig[] = [

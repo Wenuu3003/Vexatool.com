@@ -37,13 +37,21 @@ const blogPosts: BlogPost[] = [
     date: "2026-02-20",
     readTime: "18 min read",
   },
-  // Love & Age Calculator (high visibility for viral traffic)
+  // Love Calculator (split from combined post)
   {
-    slug: "love-age-calculator-complete-guide",
-    title: "Love Calculator & Age Calculator: Complete Guide with Zodiac Compatibility & Social Sharing",
-    excerpt: "Test love compatibility with our triple-scoring algorithm featuring name matching, numerology, and zodiac analysis. Create personalized share cards for Instagram Stories and WhatsApp Status.",
+    slug: "love-calculator-guide",
+    title: "Complete Guide to Love Calculator: How It Works & Tips",
+    excerpt: "How our Love Calculator combines name matching, numerology Life Path numbers, and zodiac element compatibility into a fun, shareable score. Includes tips, FAQs, and how to share results to Instagram Stories and WhatsApp Status.",
     date: "2026-01-27",
-    readTime: "15 min read",
+    readTime: "9 min read",
+  },
+  // Age Calculator (split from combined post)
+  {
+    slug: "age-calculator-guide",
+    title: "Age Calculator Tool: Everything You Need to Know",
+    excerpt: "Calculate your exact age in years, months, days, hours, and weeks. Learn about legal age milestones in India, leap-year handling, birthday countdowns, and how to create personalized share cards.",
+    date: "2026-01-27",
+    readTime: "10 min read",
   },
 
 
@@ -254,7 +262,8 @@ const Blog = () => {
                   "currency-converter-travel-guide": "/previews/currency-converter-preview.webp",
                   "pdf-watermark-protect-documents": "/previews/watermark-pdf-preview.webp",
                   "image-resizer-social-media-guide": "/previews/image-resizer-preview.webp",
-                  "love-age-calculator-complete-guide": "/previews/love-calculator-preview.webp",
+                  "love-calculator-guide": "/previews/love-calculator-preview.webp",
+                  "age-calculator-guide": "/previews/love-calculator-preview.webp",
                   "digital-productivity-habits-that-save-time": "/previews/compress-pdf-preview.webp",
                   "pdf-accessibility-guide": "/previews/edit-pdf-preview.webp",
                   "unit-converter-complete-reference": "/previews/unit-converter-preview.webp",

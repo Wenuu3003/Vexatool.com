@@ -6,6 +6,8 @@ import { Calendar, Clock, ArrowLeft, User } from "lucide-react";
 import { newBlogPosts } from "@/data/blogContent";
 import { expandedBlogPosts } from "@/data/expandedBlogPosts";
 import { mergePdfBlogContent } from "@/data/mergePdfBlogContent";
+import { phase3BlogPosts } from "@/data/phase3BlogPosts";
+import { AdBanner } from "@/components/AdBanner";
 import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface BlogPostContent {

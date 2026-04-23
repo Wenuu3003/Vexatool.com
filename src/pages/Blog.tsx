@@ -107,13 +107,6 @@ const blogPosts: BlogPost[] = [
     readTime: "7 min read",
   },
   {
-    slug: "bmi-calculator-health-guide",
-    title: "BMI Calculator: Understanding Your Body Mass Index and Health",
-    excerpt: "Learn what BMI means for your health, its limitations, and how to use it alongside other health metrics for a complete picture.",
-    date: "2026-01-15",
-    readTime: "8 min read",
-  },
-  {
     slug: "word-to-pdf-professional-documents",
     title: "Word to PDF: Creating Professional Documents That Impress",
     excerpt: "Convert Word to PDF like a pro. Tips for maintaining formatting, embedding fonts, and creating universally compatible documents.",

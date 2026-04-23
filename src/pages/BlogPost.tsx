@@ -650,6 +650,11 @@ const defaultRelated = [
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
 
+  // Legacy slug redirect: combined post split into two
+  if (slug === "love-age-calculator-complete-guide") {
+    return <Navigate to="/blog/love-calculator-guide" replace />;
+  }
+
   if (!slug || !allBlogContent[slug]) {
     return <Navigate to="/blog" replace />;
   }

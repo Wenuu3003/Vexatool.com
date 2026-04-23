@@ -596,12 +596,17 @@ const blogContent: Record<string, BlogPostContent> = {
 
 // Merge ALL blog content sources into a single lookup map.
 // IMPORTANT: keep `blogContent` last so any inline overrides above win.
-const allBlogContent: Record<string, BlogPostContent> = {
+export const allBlogContent: Record<string, BlogPostContent> = {
   ...expandedBlogPosts,
   ...newBlogPosts,
   ...phase3BlogPosts,
   "how-to-merge-pdf-files-online-complete-guide": mergePdfBlogContent as BlogPostContent,
   ...blogContent,
+};
+
+// Legacy slugs that redirect to a current canonical slug. Exported for tests.
+export const legacyBlogRedirects: Record<string, string> = {
+  "love-age-calculator-complete-guide": "love-calculator-guide",
 };
 
 // Related articles mapping
@@ -654,8 +659,8 @@ const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
 
   // Legacy slug redirect: combined post split into two
-  if (slug === "love-age-calculator-complete-guide") {
-    return <Navigate to="/blog/love-calculator-guide" replace />;
+  if (slug && legacyBlogRedirects[slug]) {
+    return <Navigate to={`/blog/${legacyBlogRedirects[slug]}`} replace />;
   }
 
   if (!slug || !allBlogContent[slug]) {

@@ -8,6 +8,7 @@ import { AuthProvider } from "./hooks/useAuth";
 import { CookieConsent } from "./components/CookieConsent";
 import { AdSenseLoader } from "./components/AdSenseLoader";
 import { GoogleAnalyticsScript, useGoogleAnalytics } from "./components/GoogleAnalytics";
+import { PreviewNoIndex } from "./components/PreviewNoIndex";
 
 const AnalyticsTracker = () => {
   useGoogleAnalytics();
@@ -122,6 +123,7 @@ const App = () => (
           <GoogleAnalyticsScript />
           <AnalyticsTracker />
           <AdSenseLoader />
+          <PreviewNoIndex />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<Index />} />

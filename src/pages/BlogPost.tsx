@@ -4,6 +4,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Calendar, Clock, ArrowLeft, User } from "lucide-react";
 import { newBlogPosts } from "@/data/blogContent";
+import { expandedBlogPosts } from "@/data/expandedBlogPosts";
+import { mergePdfBlogContent } from "@/data/mergePdfBlogContent";
 import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface BlogPostContent {
@@ -588,6 +590,15 @@ const blogContent: Record<string, BlogPostContent> = {
   "best-free-pdf-tools-online": {
     ...newBlogPosts["best-free-pdf-tools-online-2026"],
   },
+};
+
+// Merge ALL blog content sources into a single lookup map.
+// IMPORTANT: keep `blogContent` last so any inline overrides above win.
+const allBlogContent: Record<string, BlogPostContent> = {
+  ...expandedBlogPosts,
+  ...newBlogPosts,
+  "how-to-merge-pdf-files-online-complete-guide": mergePdfBlogContent as BlogPostContent,
+  ...blogContent,
 };
 
 // Related articles mapping

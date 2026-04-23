@@ -23,7 +23,6 @@ export const blogPosts = [
   'pdf-to-word-formatting-tips',
   'image-compression-web-performance',
   'split-pdf-organize-documents',
-  'bmi-calculator-health-guide',
   'word-to-pdf-professional-documents',
   'currency-converter-travel-guide',
   'pdf-watermark-protect-documents',

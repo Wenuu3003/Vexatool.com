@@ -11,9 +11,16 @@ declare global {
 const ADSENSE_SRC =
   "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3192107856471636";
 
+const isLovablePreviewHost = () => {
+  if (typeof window === "undefined") return true;
+  const host = window.location.hostname.toLowerCase();
+  return host.includes("lovableproject.com") || host.includes("lovable.app") || host === "localhost";
+};
+
 export function AdSenseLoader({ delayMs = 5000 }: { delayMs?: number }) {
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (isLovablePreviewHost()) return;
     if (!hasAdConsent()) return;
 
     // Create queue immediately so ad components can push safely even before the script loads.

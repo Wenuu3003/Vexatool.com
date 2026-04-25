@@ -28,6 +28,7 @@ const tools = [
   { name: "PDF to PNG", href: "/pdf-to-png", icon: Image, desc: "Convert PDF pages to PNG images", gradient: "from-emerald-500 to-green-600" },
   { name: "PDF to Image", href: "/pdf-to-image", icon: FileImage, desc: "Convert PDF pages to various image formats", gradient: "from-violet-500 to-fuchsia-500" },
   { name: "PDF to HTML", href: "/pdf-to-html", icon: Code, desc: "Convert PDF to HTML web pages", gradient: "from-sky-500 to-blue-600" },
+  { name: "File Compressor", href: "/file-compressor", icon: FileDown, desc: "Compress PDFs and images to reduce size", gradient: "from-sky-500 to-blue-500" },
 ];
 
 const faqs = [

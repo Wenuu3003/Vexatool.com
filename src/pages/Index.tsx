@@ -18,31 +18,6 @@ const Index = () => {
         <meta name="keywords" content="free online tools, PDF editor, QR code generator, image tools, calculator, merge PDF, compress PDF, VexaTool" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "VexaTool",
-            "url": "https://vexatool.com",
-            "logo": "https://vexatool.com/favicon.png",
-            "description": "Free online PDF tools, image tools, QR code generator, and calculators. Secure, fast, browser-based processing.",
-            "sameAs": []
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "VexaTool",
-            "url": "https://vexatool.com",
-            "description": "Free online PDF tools. Merge, edit, compress, split and convert PDFs.",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://vexatool.com/?search={search_term_string}",
-              "query-input": "required name=search_term_string"
-            }
-          })}
-        </script>
         <meta name="publisher" content="VexaTool" />
         <link rel="canonical" href={canonicalUrl} />
 

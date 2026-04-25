@@ -50,7 +50,7 @@ const CompressPDF = () => {
 
       setCompressedSize(finalSize);
 
-      const compressedBlob = new Blob([finalBytes], { type: "application/pdf" });
+      const compressedBlob = new Blob([finalBytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(compressedBlob);
       const link = document.createElement("a");
       link.href = url;

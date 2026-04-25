@@ -1,20 +1,11 @@
 import { Link } from "react-router-dom";
-import { 
-  FileText, Files, FileDown, FileUp, FileCheck, FileX, 
-  Image, ImagePlus, Camera, Scissors, RotateCw, Lock, Unlock,
-  Edit, Stamp, Shield, Wrench, FileImage, FileSpreadsheet,
-  Presentation, Code, Sparkles, MessageSquare, Search, 
-  Calculator, Percent, Scale, Calendar, Heart,
-  QrCode, ScanLine, Globe, IndianRupee, MapPin, Type
-} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toolsData, type ToolData } from "@/data/toolsData";
 
-interface RelatedTool {
-  path: string;
-  name: string;
-  icon: React.ElementType;
-  colorClass: string;
-}
+// Source of truth: every related-tool card uses the same icon, name and
+// color gradient as the actual tool page it links to. This guarantees the
+// icon a user sees in the "Related Tools" grid is identical to the icon on
+// the destination tool page (no more colour/icon mismatch on click-through).
 
 // Tool relationships mapping (AI tools removed)
 const toolRelationships: Record<string, string[]> = {
@@ -76,65 +67,14 @@ const toolRelationships: Record<string, string[]> = {
   "/pincode-generator": ["/calculator", "/gst-calculator", "/currency-converter", "/unit-converter", "/emi-calculator"],
 };
 
-// Tool metadata
-const toolMeta: Record<string, { name: string; icon: React.ElementType; colorClass: string }> = {
-  // PDF Tools
-  "/merge-pdf": { name: "Merge PDF", icon: Files, colorClass: "bg-red-500" },
-  "/split-pdf": { name: "Split PDF", icon: Scissors, colorClass: "bg-orange-500" },
-  "/compress-pdf": { name: "Compress PDF", icon: FileDown, colorClass: "bg-green-500" },
-  "/pdf-to-word": { name: "PDF to Word", icon: FileText, colorClass: "bg-blue-500" },
-  "/edit-pdf": { name: "Edit PDF", icon: Edit, colorClass: "bg-purple-500" },
-  "/sign-pdf": { name: "Sign PDF", icon: FileCheck, colorClass: "bg-indigo-500" },
-  "/watermark-pdf": { name: "Watermark PDF", icon: Stamp, colorClass: "bg-teal-500" },
-  "/rotate-pdf": { name: "Rotate PDF", icon: RotateCw, colorClass: "bg-cyan-500" },
-  "/unlock-pdf": { name: "Unlock PDF", icon: Unlock, colorClass: "bg-amber-500" },
-  "/protect-pdf": { name: "Protect PDF", icon: Lock, colorClass: "bg-rose-500" },
-  "/organize-pdf": { name: "Organize PDF", icon: FileUp, colorClass: "bg-violet-500" },
-  "/repair-pdf": { name: "Repair PDF", icon: Wrench, colorClass: "bg-slate-500" },
-  "/pdf-to-image": { name: "PDF to Image", icon: FileImage, colorClass: "bg-pink-500" },
-  "/pdf-to-jpg": { name: "PDF to JPG", icon: Image, colorClass: "bg-yellow-500" },
-  "/pdf-to-png": { name: "PDF to PNG", icon: Image, colorClass: "bg-lime-500" },
-  "/pdf-to-html": { name: "PDF to HTML", icon: Code, colorClass: "bg-sky-500" },
-  "/pdf-to-powerpoint": { name: "PDF to PowerPoint", icon: Presentation, colorClass: "bg-orange-600" },
-  "/pdf-to-excel": { name: "PDF to Excel", icon: FileSpreadsheet, colorClass: "bg-emerald-500" },
-  
-  // Convert to PDF
-  "/word-to-pdf": { name: "Word to PDF", icon: FileText, colorClass: "bg-blue-600" },
-  "/excel-to-pdf": { name: "Excel to PDF", icon: FileSpreadsheet, colorClass: "bg-green-600" },
-  "/ppt-to-pdf": { name: "PPT to PDF", icon: Presentation, colorClass: "bg-red-600" },
-  "/html-to-pdf": { name: "HTML to PDF", icon: Code, colorClass: "bg-orange-500" },
-  "/image-to-pdf": { name: "Image to PDF", icon: ImagePlus, colorClass: "bg-purple-600" },
-  "/jpg-to-pdf": { name: "JPG to PDF", icon: Image, colorClass: "bg-amber-600" },
-  "/png-to-pdf": { name: "PNG to PDF", icon: Image, colorClass: "bg-teal-600" },
-  "/google-drive-to-pdf": { name: "Google Drive to PDF", icon: Globe, colorClass: "bg-blue-500" },
-  "/word-to-excel": { name: "Word to Excel", icon: FileSpreadsheet, colorClass: "bg-indigo-500" },
-  "/excel-to-word": { name: "Excel to Word", icon: FileText, colorClass: "bg-violet-500" },
-  
-  // Image Tools
-  "/compress-image": { name: "Compress Image", icon: FileDown, colorClass: "bg-green-500" },
-  "/image-resizer": { name: "Image Resizer", icon: Image, colorClass: "bg-blue-500" },
-  "/image-format-converter": { name: "Image Converter", icon: Image, colorClass: "bg-purple-500" },
-  "/background-remover": { name: "Background Remover", icon: Sparkles, colorClass: "bg-pink-500" },
-  "/file-compressor": { name: "File Compressor", icon: FileDown, colorClass: "bg-teal-500" },
-  
-  // Utility
-  "/word-counter": { name: "Word Counter", icon: Type, colorClass: "bg-blue-600" },
-  
-  // Calculator Tools
-  "/calculator": { name: "Calculator", icon: Calculator, colorClass: "bg-gray-600" },
-  "/age-calculator": { name: "Age Calculator", icon: Calendar, colorClass: "bg-blue-600" },
-  "/love-calculator": { name: "Love Calculator", icon: Heart, colorClass: "bg-pink-600" },
-  "/bmi-calculator": { name: "BMI Calculator", icon: Heart, colorClass: "bg-red-500" },
-  "/emi-calculator": { name: "EMI Calculator", icon: IndianRupee, colorClass: "bg-green-600" },
-  "/gst-calculator": { name: "GST Calculator", icon: Percent, colorClass: "bg-blue-600" },
-  "/unit-converter": { name: "Unit Converter", icon: Scale, colorClass: "bg-orange-500" },
-  "/currency-converter": { name: "Currency Converter", icon: IndianRupee, colorClass: "bg-emerald-500" },
-  
-  // Utility Tools
-  "/qr-code-generator": { name: "QR Code Generator", icon: QrCode, colorClass: "bg-purple-600" },
-  "/qr-code-scanner": { name: "QR Code Scanner", icon: ScanLine, colorClass: "bg-blue-600" },
-  "/pincode-generator": { name: "PIN Code Finder", icon: MapPin, colorClass: "bg-red-600" },
-};
+// Build a path -> ToolData lookup once, derived from the global registry.
+// This guarantees icons, colours, and names are always in sync with each
+// tool's actual page (the icon on the related-tools card === icon on the
+// destination page).
+const toolsByPath: Record<string, ToolData> = toolsData.reduce((acc, t) => {
+  acc[t.href] = t;
+  return acc;
+}, {} as Record<string, ToolData>);
 
 interface RelatedToolsProps {
   currentPath: string;
@@ -144,16 +84,22 @@ interface RelatedToolsProps {
 
 export const RelatedTools = ({ currentPath, className = "", maxTools = 5 }: RelatedToolsProps) => {
   const relatedPaths = toolRelationships[currentPath] || [];
-  
+
   if (relatedPaths.length === 0) return null;
-  
-  const relatedTools: RelatedTool[] = relatedPaths
+
+  // De-duplicate (defensive — never show the same tool twice, never show
+  // the current tool in its own related list) and only keep paths that
+  // actually exist in the registry.
+  const seen = new Set<string>([currentPath]);
+  const relatedTools = relatedPaths
+    .filter((path) => {
+      if (seen.has(path)) return false;
+      if (!toolsByPath[path]) return false;
+      seen.add(path);
+      return true;
+    })
     .slice(0, maxTools)
-    .map(path => ({
-      path,
-      ...toolMeta[path]
-    }))
-    .filter(tool => tool.name);
+    .map((path) => toolsByPath[path]);
 
   if (relatedTools.length === 0) return null;
 
@@ -163,8 +109,8 @@ export const RelatedTools = ({ currentPath, className = "", maxTools = 5 }: Rela
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         {relatedTools.map((tool) => (
           <Link
-            key={tool.path}
-            to={tool.path}
+            key={tool.href}
+            to={tool.href}
             className="flex flex-col items-center gap-2 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-muted/50 transition-all group"
           >
             <div className={cn(
@@ -174,7 +120,7 @@ export const RelatedTools = ({ currentPath, className = "", maxTools = 5 }: Rela
               <tool.icon className="w-6 h-6 text-white" />
             </div>
             <span className="text-sm font-medium text-foreground text-center group-hover:text-primary transition-colors">
-              {tool.name}
+              {tool.title}
             </span>
           </Link>
         ))}

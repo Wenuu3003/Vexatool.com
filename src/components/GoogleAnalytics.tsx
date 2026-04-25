@@ -4,6 +4,12 @@ import { useLocation } from "react-router-dom";
 // Google Analytics Measurement ID - replace with your actual ID
 const GA_MEASUREMENT_ID = "G-473NX43VJ4";
 
+const isLovablePreviewHost = () => {
+  if (typeof window === "undefined") return true;
+  const host = window.location.hostname.toLowerCase();
+  return host.includes("lovableproject.com") || host.includes("lovable.app") || host === "localhost";
+};
+
 declare global {
   interface Window {
     gtag: (...args: unknown[]) => void;
@@ -15,6 +21,8 @@ export const useGoogleAnalytics = () => {
   const location = useLocation();
 
   useEffect(() => {
+    if (isLovablePreviewHost()) return;
+
     // Only track if gtag is available
     if (typeof window.gtag === "function") {
       window.gtag("config", GA_MEASUREMENT_ID, {
@@ -27,6 +35,8 @@ export const useGoogleAnalytics = () => {
 
 export const GoogleAnalyticsScript = () => {
   useEffect(() => {
+    if (isLovablePreviewHost()) return;
+
     // Skip in development or if already loaded
     if (typeof window.gtag === "function") return;
 

@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import ToolSEOContent from "@/components/ToolSEOContent";
-import { compressPDF } from "@/lib/pdfCompress";
+import { compressPDFSmart } from "@/lib/pdfCompress";
 
 const CompressPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -36,32 +36,39 @@ const CompressPDF = () => {
       const arrayBuffer = await file.arrayBuffer();
       const originalSize = file.size;
 
-      const compressedBytes = await compressPDF(arrayBuffer, {
+      const result = await compressPDFSmart(arrayBuffer, {
         quality: quality[0],
         onProgress: (current, total) => {
           setProgress(Math.round((current / total) * 100));
         },
       });
 
-      const compressedBlob = new Blob([new Uint8Array(compressedBytes)], { type: "application/pdf" });
-      const newSize = compressedBlob.size;
-      const savings = Math.max(0, ((originalSize - newSize) / originalSize) * 100);
+      // Safety net: if for any reason output is larger, send the original.
+      const finalBytes = result.reduced ? result.bytes : new Uint8Array(arrayBuffer);
+      const finalSize = finalBytes.byteLength;
+      const savings = ((originalSize - finalSize) / originalSize) * 100;
 
-      setCompressedSize(newSize);
+      setCompressedSize(finalSize);
 
+      const compressedBlob = new Blob([finalBytes], { type: "application/pdf" });
       const url = URL.createObjectURL(compressedBlob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `compressed_${file.name}`;
+      link.download = result.reduced ? `compressed_${file.name}` : file.name;
       link.click();
       URL.revokeObjectURL(url);
 
-      toast({
-        title: "Compression complete!",
-        description: savings > 1
-          ? `File size reduced by ${savings.toFixed(1)}% (${formatSize(originalSize)} → ${formatSize(newSize)})`
-          : `PDF optimized. Minimal reduction — file was already compact.`,
-      });
+      if (result.reduced && savings >= 1) {
+        toast({
+          title: "Compression complete!",
+          description: `File size reduced by ${savings.toFixed(1)}% (${formatSize(originalSize)} → ${formatSize(finalSize)})`,
+        });
+      } else {
+        toast({
+          title: "This PDF is already optimized",
+          description: `No further reduction possible. Original file downloaded unchanged (${formatSize(originalSize)}).`,
+        });
+      }
 
       setFiles([]);
       setCompressedSize(null);

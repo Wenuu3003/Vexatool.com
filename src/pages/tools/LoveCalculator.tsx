@@ -6,7 +6,6 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
 
 import { LoveCalculatorForm, type LoveFormData, type Gender } from "@/components/calculators/LoveCalculatorForm";
 import { LoveResultDisplay, type LoveResult } from "@/components/calculators/LoveResultDisplay";

@@ -1,6 +1,5 @@
 import { useState, useCallback, lazy, Suspense } from "react";
 import { FileEdit, ArrowLeft, ScanText, LayoutGrid, Shield, Smartphone } from "lucide-react";
-import { Helmet } from "react-helmet";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
@@ -32,94 +31,6 @@ const EditPDF = () => {
     setIsEditing(false);
     setFiles([]);
   }, []);
-
-  // FAQ Schema for SEO — 10 detailed, unique questions
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "How do I edit text in a PDF online for free?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Upload your PDF to the VexaTool PDF Editor. For text-based PDFs the editor automatically extracts selectable text. Click any text block in the sidebar or directly on the page to select it, then edit or replace the content. For scanned documents, run the built-in OCR first. All processing happens in your browser — no signup, no watermark, completely free."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I edit scanned or image-based PDF files?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The editor includes a dual-pass OCR engine powered by Tesseract.js. After uploading a scanned PDF, click 'Run OCR' to detect text regions. The OCR uses image preprocessing (grayscale conversion, contrast enhancement, binarization) for high accuracy even on faint or low-quality scans. Detected text becomes fully editable."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What is block-based PDF editing?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Block-based editing groups individual words into meaningful regions — paragraphs, table rows, form fields, or single lines — so you can select and replace an entire section at once instead of editing word by word. The VexaTool editor automatically detects the best grouping mode (Auto, Paragraph, Table, or Form) based on your document's layout."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What are the segmentation modes (Auto, Paragraph, Table, Form)?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "These modes control how detected text is grouped into editable blocks. 'Auto' analyses the page layout and picks the best strategy. 'Paragraph' groups lines with similar indentation into multi-line blocks. 'Table' creates tighter, row-level or cell-level blocks for tabular data. 'Form' detects label-value pairs common in structured forms. You can switch modes at any time from the OCR panel."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Does the PDF editor work on mobile phones and tablets?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. The editor is fully responsive with touch-friendly controls, pinch-to-zoom, swipe page navigation, and slide-out panels for pages and text editing. It adapts to any screen size. For complex multi-page editing we recommend a tablet or desktop, but basic text edits, annotations, and OCR work well on smartphones."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Are my PDF files stored on your servers?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. Every file you upload is processed entirely inside your web browser using client-side JavaScript. Your PDF never leaves your device — it is not uploaded to any server. When you close the editor or navigate away, all file data is cleared from browser memory. This makes the editor safe for confidential documents like contracts, medical records, legal papers, and financial statements."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is this PDF editor really free? Are there hidden costs or watermarks?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "The VexaTool PDF Editor is 100% free with no hidden fees, no premium tier, and no watermarks on exported files. Because all processing happens locally in your browser, there are no server costs to pass on. You get professional-grade editing with zero cost."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How does the text replacement engine keep alignment accurate?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "When you replace a text block, the editor places a white redaction mask over the original content and positions your new text using font-metric baseline alignment. It calculates the exact ascent, line height, and character width so the replacement text sits in precisely the same position as the original — both on screen and in the exported PDF."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What happens when I click Download PDF?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Clicking Download opens a preview dialog showing your edits. On confirmation, the editor writes all changes (text replacements, images, shapes, watermarks, redactions, drawings) into the original PDF structure using pdf-lib, preserving the original resolution, embedded fonts, and vector graphics. The result downloads as a standard PDF file — no quality loss."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Can I add images, signatures, and watermarks to my PDF?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes. Use the Image tool (keyboard shortcut I) to insert logos, photos, or scanned signatures in PNG, JPG, or SVG format. The Watermark tool (shortcut W) adds text or image watermarks with adjustable opacity, position, rotation, and tiling. You can apply watermarks to the current page or all pages at once."
-        }
-      }
-    ]
-  };
 
   const seoContent = {
     toolName: "Free Online PDF Editor with Block-Based OCR Editing",
@@ -206,13 +117,6 @@ const EditPDF = () => {
         description="Free online PDF editor with block-based text editing and OCR. Edit text in scanned PDFs, replace paragraphs, table rows, form fields. No watermark, no signup. Works on mobile."
         keywords="edit PDF online free, PDF editor no watermark, edit scanned PDF OCR, block-based PDF editing, free PDF text editor, online PDF editor India, edit PDF on mobile, replace text in PDF, PDF editor for students, OCR PDF editor free"
       />
-
-      {/* FAQ Schema */}
-      <Helmet>
-        <script type="application/ld+json">
-          {JSON.stringify(faqSchema)}
-        </script>
-      </Helmet>
 
       <ToolLayout
         title="Edit PDF Online Free – Block-Based Text Editor"

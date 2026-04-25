@@ -6,7 +6,6 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Helmet } from "react-helmet";
 
 import { LoveCalculatorForm, type LoveFormData, type Gender } from "@/components/calculators/LoveCalculatorForm";
 import { LoveResultDisplay, type LoveResult } from "@/components/calculators/LoveResultDisplay";
@@ -260,19 +259,6 @@ export default function LoveCalculator() {
     ],
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: seoContent.faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
-    })),
-  };
-
   return (
     <>
       <CanonicalHead
@@ -280,9 +266,6 @@ export default function LoveCalculator() {
         description="Free Love Calculator with zodiac compatibility, numerology, and name matching. Upload photos, get Instagram & WhatsApp ready images. Fun & safe!"
         keywords="love calculator, love compatibility test, zodiac love calculator, name love calculator, numerology compatibility"
       />
-      <Helmet>
-        <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
-      </Helmet>
 
       <ToolLayout
         title="Love Calculator"

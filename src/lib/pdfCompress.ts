@@ -124,9 +124,13 @@ export async function compressPDFSmart(
     // ignore — fall through to raster
   }
 
-  // Step 2: raster (only if user wants real compression OR lossless barely helped)
+  // Step 2: raster compression. Always attempt unless the user has explicitly
+  // chosen the "Low compression / max quality" end of the slider (>= 90).
+  // Previous threshold of 80 meant the default value (70 in the UI, but some
+  // pages default to 80) often skipped raster entirely and users saw
+  // "already optimized" on PDFs that could clearly be shrunk further.
   const losslessSavings = 1 - best.bytes.byteLength / originalSize;
-  const shouldRaster = quality < 80 || losslessSavings < 0.05;
+  const shouldRaster = quality < 90 || losslessSavings < 0.1;
 
   if (shouldRaster) {
     try {

@@ -1,0 +1,48 @@
+name: Preview Build Smoke Test
+
+# Builds a production preview and uses a headless browser to navigate to
+# routes that load dynamically-imported chunks (e.g. /compress-image).
+# Fails the build if a stale-chunk / "Failed to fetch dynamically imported
+# module" error is detected, OR if any console/page error fires during
+# route load. Catches broken code-splits before they ship to vexatool.com.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build production bundle
+        run: bun run build
+        env:
+          NODE_ENV: production
+
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Serve build and run smoke test
+        run: |
+          bunx vite preview --port 4173 --host 127.0.0.1 &
+          SERVER_PID=$!
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:4173/ > /dev/null && break || sleep 1
+          done
+          node scripts/smoke-test.mjs
+          STATUS=$?
+          kill $SERVER_PID || true
+          exit $STATUS

@@ -233,7 +233,7 @@ const CompressPDF = () => {
               </li>
               <li>
                 Read our guide:{" "}
-                <Link to="/blog/how-to-merge-pdf-files" className="text-primary hover:underline">
+                <Link to="/blog/how-to-merge-pdf-files-online-complete-guide" className="text-primary hover:underline">
                   How to Manage and Share PDF Files Efficiently
                 </Link>.
               </li>

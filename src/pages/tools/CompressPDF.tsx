@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FileDown, Download } from "lucide-react";
+import { Link } from "react-router-dom";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
@@ -95,13 +96,13 @@ const CompressPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Compress PDF Free Online – Reduce PDF File Size Instantly | VexaTool"
-        description="Free PDF compressor online. Reduce PDF file size by up to 90% while maintaining quality. Adjustable compression, no signup, instant download."
+        title="Compress PDF Online Free | Reduce PDF Size Fast"
+        description="Compress PDF files online for free. Reduce file size quickly without losing quality. Fast, secure, and works on all devices."
         keywords="compress PDF free, reduce PDF size online, PDF compressor free, shrink PDF, optimize PDF, free PDF compression, compress PDF India, reduce PDF file size"
       />
       <ToolLayout
-        title="Compress PDF Free Online"
-        description="Reduce PDF file size by up to 90% while maintaining quality — instant, secure, no signup"
+        title="Compress PDF Online for Free – Reduce File Size Fast & Secure"
+        description="Shrink PDF files in seconds — right in your browser, with no uploads and no signup."
         icon={FileDown}
         colorClass="bg-tool-compress"
       >
@@ -182,38 +183,76 @@ const CompressPDF = () => {
 
         <ToolSEOContent
           toolName="Compress PDF"
-          whatIs="PDF compression is the process of reducing the file size of a PDF document while maintaining its visual quality and readability. Large PDF files create real problems — they are difficult to share via email (most providers cap attachments at 25MB), slow to upload to government portals and job application systems, and consume excessive storage space on your device. Our free online PDF compressor at VexaTool uses advanced optimization algorithms to shrink your PDF files by up to 90%, depending on content type. The tool works directly in your browser, meaning your sensitive financial reports, legal contracts, and personal documents are never uploaded to any external server. Whether you need to compress a single scanned document or optimize a batch of image-heavy presentations, this tool delivers fast, reliable results with an adjustable quality slider so you control the balance between file size and visual fidelity."
+          whatIs="PDF compression reduces the file size of a PDF document while keeping the text readable and the layout intact. Large PDFs are slow to email, painful to upload to government portals, and eat up storage on your phone or laptop. This free online Compress PDF tool from VexaTool shrinks your file directly in your browser — nothing is sent to a server. Your invoices, assignments, ID proofs and reports stay on your device the entire time. Pick a compression level (Low, Medium or High), and the tool optimizes images, strips unused metadata and rewrites the PDF structure to give you a smaller file you can share over WhatsApp, Gmail, or any portal in seconds."
           howToUse={[
-            "Upload your PDF file by clicking the upload area or dragging and dropping your document.",
-            "Adjust the compression level slider — move left for maximum compression (smaller file) or right for maximum quality.",
-            "Click the 'Compress & Download' button to process your file.",
-            "View the compression results showing original size versus compressed size.",
-            "Your compressed PDF will be downloaded automatically, ready to share, email, or upload."
+            "Upload your PDF file from your device.",
+            "Choose a compression level — Low, Medium or High.",
+            "Click 'Compress & Download' to process the file.",
+            "Download your reduced-size PDF instantly."
           ]}
           features={[
-            "Reduce PDF file sizes by up to 90% depending on content and compression settings.",
-            "Adjustable compression levels — slider control to balance quality versus file size.",
-            "Fast browser-based processing with no file uploads to external servers.",
-            "Preserves text clarity, page layouts, and document structure during compression.",
-            "Works with scanned documents, image-heavy PDFs, and text-based files.",
-            "Real-time size comparison shows original and compressed file sizes.",
-            "No registration required and completely free to use with no daily limits.",
-            "Compatible with all devices — desktop, tablet, and mobile browsers."
+            "Fast compression — most PDFs finish in just a few seconds.",
+            "Multiple compression levels (Low, Medium, High) to match your need.",
+            "No signup, no email, and no daily limits — completely free.",
+            "Secure by design — files are never uploaded to any server.",
+            "Works smoothly on mobile, tablet, and desktop browsers.",
+            "Best for students, office workers, and anyone sharing PDFs online."
           ]}
-          safetyNote="Your PDF files are processed entirely within your browser using secure client-side technology. No files are uploaded to external servers, ensuring your documents remain private and secure. Once compression is complete, your original file remains unchanged on your device while you receive an optimized copy."
+          safetyNote="Your PDF is processed entirely inside your browser. Nothing is uploaded, stored, or shared with any server, so your documents stay 100% private. The original file on your device is never modified — you only get an additional, smaller copy to download."
           faqs={[
-            { question: "How much can I reduce my PDF file size?", answer: "The compression ratio depends on the PDF content. Files with many high-resolution images can be reduced by 70-90%, while text-heavy documents may see 20-50% reduction. Use the compression slider to find the optimal balance." },
-            { question: "Will compression affect the quality of my PDF?", answer: "Our smart compression algorithm prioritizes quality retention. At higher quality settings, visual differences are imperceptible. Lower compression settings may slightly reduce image quality but significantly decrease file size." },
-            { question: "Is there a file size limit for compression?", answer: "Browser-based processing can handle files up to several hundred megabytes. For best performance, we recommend files under 100MB. Larger files may take longer to process." },
-            { question: "Can I compress password-protected PDFs?", answer: "Password-protected PDFs with encryption cannot be compressed without first removing the protection. Use our Unlock PDF tool first, then compress the file." },
-            { question: "Why is my compressed file almost the same size as the original?", answer: "Text-based PDFs with minimal images are already very compact. Compression is most effective on PDFs containing high-resolution images, scanned pages, or embedded media. The toast message will indicate when a file is already well-compressed." },
-            { question: "Can I compress multiple PDFs at once?", answer: "Currently, the tool processes one file at a time for maximum quality control. For batch compression, simply process each file sequentially." },
-            { question: "Will the compressed PDF work on all devices and readers?", answer: "Yes. The compressed PDF is a standard PDF file that opens in any PDF reader on any device, including Adobe Acrobat, Chrome, Firefox, and mobile PDF apps." },
-            { question: "Do I need to create an account?", answer: "No. The compression tool is completely free with no registration, no login, and no daily usage limits." },
-            { question: "What is the difference between High, Medium, and Low compression?", answer: "High compression (slider left) produces the smallest files but may reduce image sharpness. Medium is balanced. Low compression (slider right) keeps maximum quality with modest size reduction." },
-            { question: "Is my compressed PDF stored on your servers?", answer: "No. All processing happens in your browser. We never see, store, or have access to your files." }
+            { question: "How does PDF compression work?", answer: "The tool re-encodes images inside your PDF at a lower resolution, removes unused metadata, and rewrites the file with object streams. The result is a smaller PDF that still looks the same when opened." },
+            { question: "Will quality reduce after compression?", answer: "At Low and Medium levels the quality difference is barely noticeable. High compression slightly softens images to give you the smallest possible file. Text always stays sharp." },
+            { question: "Is it safe to compress PDFs online?", answer: "Yes. This tool runs entirely inside your browser — your PDF is never uploaded to a server, so even sensitive documents like ID proofs, invoices, or contracts stay private." },
+            { question: "Why is my PDF not reducing much?", answer: "If your PDF is mostly text, or has already been optimized, there is very little to compress. In that case the tool tells you 'This PDF is already optimized' and gives you back the original file." },
+            { question: "Does this tool work on mobile?", answer: "Yes. The Compress PDF tool works on Android and iPhone browsers (Chrome, Safari, Edge) just like it does on a laptop — no app install needed." }
           ]}
         />
+
+        {/* Quick benefits + internal links + CTA — content only, no logic changes */}
+        <section className="mt-12 space-y-8 text-foreground">
+          <div>
+            <h2 className="text-2xl font-bold mb-3">Why Use Our Compress PDF Tool?</h2>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground leading-relaxed">
+              <li><strong>Students:</strong> Submit assignments, projects and scanned answer sheets within college portal size limits.</li>
+              <li><strong>Email attachments:</strong> Stay under Gmail/Outlook 25 MB limits without splitting your document.</li>
+              <li><strong>Office sharing:</strong> Send contracts, invoices and reports faster over WhatsApp, Slack or Teams.</li>
+              <li><strong>Faster uploads:</strong> Reduce upload time on slow networks and government portals.</li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold mb-3">Related PDF Tools & Guides</h2>
+            <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+              <li>
+                Combine multiple PDFs into one with the{" "}
+                <Link to="/merge-pdf" className="text-primary hover:underline">Merge PDF tool</Link>.
+              </li>
+              <li>
+                Convert your compressed PDF into an editable document using{" "}
+                <Link to="/pdf-to-word" className="text-primary hover:underline">PDF to Word</Link>.
+              </li>
+              <li>
+                Read our guide:{" "}
+                <Link to="/blog/how-to-merge-pdf-files" className="text-primary hover:underline">
+                  How to Manage and Share PDF Files Efficiently
+                </Link>.
+              </li>
+            </ul>
+          </div>
+
+          <div className="text-center pt-4">
+            <Button
+              size="lg"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="gap-2"
+            >
+              <FileDown className="w-5 h-5" />
+              Try Compress PDF Now
+            </Button>
+          </div>
+        </section>
       </ToolLayout>
     </>
   );

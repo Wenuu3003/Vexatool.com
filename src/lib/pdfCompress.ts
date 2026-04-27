@@ -1,8 +1,13 @@
 import { PDFDocument } from "pdf-lib";
 import { pdfjsLib } from "./pdfWorker";
 
+export type CompressionLevel = "low" | "medium" | "high";
+
 interface CompressOptions {
-  quality: number; // 1-100
+  /** Preferred API: "low" | "medium" | "high". */
+  level?: CompressionLevel;
+  /** Legacy 1-100 slider. Mapped to a level if `level` is not provided. */
+  quality?: number;
   onProgress?: (current: number, total: number) => void;
 }
 
@@ -12,6 +17,19 @@ export interface CompressResult {
   compressedSize: number;
   method: "lossless" | "raster" | "original";
   reduced: boolean;
+}
+
+// Preset → (DPI, JPEG quality). Tuned so "low" never inflates text PDFs.
+const PRESETS: Record<CompressionLevel, { dpi: number; jpeg: number }> = {
+  low: { dpi: 120, jpeg: 0.82 }, // light touch, near-lossless visual
+  medium: { dpi: 100, jpeg: 0.7 }, // balanced default
+  high: { dpi: 72, jpeg: 0.55 }, // max shrink for image-heavy PDFs
+};
+
+function qualityToLevel(q: number): CompressionLevel {
+  if (q >= 80) return "low";
+  if (q >= 50) return "medium";
+  return "high";
 }
 
 /**
@@ -43,14 +61,11 @@ async function losslessOptimize(fileBuffer: ArrayBuffer): Promise<Uint8Array> {
  */
 async function rasterCompress(
   fileBuffer: ArrayBuffer,
-  quality: number,
+  level: CompressionLevel,
   onProgress?: (current: number, total: number) => void
 ): Promise<Uint8Array> {
-  // Map quality (20-100) to target DPI. PDF default is 72.
-  // Lower quality = lower DPI = smaller file.
-  const targetDPI = quality < 40 ? 72 : quality < 70 ? 110 : 150;
-  const scale = targetDPI / 72;
-  const jpegQuality = Math.max(0.4, Math.min(0.9, quality / 100));
+  const { dpi, jpeg: jpegQuality } = PRESETS[level];
+  const scale = dpi / 72;
 
   const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(fileBuffer) });
   const pdfDoc = await loadingTask.promise;
@@ -97,15 +112,22 @@ async function rasterCompress(
 
 /**
  * Smart PDF compression.
- * 1) Try lossless re-save first (fast, perfect for text PDFs).
- * 2) If quality < 80 OR lossless saved <5%, try raster compression.
- * 3) Always return the smallest result. If nothing beats the original, return original.
+ * 1) Always run lossless re-save first (fast — strips junk + metadata).
+ * 2) Only run raster compression when it has a chance of helping:
+ *    - Level "high" → always try (user explicitly wants max shrink)
+ *    - Level "medium" → try only if lossless saved <15%
+ *    - Level "low" → try only if lossless saved <3% (very conservative,
+ *      because raster on text PDFs almost always inflates them).
+ * 3) Return whichever variant is smallest. If none beat the original,
+ *    return the original bytes untouched.
  */
 export async function compressPDFSmart(
   fileBuffer: ArrayBuffer,
   options: CompressOptions
 ): Promise<CompressResult> {
-  const { quality, onProgress } = options;
+  const { onProgress } = options;
+  const level: CompressionLevel =
+    options.level ?? (options.quality != null ? qualityToLevel(options.quality) : "medium");
   const originalSize = fileBuffer.byteLength;
 
   let best: { bytes: Uint8Array; method: CompressResult["method"] } = {
@@ -124,17 +146,18 @@ export async function compressPDFSmart(
     // ignore — fall through to raster
   }
 
-  // Step 2: raster compression. Always attempt unless the user has explicitly
-  // chosen the "Low compression / max quality" end of the slider (>= 90).
-  // Previous threshold of 80 meant the default value (70 in the UI, but some
-  // pages default to 80) often skipped raster entirely and users saw
-  // "already optimized" on PDFs that could clearly be shrunk further.
+  // Step 2: raster compression — only when it's likely to help.
+  // Re-rendering text PDFs as JPEGs almost always inflates them, so we gate
+  // raster behind both the user-selected level AND the lossless savings.
   const losslessSavings = 1 - best.bytes.byteLength / originalSize;
-  const shouldRaster = quality < 90 || losslessSavings < 0.1;
+  const shouldRaster =
+    level === "high" ||
+    (level === "medium" && losslessSavings < 0.15) ||
+    (level === "low" && losslessSavings < 0.03);
 
   if (shouldRaster) {
     try {
-      const raster = await rasterCompress(fileBuffer, quality, (c, t) => {
+      const raster = await rasterCompress(fileBuffer, level, (c, t) => {
         // raster phase = 10% to 100% of progress
         onProgress?.(10 + Math.round((c / t) * 90), 100);
       });

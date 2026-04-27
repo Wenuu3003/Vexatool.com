@@ -5,17 +5,16 @@ import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { CanonicalHead } from "@/components/CanonicalHead";
-import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import ToolSEOContent from "@/components/ToolSEOContent";
-import { compressPDFSmart } from "@/lib/pdfCompress";
+import { compressPDFSmart, type CompressionLevel } from "@/lib/pdfCompress";
 
 const CompressPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [compressedSize, setCompressedSize] = useState<number | null>(null);
-  const [quality, setQuality] = useState([70]);
+  const [level, setLevel] = useState<CompressionLevel>("medium");
   const [progress, setProgress] = useState(0);
 
   const handleCompress = async () => {
@@ -37,7 +36,7 @@ const CompressPDF = () => {
       const originalSize = file.size;
 
       const result = await compressPDFSmart(arrayBuffer, {
-        quality: quality[0],
+        level,
         onProgress: (current, total) => {
           setProgress(Math.round((current / total) * 100));
         },
@@ -107,24 +106,36 @@ const CompressPDF = () => {
         colorClass="bg-tool-compress"
       >
         <div className="space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="quality">Compression Level</Label>
-              <span className="text-sm text-muted-foreground">
-                {quality[0] < 50 ? "High (smaller file)" : quality[0] < 75 ? "Medium" : "Low (better quality)"}
-              </span>
+          <div className="space-y-3">
+            <Label>Compression Level</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { id: "low", title: "Low", subtitle: "Best quality" },
+                { id: "medium", title: "Medium", subtitle: "Balanced" },
+                { id: "high", title: "High", subtitle: "Smallest file" },
+              ] as const).map((opt) => {
+                const active = level === opt.id;
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => setLevel(opt.id)}
+                    disabled={isProcessing}
+                    className={`rounded-lg border p-3 text-left transition-colors ${
+                      active
+                        ? "border-primary bg-primary/5 ring-1 ring-primary"
+                        : "border-border hover:border-primary/50"
+                    } disabled:opacity-50`}
+                    aria-pressed={active}
+                  >
+                    <div className="font-medium text-sm">{opt.title}</div>
+                    <div className="text-xs text-muted-foreground">{opt.subtitle}</div>
+                  </button>
+                );
+              })}
             </div>
-            <Slider
-              id="quality"
-              value={quality}
-              onValueChange={setQuality}
-              min={20}
-              max={100}
-              step={5}
-              className="w-full"
-            />
             <p className="text-xs text-muted-foreground">
-              Lower values = smaller file size but may reduce image quality
+              Medium works best for most PDFs. Choose High for image-heavy or scanned documents.
             </p>
           </div>
 

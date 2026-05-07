@@ -7,5 +7,8 @@
 /sitemap.xml    /sitemap.xml    200!
 /robots.txt     /robots.txt     200!
 
+# Monetag service worker - must be served directly from the public root
+/sw.js          /sw.js          200!
+
 # SPA fallback - all other routes go to index.html
 /*    /index.html   200

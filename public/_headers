@@ -56,6 +56,11 @@
 # ===========================================
 # Service worker
 # ===========================================
+/sw.js
+  Content-Type: text/javascript; charset=utf-8
+  Cache-Control: no-cache, must-revalidate
+  X-Content-Type-Options: nosniff
+
 /registerSW.js
   Cache-Control: public, max-age=3600
 

@@ -43,10 +43,13 @@ export function MonetagLoader() {
     };
 
     const schedule = () => {
-      if ("requestIdleCallback" in window) {
-        (window as Window).requestIdleCallback(register, { timeout: 4000 });
+      const w = window as Window & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void;
+      };
+      if (typeof w.requestIdleCallback === "function") {
+        w.requestIdleCallback(register, { timeout: 4000 });
       } else {
-        window.setTimeout(register, 3000);
+        w.setTimeout(register, 3000);
       }
     };
 

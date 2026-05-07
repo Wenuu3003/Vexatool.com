@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
+      filename: "pwa-sw.js",
       includeAssets: ["favicon.ico", "robots.txt", "sitemap.xml", "ads.txt", "indexnow-key.txt"],
       manifest: {
         name: "VexaTool - Free Online PDF Tools",

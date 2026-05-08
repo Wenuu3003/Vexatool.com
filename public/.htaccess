@@ -1,3 +1,13 @@
+<Files "sw.js">
+  ForceType application/javascript
+  <IfModule mod_headers.c>
+    Header set Content-Type "application/javascript; charset=utf-8"
+    Header set Cache-Control "no-cache, must-revalidate"
+    Header set Service-Worker-Allowed "/"
+    Header set X-Content-Type-Options "nosniff"
+  </IfModule>
+</Files>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -11,8 +21,10 @@
   RewriteCond %{REQUEST_FILENAME} !-d
 
   # Don't rewrite static files
+  RewriteRule ^sw\.js$ - [L]
   RewriteCond %{REQUEST_URI} !^/sitemap\.xml$
   RewriteCond %{REQUEST_URI} !^/robots\.txt$
+  RewriteCond %{REQUEST_URI} !^/sw\.js$
 
   # Rewrite everything else to index.html
   RewriteRule ^ index.html [L]

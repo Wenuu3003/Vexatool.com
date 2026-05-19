@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import QRCode from "qrcode";
+import jsPDF from "jspdf";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { CanonicalHead } from "@/components/CanonicalHead";
 
@@ -295,7 +296,7 @@ const QRCodeGenerator = () => {
     }
   };
 
-  const downloadQR = (format: 'png' | 'svg') => {
+  const downloadQR = (format: 'png' | 'svg' | 'jpg' | 'pdf') => {
     if (!qrDataUrl) return;
     const content = getQRContent();
 
@@ -304,6 +305,61 @@ const QRCodeGenerator = () => {
       link.href = finalDataUrl || qrDataUrl;
       link.download = "qrcode.png";
       link.click();
+    } else if (format === 'jpg') {
+      const srcUrl = finalDataUrl || qrDataUrl;
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        // JPG has no transparency — fill white background to preserve light color
+        ctx.fillStyle = lightColor || "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        const jpgUrl = canvas.toDataURL("image/jpeg", 0.95);
+        const link = document.createElement("a");
+        link.href = jpgUrl;
+        link.download = "qrcode.jpg";
+        link.click();
+        toast({ title: "Downloaded!", description: "QR code saved as JPG." });
+      };
+      img.onerror = () => {
+        toast({ title: "Error", description: "Failed to generate JPG.", variant: "destructive" });
+      };
+      img.src = srcUrl;
+      return;
+    } else if (format === 'pdf') {
+      const srcUrl = finalDataUrl || qrDataUrl;
+      const img = new window.Image();
+      img.onload = () => {
+        try {
+          const pdf = new jsPDF({ orientation: "portrait", unit: "pt", format: "a4" });
+          const pageW = pdf.internal.pageSize.getWidth();
+          const pageH = pdf.internal.pageSize.getHeight();
+          // White background
+          pdf.setFillColor(255, 255, 255);
+          pdf.rect(0, 0, pageW, pageH, "F");
+          // Scale QR to fit nicely, max 60% of page width
+          const maxW = pageW * 0.6;
+          const aspect = img.height / img.width;
+          const drawW = Math.min(maxW, img.width);
+          const drawH = drawW * aspect;
+          const x = (pageW - drawW) / 2;
+          const y = (pageH - drawH) / 2;
+          pdf.addImage(srcUrl, "PNG", x, y, drawW, drawH);
+          pdf.save("qrcode.pdf");
+          toast({ title: "Downloaded!", description: "QR code saved as PDF." });
+        } catch {
+          toast({ title: "Error", description: "Failed to generate PDF.", variant: "destructive" });
+        }
+      };
+      img.onerror = () => {
+        toast({ title: "Error", description: "Failed to generate PDF.", variant: "destructive" });
+      };
+      img.src = srcUrl;
+      return;
     } else {
       QRCode.toString(content, { type: 'svg', width: size, color: { dark: darkColor, light: lightColor } }, (err, svgContent) => {
         if (err) {
@@ -860,7 +916,7 @@ const QRCodeGenerator = () => {
                   <img src={finalDataUrl || qrDataUrl} alt="QR Code" className="max-w-full" />
                 </div>
                 
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3">
                   <Button onClick={() => downloadQR('png')} className="gap-2">
                     <Download className="w-4 h-4" />
                     Download PNG
@@ -868,6 +924,14 @@ const QRCodeGenerator = () => {
                   <Button variant="outline" onClick={() => downloadQR('svg')} className="gap-2">
                     <Download className="w-4 h-4" />
                     Download SVG
+                  </Button>
+                  <Button variant="outline" onClick={() => downloadQR('jpg')} className="gap-2">
+                    <Download className="w-4 h-4" />
+                    Download JPG
+                  </Button>
+                  <Button variant="outline" onClick={() => downloadQR('pdf')} className="gap-2">
+                    <Download className="w-4 h-4" />
+                    Download PDF
                   </Button>
                 </div>
               </>

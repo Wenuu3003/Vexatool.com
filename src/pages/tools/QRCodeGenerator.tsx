@@ -296,7 +296,7 @@ const QRCodeGenerator = () => {
     }
   };
 
-  const downloadQR = (format: 'png' | 'svg' | 'jpg' | 'pdf') => {
+  const downloadQR = async (format: 'png' | 'svg' | 'jpg' | 'pdf') => {
     if (!qrDataUrl) return;
     const content = getQRContent();
 
@@ -305,6 +305,8 @@ const QRCodeGenerator = () => {
       link.href = finalDataUrl || qrDataUrl;
       link.download = "qrcode.png";
       link.click();
+      toast({ title: "Downloaded!", description: "QR code saved as PNG." });
+      return;
     } else if (format === 'jpg') {
       const srcUrl = finalDataUrl || qrDataUrl;
       const img = new window.Image();
@@ -361,29 +363,48 @@ const QRCodeGenerator = () => {
       img.src = srcUrl;
       return;
     } else {
-      QRCode.toString(content, { type: 'svg', width: size, color: { dark: darkColor, light: lightColor } }, (err, svgContent) => {
-        if (err) {
-          toast({
-            title: "Error",
-            description: "Failed to generate SVG.",
-            variant: "destructive",
-          });
-          return;
-        }
+      // SVG export — use promise API for reliability
+      let svgContent: string;
+      try {
+        svgContent = await QRCode.toString(content, {
+          type: 'svg',
+          width: size,
+          margin: 2,
+          errorCorrectionLevel: logo ? 'H' : 'M',
+          color: { dark: darkColor, light: lightColor },
+        });
+      } catch {
+        toast({ title: "Error", description: "Failed to generate SVG.", variant: "destructive" });
+        return;
+      }
 
-        // Inject label text into SVG if present
+      // Ensure SVG has explicit width/height and a viewBox we can read
+      const vbMatch = svgContent.match(/viewBox="([^"]+)"/);
+      const vb = vbMatch ? vbMatch[1].split(/\s+/).map(Number) : [0, 0, size, size];
+      if (!/width="/.test(svgContent)) {
+        svgContent = svgContent.replace('<svg ', `<svg width="${size}" height="${size}" `);
+      }
+
+      // Embed logo (as data URI) into the SVG center if present
+      if (logo) {
+        const logoPct = logoSize[0] / 100;
+        const logoW = vb[2] * logoPct;
+        const padding = vb[2] * 0.02;
+        const lx = (vb[2] - logoW) / 2;
+        const ly = (vb[3] - logoW) / 2;
+        const bg = `<rect x="${lx - padding}" y="${ly - padding}" width="${logoW + padding * 2}" height="${logoW + padding * 2}" fill="${lightColor}"/>`;
+        const img = `<image href="${logo}" x="${lx}" y="${ly}" width="${logoW}" height="${logoW}" preserveAspectRatio="xMidYMid meet"/>`;
+        svgContent = svgContent.replace('</svg>', `${bg}${img}</svg>`);
+      }
+
+      // Inject label text into SVG if present
         const trimmedLabel = labelText.trim();
         let finalSvg = svgContent;
         if (trimmedLabel) {
           const fontSize = labelFontSize[0];
           const fontWeight = labelBold ? 'bold' : 'normal';
           const spacing = labelSpacing[0];
-          // Parse original SVG dimensions
-          const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/);
-          const widthMatch = svgContent.match(/width="(\d+)"/);
-          const svgW = widthMatch ? parseInt(widthMatch[1]) : size;
-          const vb = viewBoxMatch ? viewBoxMatch[1].split(/\s+/).map(Number) : [0, 0, svgW, svgW];
-          const scale = vb[2] / svgW;
+          const scale = vb[2] / size;
           const scaledFontSize = fontSize * scale;
           const scaledSpacing = spacing * scale;
           const lineHeight = scaledFontSize * 1.3;
@@ -419,9 +440,10 @@ const QRCodeGenerator = () => {
           }).join('\n');
 
           // Update SVG: expand viewBox/height and append text
+          const displayH = Math.ceil(newHeight / scale);
           finalSvg = svgContent
             .replace(/viewBox="[^"]*"/, `viewBox="${vb[0]} ${vb[1]} ${vb[2]} ${newHeight}"`)
-            .replace(/height="[^"]*"/, `height="${Math.ceil(newHeight / scale)}"`)
+            .replace(/height="[^"]*"/, `height="${displayH}"`)
             .replace('</svg>', `${textElements}\n</svg>`);
         }
 
@@ -431,14 +453,10 @@ const QRCodeGenerator = () => {
         link.href = url;
         link.download = "qrcode.svg";
         link.click();
-        URL.revokeObjectURL(url);
-      });
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast({ title: "Downloaded!", description: "QR code saved as SVG." });
+        return;
     }
-
-    toast({
-      title: "Downloaded!",
-      description: `QR code saved as ${format.toUpperCase()}.`,
-    });
   };
 
   // Batch QR generation

@@ -296,7 +296,7 @@ const QRCodeGenerator = () => {
     }
   };
 
-  const downloadQR = (format: 'png' | 'svg' | 'jpg' | 'pdf') => {
+  const downloadQR = async (format: 'png' | 'svg' | 'jpg' | 'pdf') => {
     if (!qrDataUrl) return;
     const content = getQRContent();
 
@@ -305,6 +305,8 @@ const QRCodeGenerator = () => {
       link.href = finalDataUrl || qrDataUrl;
       link.download = "qrcode.png";
       link.click();
+      toast({ title: "Downloaded!", description: "QR code saved as PNG." });
+      return;
     } else if (format === 'jpg') {
       const srcUrl = finalDataUrl || qrDataUrl;
       const img = new window.Image();
@@ -361,29 +363,48 @@ const QRCodeGenerator = () => {
       img.src = srcUrl;
       return;
     } else {
-      QRCode.toString(content, { type: 'svg', width: size, color: { dark: darkColor, light: lightColor } }, (err, svgContent) => {
-        if (err) {
-          toast({
-            title: "Error",
-            description: "Failed to generate SVG.",
-            variant: "destructive",
-          });
-          return;
-        }
+      // SVG export — use promise API for reliability
+      let svgContent: string;
+      try {
+        svgContent = await QRCode.toString(content, {
+          type: 'svg',
+          width: size,
+          margin: 2,
+          errorCorrectionLevel: logo ? 'H' : 'M',
+          color: { dark: darkColor, light: lightColor },
+        });
+      } catch {
+        toast({ title: "Error", description: "Failed to generate SVG.", variant: "destructive" });
+        return;
+      }
 
-        // Inject label text into SVG if present
+      // Ensure SVG has explicit width/height and a viewBox we can read
+      const vbMatch = svgContent.match(/viewBox="([^"]+)"/);
+      const vb = vbMatch ? vbMatch[1].split(/\s+/).map(Number) : [0, 0, size, size];
+      if (!/width="/.test(svgContent)) {
+        svgContent = svgContent.replace('<svg ', `<svg width="${size}" height="${size}" `);
+      }
+
+      // Embed logo (as data URI) into the SVG center if present
+      if (logo) {
+        const logoPct = logoSize[0] / 100;
+        const logoW = vb[2] * logoPct;
+        const padding = vb[2] * 0.02;
+        const lx = (vb[2] - logoW) / 2;
+        const ly = (vb[3] - logoW) / 2;
+        const bg = `<rect x="${lx - padding}" y="${ly - padding}" width="${logoW + padding * 2}" height="${logoW + padding * 2}" fill="${lightColor}"/>`;
+        const img = `<image href="${logo}" x="${lx}" y="${ly}" width="${logoW}" height="${logoW}" preserveAspectRatio="xMidYMid meet"/>`;
+        svgContent = svgContent.replace('</svg>', `${bg}${img}</svg>`);
+      }
+
+      // Inject label text into SVG if present
         const trimmedLabel = labelText.trim();
         let finalSvg = svgContent;
         if (trimmedLabel) {
           const fontSize = labelFontSize[0];
           const fontWeight = labelBold ? 'bold' : 'normal';
           const spacing = labelSpacing[0];
-          // Parse original SVG dimensions
-          const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/);
-          const widthMatch = svgContent.match(/width="(\d+)"/);
-          const svgW = widthMatch ? parseInt(widthMatch[1]) : size;
-          const vb = viewBoxMatch ? viewBoxMatch[1].split(/\s+/).map(Number) : [0, 0, svgW, svgW];
-          const scale = vb[2] / svgW;
+          const scale = vb[2] / size;
           const scaledFontSize = fontSize * scale;
           const scaledSpacing = spacing * scale;
           const lineHeight = scaledFontSize * 1.3;
@@ -419,9 +440,10 @@ const QRCodeGenerator = () => {
           }).join('\n');
 
           // Update SVG: expand viewBox/height and append text
+          const displayH = Math.ceil(newHeight / scale);
           finalSvg = svgContent
             .replace(/viewBox="[^"]*"/, `viewBox="${vb[0]} ${vb[1]} ${vb[2]} ${newHeight}"`)
-            .replace(/height="[^"]*"/, `height="${Math.ceil(newHeight / scale)}"`)
+            .replace(/height="[^"]*"/, `height="${displayH}"`)
             .replace('</svg>', `${textElements}\n</svg>`);
         }
 
@@ -431,14 +453,10 @@ const QRCodeGenerator = () => {
         link.href = url;
         link.download = "qrcode.svg";
         link.click();
-        URL.revokeObjectURL(url);
-      });
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast({ title: "Downloaded!", description: "QR code saved as SVG." });
+        return;
     }
-
-    toast({
-      title: "Downloaded!",
-      description: `QR code saved as ${format.toUpperCase()}.`,
-    });
   };
 
   // Batch QR generation
@@ -976,14 +994,16 @@ const QRCodeGenerator = () => {
           safetyNote="Every QR code is generated entirely in your browser using client-side JavaScript. The URLs, WhatsApp numbers, UPI addresses, logos, and labels you use are never sent to any external server. Your data stays on your device from start to finish. This makes VexaTool safe for encoding sensitive business information, payment details, and private contact data."
           faqs={[
             { question: "How do I add text below the QR code?", answer: "After generating your QR code, scroll down to the 'Label Below QR Code' section in the controls panel. Type your desired text — for example, your business name or 'Scan Me'. The label appears below the QR in the live preview and is included in both PNG and SVG downloads." },
-            { question: "Will the label appear in downloaded PNG and SVG?", answer: "Yes. The text label you add is composited directly into the downloaded image. Both PNG and SVG exports include the label with the exact font size, color, weight, and spacing you set in the preview." },
+            { question: "Will the label appear in PNG, JPG, SVG, and PDF downloads?", answer: "Yes. The text label is composited directly into every export format — PNG, JPG, SVG, and PDF — with the exact font size, color, weight, and spacing you set in the preview." },
             { question: "Can I add a logo in the center of the QR code?", answer: "Yes. Click 'Upload Logo' and select any image file (PNG, JPG, or SVG). The logo is placed in the center of the QR code. You can adjust its size using the logo size slider. Keep the logo at 30% or smaller for reliable scanning." },
             { question: "Will the QR still scan after adding a logo and label?", answer: "Yes. QR codes use error correction that tolerates partial obstruction. The logo stays within the safe center area, and the label is placed outside the QR code entirely — below it, with proper spacing. Always do a quick scan test on your phone after generating." },
             { question: "What can I encode in a QR code?", answer: "You can encode website URLs, plain text, email addresses, phone numbers, WhatsApp links (wa.me format), UPI payment links (upi://pay?pa=...), WiFi credentials, and vCard contacts. QR codes support up to about 2,000 characters." },
             { question: "Can I create WhatsApp, UPI, or contact QR codes?", answer: "Yes. For WhatsApp, enter https://wa.me/91XXXXXXXXXX. For UPI, enter upi://pay?pa=yourUPI@bank&pn=YourName. For contacts, paste a vCard string. The generated QR opens the correct app when scanned." },
             { question: "Is QR generation private and browser-based?", answer: "Completely. All processing happens in your browser — no data, logos, or labels are uploaded to any server. Your URLs, payment details, and business information remain 100% private." },
-            { question: "Should I download PNG or SVG?", answer: "Use PNG for digital channels like websites, social media, and email signatures. Use SVG when you need the QR code for print — it scales to any size (business cards, banners, posters) without losing quality. Both include your logo and label." },
-            { question: "Can I generate multiple QR codes at once?", answer: "Yes. Switch to the Batch tab, paste up to 50 URLs (one per line), and generate all QR codes simultaneously. You can download each one individually." },
+            { question: "Which format should I download — PNG, JPG, SVG, or PDF?", answer: "Use PNG for digital channels (websites, social media, email) where transparency is fine. Use JPG when you need a smaller file size for WhatsApp or email attachments. Use SVG for print at any size (business cards, banners, posters) without quality loss. Use PDF when you need a print-ready document on A4 paper — ideal for shop counters, restaurant table tents, or event passes." },
+            { question: "Does the SVG download include my logo and label?", answer: "Yes. The SVG export embeds your uploaded logo as an image inside the QR code's center and adds the text label below — all in a single scalable vector file that you can open in Illustrator, Figma, Inkscape, or any browser." },
+            { question: "Why use SVG instead of PNG for printing?", answer: "SVG is a vector format, so it stays sharp at any size — a 2 cm sticker or a 2 metre banner both look perfectly crisp. PNG is a raster format and will look pixelated if enlarged. For high-quality print jobs, always pick SVG or PDF." },
+            { question: "Can I generate multiple QR codes at once?", answer: "Yes. Switch to the Batch tab, paste up to 50 URLs (one per line), and generate all QR codes simultaneously. You can download each one individually as PNG." },
             { question: "Is this QR code generator really free?", answer: "Yes — completely free with no hidden costs, no daily limits, no premium tier, and no watermarks on your generated QR codes. Use it as often as you need." }
           ]}
         />

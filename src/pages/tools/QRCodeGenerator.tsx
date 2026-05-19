@@ -916,7 +916,7 @@ const QRCodeGenerator = () => {
                   <img src={finalDataUrl || qrDataUrl} alt="QR Code" className="max-w-full" />
                 </div>
                 
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3">
                   <Button onClick={() => downloadQR('png')} className="gap-2">
                     <Download className="w-4 h-4" />
                     Download PNG
@@ -924,6 +924,14 @@ const QRCodeGenerator = () => {
                   <Button variant="outline" onClick={() => downloadQR('svg')} className="gap-2">
                     <Download className="w-4 h-4" />
                     Download SVG
+                  </Button>
+                  <Button variant="outline" onClick={() => downloadQR('jpg')} className="gap-2">
+                    <Download className="w-4 h-4" />
+                    Download JPG
+                  </Button>
+                  <Button variant="outline" onClick={() => downloadQR('pdf')} className="gap-2">
+                    <Download className="w-4 h-4" />
+                    Download PDF
                   </Button>
                 </div>
               </>

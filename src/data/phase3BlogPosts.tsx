@@ -1112,6 +1112,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
 };
 
 export const phase3BlogListings = [
+  { slug: "how-to-sign-pdf-online-free-securely", title: "How to Sign PDF Online for Free Securely (2026 Guide)", date: "2026-05-20", readTime: "13 min read", preview: "/previews/sign-pdf-preview.webp", alt: "How to sign a PDF online for free and securely" },
   { slug: "secure-pdf-processing-browser-based", title: "Secure PDF Processing: Why Browser-Based Tools Matter in 2026", date: "2026-04-10", readTime: "11 min read", preview: "/previews/protect-pdf-preview.webp", alt: "Browser-based secure PDF processing illustration" },
   { slug: "pdf-vs-word-when-to-use-each", title: "PDF vs Word: When to Use Each Format (Complete 2026 Guide)", date: "2026-04-08", readTime: "10 min read", preview: "/previews/word-to-pdf-preview.webp", alt: "PDF vs Word document format comparison" },
   { slug: "best-free-document-conversion-tools", title: "Best Free Tools for Document Conversion in 2026", date: "2026-04-06", readTime: "12 min read", preview: "/previews/pdf-to-word-preview.webp", alt: "Best free online document conversion tools" },

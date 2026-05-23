@@ -34,7 +34,7 @@ const AllTools = () => {
   return (
     <>
       <Helmet>
-        <title>All Free Online Tools – 50+ PDF, Image, Calculator Tools | VexaTool</title>
+        <title>All Free Online Tools – 50+ PDF & Image Tools | VexaTool</title>
         <meta
           name="description"
           content="Browse 50+ free online tools: PDF editor, image compressor, QR code generator, calculators, document converters and more. No signup, 100% secure."

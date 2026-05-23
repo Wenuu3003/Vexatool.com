@@ -716,7 +716,7 @@ const BlogPost = () => {
   return (
     <>
       <Helmet>
-        <title>{post.title} | VexaTool Blog</title>
+        <title>{post.title.length > 45 ? post.title.slice(0, 45).trim() + '…' : post.title} | VexaTool</title>
         <meta
           name="description"
           content={`${post.title}. Expert tips, step-by-step guides, and best practices for PDF management.`}

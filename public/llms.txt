@@ -1,0 +1,38 @@
+# VexaTool
+
+> Free online PDF, image, QR, and calculator tools. 100% browser-based, no signup, no file uploads.
+
+VexaTool offers 50+ free utilities that run entirely client-side in your browser. Files never leave your device, ensuring privacy for sensitive documents like Aadhaar, PAN, contracts, and medical records.
+
+## Pages
+
+- [Home](/): Overview of all free online tools.
+- [All Tools](/all-tools): Browse the full catalog of 50+ tools.
+- [About](/about-us): Mission, team, and privacy commitment.
+- [Contact](/contact): Get in touch with the VexaTool team.
+- [Blog](/blog): Guides on PDF editing, image processing, and productivity.
+
+## Categories
+
+- [PDF Tools](/pdf-tools): Merge, split, compress, convert, sign, and protect PDFs.
+- [Image Tools](/image-tools): Resize, compress, convert, and remove backgrounds.
+- [Calculator Tools](/calculator-tools): EMI, GST, BMI, age, percentage, and unit conversions.
+- [QR Tools](/qr-tools): Generate and scan QR codes with logo and label support.
+- [Utility Tools](/utility-tools): Word counter, PIN code finder, currency converter.
+
+## Popular Tools
+
+- [Merge PDF](/merge-pdf): Combine multiple PDFs into one file.
+- [Compress PDF](/compress-pdf): Reduce PDF size without losing quality.
+- [Split PDF](/split-pdf): Extract or separate PDF pages.
+- [Sign PDF](/sign-pdf): Add signatures to PDF documents.
+- [QR Code Generator](/qr-code-generator): Create QR codes with logos and labels.
+- [Image Resizer](/image-resizer): Resize images for social media and print.
+- [Background Remover](/background-remover): Remove image backgrounds in-browser.
+- [EMI Calculator](/emi-calculator): Calculate loan EMIs instantly.
+
+## Optional
+
+- [Privacy Policy](/privacy-policy)
+- [Terms and Conditions](/terms-and-conditions)
+- [Disclaimer](/disclaimer)

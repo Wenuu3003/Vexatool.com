@@ -123,10 +123,10 @@ const AboutUs = () => {
   return (
     <>
       <Helmet>
-        <title>About Us | VexaTool – Free Online PDF, Image & Calculator Tools</title>
+        <title>About VexaTool – Free PDF, Image & Calculator Tools</title>
         <meta 
           name="description" 
-          content="Meet the team behind VexaTool — experienced developers, designers, and security experts building free, private, browser-based document tools for millions of users in India and worldwide." 
+          content="Meet the VexaTool team — developers and security experts building free, private, browser-based PDF, image, and calculator tools." 
         />
         <meta name="keywords" content="about VexaTool, free online tools, PDF tools team, VexaTool team, document processing experts, privacy-first tools" />
         <meta name="robots" content="index, follow" />

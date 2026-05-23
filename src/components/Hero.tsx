@@ -157,7 +157,7 @@ export const Hero = () => {
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-card/80 backdrop-blur-sm shadow-sm border border-border/50 flex items-center justify-center">
                   <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
-                <span className="text-[10px] sm:text-xs font-medium text-foreground/80 leading-tight">{item.label}</span>
+                <span className="text-[10px] sm:text-xs font-medium text-foreground leading-tight">{item.label}</span>
               </div>
             ))}
           </div>

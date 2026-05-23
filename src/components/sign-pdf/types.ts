@@ -8,7 +8,7 @@ export const SIGNATURE_FONTS: Record<SignatureFontStyle, { label: string; fontFa
 
 export interface SignatureObject {
   id: string;
-  type: 'draw' | 'type';
+  type: 'draw' | 'type' | 'upload';
   dataUrl?: string;
   text?: string;
   fontStyle?: SignatureFontStyle;

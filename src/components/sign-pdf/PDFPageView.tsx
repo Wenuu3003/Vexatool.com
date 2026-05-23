@@ -2,7 +2,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import type { SignatureObject, PageDimensions } from "./types";
 import { SIGNATURE_FONTS } from "./types";
-import { Lock, Unlock, X } from "lucide-react";
+import { Lock, Unlock, X, Maximize2 } from "lucide-react";
 
 interface PDFPageViewProps {
   pdf: pdfjsLib.PDFDocumentProxy;
@@ -10,6 +10,7 @@ interface PDFPageViewProps {
   zoom: number;
   signatures: SignatureObject[];
   onSignatureMoved: (id: string, x: number, y: number) => void;
+  onSignatureResized: (id: string, width: number, height: number) => void;
   onSignatureRemoved: (id: string) => void;
   onSignatureToggleLock: (id: string) => void;
   onPageClick: (pageIndex: number, xRatio: number, yRatio: number) => void;
@@ -22,6 +23,7 @@ const PDFPageView = ({
   zoom,
   signatures,
   onSignatureMoved,
+  onSignatureResized,
   onSignatureRemoved,
   onSignatureToggleLock,
   onPageClick,
@@ -32,6 +34,8 @@ const PDFPageView = ({
   const renderTaskRef = useRef<any>(null);
   const [pageDims, setPageDims] = useState<PageDimensions>({ width: 0, height: 0 });
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [resizingId, setResizingId] = useState<string | null>(null);
+  const justInteractedRef = useRef(false);
   const dragStartRef = useRef<{
     startX: number;
     startY: number;
@@ -100,7 +104,11 @@ const PDFPageView = ({
   }, [onPageDimensions, pageNumber, pdf]);
 
   const handleContainerClick = (event: React.MouseEvent) => {
-    if (draggingId) return;
+    if (draggingId || resizingId) return;
+    if (justInteractedRef.current) {
+      justInteractedRef.current = false;
+      return;
+    }
     const container = containerRef.current;
     if (!container) return;
 
@@ -120,6 +128,27 @@ const PDFPageView = ({
     const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
 
     setDraggingId(signature.id);
+    justInteractedRef.current = true;
+    dragStartRef.current = {
+      startX: clientX,
+      startY: clientY,
+      sigX: signature.x,
+      sigY: signature.y,
+      sigWidth: signature.width,
+      sigHeight: signature.height,
+    };
+  };
+
+  const handleResizeStart = (event: React.MouseEvent | React.TouchEvent, signature: SignatureObject) => {
+    if (signature.locked) return;
+    event.stopPropagation();
+    event.preventDefault();
+
+    const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+    const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+
+    setResizingId(signature.id);
+    justInteractedRef.current = true;
     dragStartRef.current = {
       startX: clientX,
       startY: clientY,
@@ -131,7 +160,7 @@ const PDFPageView = ({
   };
 
   const handleDragMove = useCallback((event: React.MouseEvent | React.TouchEvent) => {
-    if (!draggingId || !dragStartRef.current || !containerRef.current) return;
+    if ((!draggingId && !resizingId) || !dragStartRef.current || !containerRef.current) return;
 
     event.preventDefault();
 
@@ -141,16 +170,36 @@ const PDFPageView = ({
     const dx = (clientX - dragStartRef.current.startX) / rect.width;
     const dy = (clientY - dragStartRef.current.startY) / rect.height;
 
+    if (resizingId) {
+      const aspect = dragStartRef.current.sigHeight / dragStartRef.current.sigWidth;
+      let nextWidth = Math.max(0.05, Math.min(1 - dragStartRef.current.sigX, dragStartRef.current.sigWidth + dx));
+      let nextHeight = nextWidth * aspect;
+      if (dragStartRef.current.sigY + nextHeight > 1) {
+        nextHeight = 1 - dragStartRef.current.sigY;
+        nextWidth = nextHeight / aspect;
+      }
+      onSignatureResized(resizingId, nextWidth, nextHeight);
+      return;
+    }
+
     const nextX = Math.max(0, Math.min(1 - dragStartRef.current.sigWidth, dragStartRef.current.sigX + dx));
     const nextY = Math.max(0, Math.min(1 - dragStartRef.current.sigHeight, dragStartRef.current.sigY + dy));
 
-    onSignatureMoved(draggingId, nextX, nextY);
-  }, [draggingId, onSignatureMoved]);
+    onSignatureMoved(draggingId!, nextX, nextY);
+  }, [draggingId, resizingId, onSignatureMoved, onSignatureResized]);
 
   const handleDragEnd = useCallback(() => {
+    if (draggingId || resizingId) {
+      // Suppress the synthetic click that follows mouseup so we don't add another signature.
+      justInteractedRef.current = true;
+      window.setTimeout(() => {
+        justInteractedRef.current = false;
+      }, 100);
+    }
     setDraggingId(null);
+    setResizingId(null);
     dragStartRef.current = null;
-  }, []);
+  }, [draggingId, resizingId]);
 
   const pageSignatures = signatures.filter((signature) => signature.pageIndex === pageNumber - 1);
 
@@ -249,6 +298,19 @@ const PDFPageView = ({
                 >
                   <X className="w-3 h-3" />
                 </button>
+              </div>
+            )}
+
+            {!signature.locked && (
+              <div
+                onMouseDown={(event) => handleResizeStart(event, signature)}
+                onTouchStart={(event) => handleResizeStart(event, signature)}
+                onClick={(event) => event.stopPropagation()}
+                className="absolute -bottom-2 -right-2 w-5 h-5 rounded bg-primary text-primary-foreground flex items-center justify-center shadow cursor-nwse-resize"
+                title="Resize signature"
+                style={{ touchAction: "none" }}
+              >
+                <Maximize2 className="w-3 h-3" />
               </div>
             )}
 

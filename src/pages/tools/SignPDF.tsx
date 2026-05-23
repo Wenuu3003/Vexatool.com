@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
-import { PenTool, Download, Type, ZoomIn, ZoomOut, Plus } from "lucide-react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { PenTool, Download, Type, ZoomIn, ZoomOut, Plus, Upload } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,12 @@ const SIGNATURE_BOX = {
 const SignPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [signatureType, setSignatureType] = useState<"draw" | "type">("draw");
+  const [signatureType, setSignatureType] = useState<"draw" | "type" | "upload">("draw");
   const [typedSignature, setTypedSignature] = useState("");
   const [fontStyle, setFontStyle] = useState<SignatureFontStyle>("script");
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
+  const [uploadedSignature, setUploadedSignature] = useState<string | null>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
   const [pdfDoc, setPdfDoc] = useState<pdfjsLib.PDFDocumentProxy | null>(null);
   const [numPages, setNumPages] = useState(0);
   const [zoom, setZoom] = useState(1);
@@ -158,7 +160,10 @@ const SignPDF = () => {
 
   const handlePageClick = useCallback(async (pageIndex: number, xRatio: number, yRatio: number) => {
     const signatureText = typedSignature.trim();
-    const hasSignature = signatureType === "draw" ? signatureDataUrl : signatureText;
+    const hasSignature =
+      signatureType === "draw" ? signatureDataUrl :
+      signatureType === "upload" ? uploadedSignature :
+      signatureText;
 
     if (!hasSignature) {
       toast({
@@ -169,7 +174,10 @@ const SignPDF = () => {
       return;
     }
 
-    let renderedSignature = signatureType === "draw" ? signatureDataUrl ?? undefined : undefined;
+    let renderedSignature: string | undefined =
+      signatureType === "draw" ? signatureDataUrl ?? undefined :
+      signatureType === "upload" ? uploadedSignature ?? undefined :
+      undefined;
 
     if (signatureType === "type") {
       try {
@@ -199,11 +207,15 @@ const SignPDF = () => {
     };
 
     setSignatures((prev) => [...prev, newSig]);
-    toast({ title: "Signature placed", description: "Drag to reposition or click again to add another." });
-  }, [fontStyle, renderTypedSignatureToImage, signatureDataUrl, signatureType, toast, typedSignature]);
+    toast({ title: "Signature placed", description: "Drag to reposition, resize from the corner, or click again to add another." });
+  }, [fontStyle, renderTypedSignatureToImage, signatureDataUrl, signatureType, toast, typedSignature, uploadedSignature]);
 
   const handleSignatureMoved = useCallback((id: string, x: number, y: number) => {
     setSignatures((prev) => prev.map((signature) => signature.id === id ? { ...signature, x, y } : signature));
+  }, []);
+
+  const handleSignatureResized = useCallback((id: string, width: number, height: number) => {
+    setSignatures((prev) => prev.map((signature) => signature.id === id ? { ...signature, width, height } : signature));
   }, []);
 
   const handleSignatureRemoved = useCallback((id: string) => {
@@ -217,6 +229,36 @@ const SignPDF = () => {
   const handlePageDimensions = useCallback((_pageIndex: number, _dims: PageDimensions) => {
     // Dimensions are tracked inside each page view; keep the callback for component compatibility.
   }, []);
+
+  const handleSignatureUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    if (!/^image\/(png|jpeg|jpg|webp)$/i.test(file.type)) {
+      toast({ title: "Unsupported file", description: "Please upload a PNG, JPG, or WebP signature image.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Signature image must be under 10MB.", variant: "destructive" });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : null;
+      if (!result) {
+        toast({ title: "Upload failed", description: "Could not read the signature image.", variant: "destructive" });
+        return;
+      }
+      setUploadedSignature(result);
+      toast({ title: "Signature uploaded", description: "Click on the PDF to place it." });
+    };
+    reader.onerror = () => {
+      toast({ title: "Upload failed", description: "Could not read the signature image.", variant: "destructive" });
+    };
+    reader.readAsDataURL(file);
+  }, [toast]);
 
   const handleExport = async () => {
     if (files.length === 0 || signatures.length === 0) {
@@ -255,7 +297,10 @@ const SignPDF = () => {
 
         if (!imageDataUrl) continue;
 
-        const signatureImage = await pdfLibDoc.embedPng(imageDataUrl);
+        const isJpeg = imageDataUrl.startsWith("data:image/jpeg") || imageDataUrl.startsWith("data:image/jpg");
+        const signatureImage = isJpeg
+          ? await pdfLibDoc.embedJpg(imageDataUrl)
+          : await pdfLibDoc.embedPng(imageDataUrl);
         page.drawImage(signatureImage, {
           x: sig.x * pageWidth,
           y: pageHeight - (sig.y + sig.height) * pageHeight,
@@ -299,33 +344,41 @@ const SignPDF = () => {
 
   const seoContent = {
     toolName: "Sign PDF",
-    whatIs: "Sign PDF is a free online tool that allows you to add your personal signature to PDF documents quickly and securely. Whether you need to sign a contract, authorize an agreement, approve a form, or endorse a document, this tool eliminates the need to print, hand-sign, scan, and re-upload. You can either draw your signature using your mouse, touchpad, or touchscreen, or type your name to create an elegant styled signature. The entire process happens within your browser — your documents and signatures are never uploaded to any server, making it safe for confidential contracts, legal paperwork, HR documents, and financial agreements.",
+    whatIs: "Sign PDF is a free online tool that lets you electronically sign PDF documents in seconds — no printer, scanner, or account required. Draw your signature with a mouse or finger, type it in an elegant signature font, or upload an existing PNG/JPG image of your handwritten signature with full transparency support. Place it anywhere on any page, drag to reposition, and resize from the corner handle for a perfect fit. The entire signing process runs 100% inside your browser using client-side PDF rendering, so your contracts, NDAs, offer letters, HR forms, and financial agreements never leave your device.",
     howToUse: [
       "Upload your PDF file by clicking the upload area or dragging and dropping.",
-      "Choose between 'Draw Signature' or 'Type Signature' mode.",
-      "Draw or type your signature in the panel.",
+      "Choose Draw, Type, or Upload signature mode.",
+      "Draw your signature, type your name, or upload a PNG/JPG of your handwritten signature.",
       "Click on any page in the PDF preview to place your signature.",
-      "Drag signatures to reposition them. Use lock to prevent accidental moves.",
+      "Drag the signature to reposition, or use the corner handle to resize. Lock it to prevent accidental moves.",
       "Click 'Download Signed PDF' to export with all signatures embedded."
     ],
     features: [
       "Draw signatures with mouse, touchpad, or touchscreen.",
       "Type-to-signature with elegant italic styling.",
+      "Upload PNG, JPG, or WebP signature images with transparency preserved.",
       "Place signatures on any page by clicking.",
-      "Drag to reposition, lock to prevent accidental moves.",
+      "Drag to reposition and resize from the corner handle.",
+      "Lock placed signatures to prevent accidental moves.",
       "Zoom in/out for precise placement.",
       "Multiple signatures on multiple pages.",
       "High-quality PDF export preserving original formatting.",
+      "Works on desktop and mobile with smooth touch controls.",
       "No account or payment required."
     ],
-    safetyNote: "Your PDF files and signatures are processed entirely in your browser. No documents or personal data are uploaded to any server.",
+    safetyNote: "Your PDF files and signatures are processed entirely in your browser using client-side JavaScript. No documents, signature images, or personal data are uploaded to any server — making it safe for confidential contracts, legal paperwork, and financial documents.",
     faqs: [
-      { question: "Where will my signature appear?", answer: "Click anywhere on a PDF page to place your signature. You can drag it to reposition." },
-      { question: "Can I sign multiple pages?", answer: "Yes! Click on any page to add signatures. You can place multiple signatures across different pages." },
-      { question: "Can I move my signature after placing it?", answer: "Yes, drag the signature to reposition it. Use the lock button to prevent accidental moves." },
-      { question: "Does the signature work on mobile?", answer: "Yes! The drawing canvas and page interactions are fully touch-optimized." },
-      { question: "Will the signed PDF have a watermark?", answer: "No. VexaTool never adds watermarks or branding to your documents." },
-      { question: "Is there a file size limit?", answer: "No strict limit, but files under 100MB work best." }
+      { question: "How do I sign a PDF online for free?", answer: "Upload your PDF, choose Draw, Type, or Upload, create your signature, then click on any page to place it. Drag to reposition, resize from the corner, and click Download Signed PDF when finished." },
+      { question: "Can I upload my own handwritten signature?", answer: "Yes. Switch to the Upload tab and select a PNG, JPG, or WebP image of your handwritten signature. PNG transparency is preserved so only your signature appears on the PDF, not a white box." },
+      { question: "Where will my signature appear on the PDF?", answer: "Click anywhere on a PDF page to drop the signature at that exact position. You can then drag it to fine-tune the placement or resize it from the corner handle." },
+      { question: "Can I resize my signature after placing it?", answer: "Yes. Hover over a placed signature and drag the corner handle to resize it while preserving the aspect ratio." },
+      { question: "Can I sign multiple pages or add multiple signatures?", answer: "Yes. Place as many signatures as you need across any pages — for example, initials on each page and a full signature on the last." },
+      { question: "Does signing work on mobile phones and tablets?", answer: "Yes. The drawing canvas, drag, and resize controls are fully touch-optimized for iPhone, iPad, and Android devices." },
+      { question: "Are electronic signatures legally binding?", answer: "In most jurisdictions — including under the U.S. ESIGN Act, UETA, and the EU eIDAS regulation — electronic signatures on PDFs are legally valid for the vast majority of business and personal documents. Always check the rules in your country for specific document types." },
+      { question: "Is it safe to sign confidential documents here?", answer: "Yes. All processing happens inside your browser. Your PDF and your signature image are never uploaded to our servers — nothing leaves your device." },
+      { question: "Will the signed PDF have a watermark or VexaTool branding?", answer: "No. The exported PDF is clean, with only your signatures embedded — no watermarks, no logos, no tracking." },
+      { question: "What file types can I upload as a signature image?", answer: "PNG (recommended for transparency), JPG/JPEG, and WebP up to 10MB." },
+      { question: "Is there a file size limit for the PDF?", answer: "No strict limit, but files under 100MB give the smoothest experience in the browser." }
     ]
   };
 
@@ -365,15 +418,19 @@ const SignPDF = () => {
             <div className="space-y-4">
               {/* Signature creation panel */}
               <div className="max-w-2xl mx-auto">
-                <Tabs value={signatureType} onValueChange={(v) => setSignatureType(v as "draw" | "type")}>
-                  <TabsList className="grid w-full grid-cols-2">
+                <Tabs value={signatureType} onValueChange={(v) => setSignatureType(v as "draw" | "type" | "upload")}>
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="draw">
                       <PenTool className="w-4 h-4 mr-2" />
-                      Draw Signature
+                      Draw
                     </TabsTrigger>
                     <TabsTrigger value="type">
                       <Type className="w-4 h-4 mr-2" />
-                      Type Signature
+                      Type
+                    </TabsTrigger>
+                    <TabsTrigger value="upload">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload
                     </TabsTrigger>
                   </TabsList>
 
@@ -419,6 +476,41 @@ const SignPDF = () => {
                       )}
                     </div>
                   </TabsContent>
+
+                  <TabsContent value="upload" className="mt-4">
+                    <div className="bg-card p-4 rounded-lg border border-border space-y-4">
+                      <p className="text-sm text-muted-foreground">
+                        Upload a PNG, JPG, or WebP image of your handwritten signature. PNG transparency is preserved.
+                      </p>
+                      <input
+                        ref={uploadInputRef}
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg,image/webp"
+                        onChange={handleSignatureUpload}
+                        className="hidden"
+                      />
+                      <div className="flex flex-wrap gap-2">
+                        <Button variant="outline" onClick={() => uploadInputRef.current?.click()}>
+                          <Upload className="w-4 h-4 mr-2" />
+                          {uploadedSignature ? "Replace image" : "Choose signature image"}
+                        </Button>
+                        {uploadedSignature && (
+                          <Button variant="ghost" onClick={() => setUploadedSignature(null)}>
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                      {uploadedSignature && (
+                        <div className="p-4 bg-[repeating-conic-gradient(hsl(var(--muted))_0_25%,transparent_0_50%)] bg-[length:16px_16px] rounded text-center">
+                          <img
+                            src={uploadedSignature}
+                            alt="Uploaded signature preview"
+                            className="max-h-24 mx-auto object-contain"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
                 </Tabs>
 
                 <p className="text-sm text-muted-foreground mt-2 text-center">
@@ -451,6 +543,7 @@ const SignPDF = () => {
                     zoom={zoom}
                     signatures={signatures}
                     onSignatureMoved={handleSignatureMoved}
+                    onSignatureResized={handleSignatureResized}
                     onSignatureRemoved={handleSignatureRemoved}
                     onSignatureToggleLock={handleSignatureToggleLock}
                     onPageClick={handlePageClick}

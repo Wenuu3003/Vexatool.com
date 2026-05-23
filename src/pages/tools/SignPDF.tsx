@@ -418,15 +418,19 @@ const SignPDF = () => {
             <div className="space-y-4">
               {/* Signature creation panel */}
               <div className="max-w-2xl mx-auto">
-                <Tabs value={signatureType} onValueChange={(v) => setSignatureType(v as "draw" | "type")}>
-                  <TabsList className="grid w-full grid-cols-2">
+                <Tabs value={signatureType} onValueChange={(v) => setSignatureType(v as "draw" | "type" | "upload")}>
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="draw">
                       <PenTool className="w-4 h-4 mr-2" />
-                      Draw Signature
+                      Draw
                     </TabsTrigger>
                     <TabsTrigger value="type">
                       <Type className="w-4 h-4 mr-2" />
-                      Type Signature
+                      Type
+                    </TabsTrigger>
+                    <TabsTrigger value="upload">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload
                     </TabsTrigger>
                   </TabsList>
 
@@ -472,6 +476,41 @@ const SignPDF = () => {
                       )}
                     </div>
                   </TabsContent>
+
+                  <TabsContent value="upload" className="mt-4">
+                    <div className="bg-card p-4 rounded-lg border border-border space-y-4">
+                      <p className="text-sm text-muted-foreground">
+                        Upload a PNG, JPG, or WebP image of your handwritten signature. PNG transparency is preserved.
+                      </p>
+                      <input
+                        ref={uploadInputRef}
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg,image/webp"
+                        onChange={handleSignatureUpload}
+                        className="hidden"
+                      />
+                      <div className="flex flex-wrap gap-2">
+                        <Button variant="outline" onClick={() => uploadInputRef.current?.click()}>
+                          <Upload className="w-4 h-4 mr-2" />
+                          {uploadedSignature ? "Replace image" : "Choose signature image"}
+                        </Button>
+                        {uploadedSignature && (
+                          <Button variant="ghost" onClick={() => setUploadedSignature(null)}>
+                            Remove
+                          </Button>
+                        )}
+                      </div>
+                      {uploadedSignature && (
+                        <div className="p-4 bg-[repeating-conic-gradient(hsl(var(--muted))_0_25%,transparent_0_50%)] bg-[length:16px_16px] rounded text-center">
+                          <img
+                            src={uploadedSignature}
+                            alt="Uploaded signature preview"
+                            className="max-h-24 mx-auto object-contain"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
                 </Tabs>
 
                 <p className="text-sm text-muted-foreground mt-2 text-center">
@@ -504,6 +543,7 @@ const SignPDF = () => {
                     zoom={zoom}
                     signatures={signatures}
                     onSignatureMoved={handleSignatureMoved}
+                    onSignatureResized={handleSignatureResized}
                     onSignatureRemoved={handleSignatureRemoved}
                     onSignatureToggleLock={handleSignatureToggleLock}
                     onPageClick={handlePageClick}

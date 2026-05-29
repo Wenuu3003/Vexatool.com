@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, Navigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import NotFound from "@/pages/NotFound";
 
 interface PSeoPage {
   slug: string;
@@ -21,6 +22,25 @@ interface PSeoPage {
 }
 
 /**
+ * Slugs that belong to real application routes/sections and must never be
+ * resolved by the dynamic `/:slug` programmatic SEO route. If a request hits
+ * one of these we render NotFound immediately and skip the DB lookup so the
+ * real route (defined elsewhere in the router) always wins.
+ */
+const RESERVED_SLUGS = new Set<string>([
+  "auth",
+  "account",
+  "dashboard",
+  "admin",
+  "tools",
+  "image-tools",
+  "pdf-tools",
+  "calculators",
+  "converters",
+  "api",
+]);
+
+/**
  * Renders any DB-backed programmatic SEO page mounted at `/:slug`.
  * If the slug is not found (or unpublished) we route the user to 404 so
  * existing tool routes and statically-defined paths keep working.
@@ -30,6 +50,10 @@ export default function ProgrammaticSEOPage() {
   const [page, setPage] = useState<PSeoPage | null | undefined>(undefined);
 
   useEffect(() => {
+    if (!slug || RESERVED_SLUGS.has(slug)) {
+      setPage(null);
+      return;
+    }
     let cancelled = false;
     (async () => {
       // Cast to bypass generated types until the migration is applied and
@@ -55,12 +79,26 @@ export default function ProgrammaticSEOPage() {
 
   if (page === undefined) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" aria-label="Loading" />
-      </div>
+      <>
+        <Helmet>
+          <meta name="robots" content="noindex" />
+        </Helmet>
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" aria-label="Loading" />
+        </div>
+      </>
     );
   }
-  if (page === null) return <Navigate to="/404" replace />;
+  if (page === null) {
+    return (
+      <>
+        <Helmet>
+          <meta name="robots" content="noindex" />
+        </Helmet>
+        <NotFound />
+      </>
+    );
+  }
 
   const canonical = page.canonical_url ?? `https://vexatool.com/${page.slug}`;
   const faqJsonLd = {

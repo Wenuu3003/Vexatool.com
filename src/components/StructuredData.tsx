@@ -41,12 +41,7 @@ export const StructuredData = ({ type, data }: StructuredDataProps) => {
           "url": baseUrl
         },
         "browserRequirements": "Requires JavaScript. Requires HTML5.",
-        "softwareVersion": "1.0",
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.8",
-          "ratingCount": "150"
-        }
+        "softwareVersion": "1.0"
       };
     }
     

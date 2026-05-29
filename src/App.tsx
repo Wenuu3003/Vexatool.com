@@ -106,6 +106,11 @@ const PassportPhotoResizer = lazy(() => import("./pages/tools/PassportPhotoResiz
 const GoogleDriveToPDF = lazy(() => import("./pages/tools/GoogleDriveToPDF"));
 const AllTools = lazy(() => import("./pages/AllTools"));
 
+// Database-backed programmatic SEO pages (Task 3).
+// React Router prefers static routes over dynamic ones, so all explicit
+// tool routes above continue to take precedence over `/:slug`.
+const ProgrammaticSEOPage = lazy(() => import("./pages/ProgrammaticSEOPage"));
+
 const queryClient = new QueryClient();
 
 const PageLoader = () => (
@@ -204,6 +209,8 @@ const App = () => (
               <Route path="/ppt-to-pdf" element={<PPTToPDF />} />
               <Route path="/excel-to-pdf" element={<ExcelToPDF />} />
               <Route path="/google-drive-to-pdf" element={<GoogleDriveToPDF />} />
+              {/* Programmatic SEO catch-all (DB-backed). Matches single-segment slugs. */}
+              <Route path="/:slug" element={<ProgrammaticSEOPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

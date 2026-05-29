@@ -42,11 +42,53 @@ serve(async (req) => {
     // Parse request body
     const { action_type, action_details } = await req.json();
 
-    if (!action_type || typeof action_type !== 'string') {
+    const VALID_ACTION_TYPES = new Set([
+      'ai_chat',
+      'ai_search',
+      'file_process',
+      'profile_view',
+      'profile_delete',
+      'file_history_view',
+      'file_history_delete',
+    ]);
+    const MAX_ACTION_TYPE_LEN = 50;
+    const MAX_DETAILS_BYTES = 4 * 1024; // 4 KB
+
+    if (
+      !action_type ||
+      typeof action_type !== 'string' ||
+      action_type.length > MAX_ACTION_TYPE_LEN ||
+      !VALID_ACTION_TYPES.has(action_type)
+    ) {
       return new Response(
-        JSON.stringify({ error: 'action_type is required' }),
+        JSON.stringify({ error: 'Invalid action_type' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    if (action_details !== undefined && action_details !== null) {
+      const isPlainObject =
+        typeof action_details === 'object' &&
+        !Array.isArray(action_details);
+      if (!isPlainObject) {
+        return new Response(
+          JSON.stringify({ error: 'action_details must be an object' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      try {
+        if (new TextEncoder().encode(JSON.stringify(action_details)).length > MAX_DETAILS_BYTES) {
+          return new Response(
+            JSON.stringify({ error: 'action_details exceeds 4 KB limit' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      } catch {
+        return new Response(
+          JSON.stringify({ error: 'action_details is not serializable' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // Get user agent and IP from request headers

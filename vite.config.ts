@@ -89,4 +89,27 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Split large vendor libs into separate long-cacheable chunks so
+    // the main bundle stays small on mobile and updates to app code
+    // don't bust the vendor cache.
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("react-router")) return "router";
+          if (id.includes("@radix-ui")) return "radix";
+          if (id.includes("lucide-react")) return "icons";
+          if (id.includes("react-helmet")) return "helmet";
+          if (id.includes("@tanstack")) return "query";
+          if (
+            id.includes("/react/") ||
+            id.includes("/react-dom/") ||
+            id.includes("/scheduler/")
+          )
+            return "react";
+        },
+      },
+    },
+  },
 }));

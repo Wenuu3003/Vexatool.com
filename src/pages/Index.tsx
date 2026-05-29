@@ -1,11 +1,19 @@
+import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { Helmet } from "react-helmet";
 import { useCanonicalUrl } from "@/hooks/useCanonicalUrl";
-import { HomepageContent } from "@/components/HomepageContent";
 import { ToolsGrid } from "@/components/ToolsGrid";
-import { HomepageFAQ } from "@/components/HomepageFAQ";
+
+// Below-the-fold sections are code-split to shrink the initial JS
+// payload on mobile without affecting the visible above-the-fold UI.
+const HomepageContent = lazy(() =>
+  import("@/components/HomepageContent").then((m) => ({ default: m.HomepageContent }))
+);
+const HomepageFAQ = lazy(() =>
+  import("@/components/HomepageFAQ").then((m) => ({ default: m.HomepageFAQ }))
+);
 
 const Index = () => {
   const canonicalUrl = useCanonicalUrl();
@@ -43,9 +51,13 @@ const Index = () => {
 
           <ToolsGrid />
 
-          <HomepageContent />
+          <Suspense fallback={<div style={{ minHeight: 400 }} />}>
+            <HomepageContent />
+          </Suspense>
 
-          <HomepageFAQ />
+          <Suspense fallback={<div style={{ minHeight: 300 }} />}>
+            <HomepageFAQ />
+          </Suspense>
         </main>
         <Footer />
       </div>

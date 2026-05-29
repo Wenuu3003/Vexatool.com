@@ -1,37 +1,37 @@
-# Plan: Globally register Monetag service worker (/sw.js)
+## Status check
 
-The Monetag snippet already lives at `public/sw.js` (domain `3nbf4.com`, zone `10975490`). Right now nothing registers it on the client, so Monetag never activates. We'll add a tiny, isolated registration component that loads after the app is interactive — no UI, no layout, no impact on tools, SEO, or routing.
+Database check shows `pg_cron` and `pg_net` are **not yet enabled** (only `pg_stat_statements` and `pgcrypto` are installed). The "Query succeeded. No rows returned." message likely came from the roles-hardening migration (`20260531010000_harden_roles_and_definers.sql`), not the extensions migration.
 
-## Changes
+## Plan
 
-1. **New file:** `src/components/MonetagLoader.tsx`
-   - Returns `null` (no DOM, zero CLS).
-   - On mount, runs only in production (skips Lovable preview hosts and `localhost`, matching the pattern in `AdSenseLoader.tsx`).
-   - Waits for `window.load`, then uses `requestIdleCallback` (fallback `setTimeout ~3s`) to call `navigator.serviceWorker.register('/sw.js', { scope: '/' })`.
-   - Guards with a `window.__monetagRegistered` flag so it can never double-register across re-renders or HMR.
-   - Wrapped in `try/catch`; failures are swallowed silently — no console errors, no impact on React.
+### 1. Verify / re-apply extensions migration
+Re-run `20260531000000_enable_pg_cron.sql` so `pg_cron` and `pg_net` land in the `extensions` schema. On Lovable Cloud these must be enabled before any scheduling SQL will work.
 
-2. **Edit:** `src/App.tsx`
-   - Import `MonetagLoader` and mount it once next to `<AdSenseLoader />` inside `<BrowserRouter>`. One global mount, survives all route changes.
+### 2. New migration: schedule SEO cron jobs
+Create `supabase/migrations/<ts>_schedule_seo_cron.sql` that uses `cron.schedule` + `net.http_post` to call the existing edge functions on a cadence, authenticated with the `SEO_CRON_SECRET` header:
 
-3. **Already in place (no change needed):**
-   - `public/sw.js` exists with the Monetag snippet.
-   - `public/_redirects` already has `/sw.js → /sw.js 200!` so the file is served at the root with correct path.
-   - `public/_headers` already sets `Content-Type: application/javascript` and `Service-Worker-Allowed: /` for `/sw.js`.
-   - `vite.config.ts` already renames the PWA worker to `pwa-sw.js`, so `/sw.js` stays Monetag's.
+| Job name | Schedule (UTC) | Function |
+|---|---|---|
+| `seo-tech-audit-daily` | `0 3 * * *` (03:00 daily) | `seo-tech-audit` |
+| `seo-gsc-intelligence-daily` | `15 3 * * *` | `seo-gsc-intelligence` |
+| `seo-programmatic-generate-weekly` | `0 4 * * 1` (Mon 04:00) | `seo-programmatic-generate` |
+| `seo-blog-draft-weekly` | `30 4 * * 1` | `seo-blog-draft` |
+| `indexnow-hourly` | `0 * * * *` | `indexnow` |
 
-## Why this is safe
+Each job posts to `https://mrjefpimgfzzjwoidocf.supabase.co/functions/v1/<fn>` with headers `Authorization: Bearer <SEO_CRON_SECRET>` and `Content-Type: application/json`, body `{}`.
 
-- **No UI / no CLS:** component renders `null`.
-- **Non-blocking:** registration deferred until after `load` + idle, off the critical path → no LCP/INP regression.
-- **No duplicates:** `__monetagRegistered` flag + browser SW dedup by scope.
-- **Survives deploys:** lives in source, mounts on every page via `App.tsx`.
-- **Preview-safe:** skipped on `lovable.app` / `lovableproject.com` / `localhost` to avoid polluting the editor.
-- **No interference:** doesn't touch React tree, routing, forms, or any tool logic. Service workers run in a separate thread.
-- **SEO-safe:** no markup, no head changes, no robots impact.
+The secret will be read from a Postgres setting written at migration time (so it isn't hardcoded). Approach:
+```sql
+-- store once in vault-style GUC (set via ALTER DATABASE … SET app.seo_cron_secret = '...')
+-- then use current_setting('app.seo_cron_secret') in net.http_post headers
+```
+Because `ALTER DATABASE` is disallowed in migrations here, the migration will instead reference the secret via a SECURITY DEFINER helper `private.seo_cron_secret()` that returns the literal value. You will be prompted to confirm before the literal is written.
 
-## Validation after implementation
+### 3. Verify edge functions accept the secret
+Quick read of `seo-tech-audit`, `seo-gsc-intelligence`, `seo-programmatic-generate`, `seo-blog-draft`, `indexnow` to confirm each checks `Authorization: Bearer SEO_CRON_SECRET`. If any don't, add the guard in the same change.
 
-- Build runs automatically; confirm no TS errors.
-- After publish, in production DevTools → Application → Service Workers, verify `/sw.js` is registered and active.
-- Confirm console is clean (no errors from registration).
+### 4. Smoke test
+After apply: `SELECT jobname, schedule, active FROM cron.job;` and trigger one job manually via `SELECT cron.schedule(...)` test, then check `cron.job_run_details` for HTTP 200.
+
+## Open question
+Do the schedules above match what you want, or should any job run more/less often (e.g. indexnow every 15 min, blog draft daily)?

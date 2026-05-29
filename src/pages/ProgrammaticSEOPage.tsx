@@ -58,7 +58,7 @@ export default function ProgrammaticSEOPage() {
     (async () => {
       // Cast to bypass generated types until the migration is applied and
       // src/integrations/supabase/types.ts is regenerated.
-      // deno-lint-ignore no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error } = await (supabase as any)
         .from("programmatic_seo_pages")
         .select(

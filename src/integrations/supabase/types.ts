@@ -280,6 +280,197 @@ export type Database = {
         }
         Relationships: []
       }
+      programmatic_seo_pages: {
+        Row: {
+          breadcrumbs: Json
+          canonical_url: string | null
+          category: string
+          created_at: string
+          faqs: Json
+          h1: string
+          id: string
+          internal_links: Json
+          intro_md: string
+          is_published: boolean
+          meta_description: string
+          parent_tool_slug: string | null
+          preset_payload: Json
+          sections: Json
+          seo_title: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          breadcrumbs?: Json
+          canonical_url?: string | null
+          category: string
+          created_at?: string
+          faqs?: Json
+          h1: string
+          id?: string
+          internal_links?: Json
+          intro_md: string
+          is_published?: boolean
+          meta_description: string
+          parent_tool_slug?: string | null
+          preset_payload?: Json
+          sections?: Json
+          seo_title: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          breadcrumbs?: Json
+          canonical_url?: string | null
+          category?: string
+          created_at?: string
+          faqs?: Json
+          h1?: string
+          id?: string
+          internal_links?: Json
+          intro_md?: string
+          is_published?: boolean
+          meta_description?: string
+          parent_tool_slug?: string | null
+          preset_payload?: Json
+          sections?: Json
+          seo_title?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_audit_findings: {
+        Row: {
+          audit_id: string | null
+          detail: string | null
+          detected_at: string
+          id: string
+          issue_type: string
+          resolved: boolean
+          severity: string
+          url: string
+        }
+        Insert: {
+          audit_id?: string | null
+          detail?: string | null
+          detected_at?: string
+          id?: string
+          issue_type: string
+          resolved?: boolean
+          severity?: string
+          url: string
+        }
+        Update: {
+          audit_id?: string | null
+          detail?: string | null
+          detected_at?: string
+          id?: string
+          issue_type?: string
+          resolved?: boolean
+          severity?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seo_audit_findings_audit_id_fkey"
+            columns: ["audit_id"]
+            isOneToOne: false
+            referencedRelation: "seo_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seo_blog_drafts: {
+        Row: {
+          content_md: string | null
+          created_at: string
+          faqs: Json
+          google_doc_id: string | null
+          google_doc_url: string | null
+          id: string
+          internal_links: Json
+          meta_description: string | null
+          outline: Json
+          research_sources: Json
+          slug: string | null
+          status: string
+          target_keyword: string | null
+          title: string | null
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          content_md?: string | null
+          created_at?: string
+          faqs?: Json
+          google_doc_id?: string | null
+          google_doc_url?: string | null
+          id?: string
+          internal_links?: Json
+          meta_description?: string | null
+          outline?: Json
+          research_sources?: Json
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title?: string | null
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          content_md?: string | null
+          created_at?: string
+          faqs?: Json
+          google_doc_id?: string | null
+          google_doc_url?: string | null
+          id?: string
+          internal_links?: Json
+          meta_description?: string | null
+          outline?: Json
+          research_sources?: Json
+          slug?: string | null
+          status?: string
+          target_keyword?: string | null
+          title?: string | null
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      seo_reports: {
+        Row: {
+          generated_at: string
+          id: string
+          payload: Json
+          period_end: string | null
+          period_start: string | null
+          report_type: string
+          sheet_url: string | null
+          summary: string | null
+        }
+        Insert: {
+          generated_at?: string
+          id?: string
+          payload?: Json
+          period_end?: string | null
+          period_start?: string | null
+          report_type: string
+          sheet_url?: string | null
+          summary?: string | null
+        }
+        Update: {
+          generated_at?: string
+          id?: string
+          payload?: Json
+          period_end?: string | null
+          period_start?: string | null
+          report_type?: string
+          sheet_url?: string | null
+          summary?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           id: string

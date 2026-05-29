@@ -32,7 +32,10 @@ export default function ProgrammaticSEOPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const { data, error } = await supabase
+      // Cast to bypass generated types until the migration is applied and
+      // src/integrations/supabase/types.ts is regenerated.
+      // deno-lint-ignore no-explicit-any
+      const { data, error } = await (supabase as any)
         .from("programmatic_seo_pages")
         .select(
           "slug, category, parent_tool_slug, seo_title, meta_description, h1, intro_md, sections, faqs, internal_links, breadcrumbs, canonical_url"

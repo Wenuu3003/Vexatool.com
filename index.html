@@ -174,14 +174,9 @@
 </head>
 
   <body>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-473NX43VJ4"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-473NX43VJ4', { send_page_view: false });
-    </script>
+    <!-- Google Analytics (gtag.js) is loaded by src/components/GoogleAnalytics.tsx
+         on production hosts only, deferred 4s after window load to avoid
+         competing with critical resources on mobile. -->
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
@@ -199,7 +194,25 @@
       });
     </script>
 
-    <!-- Monetag In-Page Push (zone 10975652) -->
-    <script>(function(s){s.dataset.zone='10975652',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <!-- Monetag In-Page Push (zone 10975652) — deferred until idle after load
+         so it never blocks LCP on mobile. -->
+    <script>
+      window.addEventListener('load', function () {
+        var run = function () {
+          try {
+            var s = document.createElement('script');
+            s.dataset.zone = '10975652';
+            s.src = 'https://nap5k.com/tag.min.js';
+            s.async = true;
+            (document.body || document.documentElement).appendChild(s);
+          } catch (e) { /* noop */ }
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(run, { timeout: 5000 });
+        } else {
+          setTimeout(run, 4000);
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,37 +1,96 @@
-## Status check
+## What I found
 
-Database check shows `pg_cron` and `pg_net` are **not yet enabled** (only `pg_stat_statements` and `pgcrypto` are installed). The "Query succeeded. No rows returned." message likely came from the roles-hardening migration (`20260531010000_harden_roles_and_definers.sql`), not the extensions migration.
+- `https://vexatool.com/ads.txt` is currently live and returns `200 OK` with the correct publisher line.
+- `https://www.vexatool.com/ads.txt` redirects to the non-www canonical URL.
+- `http://vexatool.com/ads.txt` redirects to HTTPS and then returns the file.
+- `Mediapartners-Google` user-agent can fetch the file successfully.
+- The screenshot shows two separate AdSense problems:
+  - `Ads.txt status: Not found`
+  - `Status details: Low value content`
 
-## Plan
+## Likely root cause
 
-### 1. Verify / re-apply extensions migration
-Re-run `20260531000000_enable_pg_cron.sql` so `pg_cron` and `pg_net` land in the `extensions` schema. On Lovable Cloud these must be enabled before any scheduling SQL will work.
+AdSense is either showing a stale crawl result, or its crawler previously checked during a deployment/config state where `ads.txt` was not reliably served. The current live file is reachable, but the project should still be hardened so every hosting path serves `ads.txt` directly and never falls through to the SPA.
 
-### 2. New migration: schedule SEO cron jobs
-Create `supabase/migrations/<ts>_schedule_seo_cron.sql` that uses `cron.schedule` + `net.http_post` to call the existing edge functions on a cadence, authenticated with the `SEO_CRON_SECRET` header:
+The `Low value content` warning is not caused by `ads.txt`. It is an AdSense quality review issue and must be handled separately with safer content/SEO improvements, not by changing ad scripts or tool UI.
 
-| Job name | Schedule (UTC) | Function |
-|---|---|---|
-| `seo-tech-audit-daily` | `0 3 * * *` (03:00 daily) | `seo-tech-audit` |
-| `seo-gsc-intelligence-daily` | `15 3 * * *` | `seo-gsc-intelligence` |
-| `seo-programmatic-generate-weekly` | `0 4 * * 1` (Mon 04:00) | `seo-programmatic-generate` |
-| `seo-blog-draft-weekly` | `30 4 * * 1` | `seo-blog-draft` |
-| `indexnow-hourly` | `0 * * * *` | `indexnow` |
+## Safe implementation plan
 
-Each job posts to `https://mrjefpimgfzzjwoidocf.supabase.co/functions/v1/<fn>` with headers `Authorization: Bearer <SEO_CRON_SECRET>` and `Content-Type: application/json`, body `{}`.
+### 1. Do not touch protected areas
 
-The secret will be read from a Postgres setting written at migration time (so it isn't hardcoded). Approach:
-```sql
--- store once in vault-style GUC (set via ALTER DATABASE … SET app.seo_cron_secret = '...')
--- then use current_setting('app.seo_cron_secret') in net.http_post headers
+I will not modify:
+
+- Existing tools
+- Tool UI
+- Routes
+- Monetag loader or service worker behavior
+- AdSense ad components
+- Analytics
+- Authentication
+- Cron jobs
+- Backend functions
+- Existing SEO page rendering behavior unless needed for validation only
+
+### 2. Harden `ads.txt` delivery only
+
+Make a minimal infrastructure-only change so `ads.txt` is explicitly protected in every static hosting config:
+
+- Keep `public/ads.txt` content exactly as:
+
+```text
+google.com, pub-3192107856471636, DIRECT, f08c47fec0942fa0
 ```
-Because `ALTER DATABASE` is disallowed in migrations here, the migration will instead reference the secret via a SECURITY DEFINER helper `private.seo_cron_secret()` that returns the literal value. You will be prompted to confirm before the literal is written.
 
-### 3. Verify edge functions accept the secret
-Quick read of `seo-tech-audit`, `seo-gsc-intelligence`, `seo-programmatic-generate`, `seo-blog-draft`, `indexnow` to confirm each checks `Authorization: Bearer SEO_CRON_SECRET`. If any don't, add the guard in the same change.
+- Add an explicit `ads.txt` bypass rule to `public/.htaccess`, matching the existing direct-serving rules for `sitemap.xml`, `robots.txt`, and `sw.js`.
+- Do not edit ad scripts, ad slots, Monetag, consent logic, or frontend ad placement.
 
-### 4. Smoke test
-After apply: `SELECT jobname, schedule, active FROM cron.job;` and trigger one job manually via `SELECT cron.schedule(...)` test, then check `cron.job_run_details` for HTTP 200.
+### 3. Verify live crawler access
 
-## Open question
-Do the schedules above match what you want, or should any job run more/less often (e.g. indexnow every 15 min, blog draft daily)?
+After the change, validate:
+
+- `https://vexatool.com/ads.txt` returns `200`
+- `https://www.vexatool.com/ads.txt` redirects to `https://vexatool.com/ads.txt`
+- `http://vexatool.com/ads.txt` redirects to HTTPS and then returns `200`
+- `Mediapartners-Google` user-agent can fetch the file
+- Content-Type is `text/plain; charset=utf-8`
+- File body contains only the Google publisher line
+
+### 4. Investigate AdSense “Low value content” without disturbing the app
+
+Run a read-only quality audit of current public pages:
+
+- Homepage content depth
+- Tool page indexability
+- Programmatic SEO page uniqueness
+- Sitemap coverage
+- Thin/duplicate pSEO pages
+- Broken internal links
+- Canonical correctness
+- No accidental noindex
+- Robots access for Google, AdsBot, and Mediapartners
+
+### 5. If content fixes are needed, keep them isolated
+
+Only if the audit confirms thin/duplicate content, prepare a separate content-only plan before changing anything. Any content expansion must:
+
+- Not alter tool functionality
+- Not alter UI layout structure
+- Not alter ad loaders
+- Not alter analytics
+- Not generate placeholder reviews
+- Keep pages AdSense-safe
+- Use unique, useful informational sections only
+
+### 6. Final validation
+
+Run the requested production checks after implementation:
+
+- `npm run lint`
+- `npm run build`
+- Direct `curl` checks for `ads.txt`
+- Spot-check public routes
+- Confirm sitemap remains accessible
+
+## Expected result
+
+This will not directly force AdSense to instantly update, because AdSense can take time to recrawl. But it will make VexaTool’s `ads.txt` delivery robust and remove any hosting-side reason for the recurring `Not found` status.

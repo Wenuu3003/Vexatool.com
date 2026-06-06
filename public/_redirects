@@ -2,6 +2,7 @@
 
 # AdSense verification file (CRITICAL for Google AdSense approval)
 /ads.txt        /ads.txt        200!
+/app-ads.txt    /ads.txt        200
 
 # SEO files
 /sitemap.xml    /sitemap.xml    200!

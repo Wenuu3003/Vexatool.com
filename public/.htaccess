@@ -25,7 +25,17 @@
   RewriteCond %{REQUEST_URI} !^/sitemap\.xml$
   RewriteCond %{REQUEST_URI} !^/robots\.txt$
   RewriteCond %{REQUEST_URI} !^/sw\.js$
+  RewriteCond %{REQUEST_URI} !^/ads\.txt$
 
   # Rewrite everything else to index.html
   RewriteRule ^ index.html [L]
 </IfModule>
+
+<Files "ads.txt">
+  <IfModule mod_headers.c>
+    Header set Content-Type "text/plain; charset=utf-8"
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Access-Control-Allow-Origin "*"
+  </IfModule>
+</Files>

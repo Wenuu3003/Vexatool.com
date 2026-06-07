@@ -1,1 +1,4 @@
 project_id = "ywemvcleywohvrwuvhgc"
+
+[functions.apply-pseo-migration]
+verify_jwt = false

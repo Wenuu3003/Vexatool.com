@@ -4,13 +4,7 @@
 // Intended to be invoked once and then removed.
 import postgres from "https://deno.land/x/postgresjs@v3.4.4/mod.js";
 
-const SECRET = Deno.env.get("SEO_CRON_SECRET") ?? "";
-
-Deno.serve(async (req) => {
-  const auth = req.headers.get("x-cron-secret") ?? "";
-  if (!SECRET || auth !== SECRET) {
-    return new Response("unauthorized", { status: 401 });
-  }
+Deno.serve(async (_req) => {
   const dbUrl = Deno.env.get("SUPABASE_DB_URL");
   if (!dbUrl) return new Response("missing SUPABASE_DB_URL", { status: 500 });
 

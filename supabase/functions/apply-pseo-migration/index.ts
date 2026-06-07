@@ -3,17 +3,15 @@
 // connection authenticated as the service role through SUPABASE_DB_URL.
 // Intended to be invoked once and then removed.
 import postgres from "https://deno.land/x/postgresjs@v3.4.4/mod.js";
+import { CONTENT_B64 } from "./content.ts";
 
 Deno.serve(async (_req) => {
   const dbUrl = Deno.env.get("SUPABASE_DB_URL");
   if (!dbUrl) return new Response("missing SUPABASE_DB_URL", { status: 500 });
 
-  let sql: string;
-  try {
-    sql = await Deno.readTextFile(new URL("./content.sql", import.meta.url));
-  } catch (e) {
-    return new Response("cannot read content.sql: " + String(e), { status: 500 });
-  }
+  const sql = new TextDecoder().decode(
+    Uint8Array.from(atob(CONTENT_B64), (c) => c.charCodeAt(0)),
+  );
 
   const client = postgres(dbUrl, { prepare: false, max: 1, ssl: "require" });
   const results: { i: number; ok: boolean; error?: string }[] = [];

@@ -77,15 +77,15 @@ export const toolsData: ToolData[] = [
   {
     id: "compress-pdf",
     title: "Compress PDF",
-    description: "Reduce PDF file size while optimizing for maximum quality. Perfect for email attachments and web uploads.",
-    shortDescription: "Reduce PDF file size while optimizing quality.",
+    description: "Compress PDF to an exact target size (50 KB, 100 KB, 200 KB, 1 MB or custom KB/MB). Smart binary-search engine picks the highest quality that fits, with warnings when targets aren't achievable.",
+    shortDescription: "Compress PDF to an exact KB/MB target size.",
     icon: FileDown,
     colorClass: "bg-gradient-to-br from-purple-500 to-violet-600",
     href: "/compress-pdf",
     category: "pdf",
     previewImage: "/previews/compress-pdf-preview.webp",
-    features: ["Smart compression", "Quality presets", "Batch process", "Size preview"],
-    seoKeywords: ["compress PDF free", "reduce PDF size", "PDF compressor", "shrink PDF"]
+    features: ["Target size compression", "Custom KB/MB selection", "Quality warning system", "Nearest achievable size suggestion", "Detailed reduction statistics"],
+    seoKeywords: ["compress PDF to 100 KB", "compress PDF to 200 KB", "compress PDF to specific size", "reduce PDF size", "PDF compressor", "shrink PDF"]
   },
   {
     id: "pdf-to-word",

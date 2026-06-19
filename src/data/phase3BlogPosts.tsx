@@ -527,7 +527,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Skill 3: Compress to Fit Upload Limits</h2>
         <p>
-          Most portals (UGC, NEET, IBPS, university apps) cap PDF uploads at 1–2 MB. A scanned mark sheet often weighs 8–10 MB. Run it through <a href="/compress-pdf" className="text-primary hover:underline">Compress PDF</a> with the "Recommended" preset and watch it drop to 800 KB while still being readable.
+          Most portals (UGC, NEET, IBPS, university apps) cap PDF uploads at 1–2 MB. A scanned mark sheet often weighs 8–10 MB. Run it through <a href="/compress-pdf" className="text-primary hover:underline">Compress PDF</a>, set a target of 1 MB (or any custom KB/MB value the portal asks for), and the tool finds the highest quality that fits.
         </p>
 
         <h2>Skill 4: Fill and Sign Forms</h2>
@@ -584,7 +584,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
         <p><a href="/merge-pdf" className="text-primary hover:underline">Merge PDF</a>. Drag-and-drop, reorder, download.</p>
 
         <h3>How do I shrink a PDF below 2 MB?</h3>
-        <p><a href="/compress-pdf" className="text-primary hover:underline">Compress PDF</a> with the "Recommended" preset.</p>
+        <p><a href="/compress-pdf" className="text-primary hover:underline">Compress PDF</a> — pick a 1 MB target (or type a custom KB value) and download.</p>
 
         <h3>Can I sign a PDF on my phone?</h3>
         <p>Yes — <a href="/sign-pdf" className="text-primary hover:underline">Sign PDF</a> works on touchscreens. Draw with your finger or stylus.</p>

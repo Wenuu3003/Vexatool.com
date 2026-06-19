@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FileDown, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -9,14 +9,60 @@ import { CanonicalHead } from "@/components/CanonicalHead";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import ToolSEOContent from "@/components/ToolSEOContent";
-import { compressPDFSmart, type CompressionLevel } from "@/lib/pdfCompress";
+import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { compressPDFToTarget, type TargetCompressResult } from "@/lib/pdfCompress";
+
+const PRESETS_KB: Array<{ id: string; label: string; bytes: number }> = [
+  { id: "50", label: "50 KB", bytes: 50 * 1024 },
+  { id: "100", label: "100 KB", bytes: 100 * 1024 },
+  { id: "200", label: "200 KB", bytes: 200 * 1024 },
+  { id: "300", label: "300 KB", bytes: 300 * 1024 },
+  { id: "500", label: "500 KB", bytes: 500 * 1024 },
+  { id: "1024", label: "1 MB", bytes: 1024 * 1024 },
+  { id: "custom", label: "Custom", bytes: 0 },
+];
 
 const CompressPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [compressedSize, setCompressedSize] = useState<number | null>(null);
-  const [level, setLevel] = useState<CompressionLevel>("medium");
   const [progress, setProgress] = useState(0);
+  const [presetId, setPresetId] = useState<string>("200");
+  const [customValue, setCustomValue] = useState<string>("250");
+  const [customUnit, setCustomUnit] = useState<"KB" | "MB">("KB");
+  const [result, setResult] = useState<TargetCompressResult | null>(null);
+  const [pendingDownload, setPendingDownload] = useState<TargetCompressResult | null>(null);
+  const [showQualityWarning, setShowQualityWarning] = useState(false);
+  const [showImpossible, setShowImpossible] = useState(false);
+
+  const targetBytes = useMemo(() => {
+    if (presetId === "custom") {
+      const n = parseFloat(customValue);
+      if (!isFinite(n) || n <= 0) return 0;
+      return Math.round(n * (customUnit === "MB" ? 1024 * 1024 : 1024));
+    }
+    const p = PRESETS_KB.find((p) => p.id === presetId);
+    return p ? p.bytes : 0;
+  }, [presetId, customValue, customUnit]);
+
+  const triggerDownload = (r: TargetCompressResult, originalName: string) => {
+    const blob = new Blob([r.bytes as BlobPart], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = r.reduced ? `compressed_${originalName}` : originalName;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleCompress = async () => {
     if (files.length === 0) {
@@ -27,51 +73,55 @@ const CompressPDF = () => {
       });
       return;
     }
+    if (!targetBytes || targetBytes < 5 * 1024) {
+      toast({
+        title: "Invalid target size",
+        description: "Please enter a target size of at least 5 KB.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsProcessing(true);
     setProgress(0);
+    setResult(null);
 
     try {
       const file = files[0];
       const arrayBuffer = await file.arrayBuffer();
-      const originalSize = file.size;
-
-      const result = await compressPDFSmart(arrayBuffer, {
-        level,
+      const r = await compressPDFToTarget(arrayBuffer, {
+        targetBytes,
         onProgress: (current, total) => {
           setProgress(Math.round((current / total) * 100));
         },
       });
+      setResult(r);
 
-      // Safety net: if for any reason output is larger, send the original.
-      const finalBytes = result.reduced ? result.bytes : new Uint8Array(arrayBuffer);
-      const finalSize = finalBytes.byteLength;
-      const savings = ((originalSize - finalSize) / originalSize) * 100;
-
-      setCompressedSize(finalSize);
-
-      const compressedBlob = new Blob([finalBytes as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(compressedBlob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = result.reduced ? `compressed_${file.name}` : file.name;
-      link.click();
-      URL.revokeObjectURL(url);
-
-      if (result.reduced && savings >= 1) {
-        toast({
-          title: "Compression complete!",
-          description: `File size reduced by ${savings.toFixed(1)}% (${formatSize(originalSize)} → ${formatSize(finalSize)})`,
-        });
-      } else {
-        toast({
-          title: "This PDF is already optimized",
-          description: `No further reduction possible. Original file downloaded unchanged (${formatSize(originalSize)}).`,
-        });
+      // Decision tree based on outcome.
+      if (!r.achievedTarget) {
+        // Target not achievable while preserving readability.
+        setPendingDownload(r);
+        setShowImpossible(true);
+        return;
       }
 
-      setFiles([]);
-      setCompressedSize(null);
+      // Achieved. Warn when we pushed to very low quality (final size ≤ 60% of target
+      // AND target is below 25% of original — i.e. aggressive shrink).
+      const aggressive =
+        r.targetSize < r.originalSize * 0.25 &&
+        r.presetUsed != null &&
+        r.presetUsed.dpi <= 90;
+      if (aggressive) {
+        setPendingDownload(r);
+        setShowQualityWarning(true);
+        return;
+      }
+
+      triggerDownload(r, file.name);
+      toast({
+        title: "Compression complete",
+        description: `${formatSize(r.originalSize)} → ${formatSize(r.compressedSize)} (${(((r.originalSize - r.compressedSize) / r.originalSize) * 100).toFixed(1)}% smaller)`,
+      });
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error("Compress error:", error);
@@ -108,35 +158,64 @@ const CompressPDF = () => {
       >
         <div className="space-y-6">
           <div className="space-y-3">
-            <Label>Compression Level</Label>
-            <div className="grid grid-cols-3 gap-2">
-              {([
-                { id: "low", title: "Low", subtitle: "Best quality" },
-                { id: "medium", title: "Medium", subtitle: "Balanced" },
-                { id: "high", title: "High", subtitle: "Smallest file" },
-              ] as const).map((opt) => {
-                const active = level === opt.id;
+            <Label>Target File Size</Label>
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+              {PRESETS_KB.map((opt) => {
+                const active = presetId === opt.id;
                 return (
                   <button
                     key={opt.id}
                     type="button"
-                    onClick={() => setLevel(opt.id)}
+                    onClick={() => setPresetId(opt.id)}
                     disabled={isProcessing}
-                    className={`rounded-lg border p-3 text-left transition-colors ${
+                    className={`rounded-lg border px-3 py-2 text-sm transition-colors ${
                       active
                         ? "border-primary bg-primary/5 ring-1 ring-primary"
                         : "border-border hover:border-primary/50"
                     } disabled:opacity-50`}
                     aria-pressed={active}
                   >
-                    <div className="font-medium text-sm">{opt.title}</div>
-                    <div className="text-xs text-muted-foreground">{opt.subtitle}</div>
+                    {opt.label}
                   </button>
                 );
               })}
             </div>
+            {presetId === "custom" && (
+              <div className="flex items-center gap-2 pt-2">
+                <Input
+                  type="number"
+                  inputMode="decimal"
+                  min={1}
+                  step="any"
+                  value={customValue}
+                  onChange={(e) => setCustomValue(e.target.value)}
+                  disabled={isProcessing}
+                  className="max-w-[140px]"
+                  aria-label="Custom target size"
+                />
+                <div className="inline-flex rounded-md border border-border overflow-hidden">
+                  {(["KB", "MB"] as const).map((u) => (
+                    <button
+                      key={u}
+                      type="button"
+                      onClick={() => setCustomUnit(u)}
+                      disabled={isProcessing}
+                      className={`px-3 py-2 text-sm ${
+                        customUnit === u ? "bg-primary text-primary-foreground" : "bg-background"
+                      }`}
+                      aria-pressed={customUnit === u}
+                    >
+                      {u}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  Target: {targetBytes ? formatSize(targetBytes) : "—"}
+                </span>
+              </div>
+            )}
             <p className="text-xs text-muted-foreground">
-              Medium works best for most PDFs. Choose High for image-heavy or scanned documents.
+              We compress in your browser to the highest quality that fits your target size. Image-heavy PDFs shrink the most.
             </p>
           </div>
 
@@ -151,7 +230,9 @@ const CompressPDF = () => {
               {isProcessing && (
                 <div className="space-y-2">
                   <Progress value={progress} className="w-full max-w-md mx-auto" />
-                  <p className="text-sm text-muted-foreground">Compressing page {Math.ceil((progress / 100) * files.length) || 1}...</p>
+                  <p className="text-sm text-muted-foreground">
+                    Optimising… {progress}%
+                  </p>
                 </div>
               )}
               <Button
@@ -171,15 +252,119 @@ const CompressPDF = () => {
               </Button>
               <p className="text-sm text-muted-foreground">
                 Current file size: {formatSize(files[0].size)}
+                {targetBytes ? <> · Target: {formatSize(targetBytes)}</> : null}
               </p>
-              {compressedSize && (
-                <p className="text-sm text-primary font-medium">
-                  Compressed size: {formatSize(compressedSize)}
-                </p>
+              {result && !showQualityWarning && !showImpossible && (
+                <div className="mx-auto max-w-md rounded-lg border border-border bg-card p-4 text-left">
+                  <h3 className="text-sm font-semibold mb-2">Compression Result</h3>
+                  <dl className="grid grid-cols-2 gap-y-1 text-sm">
+                    <dt className="text-muted-foreground">Original Size</dt>
+                    <dd className="text-right">{formatSize(result.originalSize)}</dd>
+                    <dt className="text-muted-foreground">Compressed Size</dt>
+                    <dd className="text-right font-medium">{formatSize(result.compressedSize)}</dd>
+                    <dt className="text-muted-foreground">Size Saved</dt>
+                    <dd className="text-right">
+                      {formatSize(Math.max(0, result.originalSize - result.compressedSize))}
+                    </dd>
+                    <dt className="text-muted-foreground">Reduction</dt>
+                    <dd className="text-right font-medium text-primary">
+                      {result.originalSize > 0
+                        ? `${(((result.originalSize - result.compressedSize) / result.originalSize) * 100).toFixed(1)}%`
+                        : "0%"}
+                    </dd>
+                  </dl>
+                </div>
               )}
             </div>
           )}
         </div>
+
+        <AlertDialog open={showQualityWarning} onOpenChange={setShowQualityWarning}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Quality may be reduced significantly</AlertDialogTitle>
+              <AlertDialogDescription>
+                Reaching {pendingDownload ? formatSize(pendingDownload.targetSize) : ""} from{" "}
+                {pendingDownload ? formatSize(pendingDownload.originalSize) : ""} required strong
+                image down-sampling. Text will stay readable, but images may look soft.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
+                onClick={() => {
+                  setPendingDownload(null);
+                }}
+              >
+                Cancel
+              </AlertDialogCancel>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (!pendingDownload || files.length === 0) return;
+                  // Recommend roughly 2x the requested target (or 30% of original, whichever is smaller).
+                  const recommended = Math.min(
+                    Math.round(pendingDownload.targetSize * 2),
+                    Math.round(pendingDownload.originalSize * 0.3)
+                  );
+                  setShowQualityWarning(false);
+                  setPendingDownload(null);
+                  setPresetId("custom");
+                  setCustomValue(String(Math.max(50, Math.round(recommended / 1024))));
+                  setCustomUnit("KB");
+                  toast({
+                    title: "Recommended size applied",
+                    description: `Target adjusted to ~${formatSize(recommended)}. Click Compress again.`,
+                  });
+                }}
+              >
+                Use Recommended Size
+              </Button>
+              <AlertDialogAction
+                onClick={() => {
+                  if (pendingDownload && files[0]) {
+                    triggerDownload(pendingDownload, files[0].name);
+                  }
+                  setPendingDownload(null);
+                }}
+              >
+                Continue & Download
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={showImpossible} onOpenChange={setShowImpossible}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Target size cannot be achieved</AlertDialogTitle>
+              <AlertDialogDescription>
+                The smallest file we can produce while keeping this PDF readable is{" "}
+                <strong>{pendingDownload ? formatSize(pendingDownload.minAchievableSize) : ""}</strong>.
+                You requested {pendingDownload ? formatSize(pendingDownload.targetSize) : ""}, which
+                would corrupt document integrity. Try a nearest achievable size of around{" "}
+                <strong>
+                  {pendingDownload
+                    ? formatSize(Math.ceil(pendingDownload.minAchievableSize / 1024) * 1024)
+                    : ""}
+                </strong>
+                .
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setPendingDownload(null)}>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  if (pendingDownload && files[0]) {
+                    triggerDownload(pendingDownload, files[0].name);
+                  }
+                  setPendingDownload(null);
+                }}
+              >
+                Download Smallest Possible
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <ToolSEOContent
           toolName="Compress PDF"

@@ -147,12 +147,12 @@ const CompressPDF = () => {
     <>
       <CanonicalHead 
         title="Compress PDF Online Free | Reduce PDF Size Fast"
-        description="Compress PDF files online for free. Reduce file size quickly without losing quality. Fast, secure, and works on all devices."
-        keywords="compress PDF free, reduce PDF size online, PDF compressor free, shrink PDF, optimize PDF, free PDF compression, compress PDF India, reduce PDF file size"
+        description="Compress PDF to an exact size — 50 KB, 100 KB, 200 KB, 1 MB or any custom KB/MB. Free, in-browser, with quality warnings and nearest-achievable-size suggestions."
+        keywords="compress PDF to 100 KB, compress PDF to 200 KB, compress PDF to specific size, reduce PDF size online, PDF compressor free, shrink PDF, custom size PDF compressor, compress PDF India"
       />
       <ToolLayout
-        title="Compress PDF Online for Free – Reduce File Size Fast & Secure"
-        description="Shrink PDF files in seconds — right in your browser, with no uploads and no signup."
+        title="Compress PDF to Exact Size – 50 KB, 100 KB, 200 KB or Custom"
+        description="Pick a target size in KB or MB. We compress in your browser to the highest quality that fits — with a warning if your target isn't achievable."
         icon={FileDown}
         colorClass="bg-tool-compress"
       >

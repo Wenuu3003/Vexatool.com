@@ -30,6 +30,9 @@ export const ToolsGrid = ({ categoryFilter }: ToolsGridProps) => {
   return (
     <section id="tools-grid" className="py-16 sm:py-20 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4 max-w-5xl">
+        <h2 className="text-2xl sm:text-3xl font-bold text-foreground text-center mb-8 sm:mb-12">
+          Popular Tools
+        </h2>
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 md:gap-6">
           {tools.map((tool) => {
             const Icon = tool.icon;

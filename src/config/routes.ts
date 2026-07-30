@@ -111,8 +111,18 @@ export const routes: RouteConfig[] = [
     keywords: 'contact vexatool, support, help, feedback',
     category: 'Website'
   },
-  { path: '/auth', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
-  { path: '/account', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
+  { path: '/auth', priority: 0.3, changefreq: 'monthly', includeInSitemap: true },
+  { path: '/account', priority: 0.3, changefreq: 'monthly', includeInSitemap: true },
+  { 
+    path: '/all-tools', 
+    priority: 0.9, 
+    changefreq: 'weekly', 
+    includeInSitemap: true,
+    title: 'All Tools - Free Online PDF, Image, QR & Calculator Tools | VexaTool',
+    description: 'Browse all free online tools by VexaTool. PDF editors, image compressors, QR code generators, calculators, and document converters in one place.',
+    keywords: 'all tools, free online tools, pdf tools, image tools, qr code tools, calculators, document converters',
+    category: 'Website'
+  },
   
   // Category Pages
   {

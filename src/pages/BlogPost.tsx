@@ -9,6 +9,16 @@ import { mergePdfBlogContent } from "@/data/mergePdfBlogContent";
 import { phase3BlogPosts } from "@/data/phase3BlogPosts";
 import { AdBanner } from "@/components/AdBanner";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { blogPosts } from "@/pages/Blog";
+import { phase3BlogListings } from "@/data/phase3BlogPosts";
+
+// Unique excerpt per post, used for meta descriptions (50–160 chars)
+const excerptBySlug: Record<string, string> = Object.fromEntries(
+  [...blogPosts, ...phase3BlogListings].map((p: { slug: string; excerpt: string }) => [p.slug, p.excerpt])
+);
+
+const clamp = (text: string, max: number) =>
+  text.length <= max ? text : text.slice(0, max - 1).replace(/[\s,;:.-]+\S*$/, "").trim() + "…";
 
 interface BlogPostContent {
   title: string;

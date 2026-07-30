@@ -725,25 +725,34 @@ const BlogPost = () => {
 
   const related = relatedArticles[slug] || defaultRelated;
 
+  // Title stays under 60 chars: brand suffix only when it fits
+  const pageTitle =
+    post.title.length + 11 <= 60 ? `${post.title} | VexaTool` : clamp(post.title, 60);
+  const metaDescription = clamp(
+    excerptBySlug[slug] ||
+      `${post.title} — a step-by-step VexaTool guide with practical tips and answers to common questions.`,
+    158
+  );
+
   return (
     <>
       <Helmet>
-        <title>{post.title.length > 45 ? post.title.slice(0, 45).trim() + '…' : post.title} | VexaTool</title>
+        <title>{pageTitle}</title>
         <meta
           name="description"
-          content={`${post.title}. Expert tips, step-by-step guides, and best practices for PDF management.`}
+          content={metaDescription}
         />
         <link rel="canonical" href={`https://vexatool.com/blog/${slug}`} />
-        <meta property="og:title" content={`${post.title} | VexaTool`} />
+        <meta property="og:title" content={pageTitle} />
         <meta
           property="og:description"
-          content={`${post.title}. Expert tips and comprehensive guides for PDF management.`}
+          content={metaDescription}
         />
         <meta property="og:url" content={`https://vexatool.com/blog/${slug}`} />
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${post.title} | VexaTool`} />
-        <meta name="twitter:description" content={`${post.title}. Expert tips and guides for PDF management.`} />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={metaDescription} />
         <meta name="robots" content="index, follow" />
         <meta name="article:published_time" content={post.date} />
         <meta name="article:modified_time" content={post.date} />

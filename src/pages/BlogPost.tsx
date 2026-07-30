@@ -14,7 +14,9 @@ import { phase3BlogListings } from "@/data/phase3BlogPosts";
 
 // Unique excerpt per post, used for meta descriptions (50–160 chars)
 const excerptBySlug: Record<string, string> = Object.fromEntries(
-  [...blogPosts, ...phase3BlogListings].map((p: { slug: string; excerpt: string }) => [p.slug, p.excerpt])
+  ([...blogPosts, ...phase3BlogListings] as { slug: string; excerpt?: string }[])
+    .filter((p) => typeof p.excerpt === "string" && p.excerpt.length > 0)
+    .map((p) => [p.slug, p.excerpt as string])
 );
 
 const clamp = (text: string, max: number) =>

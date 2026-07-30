@@ -706,7 +706,7 @@ const BlogPost = () => {
       "@type": "WebPage",
       "@id": `https://vexatool.com/blog/${slug}`
     },
-    "description": `${post.title}. Expert tips, step-by-step guides, and best practices.`,
+    "description": excerptBySlug[slug] || `${post.title}. Expert tips, step-by-step guides, and best practices.`,
     "url": `https://vexatool.com/blog/${slug}`,
     "image": `https://vexatool.com/og-image.png`,
     "wordCount": "2000",

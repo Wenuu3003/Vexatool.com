@@ -14,7 +14,7 @@ interface BlogPost {
   image?: string;
 }
 
-const blogPosts: BlogPost[] = [
+export const blogPosts: BlogPost[] = [
   {
     slug: "pdf-to-excel-converter-guide",
     title: "How to Convert PDF to Excel Online for Free (Step-by-Step Guide)",
@@ -276,7 +276,7 @@ const Blog = () => {
   return (
     <>
       <Helmet>
-        <title>Document Tips & Tutorials - PDF Guides for 2026 | VexaTool Blog</title>
+        <title>PDF & Document Tutorials | VexaTool Blog</title>
         <meta name="description" content="Learn professional PDF editing techniques, document conversion tips, and productivity guides. Expert tutorials for managing digital documents effectively." />
         <meta name="keywords" content="PDF tutorials, document editing guide, file conversion tips, PDF compression guide, digital document management, productivity tips" />
         <link rel="canonical" href="https://vexatool.com/blog" />

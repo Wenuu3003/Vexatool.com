@@ -79,6 +79,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<'properties' | 'blocks'>('blocks');
   const [segmentationMode, setSegmentationMode] = useState<TextSegmentationMode>('line');
+  // OCR language — defaults to English. OCR output is never translated or rewritten.
+  const [ocrLanguage, setOcrLanguage] = useState<string>('eng');
   
   // OCR hook
   const { 
@@ -315,8 +317,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
     }
     
     try {
-      // Support English + Telugu
-      await performOCR(currentPageData.canvas, currentPage, 'eng+tel');
+      // Recognize using the user-selected language pack only. No translation is applied.
+      await performOCR(currentPageData.canvas, currentPage, ocrLanguage);
       setTextSelectionEnabled(true);
       toast({
         title: 'OCR Complete',
@@ -329,7 +331,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         variant: 'destructive',
       });
     }
-  }, [pages, currentPage, performOCR, toast]);
+  }, [pages, currentPage, performOCR, ocrLanguage, toast]);
 
   const handleExtractText = useCallback(async () => {
     if (!pdfDocument) return;
@@ -1133,6 +1135,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
             segmentationMode={segmentationMode}
             resolvedSegmentationMode={modeUsed}
             onSegmentationModeChange={setSegmentationMode}
+            ocrLanguage={ocrLanguage}
+            onOcrLanguageChange={setOcrLanguage}
             onRunOCR={handleRunOCR}
             onExtractText={handleExtractText}
             currentPage={currentPage}

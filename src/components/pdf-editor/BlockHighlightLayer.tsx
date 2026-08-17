@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, useRef, useEffect } from 'react';
 import { TextRegion } from './useTextBlocks';
 
 interface BlockHighlightLayerProps {
@@ -19,6 +19,15 @@ export const BlockHighlightLayer = memo(({
   onSelectRegion,
 }: BlockHighlightLayerProps) => {
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  const selectedRef = useRef<HTMLDivElement | null>(null);
+
+  // Keep panel -> canvas selection in sync: bring the selected block into view.
+  useEffect(() => {
+    if (!selectedRegion) return;
+    const node = selectedRef.current;
+    if (!node) return;
+    node.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
+  }, [selectedRegion]);
 
   const handleClick = useCallback((e: React.MouseEvent, regionId: string) => {
     e.stopPropagation();
@@ -40,6 +49,7 @@ export const BlockHighlightLayer = memo(({
         return (
           <div
             key={region.id}
+            ref={isSelected ? selectedRef : undefined}
             className="absolute pointer-events-auto transition-colors duration-100"
             style={{
               left: region.x - PAD,

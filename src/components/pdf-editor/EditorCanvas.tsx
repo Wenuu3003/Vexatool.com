@@ -937,7 +937,8 @@ export const EditorCanvas = memo(({
   return (
     <div 
       ref={scrollContainerRef}
-      className="flex-1 overflow-auto bg-muted/30 p-2 md:p-4"
+      className="flex-1 min-h-0 overflow-auto overscroll-contain bg-muted/30 p-2 md:p-4"
+      style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x pan-y pinch-zoom' }}
     >
       {/* 
         Layout wrapper: sets explicit width/height to the SCALED size so the 

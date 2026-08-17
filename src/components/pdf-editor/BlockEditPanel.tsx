@@ -15,6 +15,11 @@ interface BlockEditPanelProps {
   onSelectRegion: (id: string | null) => void;
   onReplaceRegion: (region: TextRegion, newText: string) => void;
   onDeleteRegion: (region: TextRegion) => void;
+  /** Re-run native text extraction for the current page */
+  onRetryExtract?: () => void;
+  /** Re-run OCR for the current page */
+  onRetryOCR?: () => void;
+  isDetecting?: boolean;
 }
 
 export const BlockEditPanel = memo(({
@@ -23,10 +28,20 @@ export const BlockEditPanel = memo(({
   onSelectRegion,
   onReplaceRegion,
   onDeleteRegion,
+  onRetryExtract,
+  onRetryOCR,
+  isDetecting = false,
 }: BlockEditPanelProps) => {
   const [editingRegion, setEditingRegion] = useState<string | null>(null);
   const [editText, setEditText] = useState('');
   const [expandedRegions, setExpandedRegions] = useState<Set<string>>(new Set());
+  const selectedCardRef = useRef<HTMLDivElement | null>(null);
+
+  // Canvas -> panel sync: scroll the selected block's card into view.
+  useEffect(() => {
+    if (!selectedRegion) return;
+    selectedCardRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [selectedRegion]);
 
   const handleStartEdit = useCallback((region: TextRegion) => {
     setEditingRegion(region.id);
@@ -58,11 +73,25 @@ export const BlockEditPanel = memo(({
 
   if (regions.length === 0) {
     return (
-      <div className="p-4 text-center">
-        <MousePointer className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+      <div className="p-4 text-center space-y-3">
+        <MousePointer className="w-8 h-8 text-muted-foreground mx-auto" />
         <p className="text-sm text-muted-foreground">
-          No text blocks detected yet. Extract text or run OCR first.
+          {isDetecting
+            ? 'Detecting text on this page…'
+            : 'Text could not be detected on this page yet. Try extracting the native text layer, or run OCR for scanned pages. You can also use Add Text from the toolbar.'}
         </p>
+        <div className="flex flex-col gap-2">
+          {onRetryExtract && (
+            <Button size="sm" variant="outline" disabled={isDetecting} onClick={onRetryExtract}>
+              Extract page text
+            </Button>
+          )}
+          {onRetryOCR && (
+            <Button size="sm" disabled={isDetecting} onClick={onRetryOCR}>
+              Run OCR on this page
+            </Button>
+          )}
+        </div>
       </div>
     );
   }

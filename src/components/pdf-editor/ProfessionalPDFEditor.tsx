@@ -82,6 +82,14 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   // OCR language — defaults to English. OCR output is never translated or rewritten.
   const [ocrLanguage, setOcrLanguage] = useState<string>('eng');
   
+  // When an element is selected on the canvas, surface its properties (colour, font,
+  // size) straight away — on mobile the properties live inside the slide-out sheet.
+  useEffect(() => {
+    if (!selectedElement) return;
+    setActivePanel('properties');
+    if (isMobile) setShowMobilePanel(true);
+  }, [selectedElement, isMobile]);
+
   // OCR hook
   const { 
     isProcessing: isOCRProcessing, 

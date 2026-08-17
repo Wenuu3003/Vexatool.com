@@ -198,15 +198,15 @@ const EditPDF = () => {
           ) : (
             <div className="space-y-4">
               {/* Back button */}
-              <div className="flex items-center gap-4">
-                <Button variant="outline" onClick={handleClose}>
+              <div className="flex flex-wrap items-center gap-3 min-w-0">
+                <Button variant="outline" onClick={handleClose} className="shrink-0">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Upload
                 </Button>
-                <div className="flex items-center gap-2">
-                  <FileEdit className="w-5 h-5 text-tool-edit" />
-                  <span className="font-medium">{files[0]?.name}</span>
-                  <span className="text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 min-w-0 max-w-full">
+                  <FileEdit className="w-5 h-5 text-tool-edit shrink-0" />
+                  <span className="font-medium truncate">{files[0]?.name}</span>
+                  <span className="text-sm text-muted-foreground shrink-0">
                     ({(files[0]?.size / 1024 / 1024).toFixed(2)} MB)
                   </span>
                 </div>

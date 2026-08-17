@@ -1122,6 +1122,9 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           onSelectRegion={setSelectedRegionId}
           onReplaceRegion={handleRegionReplace}
           onDeleteRegion={handleRegionDelete}
+          onRetryExtract={handleExtractText}
+          onRetryOCR={handleRunOCR}
+          isDetecting={isOCRProcessing}
         />
       </TabsContent>
       <TabsContent value="properties" className="flex-1 overflow-y-auto m-0">
@@ -1154,7 +1157,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   return (
     <div 
       ref={editorContainerRef}
-      className="flex flex-col h-[calc(100vh-200px)] min-h-[400px] md:min-h-[600px] border border-border rounded-lg overflow-hidden bg-background"
+      className="flex flex-col h-[calc(100dvh-120px)] min-h-[520px] md:h-[calc(100vh-200px)] md:min-h-[600px] border border-border rounded-lg overflow-hidden bg-background"
     >
       {/* Hidden file input for images */}
       <input

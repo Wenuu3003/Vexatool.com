@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react';
+import { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { TextRegion } from './useTextBlocks';
 import { OCRTextBlock } from './useOCR';
 import { Button } from '@/components/ui/button';

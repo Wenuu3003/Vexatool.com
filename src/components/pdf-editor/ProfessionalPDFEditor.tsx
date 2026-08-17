@@ -1243,7 +1243,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       )}
       
       {/* Main editor area */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Page thumbnails - desktop only */}
         {!isMobile && (
           <PageThumbnails
@@ -1259,8 +1259,8 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
         )}
         
         {/* Canvas with block highlight overlay and page nav */}
-        <div className="flex-1 relative overflow-hidden min-w-0 flex flex-col">
-          <div className="flex-1 overflow-hidden">
+        <div className="flex-1 relative overflow-hidden min-w-0 min-h-0 flex flex-col">
+          <div className="flex-1 min-h-0 overflow-hidden flex">
             <EditorCanvas
               pages={pages}
               currentPage={currentPage}

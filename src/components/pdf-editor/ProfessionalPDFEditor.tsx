@@ -38,7 +38,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ScanText, PanelRightOpen, Layers, AlertTriangle, Edit3 } from 'lucide-react';
+import { ScanText, PanelRightOpen, Layers, AlertTriangle, Edit3, Download } from 'lucide-react';
 
 // Use scale from types
 const MAX_FILE_SIZE_MB = 25;
@@ -959,13 +959,18 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
       ? region.sourceBlocks.reduce((sum, block) => sum + block.height, 0) / region.sourceBlocks.length
       : region.height;
 
-    const fontSize = Math.max(9, Math.round(avgHeight));
+    // Native text blocks store the full em-height, so avgHeight already equals the font size.
+    // OCR word boxes only cover the visible glyph (≈cap height), so scale them back up to an em.
+    const isOCRRegion = region.sourceBlocks.length > 0
+      && region.sourceBlocks.every(block => block.fontSizePt === undefined);
+    const OCR_CAP_RATIO = 0.72;
+    const fontSize = Math.max(9, Math.round(isOCRRegion ? avgHeight / OCR_CAP_RATIO : avgHeight));
     const isWordLevel = region.kind === 'word';
     const isLineLevel = region.kind === 'line';
     
     // Generous padding to fully cover original text including anti-aliased edges
-    const padX = isWordLevel ? 4 : isLineLevel ? 4 : 4;
-    const padY = isWordLevel ? 3 : isLineLevel ? 3 : 3;
+    const padX = isOCRRegion ? 6 : 4;
+    const padY = isOCRRegion ? 7 : 3;
     const lineHeightMultiplier = isWordLevel ? 1 : 1.15;
     const lineCount = Math.max(1, cleanText.split(/\r?\n/).length);
     
@@ -1239,6 +1244,16 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
           <span className="text-xs text-muted-foreground ml-auto">
             Page {currentPage + 1}/{pages.filter(p => !p.deleted).length}
           </span>
+
+          <Button
+            size="sm"
+            className="gap-1.5 shrink-0"
+            disabled={isProcessing}
+            onClick={handleShowDownloadDialog}
+          >
+            <Download className="w-4 h-4" />
+            Download
+          </Button>
         </div>
       )}
       

@@ -4,6 +4,8 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScanText, FileText, AlertCircle, CheckCircle2, Loader2, Info, LayoutGrid } from 'lucide-react';
+import { Languages } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { OCRProgress } from './useOCR';
 import type { OCRStats } from './useOCR';
 import type { ResolvedSegmentationMode, TextSegmentationMode } from './useTextBlocks';
@@ -17,6 +19,8 @@ interface OCRPanelProps {
   segmentationMode: TextSegmentationMode;
   resolvedSegmentationMode: ResolvedSegmentationMode;
   onSegmentationModeChange: (mode: TextSegmentationMode) => void;
+  ocrLanguage: string;
+  onOcrLanguageChange: (lang: string) => void;
   onRunOCR: () => void;
   onExtractText: () => void;
   currentPage: number;
@@ -32,6 +36,26 @@ const SEGMENTATION_OPTIONS: { value: TextSegmentationMode; label: string; desc: 
   { value: 'form', label: 'Form', desc: 'Form field layout' },
 ];
 
+export const OCR_LANGUAGE_OPTIONS: { value: string; label: string }[] = [
+  { value: 'eng', label: 'English' },
+  { value: 'hin', label: 'Hindi (हिन्दी)' },
+  { value: 'tel', label: 'Telugu (తెలుగు)' },
+  { value: 'tam', label: 'Tamil (தமிழ்)' },
+  { value: 'kan', label: 'Kannada (ಕನ್ನಡ)' },
+  { value: 'mal', label: 'Malayalam (മലയാളം)' },
+  { value: 'mar', label: 'Marathi (मराठी)' },
+  { value: 'ben', label: 'Bengali (বাংলা)' },
+  { value: 'guj', label: 'Gujarati (ગુજરાતી)' },
+  { value: 'urd', label: 'Urdu (اردو)' },
+  { value: 'ara', label: 'Arabic' },
+  { value: 'fra', label: 'French' },
+  { value: 'deu', label: 'German' },
+  { value: 'spa', label: 'Spanish' },
+  { value: 'eng+hin', label: 'English + Hindi' },
+  { value: 'eng+tel', label: 'English + Telugu' },
+  { value: 'eng+tam', label: 'English + Tamil' },
+];
+
 export const OCRPanel = memo(({
   pdfType,
   isProcessing,
@@ -41,6 +65,8 @@ export const OCRPanel = memo(({
   segmentationMode,
   resolvedSegmentationMode,
   onSegmentationModeChange,
+  ocrLanguage,
+  onOcrLanguageChange,
   onRunOCR,
   onExtractText,
   currentPage,
@@ -68,6 +94,28 @@ export const OCRPanel = memo(({
         </CardDescription>
       </CardHeader>
       <CardContent className="py-2 px-4 space-y-3">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Languages className="w-3.5 h-3.5" />
+            OCR language
+          </div>
+          <Select value={ocrLanguage} onValueChange={onOcrLanguageChange} disabled={isProcessing}>
+            <SelectTrigger className="h-8 text-xs">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent className="max-h-64">
+              {OCR_LANGUAGE_OPTIONS.map(opt => (
+                <SelectItem key={opt.value} value={opt.value} className="text-xs">
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-[11px] text-muted-foreground">
+            Text is read exactly as it appears — never translated or rewritten. Pick the document language for best accuracy.
+          </p>
+        </div>
+
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

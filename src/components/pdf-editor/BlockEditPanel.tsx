@@ -182,11 +182,10 @@ export const BlockEditPanel = memo(({
                         </button>
                       )}
 
-                      {isSelected && (
-                        <div className="flex gap-1.5 pt-1" onClick={e => e.stopPropagation()}>
+                      <div className="flex gap-1.5 pt-1" onClick={e => e.stopPropagation()}>
                           <Button
                             size="sm"
-                            variant="outline"
+                            variant={isSelected ? 'default' : 'outline'}
                             className="flex-1 h-7 text-xs"
                             onClick={() => handleStartEdit(region)}
                           >
@@ -201,8 +200,7 @@ export const BlockEditPanel = memo(({
                           >
                             <Trash2 className="w-3 h-3" />
                           </Button>
-                        </div>
-                      )}
+                      </div>
                     </div>
                   )}
                 </CardContent>

@@ -8,6 +8,8 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import SizeGuideLinks from "@/components/SizeGuideLinks";
+import { imageSizeGuides } from "@/data/sizeGuideLinks";
 import { CanonicalHead } from "@/components/CanonicalHead";
 
 interface CompressedImage {
@@ -320,6 +322,8 @@ const CompressImage = () => {
             </div>
           )}
         </div>
+
+        <SizeGuideLinks groups={[imageSizeGuides]} className="px-0 mt-10" />
 
         <ToolSEOContent
           toolName="Compress Images"

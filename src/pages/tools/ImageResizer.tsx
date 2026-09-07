@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Maximize, Upload, Download, Loader2, X, Zap, FileImage, User, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import SizeGuideLinks from "@/components/SizeGuideLinks";
+import { photoGuides } from "@/data/sizeGuideLinks";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import { Helmet } from "react-helmet";
 
@@ -758,6 +760,8 @@ export default function ImageResizer() {
             </>
           )}
         </div>
+
+        <SizeGuideLinks groups={[photoGuides]} className="px-0 mt-10" />
 
         <ToolSEOContent {...seoContent} />
       </ToolLayout>

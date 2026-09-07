@@ -9,6 +9,8 @@ import { CanonicalHead } from "@/components/CanonicalHead";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import ToolSEOContent from "@/components/ToolSEOContent";
+import SizeGuideLinks from "@/components/SizeGuideLinks";
+import { pdfSizeGuides } from "@/data/sizeGuideLinks";
 import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
@@ -365,6 +367,8 @@ const CompressPDF = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        <SizeGuideLinks groups={[pdfSizeGuides]} className="px-0 mt-10" />
 
         <ToolSEOContent
           toolName="Compress PDF"

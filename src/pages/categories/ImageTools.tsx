@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Crop, ImageDown, RefreshCw, Image, Eraser, FileDown, Smartphone, CreditCard, Briefcase, FileImage, Shield, Zap, Monitor } from "lucide-react";
 import imageToolsVisual from "@/assets/graphics/image-tools-visual.webp";
+import SizeGuideLinks from "@/components/SizeGuideLinks";
+import { imageSizeGuides, photoGuides } from "@/data/sizeGuideLinks";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 const tools = [
@@ -96,6 +98,9 @@ const ImageTools = () => {
             </div>
           </div>
         </div>
+
+        {/* Size-target and photo guides (internal links to detailed guide pages) */}
+        <SizeGuideLinks groups={[imageSizeGuides, photoGuides]} className="px-0 mb-4" />
 
         {/* Practical uses */}
         <div className="mb-16">

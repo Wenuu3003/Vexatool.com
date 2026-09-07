@@ -111,8 +111,10 @@ export const routes: RouteConfig[] = [
     keywords: 'contact vexatool, support, help, feedback',
     category: 'Website'
   },
-  { path: '/auth', priority: 0.3, changefreq: 'monthly', includeInSitemap: true },
-  { path: '/account', priority: 0.3, changefreq: 'monthly', includeInSitemap: true },
+  // /auth and /account are intentionally excluded from the sitemap: both pages
+  // emit `noindex, nofollow`, so submitting them contradicts that directive.
+  { path: '/auth', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
+  { path: '/account', priority: 0.3, changefreq: 'monthly', includeInSitemap: false },
   { 
     path: '/all-tools', 
     priority: 0.9, 

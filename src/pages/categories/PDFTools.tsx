@@ -6,6 +6,8 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { Home, ArrowLeft } from "lucide-react";
 import { FileEdit, Layers, Scissors, FileDown, FileType2, FileText, Unlock, Lock, RotateCw, Image, PenTool, Droplets, FolderSync, FileCheck, FileImage, Code, Shield, Zap, Globe } from "lucide-react";
 import pdfWorkflowImg from "@/assets/graphics/pdf-workflow.webp";
+import SizeGuideLinks from "@/components/SizeGuideLinks";
+import { pdfSizeGuides, formGuides } from "@/data/sizeGuideLinks";
 import securityVisualImg from "@/assets/graphics/security-visual.webp";
 
 const tools = [
@@ -112,6 +114,9 @@ const PDFTools = () => {
             </div>
           </div>
         </div>
+
+        {/* Size-target guides (internal links to detailed guide pages) */}
+        <SizeGuideLinks groups={[pdfSizeGuides, formGuides]} className="px-0 mb-4" />
 
         {/* Content: Why choose */}
         <div className="mb-16">

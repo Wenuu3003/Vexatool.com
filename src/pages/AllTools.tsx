@@ -8,6 +8,8 @@ import { toolsData, toolCategories } from "@/data/toolsData";
 import { cn } from "@/lib/utils";
 import { useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
+import SizeGuideLinks from "@/components/SizeGuideLinks";
+import { allSizeGuideGroups } from "@/data/sizeGuideLinks";
 
 const AllTools = () => {
   const canonicalUrl = useCanonicalUrl();
@@ -153,6 +155,11 @@ const AllTools = () => {
                 </div>
               )}
             </div>
+          </section>
+
+          {/* Size and photo guides (internal links to detailed guide pages) */}
+          <section className="py-12">
+            <SizeGuideLinks groups={allSizeGuideGroups} />
           </section>
         </main>
         <Footer />

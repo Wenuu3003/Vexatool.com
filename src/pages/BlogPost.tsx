@@ -645,7 +645,7 @@ const relatedArticles: Record<string, { title: string; slug: string }[]> = {
   ],
   "emi-calculator-home-loan-guide": [
     { title: "GST Calculator: Guide for Indian Businesses", slug: "gst-calculator-business-guide" },
-    { title: "BMI Calculator: Understanding Your Health", slug: "bmi-calculator-health-guide" },
+    { title: "Age Calculator: Complete Guide", slug: "age-calculator-guide" },
     { title: "Currency Converter: Essential Travel Guide", slug: "currency-converter-travel-guide" },
   ],
   "gst-calculator-business-guide": [

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,10 +25,15 @@ const PercentageCalculator = () => {
 
   const { toast } = useToast();
 
+  useEffect(() => { setResult(null); }, [val1, val2]);
+  useEffect(() => { setChangeResult(null); }, [changeFrom, changeTo]);
+  useEffect(() => { setIncResult(null); }, [incVal, incPercent]);
+
   const calcBasic = () => {
+    setResult(null);
     const p = parseFloat(val1);
     const n = parseFloat(val2);
-    if (isNaN(p) || isNaN(n)) {
+    if (!Number.isFinite(p) || !Number.isFinite(n) || !Number.isFinite((p / 100) * n)) {
       toast({ title: "Invalid input", description: "Please enter valid numbers.", variant: "destructive" });
       return;
     }
@@ -36,9 +41,10 @@ const PercentageCalculator = () => {
   };
 
   const calcChange = () => {
+    setChangeResult(null);
     const from = parseFloat(changeFrom);
     const to = parseFloat(changeTo);
-    if (isNaN(from) || isNaN(to)) {
+    if (!Number.isFinite(from) || !Number.isFinite(to) || (from !== 0 && !Number.isFinite(((to - from) / from) * 100))) {
       toast({ title: "Invalid input", description: "Please enter valid numbers.", variant: "destructive" });
       return;
     }
@@ -50,9 +56,10 @@ const PercentageCalculator = () => {
   };
 
   const calcIncrease = () => {
+    setIncResult(null);
     const v = parseFloat(incVal);
     const p = parseFloat(incPercent);
-    if (isNaN(v) || isNaN(p)) {
+    if (!Number.isFinite(v) || !Number.isFinite(p) || !Number.isFinite(v + (v * p) / 100) || !Number.isFinite(v - (v * p) / 100)) {
       toast({ title: "Invalid input", description: "Please enter valid numbers.", variant: "destructive" });
       return;
     }

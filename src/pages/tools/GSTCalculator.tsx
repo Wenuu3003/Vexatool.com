@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,8 @@ export default function GSTCalculator() {
   const [result, setResult] = useState<GSTResult | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => { setResult(null); }, [amount, gstRate, calculationType, isInterState]);
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -49,10 +51,11 @@ export default function GSTCalculator() {
   };
 
   const calculateGST = () => {
+    setResult(null);
     const amountValue = parseFloat(amount);
     const rateValue = parseFloat(gstRate);
 
-    if (isNaN(amountValue) || amountValue <= 0) {
+    if (!Number.isFinite(amountValue) || amountValue <= 0 || !Number.isFinite(rateValue) || rateValue < 0) {
       toast({ title: "Invalid amount", description: "Please enter a valid amount.", variant: "destructive" });
       return;
     }
@@ -73,6 +76,10 @@ export default function GSTCalculator() {
       gstAmount = totalAmount - baseAmount;
     }
 
+    if (![baseAmount, gstAmount, totalAmount].every(Number.isFinite)) {
+      toast({ title: "Amount too large", description: "Use a smaller amount.", variant: "destructive" });
+      return;
+    }
     const halfGst = gstAmount / 2;
 
     setResult({

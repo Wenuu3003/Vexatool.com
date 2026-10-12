@@ -13,12 +13,12 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | CompressPDF | Pending — real-input/output verification not completed |
 | ConvertPDF | Pending — real-input/output verification not completed |
 | CurrencyConverter | Draft fix: no hardcoded fallback, missing-rate rejection and amount/date tests; browser/API integration pending |
-| EMICalculator | Pending — real-input/output verification not completed |
+| EMICalculator | Draft numeric/stale-result fixes; component input/output tests passed; browser and wider cases pending |
 | EditPDF | Pending — real-input/output verification not completed |
 | ExcelToPDF | Pending — real-input/output verification not completed |
 | ExcelToWord | Pending — real-input/output verification not completed |
 | FileCompressor | Pending — real-input/output verification not completed |
-| GSTCalculator | Pending — real-input/output verification not completed |
+| GSTCalculator | Draft numeric/stale-result fixes; component input/output tests passed; browser and wider cases pending |
 | GoogleDriveToPDF | Pending — real-input/output verification not completed |
 | GovtJobPhotoResizer | Pending — real-input/output verification not completed |
 | HTMLToPDF | Pending — real-input/output verification not completed |
@@ -38,7 +38,7 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | PNGToPDF | Pending — real-input/output verification not completed |
 | PPTToPDF | Draft false-success fix; extraction tests passed; faithful layout conversion unsupported |
 | PassportPhotoResizer | Pending — real-input/output verification not completed |
-| PercentageCalculator | Pending — real-input/output verification not completed |
+| PercentageCalculator | Draft numeric/stale-result fixes; component input/output tests passed; browser and wider cases pending |
 | PinCodeGenerator | Pending — real-input/output verification not completed |
 | ProtectPDF | Draft fix; password/output tests passed; browser validation blocked |
 | QRCodeGenerator | Pending — real-input/output verification not completed |
@@ -64,3 +64,7 @@ Browser validation is blocked by invalid/truncated Playwright Chromium downloads
 ## Currency converter repair
 
 Removed hardcoded rates mislabeled as cached. Retrieval failure clears results and shows unavailable. Provider date replaces local fetch time; missing currencies never default to 1. Amount changes calculate synchronously without stale timeout results; empty/nonfinite/negative amounts are rejected, zero allowed. Request timeout and unmount/refresh cancellation added. Pure parser/conversion tests pass; live API and browser integration remain pending.
+
+## Calculator batch
+
+Percentage, GST and EMI now clear results when inputs change or a calculation fails, and reject nonfinite/overflow calculations. EMI caps tenure at 1200 whole months to prevent an unbounded schedule and uses a numerically stable formula. Six actual React component tests cover 63% of 21500, overflow, GST 18% amount/supply changes, cleared inputs, zero-interest EMI and 12% EMI. These checks validate calculations for selected inputs only, not current tax-rate policy or full end-to-end/browser behavior.

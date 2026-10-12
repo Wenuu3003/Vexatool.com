@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,8 @@ import { ArrowRightLeft, RefreshCw, Coins } from "lucide-react";
 import { toast } from "sonner";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { CanonicalHead } from "@/components/CanonicalHead";
+
+import { parseRates, convertAmount } from '@/lib/currencyRates';
 
 const currencies = [
   { code: "USD", name: "US Dollar", symbol: "$" },
@@ -30,133 +32,73 @@ const CurrencyConverter = () => {
   const [amount, setAmount] = useState<string>("1");
   const [fromCurrency, setFromCurrency] = useState("USD");
   const [toCurrency, setToCurrency] = useState("INR");
-  const [result, setResult] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [rateError, setRateError] = useState("");
+  const request = useRef<AbortController | null>(null);
   const [exchangeRates, setExchangeRates] = useState<Record<string, number> | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [ratesLoading, setRatesLoading] = useState(true);
 
-  // Validate exchange rate API response
-  const validateExchangeRates = (data: unknown): Record<string, number> | null => {
-    if (!data || typeof data !== 'object') return null;
-    
-    const dataObj = data as Record<string, unknown>;
-    if (!dataObj.rates || typeof dataObj.rates !== 'object') return null;
-    
-    const rates = dataObj.rates as Record<string, unknown>;
-    const validatedRates: Record<string, number> = {};
-    
-    for (const [key, value] of Object.entries(rates)) {
-      // Only accept valid currency codes (3 uppercase letters) and positive numbers
-      if (
-        typeof key === 'string' && 
-        /^[A-Z]{3}$/.test(key) && 
-        typeof value === 'number' && 
-        value > 0 && 
-        value < 1000000 // Reasonable upper bound for exchange rates
-      ) {
-        validatedRates[key] = value;
-      }
-    }
-    
-    // Ensure we have at least USD rate
-    if (!validatedRates.USD) return null;
-    
-    return validatedRates;
-  };
-
-  // Fetch live exchange rates from free API
   const fetchExchangeRates = useCallback(async () => {
+    request.current?.abort();
+    const controller = new AbortController();
+    request.current = controller;
     setRatesLoading(true);
+    setExchangeRates(null);
+    setLastUpdated(null);
+    setRateError("");
+    const timer = setTimeout(() => controller.abort(), 15000);
     try {
-      const response = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
-      if (!response.ok) throw new Error("Failed to fetch rates");
-      
-      const data = await response.json();
-      const validatedRates = validateExchangeRates(data);
-      
-      if (!validatedRates) {
-        throw new Error("Invalid API response structure");
-      }
-      
-      setExchangeRates(validatedRates);
-      setLastUpdated(new Date().toLocaleString());
-      toast.success("Exchange rates updated");
-    } catch (error) {
-      console.error("Error fetching exchange rates:", error);
-      toast.error("Failed to fetch live rates. Using cached rates.");
-      // Fallback to static rates if API fails
-      setExchangeRates({
-        USD: 1, EUR: 0.92, GBP: 0.79, JPY: 149.50, INR: 83.12,
-        AUD: 1.53, CAD: 1.36, CHF: 0.88, CNY: 7.24, AED: 3.67,
-        SGD: 1.34, MXN: 17.15, BRL: 4.97, KRW: 1298.50, RUB: 89.50,
-      });
+      const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD', { signal: controller.signal });
+      if (!response.ok) throw new Error('Rate provider unavailable');
+      const data = parseRates(await response.json());
+      if (request.current !== controller) return;
+      setExchangeRates(data.rates);
+      setLastUpdated(data.date);
+    } catch {
+      if (request.current === controller) setRateError('Exchange rates are unavailable. Retry to fetch provider rates; no fallback rates are used.');
     } finally {
-      setRatesLoading(false);
+      clearTimeout(timer);
+      if (request.current === controller) setRatesLoading(false);
     }
   }, []);
-
   useEffect(() => {
-    fetchExchangeRates();
+    void fetchExchangeRates();
+    return () => { const pending = request.current; request.current = null; pending?.abort(); };
   }, [fetchExchangeRates]);
-
-  const convert = useCallback(() => {
-    if (!exchangeRates) return;
-    
-    const numAmount = parseFloat(amount);
-    if (isNaN(numAmount) || numAmount <= 0) {
-      toast.error("Please enter a valid amount");
-      return;
-    }
-
-    setIsLoading(true);
-
-    setTimeout(() => {
-      const fromRate = exchangeRates[fromCurrency] || 1;
-      const toRate = exchangeRates[toCurrency] || 1;
-      const converted = (numAmount / fromRate) * toRate;
-      setResult(converted);
-      setIsLoading(false);
-    }, 100);
-  }, [amount, fromCurrency, toCurrency, exchangeRates]);
+  const result = convertAmount(amount, fromCurrency, toCurrency, exchangeRates);
+  const convert = () => { if (result === null) toast.error('Enter a finite non-negative amount and choose currencies with available rates.'); };
 
   const swapCurrencies = () => {
     setFromCurrency(toCurrency);
     setToCurrency(fromCurrency);
-    setResult(null);
-  };
 
-  useEffect(() => {
-    if (amount && parseFloat(amount) > 0 && exchangeRates) {
-      convert();
-    }
-  }, [fromCurrency, toCurrency, exchangeRates, convert]);
+  };
 
   const getCurrencySymbol = (code: string) => {
     return currencies.find((c) => c.code === code)?.symbol || code;
   };
 
   const getExchangeRate = () => {
-    if (!exchangeRates) return "Loading...";
-    const fromRate = exchangeRates[fromCurrency] || 1;
-    const toRate = exchangeRates[toCurrency] || 1;
-    return ((1 / fromRate) * toRate).toFixed(4);
+    const rate = convertAmount('1', fromCurrency, toCurrency, exchangeRates);
+    return rate === null ? 'Unavailable' : rate.toFixed(4);
   };
 
   return (
     <>
       <CanonicalHead
         title="Currency Converter Free Online - Exchange Rates | VexaTool"
-        description="Free currency converter with real-time exchange rates. Convert between USD, EUR, GBP, and 15+ world currencies."
+        description="Free currency converter with provider-published exchange rates. Convert between USD, EUR, GBP, and 15+ world currencies."
         keywords="currency converter, exchange rate, money converter, forex, USD to EUR, free currency calculator"
       />
       <ToolLayout
         title="Currency Converter"
-        description="Convert between world currencies with real-time exchange rates"
+        description="Convert between world currencies with provider-published exchange rates"
         icon={Coins}
         colorClass="bg-emerald-500"
       >
       <div className="max-w-xl mx-auto space-y-6">
+        {rateError && <p role="alert" className="text-destructive">{rateError}</p>}
+        {!ratesLoading && exchangeRates && result === null && <p role="status">Enter a valid amount and select currencies with available rates.</p>}
         <div className="bg-card border border-border rounded-2xl p-6">
           <div className="space-y-4">
             <div>
@@ -174,7 +116,7 @@ const CurrencyConverter = () => {
               />
             </div>
 
-            <div className="grid grid-cols-[1fr,auto,1fr] gap-4 items-end">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4 items-end">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   From
@@ -196,7 +138,7 @@ const CurrencyConverter = () => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={swapCurrencies}
+                aria-label="Swap currencies" onClick={swapCurrencies}
                 className="mb-0.5"
               >
                 <ArrowRightLeft className="w-4 h-4" />
@@ -222,15 +164,8 @@ const CurrencyConverter = () => {
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={convert} className="flex-1" disabled={isLoading || ratesLoading}>
-                {isLoading ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                    Converting...
-                  </>
-                ) : (
-                  "Convert"
-                )}
+              <Button onClick={convert} className="flex-1" disabled={ratesLoading || result === null}>
+                Convert
               </Button>
               <Button 
                 variant="outline" 
@@ -260,10 +195,10 @@ const CurrencyConverter = () => {
 
         <div className="bg-muted/50 rounded-xl p-4">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="font-medium text-foreground">Live Exchange Rate</h4>
+            <h4 className="font-medium text-foreground">Reference Exchange Rate</h4>
             {lastUpdated && (
               <span className="text-xs text-muted-foreground">
-                Updated: {lastUpdated}
+                Provider date: {lastUpdated}
               </span>
             )}
           </div>
@@ -271,7 +206,7 @@ const CurrencyConverter = () => {
             1 {fromCurrency} = {getExchangeRate()} {toCurrency}
           </p>
           <p className="text-xs text-muted-foreground mt-2">
-            * Live rates from ExchangeRate-API. Refresh for latest prices.
+            Reference rates from ExchangeRate-API for the provider date shown. Bank rates and fees may differ.
           </p>
         </div>
 
@@ -292,11 +227,11 @@ const CurrencyConverter = () => {
             "Instant calculations with no delays.",
             "Free to use with no registration required."
           ]}
-          safetyNote="All conversions are calculated locally in your browser. No personal or financial data is transmitted or stored. Live exchange rates are fetched from a trusted API source."
+          safetyNote="All conversions are calculated locally in your browser. No personal or financial data is transmitted or stored. Reference exchange rates are requested from ExchangeRate-API; entered amounts are not included in that request."
           faqs={[
             {
               question: "Are these exchange rates live?",
-              answer: "Yes! We fetch live exchange rates from ExchangeRate-API. You can click the refresh button to get the latest rates anytime."
+              answer: "These are provider-published reference rates, not a real-time market feed. Check the provider date. If retrieval fails, conversion is unavailable until a successful refresh."
             },
             {
               question: "Why do exchange rates change?",

@@ -12,7 +12,7 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | CompressImage | Pending — real-input/output verification not completed |
 | CompressPDF | Pending — real-input/output verification not completed |
 | ConvertPDF | Pending — real-input/output verification not completed |
-| CurrencyConverter | Pending — real-input/output verification not completed |
+| CurrencyConverter | Draft fix: no hardcoded fallback, missing-rate rejection and amount/date tests; browser/API integration pending |
 | EMICalculator | Pending — real-input/output verification not completed |
 | EditPDF | Pending — real-input/output verification not completed |
 | ExcelToPDF | Pending — real-input/output verification not completed |
@@ -60,3 +60,7 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 Rejects legacy PPT, corrupt archives, missing presentation/slides, malformed slide XML and archives without supported content. Removes placeholder success paths; decodes text XML with DOMParser. Seven new extraction tests pass. UI states that output is simplified and may omit layout/content. Full renderer fidelity, slide ordering from presentation relationships, overflow/multiple-image layout and broad real-world files remain unverified.
 
 Browser validation is blocked by invalid/truncated Playwright Chromium downloads, including a second attempt with an older browser build. No claim of mobile/desktop completion is made.
+
+## Currency converter repair
+
+Removed hardcoded rates mislabeled as cached. Retrieval failure clears results and shows unavailable. Provider date replaces local fetch time; missing currencies never default to 1. Amount changes calculate synchronously without stale timeout results; empty/nonfinite/negative amounts are rejected, zero allowed. Request timeout and unmount/refresh cancellation added. Pure parser/conversion tests pass; live API and browser integration remain pending.

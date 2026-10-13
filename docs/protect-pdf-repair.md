@@ -1,3 +1,5 @@
+> Update 2026-10-13: Core browser encryption/download and independent output checks now pass at 390px and 1440px. See browser-validation.md for exact coverage and remaining checks.
+
 # Protect PDF repair — draft, not approved for production
 
 The previous implementation saved an unencrypted PDF with metadata and called it protected. This change encrypts the original bytes with qpdf 12.2.0 through pinned @neslinesli93/qpdf-wasm 0.3.0. The engine and WASM are bundled locally, and a disposable worker is terminated on completion, cancellation or timeout.

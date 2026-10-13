@@ -1,3 +1,5 @@
+> Update 2026-10-13: Browser blocker resolved. Six repaired tools passed selected core flows at 390px and 1440px; see [browser-validation.md](browser-validation.md). Earlier pending statements below describe previous checkpoints; wider cases remain pending.
+
 # Tool validation status
 
 Changes are in a draft branch, not deployed. Automated test counts do not imply all tools work.

@@ -1,0 +1,18 @@
+[
+  {
+    "width": 390,
+    "encrypted": true,
+    "noPasswordRejected": true,
+    "wrongPasswordRejected": true,
+    "correctPasswordTextPreserved": true,
+    "pptTextPreserved": true
+  },
+  {
+    "width": 1440,
+    "encrypted": true,
+    "noPasswordRejected": true,
+    "wrongPasswordRejected": true,
+    "correctPasswordTextPreserved": true,
+    "pptTextPreserved": true
+  }
+]

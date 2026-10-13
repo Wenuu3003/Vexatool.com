@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Layers, Download, AlertTriangle, CheckCircle } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
@@ -23,7 +23,11 @@ const MergePDF = () => {
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
 
+  const validationId = useRef(0);
+
   const handleFilesChange = useCallback(async (newFiles: File[]) => {
+    const id = ++validationId.current;
+    setFileStatuses([]);
     setFiles(newFiles);
     
     // Pre-validate each file
@@ -44,7 +48,7 @@ const MergePDF = () => {
           continue;
         }
 
-        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+        const pdf = await PDFDocument.load(arrayBuffer);
         statuses.push({
           name: file.name,
           pages: pdf.getPageCount(),
@@ -64,7 +68,7 @@ const MergePDF = () => {
         });
       }
     }
-    setFileStatuses(statuses);
+    if (id === validationId.current) setFileStatuses(statuses);
   }, []);
 
   const readyCount = fileStatuses.filter((s) => s.status === "ready").length;
@@ -72,10 +76,10 @@ const MergePDF = () => {
   const totalPages = fileStatuses.reduce((sum, s) => sum + s.pages, 0);
 
   const handleMerge = async () => {
-    if (readyCount < 2) {
+    if (readyCount < 2 || hasErrors || fileStatuses.length !== files.length) {
       toast({
         title: "Not enough valid files",
-        description: "At least 2 readable PDF files are needed to merge.",
+        description: "Select at least 2 readable PDFs and remove any invalid or encrypted files.",
         variant: "destructive",
       });
       return;
@@ -91,12 +95,12 @@ const MergePDF = () => {
 
       for (let i = 0; i < files.length; i++) {
         const status = fileStatuses[i];
-        if (status.status !== "ready") continue;
+        if (!status || status.status !== "ready") throw new Error("Invalid file selection");
 
         setProgressLabel(`Processing "${files[i].name}" (${processedFiles + 1}/${readyCount})…`);
 
         const arrayBuffer = await files[i].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+        const pdf = await PDFDocument.load(arrayBuffer);
         const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
         copiedPages.forEach((page) => mergedPdf.addPage(page));
 

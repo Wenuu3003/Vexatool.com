@@ -29,7 +29,7 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | ImageToPDF | Pending — real-input/output verification not completed |
 | JPGToPDF | Pending — real-input/output verification not completed |
 | LoveCalculator | Pending — real-input/output verification not completed |
-| MergePDF | Pending — real-input/output verification not completed |
+| MergePDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
 | OrganizePDF | Pending — real-input/output verification not completed |
 | PDFToExcel | Pending — real-input/output verification not completed |
 | PDFToHTML | Pending — real-input/output verification not completed |
@@ -46,9 +46,9 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | QRCodeGenerator | Pending — real-input/output verification not completed |
 | QRCodeScanner | Pending — real-input/output verification not completed |
 | RepairPDF | Pending — real-input/output verification not completed |
-| RotatePDF | Pending — real-input/output verification not completed |
+| RotatePDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
 | SignPDF | Pending — real-input/output verification not completed |
-| SplitPDF | Pending — real-input/output verification not completed |
+| SplitPDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
 | UnitConverter | Pending — real-input/output verification not completed |
 | UnlockPDF | Pending — real-input/output verification not completed |
 | WatermarkPDF | Pending — real-input/output verification not completed |
@@ -70,3 +70,9 @@ Removed hardcoded rates mislabeled as cached. Retrieval failure clears results a
 ## Calculator batch
 
 Percentage, GST and EMI now clear results when inputs change or a calculation fails, and reject nonfinite/overflow calculations. EMI caps tenure at 1200 whole months to prevent an unbounded schedule and uses a numerically stable formula. Six actual React component tests cover 63% of 21500, overflow, GST 18% amount/supply changes, cleared inputs, zero-interest EMI and 12% EMI. These checks validate calculations for selected inputs only, not current tax-rate policy or full end-to-end/browser behavior.
+
+## Merge / Split / Rotate batch — 2026-10-13
+
+Reject encrypted PDFs instead of bypassing encryption checks. Merge clears stale validation and refuses selections containing invalid files. Split rejects malformed/out-of-range requests rather than silently clipping/skipping pages, resets range on new selection and ignores stale validation responses. Rotation normalizes angles.
+
+170 automated tests and production build passed. Browser checks at 390px and 1440px: merge downloads, encrypted merge rejection, split pages 1/3, invalid-range error without download, rotate download, encrypted rotate rejection. No page-wide overflow or uncaught page errors. pypdf independently verified both sizes: merge has four pages in correct order, split has pages 1 and 3, rotated PDF has all three pages rotated 90 degrees with text preserved. Complex files and full visual/accessibility coverage remain pending. Nine tools now have selected browser core-flow coverage; the other 41 remain pending. No merge or publish.

@@ -1,3 +1,5 @@
+> Image PDF batch, 2026-10-13: 12 of 50 tools now have selected core flows validated; 38 remain. 172 automated tests pass. Draft only. ImageToPDF decoder now rejects corrupt/unsupported input with cleanup and a 15-second load timeout. Browser fixtures: JPEG, PNG, WebP; animations, very large images, EXIF orientation, transparency and other browser engines remain unverified. See image-pdf-browser-results.json and image-pdf-output-results.json.
+
 > Update 2026-10-13: Browser blocker resolved. Six repaired tools passed selected core flows at 390px and 1440px; see [browser-validation.md](browser-validation.md). Earlier pending statements below describe previous checkpoints; wider cases remain pending.
 
 # Tool validation status
@@ -26,8 +28,8 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | HTMLToPDF | Pending — real-input/output verification not completed |
 | ImageFormatConverter | Pending — real-input/output verification not completed |
 | ImageResizer | Pending — real-input/output verification not completed |
-| ImageToPDF | Pending — real-input/output verification not completed |
-| JPGToPDF | Pending — real-input/output verification not completed |
+| ImageToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
+| JPGToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | LoveCalculator | Pending — real-input/output verification not completed |
 | MergePDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
 | OrganizePDF | Pending — real-input/output verification not completed |
@@ -37,7 +39,7 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | PDFToJPG | Pending — real-input/output verification not completed |
 | PDFToPNG | Pending — real-input/output verification not completed |
 | PDFToPowerPoint | Pending — real-input/output verification not completed |
-| PNGToPDF | Pending — real-input/output verification not completed |
+| PNGToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | PPTToPDF | Draft false-success fix; extraction tests passed; faithful layout conversion unsupported |
 | PassportPhotoResizer | Pending — real-input/output verification not completed |
 | PercentageCalculator | Draft numeric/stale-result fixes; component input/output tests passed; browser and wider cases pending |

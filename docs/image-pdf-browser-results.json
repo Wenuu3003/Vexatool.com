@@ -1,0 +1,50 @@
+[
+  {
+    "tool": "image-to-pdf",
+    "width": 390,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "jpg-to-pdf",
+    "width": 390,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "png-to-pdf",
+    "width": 390,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "image-to-pdf",
+    "width": 1440,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "jpg-to-pdf",
+    "width": 1440,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "png-to-pdf",
+    "width": 1440,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  }
+]

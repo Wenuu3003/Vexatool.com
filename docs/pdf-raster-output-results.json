@@ -1,0 +1,58 @@
+[
+  {
+    "tool": "pdf-to-image",
+    "width": 390,
+    "format": "png",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  },
+  {
+    "tool": "pdf-to-image",
+    "width": 390,
+    "format": "jpg",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  },
+  {
+    "tool": "pdf-to-jpg",
+    "width": 390,
+    "format": "jpg",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  },
+  {
+    "tool": "pdf-to-png",
+    "width": 390,
+    "format": "png",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  },
+  {
+    "tool": "pdf-to-image",
+    "width": 1440,
+    "format": "png",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  },
+  {
+    "tool": "pdf-to-image",
+    "width": 1440,
+    "format": "jpg",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  },
+  {
+    "tool": "pdf-to-jpg",
+    "width": 1440,
+    "format": "jpg",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  },
+  {
+    "tool": "pdf-to-png",
+    "width": 1440,
+    "format": "png",
+    "pages": 2,
+    "dimensionsAndColorsVerified": true
+  }
+]

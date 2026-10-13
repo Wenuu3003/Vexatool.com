@@ -17,6 +17,7 @@ const PDFToImage = () => {
   const [progress, setProgress] = useState(0);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isProcessing) return;
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       if (selectedFile.type === "application/pdf" || selectedFile.name.toLowerCase().endsWith(".pdf")) {
@@ -24,6 +25,9 @@ const PDFToImage = () => {
         setImages([]);
         setProgress(0);
       } else {
+        setFile(null);
+        setImages([]);
+        setProgress(0);
         toast({ title: "Invalid file type", description: "Please select a PDF file", variant: "destructive" });
       }
     }
@@ -39,9 +43,11 @@ const PDFToImage = () => {
     setImages([]);
     setProgress(0);
 
+    let loadingTask: ReturnType<typeof pdfjsLib.getDocument> | undefined;
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) }).promise;
+      loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBuffer) });
+      const pdf = await loadingTask.promise;
       const generatedImages: string[] = [];
       const scale = 2;
 
@@ -68,10 +74,11 @@ const PDFToImage = () => {
       const msg = error instanceof Error ? error.message : "";
       toast({
         title: "Conversion failed",
-        description: msg.includes("password") ? "This PDF is password-protected. Unlock it first." : "Failed to convert PDF. The file may be corrupted.",
+        description: msg.toLowerCase().includes("password") ? "This PDF is password-protected. Unlock it first." : "Failed to convert PDF. The file may be corrupted.",
         variant: "destructive",
       });
     } finally {
+      await loadingTask?.destroy().catch(() => undefined);
       setIsProcessing(false);
     }
   };
@@ -79,7 +86,7 @@ const PDFToImage = () => {
   const downloadImage = (imageUrl: string, index: number) => {
     const link = document.createElement("a");
     link.href = imageUrl;
-    link.download = `${file?.name.replace(".pdf", "")}_page_${index + 1}.${format}`;
+    link.download = `${file?.name.replace(/\.pdf$/i, "")}_page_${index + 1}.${format}`;
     link.click();
   };
 
@@ -123,7 +130,7 @@ const PDFToImage = () => {
         <div className="space-y-6">
           <div className="flex items-center justify-center gap-4">
             <span className="text-sm font-medium">Output format:</span>
-            <Select value={format} onValueChange={(v) => setFormat(v as "png" | "jpg")}>
+            <Select disabled={isProcessing} value={format} onValueChange={(v) => { setFormat(v as "png" | "jpg"); setImages([]); setProgress(0); }}>
               <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="png">PNG</SelectItem>
@@ -133,7 +140,7 @@ const PDFToImage = () => {
           </div>
 
           <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
-            <input type="file" accept="application/pdf" onChange={handleFileChange} className="hidden" id="pdf-image-upload" />
+            <input type="file" disabled={isProcessing} accept="application/pdf" onChange={handleFileChange} className="hidden" id="pdf-image-upload" />
             <label htmlFor="pdf-image-upload" className="cursor-pointer">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-purple-500/10 flex items-center justify-center">
                 <FileUp className="w-8 h-8 text-purple-500" />
@@ -152,7 +159,7 @@ const PDFToImage = () => {
                   <p className="text-sm text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => { setFile(null); setImages([]); }}>Remove</Button>
+              <Button variant="ghost" size="sm" disabled={isProcessing} onClick={() => { setFile(null); setImages([]); }}>Remove</Button>
             </div>
           )}
 
@@ -181,7 +188,7 @@ const PDFToImage = () => {
                 {images.map((img, index) => (
                   <div key={index} className="relative group border border-border rounded-lg overflow-hidden">
                     <img src={img} alt={`Page ${index + 1}`} className="w-full h-40 object-contain bg-muted" loading="lazy" decoding="async" />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/50 opacity-100 md:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition-opacity flex items-center justify-center">
                       <Button size="sm" variant="secondary" onClick={() => downloadImage(img, index)}>
                         <Download className="w-4 h-4 mr-1" />Page {index + 1}
                       </Button>

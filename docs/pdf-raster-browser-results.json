@@ -1,0 +1,56 @@
+[
+  {
+    "tool": "pdf-to-image",
+    "width": 390,
+    "validTwoPages": true,
+    "corruptAndProtectedRejected": true,
+    "formatSwitchClearsOutput": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "pdf-to-jpg",
+    "width": 390,
+    "validTwoPages": true,
+    "corruptAndProtectedRejected": true,
+    "formatSwitchClearsOutput": null,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "pdf-to-png",
+    "width": 390,
+    "validTwoPages": true,
+    "corruptAndProtectedRejected": true,
+    "formatSwitchClearsOutput": null,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "pdf-to-image",
+    "width": 1440,
+    "validTwoPages": true,
+    "corruptAndProtectedRejected": true,
+    "formatSwitchClearsOutput": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "pdf-to-jpg",
+    "width": 1440,
+    "validTwoPages": true,
+    "corruptAndProtectedRejected": true,
+    "formatSwitchClearsOutput": null,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "pdf-to-png",
+    "width": 1440,
+    "validTwoPages": true,
+    "corruptAndProtectedRejected": true,
+    "formatSwitchClearsOutput": null,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  }
+]

@@ -1,3 +1,5 @@
+> PDF raster batch, 2026-10-13: 15/50 tools have selected core flows validated; 35 remain. Fixed stale format output, conversion input mutation, PDF task cleanup and mobile download-button visibility. PNG copy now states white background. See pdf-raster-browser-results.json and pdf-raster-output-results.json. Fixtures contain solid page graphics; complex fonts, transparency, huge documents, bulk-download browser restrictions and non-Chromium engines remain unverified. Draft only.
+
 > Image PDF batch, 2026-10-13: 12 of 50 tools now have selected core flows validated; 38 remain. 172 automated tests pass. Draft only. ImageToPDF decoder now rejects corrupt/unsupported input with cleanup and a 15-second load timeout. Browser fixtures: JPEG, PNG, WebP; animations, very large images, EXIF orientation, transparency and other browser engines remain unverified. See image-pdf-browser-results.json and image-pdf-output-results.json.
 
 > Update 2026-10-13: Browser blocker resolved. Six repaired tools passed selected core flows at 390px and 1440px; see [browser-validation.md](browser-validation.md). Earlier pending statements below describe previous checkpoints; wider cases remain pending.
@@ -35,9 +37,9 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | OrganizePDF | Pending — real-input/output verification not completed |
 | PDFToExcel | Pending — real-input/output verification not completed |
 | PDFToHTML | Pending — real-input/output verification not completed |
-| PDFToImage | Pending — real-input/output verification not completed |
-| PDFToJPG | Pending — real-input/output verification not completed |
-| PDFToPNG | Pending — real-input/output verification not completed |
+| PDFToImage | Selected 390/1440px browser flows passed: two-page rendering/download, corrupt and protected input rejection; image format, pixel dimensions and colors verified |
+| PDFToJPG | Selected 390/1440px browser flows passed: two-page rendering/download, corrupt and protected input rejection; image format, pixel dimensions and colors verified |
+| PDFToPNG | Selected 390/1440px browser flows passed: two-page rendering/download, corrupt and protected input rejection; image format, pixel dimensions and colors verified |
 | PDFToPowerPoint | Pending — real-input/output verification not completed |
 | PNGToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | PPTToPDF | Draft false-success fix; extraction tests passed; faithful layout conversion unsupported |

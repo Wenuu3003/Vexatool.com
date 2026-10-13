@@ -67,7 +67,9 @@ export default function ImageFormatConverter() {
   }, [toast]);
 
   const removeImage = (index: number) => {
+    URL.revokeObjectURL(images[index].preview);
     setImages((prev) => prev.filter((_, i) => i !== index));
+    setConvertedImages([]);
   };
 
   const handleConvert = async () => {
@@ -106,6 +108,8 @@ export default function ImageFormatConverter() {
 
         const dataUrl = canvas.toDataURL(targetFormat, quality / 100);
         
+        if (!dataUrl.startsWith(`data:${targetFormat};`)) throw new Error("Output format is unsupported by this browser");
+
         // Calculate approximate size
         const base64Length = dataUrl.split(",")[1].length;
         const sizeInBytes = Math.round((base64Length * 3) / 4);
@@ -317,7 +321,7 @@ export default function ImageFormatConverter() {
                           {formats.find((f) => f.value === img.format)?.label}
                         </p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={() => downloadOne(img, index)}>
+                      <Button aria-label={`Download image ${index + 1}`} variant="outline" size="sm" onClick={() => downloadOne(img, index)}>
                         <Download className="h-4 w-4" />
                       </Button>
                     </div>

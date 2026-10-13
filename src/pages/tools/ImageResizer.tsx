@@ -186,6 +186,12 @@ export default function ImageResizer() {
       setResized(null);
       setActiveQuickKB(null);
     };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      setImage(null);
+      setResized(null);
+      toast({ title: "Invalid image", description: "The image is corrupt or unsupported.", variant: "destructive" });
+    };
     img.src = url;
   }, [toast]);
 
@@ -213,14 +219,14 @@ export default function ImageResizer() {
   };
 
   const handleWidthChange = (value: string) => {
-    const newWidth = parseInt(value) || 1;
+    const newWidth = Number(value);
     setWidth(newWidth);
     if (maintainRatio && image) setHeight(Math.round(newWidth / aspectRatioRef.current));
     setPreset("custom");
   };
 
   const handleHeightChange = (value: string) => {
-    const newHeight = parseInt(value) || 1;
+    const newHeight = Number(value);
     setHeight(newHeight);
     if (maintainRatio && image) setWidth(Math.round(newHeight * aspectRatioRef.current));
     setPreset("custom");
@@ -333,6 +339,11 @@ export default function ImageResizer() {
 
   const handleResize = async () => {
     if (!image) return;
+    setResized(null);
+    if (![width, height].every(n => Number.isInteger(n) && n >= 1 && n <= 10000) || width * height > 25000000) {
+      toast({ title: "Invalid dimensions", description: "Use whole numbers from 1 to 10000, with at most 25 million pixels.", variant: "destructive" });
+      return;
+    }
     setIsProcessing(true);
     setProgress(0);
     setProgressLabel("Resizing…");
@@ -343,6 +354,8 @@ export default function ImageResizer() {
       canvas.height = height;
       const ctx = canvas.getContext("2d")!;
       const img = await loadImg();
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, width, height);
       ctx.drawImage(img, 0, 0, width, height);
       const dataUrl = canvas.toDataURL("image/jpeg", quality / 100);
       const sizeKB = Math.round((dataUrl.length - 22) * 0.75 / 1024);

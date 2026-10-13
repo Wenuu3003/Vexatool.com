@@ -1,3 +1,5 @@
+> Image editing batch, 2026-10-13: 18/50 tools have selected core workflows tested; 32 remain. ImageResizer now rejects corrupt input and invalid/oversized dimensions, clears previous output before resize, and uses white JPEG background. Format Converter checks actual output MIME and clears results when removing an input. Added accessible download labels. Browser tests covered 32×24 resize, invalid dimensions, JPEG/PNG/WebP conversion, basic compression and corrupt rejection at 390/1440px. Ten downloads independently decoded. Special resize modes, target-KB guarantees, transparency/EXIF and large files remain unverified. 172 tests/build/typecheck pass. Draft only.
+
 > PDF raster batch, 2026-10-13: 15/50 tools have selected core flows validated; 35 remain. Fixed stale format output, conversion input mutation, PDF task cleanup and mobile download-button visibility. PNG copy now states white background. See pdf-raster-browser-results.json and pdf-raster-output-results.json. Fixtures contain solid page graphics; complex fonts, transparency, huge documents, bulk-download browser restrictions and non-Chromium engines remain unverified. Draft only.
 
 > Image PDF batch, 2026-10-13: 12 of 50 tools now have selected core flows validated; 38 remain. 172 automated tests pass. Draft only. ImageToPDF decoder now rejects corrupt/unsupported input with cleanup and a 15-second load timeout. Browser fixtures: JPEG, PNG, WebP; animations, very large images, EXIF orientation, transparency and other browser engines remain unverified. See image-pdf-browser-results.json and image-pdf-output-results.json.
@@ -15,7 +17,7 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | BMICalculator | Pending — real-input/output verification not completed |
 | BackgroundRemover | Pending — real-input/output verification not completed |
 | Calculator | Pending — real-input/output verification not completed |
-| CompressImage | Pending — real-input/output verification not completed |
+| CompressImage | Selected browser flows passed at 390/1440px: valid output and corrupt rejection; downloaded format, dimensions and color independently verified |
 | CompressPDF | Pending — real-input/output verification not completed |
 | ConvertPDF | Pending — real-input/output verification not completed |
 | CurrencyConverter | Draft fix: no hardcoded fallback, missing-rate rejection and amount/date tests; browser/API integration pending |
@@ -28,8 +30,8 @@ Changes are in a draft branch, not deployed. Automated test counts do not imply 
 | GoogleDriveToPDF | Pending — real-input/output verification not completed |
 | GovtJobPhotoResizer | Pending — real-input/output verification not completed |
 | HTMLToPDF | Pending — real-input/output verification not completed |
-| ImageFormatConverter | Pending — real-input/output verification not completed |
-| ImageResizer | Pending — real-input/output verification not completed |
+| ImageFormatConverter | Selected browser flows passed at 390/1440px: valid output and corrupt rejection; downloaded format, dimensions and color independently verified |
+| ImageResizer | Selected browser flows passed at 390/1440px: valid output and corrupt rejection; downloaded format, dimensions and color independently verified |
 | ImageToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | JPGToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | LoveCalculator | Pending — real-input/output verification not completed |

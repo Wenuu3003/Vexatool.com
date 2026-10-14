@@ -42,7 +42,7 @@ const FileCompressor = () => {
 
   const compressPDF = async (file: File): Promise<Blob> => {
     const arrayBuffer = await file.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+    const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
     
     // Remove metadata
     pdfDoc.setTitle('');

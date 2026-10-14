@@ -1,0 +1,370 @@
+[
+  {
+    "file": "out-UnlockPDF-390-unlocked_protected-390.pdf",
+    "pagesOrSlides": 1,
+    "fixtureText": false,
+    "textSample": ""
+  },
+  {
+    "file": "out-FileCompressor-390-compressed_fixture.pdf",
+    "pagesOrSlides": 2,
+    "fixtureText": true,
+    "textSample": "Vexa fixture alpha\nName\nValue\nAlpha\n42\n Second page beta\n"
+  },
+  {
+    "file": "out-ConvertPDF-390-fixture.docx",
+    "pagesOrSlides": null,
+    "fixtureText": true,
+    "textSample": "fixture Converted from PDF \u2022 2 page(s) Vexa fixture alpha Name  Value Alpha  42 \u2014 Page 2 \u2014 Second page beta "
+  },
+  {
+    "file": "out-PDFToHTML-390-fixture.html",
+    "pagesOrSlides": null,
+    "fixtureText": true,
+    "textSample": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>untitle"
+  },
+  {
+    "file": "out-ExcelToWord-390-fixture.docx",
+    "pagesOrSlides": null,
+    "fixtureText": true,
+    "textSample": "fixture  Name Value Alpha 42"
+  },
+  {
+    "file": "out-WordToPDF-390-fixture.pdf",
+    "pagesOrSlides": 1,
+    "fixtureText": true,
+    "textSample": "fixture\nVexa fixture alpha\nName\nValue\nAlpha\n42\nPage 1\n"
+  },
+  {
+    "file": "out-PDFToPowerPoint-390-fixture_slides.zip",
+    "pagesOrSlides": 2,
+    "fixtureText": false,
+    "textSample": "['HOW_TO_USE.txt', 'fixture_slide_001.jpg', 'fixture_slide_002.jpg']"
+  },
+  {
+    "file": "out-CompressPDF-390-compressed_fixture.pdf",
+    "pagesOrSlides": 2,
+    "fixtureText": true,
+    "textSample": "Vexa fixture alpha\nName\nValue\nAlpha\n42\n Second page beta\n"
+  },
+  {
+    "file": "out-WatermarkPDF-390-watermarked.pdf",
+    "pagesOrSlides": 2,
+    "fixtureText": true,
+    "textSample": "Vexa fixture alpha\nName\nValue\nAlpha\n42\nVEXA TEST\n Second page beta\nVEXA TEST\n"
+  },
+  {
+    "file": "out-RepairPDF-390-repaired_fixture.pdf",
+    "pagesOrSlides": 2,
+    "fixtureText": true,
+    "textSample": "Vexa fixture alpha\nName\nValue\nAlpha\n42\n Second page beta\n"
+  },
+  {
+    "file": "out-WordToExcel-390-fixture.xlsx",
+    "pagesOrSlides": null,
+    "fixtureText": true,
+    "textSample": "Name Value Alpha 42 Vexa fixture alpha"
+  },
+  {
+    "file": "out-PDFToExcel-390-fixture.xlsx",
+    "pagesOrSlides": null,
+    "fixtureText": true,
+    "textSample": "Alpha 42 Name Value Vexa fixture alpha  Second page beta"
+  },
+  {
+    "file": "out-OrganizePDF-390-organized.pdf",
+    "pagesOrSlides": 2,
+    "fixtureText": true,
+    "textSample": "Vexa fixture alpha\nName\nValue\nAlpha\n42\n Second page beta\n"
+  },
+  {
+    "file": "out-ExcelToPDF-390-fixture.pdf",
+    "pagesOrSlides": 1,
+    "fixtureText": true,
+    "textSample": "Sheet\nName\nValue\nAlpha\n42\n"
+  },
+  {
+    "file": "out-HTMLToPDF-390-converted-document.pdf",
+    "pagesOrSlides": 1,
+    "fixtureText": true,
+    "textSample": "Vexa fixture alpha\nSecond line beta"
+  },
+  {
+    "tool": "AadhaarPhotoResizer",
+    "width": 390,
+    "dimensions": [
+      200,
+      200
+    ],
+    "bytes": 1016,
+    "under20KB": true
+  },
+  {
+    "tool": "GovtJobPhotoResizer",
+    "width": 390,
+    "dimensions": [
+      413,
+      531
+    ],
+    "bytes": 2088,
+    "under20KB": true
+  },
+  {
+    "tool": "PassportPhotoResizer",
+    "width": 390,
+    "dimensions": [
+      600,
+      600
+    ],
+    "bytes": 2928,
+    "under20KB": true
+  },
+  {
+    "tool": "WhatsAppDPResizer",
+    "width": 390,
+    "dimensions": [
+      192,
+      192
+    ],
+    "bytes": 978,
+    "under20KB": true
+  },
+  {
+    "tool": "EditPDF",
+    "width": 390,
+    "pages": 2,
+    "textPreserved": true,
+    "scope": "unmodified export only"
+  },
+  {
+    "tool": "AadhaarPhotoResizer",
+    "width": 1440,
+    "dimensions": [
+      200,
+      200
+    ],
+    "bytes": 1016,
+    "under20KB": true
+  },
+  {
+    "tool": "GovtJobPhotoResizer",
+    "width": 1440,
+    "dimensions": [
+      413,
+      531
+    ],
+    "bytes": 2088,
+    "under20KB": true
+  },
+  {
+    "tool": "PassportPhotoResizer",
+    "width": 1440,
+    "dimensions": [
+      600,
+      600
+    ],
+    "bytes": 2928,
+    "under20KB": true
+  },
+  {
+    "tool": "WhatsAppDPResizer",
+    "width": 1440,
+    "dimensions": [
+      192,
+      192
+    ],
+    "bytes": 978,
+    "under20KB": true
+  },
+  {
+    "tool": "EditPDF",
+    "width": 1440,
+    "pages": 2,
+    "textPreserved": true,
+    "scope": "unmodified export only"
+  },
+  {
+    "tool": "SignPDF",
+    "width": 390,
+    "pages": 2,
+    "originalTextRetained": true,
+    "signatureImageEmbedded": true
+  },
+  {
+    "tool": "UnlockPDF",
+    "width": 390,
+    "pages": 1,
+    "rasterMeanPixelDifference": 0.1326479778093067,
+    "selectableTextPreserved": false
+  },
+  {
+    "tool": "SignPDF",
+    "width": 1440,
+    "pages": 2,
+    "originalTextRetained": true,
+    "signatureImageEmbedded": true
+  },
+  {
+    "tool": "UnlockPDF",
+    "width": 1440,
+    "pages": 1,
+    "rasterMeanPixelDifference": 0.1326479778093067,
+    "selectableTextPreserved": false
+  },
+  {
+    "tool": "FileCompressor",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "ConvertPDF",
+    "width": 390,
+    "format": "docx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "ExcelToWord",
+    "width": 390,
+    "format": "docx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "WordToPDF",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "CompressPDF",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "WatermarkPDF",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "RepairPDF",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "WordToExcel",
+    "width": 390,
+    "format": "xlsx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "PDFToExcel",
+    "width": 390,
+    "format": "xlsx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "OrganizePDF",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "ExcelToPDF",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "HTMLToPDF",
+    "width": 390,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "PDFToHTML",
+    "width": 390,
+    "format": "html",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "FileCompressor",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "ConvertPDF",
+    "width": 1440,
+    "format": "docx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "ExcelToWord",
+    "width": 1440,
+    "format": "docx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "WordToPDF",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "CompressPDF",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "WatermarkPDF",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "RepairPDF",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "WordToExcel",
+    "width": 1440,
+    "format": "xlsx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "PDFToExcel",
+    "width": 1440,
+    "format": "xlsx",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "OrganizePDF",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "ExcelToPDF",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "HTMLToPDF",
+    "width": 1440,
+    "format": "pdf",
+    "fixtureTextRetained": true
+  },
+  {
+    "tool": "PDFToHTML",
+    "width": 1440,
+    "format": "html",
+    "fixtureTextRetained": true
+  }
+]

@@ -1,3 +1,4 @@
+import { PDFDocument } from "pdf-lib";
 import { useMemo, useState } from "react";
 import { FileDown, Download } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -91,6 +92,8 @@ const CompressPDF = () => {
     try {
       const file = files[0];
       const arrayBuffer = await file.arrayBuffer();
+      const validated = await PDFDocument.load(arrayBuffer);
+      if (!validated.getPageCount()) throw new Error("PDF has no pages");
       const r = await compressPDFToTarget(arrayBuffer, {
         targetBytes,
         onProgress: (current, total) => {

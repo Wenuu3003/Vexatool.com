@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -151,7 +152,12 @@ export default function ImageResizer() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
+  const [searchParams] = useSearchParams();
+  const requestedMode = searchParams.get("mode");
   const [specialMode, setSpecialMode] = useState<SpecialMode>("none");
+  useEffect(() => {
+    setSpecialMode(["govtjob", "passport", "whatsapp", "aadhaar"].includes(requestedMode || "") ? requestedMode as SpecialMode : "none");
+  }, [requestedMode]);
   const [govtMaxKB, setGovtMaxKB] = useState<20 | 50>(20);
   const [passportMaxKB, setPassportMaxKB] = useState<20 | 50>(20);
   const [whatsappMaxKB, setWhatsappMaxKB] = useState<20 | 50>(20);

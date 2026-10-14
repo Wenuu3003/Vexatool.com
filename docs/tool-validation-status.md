@@ -1,84 +1,76 @@
-> Image editing batch, 2026-10-13: 18/50 tools have selected core workflows tested; 32 remain. ImageResizer now rejects corrupt input and invalid/oversized dimensions, clears previous output before resize, and uses white JPEG background. Format Converter checks actual output MIME and clears results when removing an input. Added accessible download labels. Browser tests covered 32×24 resize, invalid dimensions, JPEG/PNG/WebP conversion, basic compression and corrupt rejection at 390/1440px. Ten downloads independently decoded. Special resize modes, target-KB guarantees, transparency/EXIF and large files remain unverified. 172 tests/build/typecheck pass. Draft only.
-
-> PDF raster batch, 2026-10-13: 15/50 tools have selected core flows validated; 35 remain. Fixed stale format output, conversion input mutation, PDF task cleanup and mobile download-button visibility. PNG copy now states white background. See pdf-raster-browser-results.json and pdf-raster-output-results.json. Fixtures contain solid page graphics; complex fonts, transparency, huge documents, bulk-download browser restrictions and non-Chromium engines remain unverified. Draft only.
-
-> Image PDF batch, 2026-10-13: 12 of 50 tools now have selected core flows validated; 38 remain. 172 automated tests pass. Draft only. ImageToPDF decoder now rejects corrupt/unsupported input with cleanup and a 15-second load timeout. Browser fixtures: JPEG, PNG, WebP; animations, very large images, EXIF orientation, transparency and other browser engines remain unverified. See image-pdf-browser-results.json and image-pdf-output-results.json.
-
-> Update 2026-10-13: Browser blocker resolved. Six repaired tools passed selected core flows at 390px and 1440px; see [browser-validation.md](browser-validation.md). Earlier pending statements below describe previous checkpoints; wider cases remain pending.
-
 # Tool validation status
 
-Changes are in a draft branch, not deployed. Automated test counts do not imply all tools work.
+Updated 2026-10-14. Draft PR #28 only; no live deployment. All 50 pages have now been exercised, but this is NOT full release approval. The latest 32 tools had desktop/mobile initial checks; selected workflows and follow-up results are recorded separately. Earlier counts described batches, not complete certification.
 
-| Tool | Status |
+172 automated tests, production build and TypeScript checks passed after this batch. Main gaps: external background-removal model, Google export, real PDF editing/OCR, complex documents, broad failure cases and additional browser engines.
+
+| Tool | Verified scope / remaining limitation |
 |---|---|
-| AadhaarPhotoResizer | Pending — real-input/output verification not completed |
-| AgeCalculator | Pending — real-input/output verification not completed |
-| BMICalculator | Pending — real-input/output verification not completed |
-| BackgroundRemover | Pending — real-input/output verification not completed |
-| Calculator | Pending — real-input/output verification not completed |
+| AadhaarPhotoResizer | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| AgeCalculator | Fixed-date 26-year result checked at both widths; invalid calculation clears prior result |
+| BMICalculator | 70 kg / 175 cm = 22.9 and invalid-height result clearing checked at both widths |
+| BackgroundRemover | Blocked — external model unavailable in network-isolated browser checks; segmentation output not verified |
+| Calculator | Keyboard 2 + 3 = 5 result confirmed |
 | CompressImage | Selected browser flows passed at 390/1440px: valid output and corrupt rejection; downloaded format, dimensions and color independently verified |
-| CompressPDF | Pending — real-input/output verification not completed |
-| ConvertPDF | Pending — real-input/output verification not completed |
-| CurrencyConverter | Draft fix: no hardcoded fallback, missing-rate rejection and amount/date tests; browser/API integration pending |
-| EMICalculator | Draft numeric/stale-result fixes; component input/output tests passed; browser and wider cases pending |
-| EditPDF | Pending — real-input/output verification not completed |
-| ExcelToPDF | Pending — real-input/output verification not completed |
-| ExcelToWord | Pending — real-input/output verification not completed |
-| FileCompressor | Pending — real-input/output verification not completed |
-| GSTCalculator | Draft numeric/stale-result fixes; component input/output tests passed; browser and wider cases pending |
-| GoogleDriveToPDF | Pending — real-input/output verification not completed |
-| GovtJobPhotoResizer | Pending — real-input/output verification not completed |
-| HTMLToPDF | Pending — real-input/output verification not completed |
+| CompressPDF | Small valid PDF passthrough plus corrupt/encrypted rejection checked; large-file target-size quality cases remain pending |
+| ConvertPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| CurrencyConverter | Selected mocked success/failure browser flows passed; live provider accuracy unverified |
+| EMICalculator | Selected component and browser arithmetic flows passed |
+| EditPDF | Partial — two-page open and unmodified export verified; actual text edits/OCR/annotation round-trip pending |
+| ExcelToPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| ExcelToWord | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| FileCompressor | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| GSTCalculator | Selected component and browser arithmetic flows passed; legal tax rates not validated |
+| GoogleDriveToPDF | Partial — invalid link rejected; Google authenticated export not exercised |
+| GovtJobPhotoResizer | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| HTMLToPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | ImageFormatConverter | Selected browser flows passed at 390/1440px: valid output and corrupt rejection; downloaded format, dimensions and color independently verified |
 | ImageResizer | Selected browser flows passed at 390/1440px: valid output and corrupt rejection; downloaded format, dimensions and color independently verified |
 | ImageToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | JPGToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
-| LoveCalculator | Pending — real-input/output verification not completed |
+| LoveCalculator | Names produced entertainment result; no claim of real relationship accuracy |
 | MergePDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
-| OrganizePDF | Pending — real-input/output verification not completed |
-| PDFToExcel | Pending — real-input/output verification not completed |
-| PDFToHTML | Pending — real-input/output verification not completed |
+| OrganizePDF | Two-page unchanged export plus corrupt/encrypted rejection checked; reorder/delete interaction still pending |
+| PDFToExcel | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| PDFToHTML | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | PDFToImage | Selected 390/1440px browser flows passed: two-page rendering/download, corrupt and protected input rejection; image format, pixel dimensions and colors verified |
 | PDFToJPG | Selected 390/1440px browser flows passed: two-page rendering/download, corrupt and protected input rejection; image format, pixel dimensions and colors verified |
 | PDFToPNG | Selected 390/1440px browser flows passed: two-page rendering/download, corrupt and protected input rejection; image format, pixel dimensions and colors verified |
-| PDFToPowerPoint | Pending — real-input/output verification not completed |
+| PDFToPowerPoint | Selected two-page image slide-pack export passed; produces ZIP of JPEGs, not native editable PPTX |
 | PNGToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | PPTToPDF | Draft false-success fix; extraction tests passed; faithful layout conversion unsupported |
-| PassportPhotoResizer | Pending — real-input/output verification not completed |
-| PercentageCalculator | Draft numeric/stale-result fixes; component input/output tests passed; browser and wider cases pending |
-| PinCodeGenerator | Pending — real-input/output verification not completed |
-| ProtectPDF | Draft fix; password/output tests passed; browser validation blocked |
-| QRCodeGenerator | Pending — real-input/output verification not completed |
-| QRCodeScanner | Pending — real-input/output verification not completed |
-| RepairPDF | Pending — real-input/output verification not completed |
+| PassportPhotoResizer | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| PercentageCalculator | Selected component and browser arithmetic flows passed |
+| PinCodeGenerator | Local random PIN UI output checked; live postal API accuracy and failure cases unverified |
+| ProtectPDF | Selected browser encryption/download and independent password checks passed; broader cases pending |
+| QRCodeGenerator | PNG generation round-tripped through scanner to exact input URL |
+| QRCodeScanner | Uploaded QR decoded exact fixture URL; live-camera path unverified |
+| RepairPDF | Valid PDF rewrite and corrupt/encrypted rejection checked; recovery of genuinely damaged but repairable PDFs unverified |
 | RotatePDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
-| SignPDF | Pending — real-input/output verification not completed |
+| SignPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | SplitPDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
-| UnitConverter | Pending — real-input/output verification not completed |
-| UnlockPDF | Pending — real-input/output verification not completed |
-| WatermarkPDF | Pending — real-input/output verification not completed |
-| WhatsAppDPResizer | Pending — real-input/output verification not completed |
-| WordCounter | Pending — real-input/output verification not completed |
-| WordToExcel | Pending — real-input/output verification not completed |
-| WordToPDF | Pending — real-input/output verification not completed |
+| UnitConverter | 1000 meters to 1 kilometer browser calculation passed |
+| UnlockPDF | Selected correct-password workflow passed; unencrypted raster output visually compared; searchable text is lost; wrong/absent-password regression still pending |
+| WatermarkPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| WhatsAppDPResizer | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| WordCounter | Sample counts confirmed: 3 words, 17 characters, 1 sentence, 1 paragraph |
+| WordToExcel | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
+| WordToPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 
-## Latest PPTX repair
+## Latest fixes
 
-Rejects legacy PPT, corrupt archives, missing presentation/slides, malformed slide XML and archives without supported content. Removes placeholder success paths; decodes text XML with DOMParser. Seven new extraction tests pass. UI states that output is simplified and may omit layout/content. Full renderer fidelity, slide ordering from presentation relationships, overflow/multiple-image layout and broad real-world files remain unverified.
+- Photo shortcut pages now select their requested mode. Four fixture JPEG outputs matched preset dimensions and stayed below 20 KB.
+- Corrupt DOCX files no longer fall through to raw-byte extraction in Word-to-PDF/Excel.
+- Compress PDF validates input before the small-file passthrough.
+- Organize, watermark, file compressor, repair and sign exports no longer ignore PDF encryption.
+- Watermark image decoding uses bounded failure handling and URL cleanup.
+- Age/BMI calculations clear stale results on invalid recalculation.
+- Google export status describes opening a link rather than confirming a download.
 
-Browser validation is blocked by invalid/truncated Playwright Chromium downloads, including a second attempt with an older browser build. No claim of mobile/desktop completion is made.
+## Evidence
 
-## Currency converter repair
-
-Removed hardcoded rates mislabeled as cached. Retrieval failure clears results and shows unavailable. Provider date replaces local fetch time; missing currencies never default to 1. Amount changes calculate synchronously without stale timeout results; empty/nonfinite/negative amounts are rejected, zero allowed. Request timeout and unmount/refresh cancellation added. Pure parser/conversion tests pass; live API and browser integration remain pending.
-
-## Calculator batch
-
-Percentage, GST and EMI now clear results when inputs change or a calculation fails, and reject nonfinite/overflow calculations. EMI caps tenure at 1200 whole months to prevent an unbounded schedule and uses a numerically stable formula. Six actual React component tests cover 63% of 21500, overflow, GST 18% amount/supply changes, cleared inputs, zero-interest EMI and 12% EMI. These checks validate calculations for selected inputs only, not current tax-rate policy or full end-to-end/browser behavior.
-
-## Merge / Split / Rotate batch — 2026-10-13
-
-Reject encrypted PDFs instead of bypassing encryption checks. Merge clears stale validation and refuses selections containing invalid files. Split rejects malformed/out-of-range requests rather than silently clipping/skipping pages, resets range on new selection and ignores stale validation responses. Rotation normalizes angles.
-
-170 automated tests and production build passed. Browser checks at 390px and 1440px: merge downloads, encrypted merge rejection, split pages 1/3, invalid-range error without download, rotate download, encrypted rotate rejection. No page-wide overflow or uncaught page errors. pypdf independently verified both sizes: merge has four pages in correct order, split has pages 1 and 3, rotated PDF has all three pages rotated 90 degrees with text preserved. Complex files and full visual/accessibility coverage remain pending. Nine tools now have selected browser core-flow coverage; the other 41 remain pending. No merge or publish.
+- `remaining-tools-browser-results.json`: initial attempts, follow-up checks and negative inputs. Initial selector timeouts are superseded only where explicit follow-up results exist.
+- `remaining-tools-output-results.json`: independently decoded output evidence.
+- Browser checks use Chromium at 390px and 1440px, with external requests blocked. Background-model/network failures are not product success.
+- PDF editor export was tested without modifications; it remains partial. PDF-to-PowerPoint exports an image ZIP; Word/PPT/HTML conversions remain simplified.
+- Synthetic fixtures do not establish complex-layout fidelity, all format variants, accessibility, camera support or guaranteed target sizes.

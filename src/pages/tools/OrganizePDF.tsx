@@ -19,11 +19,12 @@ const OrganizePDF = () => {
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
         const count = pdf.getPageCount();
         setTotalPages(count);
         setPageOrder(Array.from({ length: count }, (_, i) => i));
       } catch {
+        toast({ title: "Cannot open PDF", description: "The file is corrupt or password-protected. Unlock it first if needed.", variant: "destructive" });
         setTotalPages(0);
         setPageOrder([]);
       }
@@ -54,7 +55,7 @@ const OrganizePDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
 
       const newPdf = await PDFDocument.create();
       const copiedPages = await newPdf.copyPages(pdf, pageOrder);

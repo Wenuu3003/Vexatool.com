@@ -1,0 +1,896 @@
+{
+  "initialAttempts": [
+    {
+      "tool": "AadhaarPhotoResizer",
+      "route": "/aadhaar-photo-resize",
+      "width": 390,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "AgeCalculator",
+      "route": "/age-calculator",
+      "width": 390,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "BMICalculator",
+      "route": "/bmi-calculator",
+      "width": 390,
+      "status": "blocked: locator.waitFor: Error: strict mode violation: getByText('22.9', { exact: true }) resolved to 2 elements:",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "BackgroundRemover",
+      "route": "/background-remover",
+      "width": 390,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "Calculator",
+      "route": "/calculator",
+      "width": 390,
+      "status": "2+3 entered",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "CompressPDF",
+      "route": "/compress-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-CompressPDF-390-compressed_fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "ConvertPDF",
+      "route": "/pdf-to-word",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-ConvertPDF-390-fixture.docx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "EditPDF",
+      "route": "/edit-pdf",
+      "width": 390,
+      "status": "uploaded; editing workflow pending",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "ExcelToPDF",
+      "route": "/excel-to-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-ExcelToPDF-390-fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "ExcelToWord",
+      "route": "/excel-to-word",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-ExcelToWord-390-fixture.docx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "FileCompressor",
+      "route": "/file-compressor",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-FileCompressor-390-compressed_fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "GoogleDriveToPDF",
+      "route": "/google-drive-to-pdf",
+      "width": 390,
+      "status": "invalid link rejected",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "GovtJobPhotoResizer",
+      "route": "/govt-job-photo-resize",
+      "width": 390,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "HTMLToPDF",
+      "route": "/html-to-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-HTMLToPDF-390-converted-document.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "LoveCalculator",
+      "route": "/love-calculator",
+      "width": 390,
+      "status": "required gender validation attempted",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "OrganizePDF",
+      "route": "/organize-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-OrganizePDF-390-organized.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PDFToExcel",
+      "route": "/pdf-to-excel",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-PDFToExcel-390-fixture.xlsx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PDFToHTML",
+      "route": "/pdf-to-html",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-PDFToHTML-390-fixture.html"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PDFToPowerPoint",
+      "route": "/pdf-to-powerpoint",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-PDFToPowerPoint-390-fixture_slides.zip"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PassportPhotoResizer",
+      "route": "/passport-photo-resize",
+      "width": 390,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PinCodeGenerator",
+      "route": "/pincode-generator",
+      "width": 390,
+      "status": "local PIN generation attempted",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "QRCodeGenerator",
+      "route": "/qr-code-generator",
+      "width": 390,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "QRCodeScanner",
+      "route": "/qr-code-scanner",
+      "width": 390,
+      "status": "QR decoded exact URL",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "RepairPDF",
+      "route": "/repair-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-RepairPDF-390-repaired_fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "SignPDF",
+      "route": "/sign-pdf",
+      "width": 390,
+      "status": "uploaded; editing workflow pending",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "UnitConverter",
+      "route": "/unit-converter",
+      "width": 390,
+      "status": "1000 m = 1 km",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "UnlockPDF",
+      "route": "/unlock-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-UnlockPDF-390-unlocked_protected-390.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WatermarkPDF",
+      "route": "/watermark-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-WatermarkPDF-390-watermarked.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WhatsAppDPResizer",
+      "route": "/whatsapp-dp-resize",
+      "width": 390,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordCounter",
+      "route": "/word-counter",
+      "width": 390,
+      "status": "text entered",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToExcel",
+      "route": "/word-to-excel",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-WordToExcel-390-fixture.xlsx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToPDF",
+      "route": "/word-to-pdf",
+      "width": 390,
+      "status": "download produced",
+      "downloads": [
+        "out-WordToPDF-390-fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "AadhaarPhotoResizer",
+      "route": "/aadhaar-photo-resize",
+      "width": 1440,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "AgeCalculator",
+      "route": "/age-calculator",
+      "width": 1440,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "BMICalculator",
+      "route": "/bmi-calculator",
+      "width": 1440,
+      "status": "blocked: locator.waitFor: Error: strict mode violation: getByText('22.9', { exact: true }) resolved to 2 elements:",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "BackgroundRemover",
+      "route": "/background-remover",
+      "width": 1440,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "Calculator",
+      "route": "/calculator",
+      "width": 1440,
+      "status": "2+3 entered",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "CompressPDF",
+      "route": "/compress-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-CompressPDF-1440-compressed_fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "ConvertPDF",
+      "route": "/pdf-to-word",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-ConvertPDF-1440-fixture.docx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "EditPDF",
+      "route": "/edit-pdf",
+      "width": 1440,
+      "status": "uploaded; editing workflow pending",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "ExcelToPDF",
+      "route": "/excel-to-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-ExcelToPDF-1440-fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "ExcelToWord",
+      "route": "/excel-to-word",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-ExcelToWord-1440-fixture.docx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "FileCompressor",
+      "route": "/file-compressor",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-FileCompressor-1440-compressed_fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "GoogleDriveToPDF",
+      "route": "/google-drive-to-pdf",
+      "width": 1440,
+      "status": "invalid link rejected",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "GovtJobPhotoResizer",
+      "route": "/govt-job-photo-resize",
+      "width": 1440,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "HTMLToPDF",
+      "route": "/html-to-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-HTMLToPDF-1440-converted-document.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "LoveCalculator",
+      "route": "/love-calculator",
+      "width": 1440,
+      "status": "required gender validation attempted",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "OrganizePDF",
+      "route": "/organize-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-OrganizePDF-1440-organized.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PDFToExcel",
+      "route": "/pdf-to-excel",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-PDFToExcel-1440-fixture.xlsx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PDFToHTML",
+      "route": "/pdf-to-html",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-PDFToHTML-1440-fixture.html"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PDFToPowerPoint",
+      "route": "/pdf-to-powerpoint",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-PDFToPowerPoint-1440-fixture_slides.zip"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PassportPhotoResizer",
+      "route": "/passport-photo-resize",
+      "width": 1440,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "PinCodeGenerator",
+      "route": "/pincode-generator",
+      "width": 1440,
+      "status": "local PIN generation attempted",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "QRCodeGenerator",
+      "route": "/qr-code-generator",
+      "width": 1440,
+      "status": "blocked: locator.click: Timeout 6000ms exceeded.",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "QRCodeScanner",
+      "route": "/qr-code-scanner",
+      "width": 1440,
+      "status": "QR decoded exact URL",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "RepairPDF",
+      "route": "/repair-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-RepairPDF-1440-repaired_fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "SignPDF",
+      "route": "/sign-pdf",
+      "width": 1440,
+      "status": "uploaded; editing workflow pending",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "UnitConverter",
+      "route": "/unit-converter",
+      "width": 1440,
+      "status": "1000 m = 1 km",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "UnlockPDF",
+      "route": "/unlock-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-UnlockPDF-1440-unlocked_protected-390.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WatermarkPDF",
+      "route": "/watermark-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-WatermarkPDF-1440-watermarked.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WhatsAppDPResizer",
+      "route": "/whatsapp-dp-resize",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-WhatsAppDPResizer-1440-resized_192x192.jpg"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordCounter",
+      "route": "/word-counter",
+      "width": 1440,
+      "status": "text entered",
+      "downloads": [],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToExcel",
+      "route": "/word-to-excel",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-WordToExcel-1440-fixture.xlsx"
+      ],
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToPDF",
+      "route": "/word-to-pdf",
+      "width": 1440,
+      "status": "download produced",
+      "downloads": [
+        "out-WordToPDF-1440-fixture.pdf"
+      ],
+      "errors": [],
+      "overflow": false
+    }
+  ],
+  "followup": [
+    {
+      "tool": "AadhaarPhotoResizer",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "GovtJobPhotoResizer",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "PassportPhotoResizer",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "WhatsAppDPResizer",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "AgeCalculator",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "BMICalculator",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "QRCodeGenerator",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "SignPDF",
+      "width": 390,
+      "passed": false,
+      "error": "locator.click: Timeout 10000ms exceeded."
+    },
+    {
+      "tool": "EditPDF",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "AadhaarPhotoResizer",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "GovtJobPhotoResizer",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "PassportPhotoResizer",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "WhatsAppDPResizer",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "AgeCalculator",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "BMICalculator",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "QRCodeGenerator",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "SignPDF",
+      "width": 1440,
+      "passed": false,
+      "error": "locator.click: Timeout 10000ms exceeded."
+    },
+    {
+      "tool": "EditPDF",
+      "width": 1440,
+      "passed": true
+    }
+  ],
+  "signRetest": [
+    {
+      "tool": "SignPDF",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "SignPDF",
+      "width": 1440,
+      "passed": true
+    }
+  ],
+  "changedConvertersRetest": [
+    {
+      "tool": "CompressPDF",
+      "width": 390,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "OrganizePDF",
+      "width": 390,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WatermarkPDF",
+      "width": 390,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToExcel",
+      "width": 390,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToPDF",
+      "width": 390,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "CompressPDF",
+      "width": 1440,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "OrganizePDF",
+      "width": 1440,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WatermarkPDF",
+      "width": 1440,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToExcel",
+      "width": 1440,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "tool": "WordToPDF",
+      "width": 1440,
+      "status": "download produced",
+      "errors": [],
+      "overflow": false
+    }
+  ],
+  "corruptInputs": [
+    {
+      "route": "word-to-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "word-to-excel",
+      "downloads": 0
+    },
+    {
+      "route": "excel-to-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "excel-to-word",
+      "downloads": 0
+    },
+    {
+      "route": "pdf-to-word",
+      "downloads": 0
+    },
+    {
+      "route": "pdf-to-excel",
+      "downloads": 0
+    },
+    {
+      "route": "pdf-to-html",
+      "downloads": 0
+    },
+    {
+      "route": "pdf-to-powerpoint",
+      "downloads": 0
+    },
+    {
+      "route": "compress-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "repair-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "organize-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "watermark-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "file-compressor",
+      "downloads": 0
+    }
+  ],
+  "encryptedInputs": [
+    {
+      "route": "compress-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "repair-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "organize-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "watermark-pdf",
+      "downloads": 0
+    },
+    {
+      "route": "file-compressor",
+      "downloads": 0
+    }
+  ]
+}

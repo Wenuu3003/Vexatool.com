@@ -80,11 +80,12 @@ const WordToPDF = () => {
           }
 
           const result = paragraphs.join('\n').trim();
-          if (result.length > 10) return result;
+          if (result.length > 0) return result;
         }
       } catch {
-        // Fall through to basic extraction
+        throw new Error("Invalid DOCX document");
       }
+      throw new Error("No supported text found in DOCX document");
     }
 
     // Fallback for .doc files: extract readable text from binary

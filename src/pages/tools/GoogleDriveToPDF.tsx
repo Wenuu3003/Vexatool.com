@@ -28,6 +28,7 @@ const GoogleDriveToPDF = () => {
   };
 
   const handleProcess = () => {
+    setFileId(null);
     if (!driveLink.trim()) {
       toast({ title: "No link provided", description: "Please paste a Google Drive link.", variant: "destructive" });
       return;
@@ -50,7 +51,7 @@ const GoogleDriveToPDF = () => {
       file: `https://drive.google.com/uc?export=download&id=${fileId}`,
     };
     window.open(urls[type], '_blank');
-    toast({ title: "Download Started", description: "Your PDF export should begin in a new tab. Make sure the file is publicly shared." });
+    toast({ title: "Export link opened", description: "Google handles access and export in the new tab. Other File downloads the original format." });
   };
 
   const seoContent = {

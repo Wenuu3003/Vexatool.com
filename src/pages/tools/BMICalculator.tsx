@@ -123,6 +123,7 @@ export default function BMICalculator() {
   const { toast } = useToast();
 
   const handleCalculate = () => {
+    setResult(null);
     const r = calculateBMIResult(unit, weight, height, heightFeet, heightInches);
     if (!r) {
       toast({ title: "Invalid input", description: "Please enter valid weight and height.", variant: "destructive" });

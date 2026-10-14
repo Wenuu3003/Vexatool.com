@@ -84,7 +84,7 @@
     "tesseract.js": "^5.1.1",
     "vaul": "^0.9.9",
     "vite-plugin-pwa": "^1.2.0",
-    "vitest": "^4.0.17",
+    "vitest": "^4.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {

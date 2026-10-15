@@ -87,7 +87,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
   useEffect(() => {
     if (!selectedElement) return;
     setActivePanel('properties');
-    if (isMobile) setShowMobilePanel(true);
+    // Keep inline typing focused; mobile users open properties with the panel button.
   }, [selectedElement, isMobile]);
 
   // OCR hook

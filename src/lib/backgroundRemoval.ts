@@ -1,3 +1,4 @@
+import { normalizeMaskBytes } from "./maskValues";
 import { pipeline, env } from "@huggingface/transformers";
 
 // Configure transformers.js to always download models
@@ -133,9 +134,13 @@ export const removeBackground = async (
       }
     }, 200);
     
-    const result = await cachedSegmenter(imageData);
-    segmentationComplete = true;
-    clearInterval(progressInterval);
+    let result;
+    try {
+      result = await cachedSegmenter(imageData);
+    } finally {
+      segmentationComplete = true;
+      clearInterval(progressInterval);
+    }
 
     updateProgress(85);
 
@@ -146,7 +151,7 @@ export const removeBackground = async (
     }
 
     // ModNet returns a foreground mask where values near 1 = subject (keep), 0 = background (remove)
-    const maskData = new Float32Array(result[0].mask.data);
+    const maskData = normalizeMaskBytes(result[0].mask.data, canvas.width * canvas.height);
 
     updateProgress(92);
 
@@ -198,7 +203,7 @@ export const applyMaskToImage = async (
     const alpha = isForegroundMask 
       ? Math.round(maskData[i] * 255) 
       : Math.round((1 - maskData[i]) * 255);
-    data[i * 4 + 3] = alpha;
+    data[i * 4 + 3] = Math.round(data[i * 4 + 3] * alpha / 255);
   }
 
   outputCtx.putImageData(outputImageData, 0, 0);

@@ -65,10 +65,10 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
               </span>
             </Link>
             <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground max-w-xs mb-4">
-              Free online PDF tools, image converters, calculators, and QR code tools. Secure browser-based processing — your files never leave your device.
+              Free online PDF tools, image converters, calculators, and QR code tools. Processing details and external-service requirements are explained on each tool page.
             </p>
             <p className="text-[11px] text-muted-foreground">
-              Trusted by 100,000+ users across India and 50+ countries.
+              PDF, image, calculator and QR tools in one place.
             </p>
           </div>
 
@@ -108,8 +108,8 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
         {/* Trust Badges */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-10">
           {[
-            { icon: ShieldCheck, label: "Verified Safe", color: "text-green-500" },
-            { icon: Lock, label: "256-bit SSL", color: "text-primary" },
+            { icon: ShieldCheck, label: "Browser tools", color: "text-green-500" },
+            { icon: Lock, label: "HTTPS website", color: "text-primary" },
             { icon: Zap, label: "100% Free", color: "text-amber-500" },
             { icon: Globe, label: "Made in India", color: "text-primary" },
           ].map((badge) => (
@@ -126,7 +126,7 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
             <div className="text-center sm:text-left">
               <p className="text-xs text-muted-foreground">© {currentYear} VexaTool. All rights reserved.</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Your files never leave your browser. 100% secure & private.
+                See each tool’s processing details and our privacy policy.
               </p>
             </div>
             <nav className="flex items-center gap-4 sm:gap-5 flex-wrap justify-center" aria-label="Legal links">

@@ -260,6 +260,7 @@ export const EditorCanvas = memo(({
     onSelectElement(null);
     
     if (activeTool === 'text') {
+      e.preventDefault();
       const defaultFontSize = 36; // 12pt PDF (= 36 canvas px at 3× scale)
       const newElement: TextElement = {
         id: `text-${Date.now()}`,

@@ -11,7 +11,7 @@
  * a valid sitemap.xml in the public directory.
  */
 
-import { generateSitemapXml } from '../src/config/routes';
+import { generateSitemapXml } from '../src/config/routes.ts';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -28,12 +28,12 @@ const BASE_URL = 'https://vexatool.com';
  * Falls back to an empty string (with a warning) if Supabase is unreachable
  * so the build never breaks because of a transient network issue.
  */
-async function fetchProgrammaticSeoUrls(staticPaths: Set<string>): Promise<string> {
-  const url = process.env.VITE_SUPABASE_URL;
-  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+async function fetchProgrammaticSeoUrls(staticPaths: Set<string>, environment: Record<string, string | undefined>): Promise<string | null> {
+  const url = environment.VITE_SUPABASE_URL;
+  const key = environment.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) {
     console.warn('⚠️  Supabase env vars missing; skipping programmatic SEO sitemap entries.');
-    return '';
+    return null;
   }
 
   try {
@@ -41,11 +41,12 @@ async function fetchProgrammaticSeoUrls(staticPaths: Set<string>): Promise<strin
     const { data, error } = await sb
       .from('programmatic_seo_pages')
       .select('slug, updated_at')
-      .eq('is_published', true);
+      .eq('is_published', true)
+      .abortSignal(AbortSignal.timeout(10000));
 
     if (error) {
       console.warn('⚠️  Could not fetch programmatic SEO pages:', error.message);
-      return '';
+      return null;
     }
     if (!data || data.length === 0) return '';
 
@@ -53,15 +54,16 @@ async function fetchProgrammaticSeoUrls(staticPaths: Set<string>): Promise<strin
     const blocks: string[] = [];
     for (const row of data as Array<{ slug: string; updated_at: string }>) {
       const slug = row.slug?.trim();
-      if (!slug) continue;
+      if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) continue;
       const routePath = `/${slug}`;
       // Avoid duplicating any URL that already exists in the static sitemap.
       if (staticPaths.has(routePath) || seen.has(slug)) continue;
       seen.add(slug);
-      const lastmod = (row.updated_at ?? new Date().toISOString()).slice(0, 10);
+      const lastmod = row.updated_at?.slice(0, 10);
+      const validDate = lastmod && /^\d{4}-\d{2}-\d{2}$/.test(lastmod) && Number.isFinite(Date.parse(lastmod)) && Date.parse(lastmod) <= Date.now();
       blocks.push(`  <url>
     <loc>${BASE_URL}/${slug}</loc>
-    <lastmod>${lastmod}</lastmod>
+    ${validDate ? `<lastmod>${lastmod}</lastmod>` : ""}
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>`);
@@ -70,7 +72,7 @@ async function fetchProgrammaticSeoUrls(staticPaths: Set<string>): Promise<strin
     return blocks.join('\n');
   } catch (e) {
     console.warn('⚠️  Programmatic SEO fetch failed:', (e as Error).message);
-    return '';
+    return null;
   }
 }
 
@@ -86,18 +88,32 @@ function extractStaticPaths(sitemap: string): Set<string> {
   return paths;
 }
 
-const generateSitemap = async () => {
+export const generateSitemap = async (environment: Record<string, string | undefined> = process.env) => {
   console.log('🗺️  Generating sitemap.xml...');
 
   let sitemap = generateSitemapXml();
   const staticPaths = extractStaticPaths(sitemap);
 
-  const pseoBlocks = await fetchProgrammaticSeoUrls(staticPaths);
+  const outputPath = path.join(__dirname, '../public/sitemap.xml');
+  let pseoBlocks = await fetchProgrammaticSeoUrls(staticPaths, environment);
+  if (pseoBlocks === null && fs.existsSync(outputPath)) {
+    // Preserve the last published snapshot during unavailable database access.
+    const existing = fs.readFileSync(outputPath, 'utf-8');
+    const seen = new Set<string>();
+    pseoBlocks = (existing.match(/<url>[\s\S]*?<\/url>/g) || []).filter(block => {
+      const loc = block.match(/<loc>([^<]+)<\/loc>/)?.[1];
+      if (!loc?.startsWith(BASE_URL + '/')) return false;
+      const routePath = loc.slice(BASE_URL.length);
+      if (!/^\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(routePath) || staticPaths.has(routePath) || ['/auth', '/account'].includes(routePath) || seen.has(routePath)) return false;
+      seen.add(routePath);
+      return true;
+    }).join('\n');
+    console.warn('Using last-known dynamic sitemap entries; publication status was not refreshed.');
+  }
   if (pseoBlocks) {
     sitemap = sitemap.replace('</urlset>', `${pseoBlocks}\n</urlset>`);
   }
 
-  const outputPath = path.join(__dirname, '../public/sitemap.xml');
   fs.writeFileSync(outputPath, sitemap, 'utf-8');
 
   const urlCount = (sitemap.match(/<url>/g) || []).length;
@@ -120,7 +136,7 @@ const generateSitemap = async () => {
 };
 
 // Run the script
-generateSitemap().catch((error) => {
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) generateSitemap().catch((error) => {
   console.error('❌ Error generating sitemap:', error);
   process.exit(1);
 });

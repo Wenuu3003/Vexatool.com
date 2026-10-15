@@ -410,7 +410,7 @@ export default function ImageResizer() {
 
   const seoContent = {
     toolName: "Image Resizer – Resize to 20KB 50KB, WhatsApp DP, Aadhaar & Passport Photo India",
-    whatIs: "Our free Image Resizer is India's most powerful online tool for resizing photos to exact file sizes and dimensions. Resize an image to 20KB for a government job application, 50KB for online forms, or WhatsApp DP size (192×192px) in one click. It also supports Aadhaar photo (200×200px), Passport Photo (2×2 inch, 300 DPI), and Govt Job Form mode (3.5×4.5 cm with white background). The smart algorithm reduces quality gradually while maintaining maximum clarity — your photos will pass all government portal verifications.",
+    whatIs: "Our free Image Resizer is India's most powerful online tool for resizing photos to exact file sizes and dimensions. Resize an image to 20KB for a government job application, 50KB for online forms, or WhatsApp DP size (192×192px) in one click. It also supports Aadhaar photo (200×200px), Passport Photo (2×2 inch, 300 DPI), and Govt Job Form mode (3.5×4.5 cm with white background). The smart algorithm reduces quality gradually while maintaining maximum clarity — check the current application requirements before submitting your photo.",
     howToUse: [
       "Upload your photo by clicking the upload area or dragging and dropping.",
       "Choose a Quick Resize button (20KB, 50KB, 100KB, 200KB) for instant compression.",
@@ -436,7 +436,7 @@ export default function ImageResizer() {
       { question: "What size photo is needed for Aadhaar card update?", answer: "Aadhaar / UIDAI requires a passport-size photo with white background, typically 200×200px. Select 'Aadhaar Photo' mode and the tool automatically applies the correct size, white background, and 20KB/50KB limit." },
       { question: "What is the standard passport photo size in India?", answer: "The standard Indian passport photo size is 2×2 inches (51×51mm) at 300 DPI, which equals 600×600 pixels. Our Passport Photo India mode automatically sets these dimensions." },
       { question: "What size photo is required for govt job application forms?", answer: "Most Indian government job forms (SSC, UPSC, Railway, Banking) require a passport size photo of 3.5×4.5 cm with a white background, and file size between 10KB to 50KB in JPEG format. Our Govt Job Form mode handles all of this automatically." },
-      { question: "Does this tool add white background to photos?", answer: "Yes. WhatsApp DP, Aadhaar Photo, Govt Job Form, and Passport Photo modes all automatically add a white background, meeting the requirement for all Indian government documents." },
+      { question: "Does this tool add white background to photos?", answer: "Yes. WhatsApp DP, Aadhaar Photo, Govt Job Form, and Passport Photo modes all automatically add a white background, Requirements vary by application; verify the required size, background and file limits before submitting." },
       { question: "Will compressing to 20KB reduce photo quality?", answer: "The smart compression algorithm reduces quality gradually, from high to minimum, to hit the target size. For typical passport and ID photos, the result at 20KB is perfectly clear and accepted by all government portals." },
       { question: "Can I type a custom KB target size?", answer: "Yes. In the Custom Target Size section, type any KB value (e.g., 30, 75, 150) and click Compress. The smart algorithm will find the best quality-size combination to match your target." },
     ],

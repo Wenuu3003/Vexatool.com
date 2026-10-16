@@ -583,7 +583,7 @@ const blogContent: Record<string, BlogPostContent> = {
 
         <h3>Is online PDF compression safe for sensitive documents?</h3>
         <p>
-          With VexaTool, yes — files are processed entirely in your browser and never uploaded to any server. This makes it safe for confidential, financial, and personal documents.
+          This PDF compression workflow processes file content in the browser. The website may still contact advertising, analytics and asset services. Local processing alone does not establish suitability for confidential or regulated documents; follow your organization’s handling rules.
         </p>
 
         <h3>Can I compress multiple PDFs at once?</h3>
@@ -601,9 +601,7 @@ const blogContent: Record<string, BlogPostContent> = {
       </div>
     ),
   },
-  "best-free-pdf-tools-online": {
-    ...newBlogPosts["best-free-pdf-tools-online-2026"],
-  },
+
 };
 
 // Merge ALL blog content sources into a single lookup map.
@@ -619,6 +617,7 @@ export const allBlogContent: Record<string, BlogPostContent> = {
 // Legacy slugs that redirect to a current canonical slug. Exported for tests.
 export const legacyBlogRedirects: Record<string, string> = {
   "love-age-calculator-complete-guide": "love-calculator-guide",
+  "best-free-pdf-tools-online": "best-free-pdf-tools-online-2026",
 };
 
 // Related articles mapping
@@ -874,9 +873,9 @@ const BlogPost = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground text-base mb-1">VexaTool Editorial Team</h3>
-                    <p className="text-sm text-primary mb-2">Digital Tools Specialists & PDF Workflow Experts</p>
+                    <p className="text-sm text-primary mb-2">Document and productivity guides</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      With over a decade of combined experience in document management, workflow automation, and online productivity tools, our editorial team has helped hundreds of thousands of users simplify their document workflows. From guiding students through competitive exam applications to advising businesses on secure document handling, we focus on practical solutions that save time and protect privacy. Every guide we publish is tested, verified, and written to help real people solve real problems.
+                      VexaTool publishes guides to document and image workflows. Features and output quality vary by tool and input file. Check the downloaded result before sharing it, and use the contact page to report an error or an outdated instruction.
                     </p>
                     <div className="flex items-center gap-3 mt-3 text-xs text-muted-foreground">
                       <span>Published: {new Date(post.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>

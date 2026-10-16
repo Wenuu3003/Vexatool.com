@@ -15,6 +15,7 @@ interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
+  { slug: "how-to-sign-pdf-online-free-securely", title: "How to Sign PDF Online for Free Securely (2026 Guide)", excerpt: "Add a visual signature to a PDF, review the output and understand the difference from certificate-backed digital signatures.", date: "2026-05-20", readTime: "8 min read" },
   {
     slug: "pdf-to-excel-converter-guide",
     title: "How to Convert PDF to Excel Online for Free (Step-by-Step Guide)",
@@ -22,11 +23,11 @@ export const blogPosts: BlogPost[] = [
     date: "2026-04-04",
     readTime: "14 min read",
   },
-  // NEW: AdSense-safe humanity-focused article
+  // Productivity guide
   {
     slug: "digital-productivity-habits-that-save-time",
     title: "10 Digital Productivity Habits That Actually Save You Hours Every Week",
-    excerpt: "Discover practical, science-backed strategies to manage digital documents, reduce screen fatigue, and reclaim your time. Real habits from real professionals — no fluff, no gimmicks.",
+    excerpt: "Practical habits for naming, organizing, reviewing and sharing digital files. Try a workflow that fits your tasks and check whether it saves time.",
     date: "2026-03-02",
     readTime: "8 min read",
   },

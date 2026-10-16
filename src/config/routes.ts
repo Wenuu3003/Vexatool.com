@@ -37,6 +37,7 @@ export const blogPosts = [
   'digital-signature-guide',
   'pdf-accessibility-guide',
   'best-free-pdf-tools-online-2026',
+  'how-to-sign-pdf-online-free-securely',
   // Phase 3 — new posts
   'secure-pdf-processing-browser-based',
   'pdf-vs-word-when-to-use-each',

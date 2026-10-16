@@ -35,7 +35,7 @@ import { useTextBlocks, TextRegion, TextSegmentationMode } from './useTextBlocks
 import { BlockHighlightLayer } from './BlockHighlightLayer';
 import { BlockEditPanel } from './BlockEditPanel';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScanText, PanelRightOpen, Layers, AlertTriangle, Edit3, Download } from 'lucide-react';
@@ -1220,6 +1220,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[240px] p-0 overflow-y-auto">
+              <SheetTitle className="sr-only">PDF pages</SheetTitle>
               <div className="pt-10">
                 <PageThumbnails
                   pages={pages}
@@ -1243,6 +1244,7 @@ export const ProfessionalPDFEditor = ({ file, onClose }: ProfessionalPDFEditorPr
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] p-0 overflow-y-auto">
+              <SheetTitle className="sr-only">PDF editing controls</SheetTitle>
               <div className="pt-10">
                 {rightPanelContent}
               </div>

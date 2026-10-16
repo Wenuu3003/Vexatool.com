@@ -20,9 +20,9 @@ Status: draft, not deployed. All 50 tool pages received initial checks, but not 
 
 ## Remaining release gates
 
-- Background removal: real portrait/model test attempted; model fetch failed with ERR_CERT_AUTHORITY_INVALID in this test environment. Certificate validation was not disabled. Unit coverage is not a model-quality or end-to-end pass.
+- Background removal: October 16 real inference passed with verified HTTPS asset transport, superseding the inference blocker below. Normal deployed-browser asset loading remains unverified. See release-validation-2026-10-16.md for transport limits.
 - Google export: actual account permissions and Google-generated PDF require an authorized accessible document/session; link parsing is verified, authenticated export is not.
-- PDF editor OCR and existing-text replacement on scanned/complex documents remain unverified; adding text has passed.
+- PDF editor: basic OCR on an English scanned page and existing-text replacement passed October 16 at both widths. Complex documents, languages and layout fidelity remain unverified.
 - PDF-to-PowerPoint currently supplies an image ZIP, not a native editable PPTX. PPT-to-PDF and Word/HTML conversions are simplified. Do not market unsupported fidelity as complete functionality.
 - Complex files, large-file memory limits, non-Chromium engines, camera scanning, genuine damaged-PDF recovery, broad target-size compression and live postal/currency data still need scoped acceptance tests.
 - Search Console sitemap processing/index coverage and URL-level live canonical/indexability were not accessible in this run. A sitemap does not guarantee indexing or ranking.

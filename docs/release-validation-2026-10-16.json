@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-16",
+  "viewports": [
+    390,
+    1440
+  ],
+  "published": false,
+  "background": {
+    "passed": true,
+    "model": "Xenova/modnet",
+    "output": [
+      360,
+      450
+    ],
+    "transparentPixels": 57189,
+    "opaquePixels": 8615,
+    "softAlphaPixels": 96196,
+    "transport": "Actual model bytes fetched with certificate-verified HTTPS curl and fulfilled to browser; direct deployed asset path unverified"
+  },
+  "nativeReplacement": {
+    "passed": true,
+    "pages": 2,
+    "extractedText": "VEXA REPLACEMENT"
+  },
+  "scannedOCR": {
+    "passed": true,
+    "pages": 1,
+    "extractedText": "OCR VERIFIED",
+    "sourceImages": 1,
+    "language": "English"
+  },
+  "accessibilityFix": "Accessible SheetTitle added to mobile pages and editing-controls dialogs"
+}

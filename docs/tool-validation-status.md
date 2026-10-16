@@ -1,24 +1,26 @@
+> October 16 follow-up: real model inference and scanned OCR now passed on mobile and desktop; see release-validation-2026-10-16.md. Draft only.
+
 > 2026-10-15 update: 184 tests and app/build-config typechecks pass. Sitemap/robots fixes and editor text-entry focus fixes are drafted; see release-readiness-2026-10-15.md. This is not full 50-tool release approval.
 
 # Tool validation status
 
 Updated 2026-10-14. Draft PR #28 only; no live deployment. All 50 pages have now been exercised, but this is NOT full release approval. The latest 32 tools had desktop/mobile initial checks; selected workflows and follow-up results are recorded separately. Earlier counts described batches, not complete certification.
 
-172 automated tests, production build and TypeScript checks passed after this batch. Main gaps: external background-removal model, Google export, real PDF editing/OCR, complex documents, broad failure cases and additional browser engines.
+172 automated tests, production build and TypeScript checks passed after this batch. Subsequent October 16 checks close basic background-model inference and PDF replacement/OCR gaps; Google export, complex documents, broad failure cases and additional browser engines remain.
 
 | Tool | Verified scope / remaining limitation |
 |---|---|
 | AadhaarPhotoResizer | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | AgeCalculator | Fixed-date 26-year result checked at both widths; invalid calculation clears prior result |
 | BMICalculator | 70 kg / 175 cm = 22.9 and invalid-height result clearing checked at both widths |
-| BackgroundRemover | Blocked — real model fetch hit test-environment certificate error; byte-mask normalization fixed and unit-tested, real segmentation output still unverified |
+| BackgroundRemover | Real MODNet portrait inference and transparent PNG export passed at 390/1440px using verified HTTPS asset transport; normal deployed asset loading and broader image quality remain unverified |
 | Calculator | Keyboard 2 + 3 = 5 result confirmed |
 | CompressImage | Selected browser flows passed at 390/1440px: valid output and corrupt rejection; downloaded format, dimensions and color independently verified |
 | CompressPDF | Small valid PDF passthrough plus corrupt/encrypted rejection checked; large-file target-size quality cases remain pending |
 | ConvertPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | CurrencyConverter | Selected mocked success/failure browser flows passed; live provider accuracy unverified |
 | EMICalculator | Selected component and browser arithmetic flows passed |
-| EditPDF | Selected add-text export passed at 390/1440px; independent PDF inspection retained original and added text; OCR, replacement and complex layouts still pending |
+| EditPDF | Add-text, native-text replacement and scanned-page OCR replacement/export passed at 390/1440px; independent PDF inspection confirmed outputs. Replacement overlays are not secure redaction; complex layouts remain pending |
 | ExcelToPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | ExcelToWord | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | FileCompressor | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |

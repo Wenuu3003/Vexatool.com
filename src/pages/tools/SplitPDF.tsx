@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { parsePageRange } from '@/lib/pdfPageRange';
+import { useState, useRef } from "react";
 import { Scissors, Download } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
@@ -16,14 +17,19 @@ const SplitPDF = () => {
   const [pageRange, setPageRange] = useState("");
   const [totalPages, setTotalPages] = useState<number | null>(null);
 
+  const validationId = useRef(0);
   const handleFileChange = async (newFiles: File[]) => {
+    const id = ++validationId.current;
+    setTotalPages(null);
+    setPageRange("");
     setFiles(newFiles);
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-        setTotalPages(pdf.getPageCount());
+        const pdf = await PDFDocument.load(arrayBuffer);
+        if (id === validationId.current) setTotalPages(pdf.getPageCount());
       } catch (err: unknown) {
+        if (id !== validationId.current) return;
         setTotalPages(null);
         const msg = err instanceof Error ? err.message : "";
         if (msg.includes("encrypted") || msg.includes("password")) {
@@ -33,30 +39,6 @@ const SplitPDF = () => {
     } else {
       setTotalPages(null);
     }
-  };
-
-  const parsePageRange = (range: string, maxPages: number): number[] => {
-    const pages: number[] = [];
-    const parts = range.split(",");
-
-    for (const part of parts) {
-      const trimmed = part.trim();
-      if (trimmed.includes("-")) {
-        const [start, end] = trimmed.split("-").map((n) => parseInt(n.trim()));
-        if (!isNaN(start) && !isNaN(end)) {
-          for (let i = Math.max(1, start); i <= Math.min(maxPages, end); i++) {
-            if (!pages.includes(i - 1)) pages.push(i - 1);
-          }
-        }
-      } else {
-        const num = parseInt(trimmed);
-        if (!isNaN(num) && num >= 1 && num <= maxPages && !pages.includes(num - 1)) {
-          pages.push(num - 1);
-        }
-      }
-    }
-
-    return pages.sort((a, b) => a - b);
   };
 
   const handleSplit = async () => {
@@ -73,7 +55,7 @@ const SplitPDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pdf = await PDFDocument.load(arrayBuffer);
       const maxPages = pdf.getPageCount();
 
       const pageIndices = pageRange
@@ -113,7 +95,9 @@ const SplitPDF = () => {
       if (import.meta.env.DEV) console.error("Split error:", error);
       const msg = error instanceof Error ? error.message : "";
       let description = "Failed to split PDF. Please try again.";
-      if (msg.includes("encrypted") || msg.includes("password")) {
+      if (msg === "Invalid page range") {
+        description = "Enter complete page numbers or ascending ranges within this document, such as 1,3-5. No pages were extracted.";
+      } else if (msg.includes("encrypted") || msg.includes("password")) {
         description = "This PDF is password-protected. Unlock it first using the Unlock PDF tool.";
       } else if (msg.includes("Invalid") || msg.includes("parse")) {
         description = "This PDF appears to be corrupted. Try the Repair PDF tool first.";

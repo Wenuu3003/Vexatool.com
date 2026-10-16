@@ -109,14 +109,7 @@ const WordToExcel = () => {
             throw new Error("No content found, trying fallback");
           }
         } catch {
-          // Fallback: extract raw text and parse into rows
-          const text = await extractDocText(file);
-          if (!text || text.length < 5) {
-            toast({ title: "No text found", description: "Could not extract content from this document.", variant: "destructive" });
-            setIsProcessing(false);
-            return;
-          }
-          addTextAsSheet(workbook, text);
+          throw new Error("Invalid DOCX or no supported content. Please provide a valid document.");
         }
       } else {
         // .doc or .txt - text extraction

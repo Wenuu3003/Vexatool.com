@@ -31,7 +31,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
           PDFs are the default format for almost every sensitive document we handle: salary slips, ID proofs, GST invoices, signed contracts, medical reports, school certificates and legal notices. Yet most people happily upload these to random websites because the workflow looks convenient. The cost of that convenience is real — leaked tax returns, scraped contact details, copied signatures, and compliance violations under DPDP Act 2023 in India and GDPR in Europe.
         </p>
         <p>
-          A 2025 industry survey by AppOmni found that 31% of free online conversion tools logged uploaded files for at least 24 hours, and 8% retained them indefinitely "for service quality". Browser-based tools sidestep the entire problem by never sending the file to a server in the first place.
+          Before using a conversion service, check whether it uploads document contents, how long it retains files, and which third parties receive data. Browser-side processing can reduce document uploads, but it does not eliminate risks from extensions, third-party scripts or a compromised device.
         </p>
 
         <h2>What "Browser-Based" Actually Means</h2>
@@ -46,7 +46,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
         <ul>
           <li><strong>Where files go.</strong> Server-side: uploaded to a remote machine. Browser-based: stays on your device.</li>
           <li><strong>Retention risk.</strong> Server-side: files may be cached, logged, or backed up. Browser-based: nothing to retain.</li>
-          <li><strong>Compliance.</strong> Server-side: requires a Data Processing Agreement. Browser-based: usually qualifies as "no processing" under DPDP / GDPR.</li>
+          <li><strong>Compliance.</strong> Local processing is not an automatic exemption from privacy requirements. Assess the complete data flow, including analytics, advertising and account information.</li>
           <li><strong>Speed.</strong> Server-side: fast for huge files because of beefy hardware. Browser-based: depends on your device, but instant for typical 5–50 MB files.</li>
           <li><strong>Offline.</strong> Server-side: needs internet. Browser-based: works offline once the page is cached.</li>
         </ul>
@@ -190,7 +190,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Security: PDF Wins by a Wide Margin</h2>
         <p>
-          Word does support password protection, but enterprise tools can bulk-strip it. PDF's encryption (AES-256) is far more robust, and you can also restrict printing, copying and editing — useful for shared confidential reports. Use our <a href="/protect-pdf" className="text-primary hover:underline">Protect PDF</a> tool for AES-256 password protection.
+          Both Word and PDF support encryption in compatible applications. Security depends on the encryption settings, password strength and how the file is shared; the format alone does not make it more secure. Use our <a href="/protect-pdf" className="text-primary hover:underline">Protect PDF</a> tool for AES-256 password protection.
         </p>
 
         <h2>Accessibility: It Depends on Effort</h2>
@@ -266,7 +266,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
 
         <h2>The Six Most Common Conversion Tasks</h2>
         <p>
-          Across millions of monthly conversions on VexaTool, six workflows account for over 80% of all activity. We will cover each below with the right tool for the job.
+          The following six conversion workflows address common document tasks. Choose a format based on what the recipient needs, then check a sample output before converting the rest.
         </p>
 
         <h3>1. Word to PDF</h3>
@@ -344,7 +344,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
         <p>For 95% of office workflows, yes. Paid tools mostly add enterprise features like e-signature workflows and team libraries.</p>
 
         <h3>Will my formatting always be perfect?</h3>
-        <p>Word↔PDF is excellent. Excel↔PDF is great for tables. PDF↔Image is pixel-perfect. Highly designed brochures may need manual tweaks.</p>
+        <p>No. VexaTool conversions are simplified and can change fonts, tables, images and page breaks. Check every output; use the original authoring application when exact layout is required.</p>
 
         <h3>Is OCR really free?</h3>
         <p>Yes — Tesseract-based OCR runs in the browser at zero server cost.</p>
@@ -641,7 +641,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Stage 3: Finalising — Convert to PDF Properly</h2>
         <p>
-          Once content is locked, export to PDF using <a href="/word-to-pdf" className="text-primary hover:underline">Word to PDF</a> with embedded fonts. This guarantees the recipient sees exactly what you sent. For multi-document deliverables (proposal + appendices), combine them with <a href="/merge-pdf" className="text-primary hover:underline">Merge PDF</a> in the right order.
+          Once content is locked, export to PDF using <a href="/word-to-pdf" className="text-primary hover:underline">Word to PDF</a> with embedded fonts. Check the exported file because fonts and layouts may change during conversion. For multi-document deliverables (proposal + appendices), combine them with <a href="/merge-pdf" className="text-primary hover:underline">Merge PDF</a> in the right order.
         </p>
         <p>
           Add a watermark like "Draft" or "Confidential" via <a href="/watermark-pdf" className="text-primary hover:underline">Watermark PDF</a> when appropriate. It deters accidental forwarding.
@@ -710,7 +710,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Frequently Asked Questions</h2>
         <h3>Is digital signing legal in India?</h3>
-        <p>Yes — under the IT Act 2000, electronic signatures are legally valid for most business contracts.</p>
+        <p>Acceptance depends on the document, applicable requirements and recipient. A signature image from this tool is not a certificate-backed digital signature; confirm the required signing method.</p>
 
         <h3>What naming convention works best?</h3>
         <p><code>YYYY-MM-DD_Subject_v1</code>. Sorts naturally, searchable.</p>
@@ -1122,7 +1122,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">
         <p className="lead text-xl text-muted-foreground mb-6">
-          Printing a contract just to sign one line, scanning it back in, and emailing it as a 12 MB attachment is a workflow from 2005. In 2026 you can sign any PDF — a rental agreement, an NDA, an offer letter, a freelance invoice — in under a minute, right inside your browser, without uploading the file to anyone's server. This guide walks you through exactly how to do it for free, safely, and in a way that is legally recognised in most countries.
+          Printing a contract just to sign one line, scanning it back in, and emailing it as a 12 MB attachment is a workflow from 2005. In 2026 you can sign any PDF — a rental agreement, an NDA, an offer letter, a freelance invoice — in under a minute, right inside your browser, without uploading the file to anyone's server. This guide walks you through exactly how to do it for free, safely, with clear limits on what a visual signature provides.
         </p>
 
         <h2>What "Signing a PDF Online" Actually Means</h2>
@@ -1130,7 +1130,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
           When people say "sign a PDF online", they usually mean adding an <strong>electronic signature</strong> — a visual representation of your signature placed on top of an existing PDF page. That can be a signature you draw with a mouse or finger, a typed name styled in a signature font, or an image of your real handwritten signature uploaded as a PNG. The PDF you download afterwards looks exactly the same as if you had printed, signed by hand, and scanned it back in — except nothing leaves your device, and the output is sharper.
         </p>
         <p>
-          Electronic signatures are different from <em>digital signatures</em> in the cryptographic sense (PKI, certificates, time stamps). For 95% of everyday business and personal documents — leases, freelance contracts, school forms, vendor onboarding, internal approvals — an electronic signature is exactly what the other party expects and what the law accepts. We'll cover the legal side below.
+          Electronic signatures are different from <em>digital signatures</em> in the cryptographic sense (PKI, certificates, time stamps). A visual signature does not provide certificate-based identity verification or tamper detection. Ask the recipient which signature method is required before using this tool.
         </p>
 
         <h2>Step-by-Step: Sign a PDF Online for Free</h2>
@@ -1166,20 +1166,8 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
           <li>Whenever you need to sign a PDF, open <a href="/sign-pdf" className="text-primary hover:underline">Sign PDF</a>, switch to the <strong>Upload</strong> tab, and select the PNG. It will appear on the page with full transparency, looking identical to a real signature.</li>
         </ol>
 
-        <h2>Are Electronic Signatures Legally Binding?</h2>
-        <p>
-          Yes — in the vast majority of countries and for the vast majority of documents. The big legal frameworks include:
-        </p>
-        <ul>
-          <li><strong>United States</strong> — the <em>ESIGN Act</em> (2000) and the <em>UETA</em> recognise electronic signatures as legally equivalent to handwritten ones for most commercial transactions.</li>
-          <li><strong>European Union</strong> — the <em>eIDAS Regulation</em> recognises three tiers of electronic signature, with the basic "simple electronic signature" valid for everyday contracts.</li>
-          <li><strong>United Kingdom</strong> — the <em>Electronic Communications Act 2000</em> and updated guidance from the Law Commission confirm that electronic signatures are legally valid.</li>
-          <li><strong>India</strong> — the <em>Information Technology Act, 2000</em> recognises electronic signatures, with Aadhaar e-Sign and DSCs offering stronger tiers for specific use cases.</li>
-          <li><strong>Canada, Australia, Singapore, UAE</strong> — all have e-signature laws giving electronic signatures the same status as handwritten ones for ordinary contracts.</li>
-        </ul>
-        <p>
-          There are exceptions. Wills, certain real-estate deeds, court filings, and some government forms still require wet-ink or a qualified digital signature with a certificate. When in doubt, check the rules for your jurisdiction and the specific document type, or ask the requesting party which form of signature they accept.
-        </p>
+        <h2>Check the required signature method</h2>
+        <p>VexaTool places a visible signature on a PDF. It does not issue a digital certificate, verify a signer’s identity or provide a certificate audit trail. Before signing, ask the recipient whether a typed or drawn signature is accepted, or whether their specified signing service or certificate is required. Do not assume that a signature image establishes legal validity.</p>
 
         <h2>Privacy & Security: Why Browser-Based Signing Matters</h2>
         <p>

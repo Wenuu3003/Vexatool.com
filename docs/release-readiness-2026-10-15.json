@@ -1,0 +1,42 @@
+{
+  "editor": [
+    {
+      "width": 390,
+      "pages": 2,
+      "originalTextRetained": true,
+      "addedTextRetained": true
+    },
+    {
+      "width": 1440,
+      "pages": 2,
+      "originalTextRetained": true,
+      "addedTextRetained": true
+    }
+  ],
+  "browser": [
+    {
+      "tool": "EditPDF",
+      "width": 390,
+      "passed": true,
+      "scope": "add text and export"
+    },
+    {
+      "tool": "EditPDF",
+      "width": 1440,
+      "passed": true,
+      "scope": "add text and export"
+    }
+  ],
+  "background": {
+    "status": "blocked",
+    "reason": "Model fetch ERR_CERT_AUTHORITY_INVALID in test environment; no end-to-end pass claimed",
+    "maskNormalizationUnitTests": true
+  },
+  "tests": 184,
+  "sitemap": {
+    "liveHttpStatus": 200,
+    "liveUrls": 122,
+    "draftUrls": 122
+  },
+  "published": false
+}

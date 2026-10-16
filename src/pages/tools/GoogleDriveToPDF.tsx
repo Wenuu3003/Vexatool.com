@@ -1,3 +1,4 @@
+import { extractGoogleFileId } from "@/lib/googleDriveLink";
 import { useState } from "react";
 import { Cloud, Download, FileText, Link, AlertCircle, ExternalLink, Shield, CheckCircle } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -13,26 +14,13 @@ const GoogleDriveToPDF = () => {
   const [driveLink, setDriveLink] = useState("");
   const [fileId, setFileId] = useState<string | null>(null);
 
-  const extractFileId = (url: string): string | null => {
-    const patterns = [
-      /\/file\/d\/([a-zA-Z0-9_-]+)/,
-      /id=([a-zA-Z0-9_-]+)/,
-      /\/d\/([a-zA-Z0-9_-]+)/,
-      /^([a-zA-Z0-9_-]{25,})$/,
-    ];
-    for (const pattern of patterns) {
-      const match = url.trim().match(pattern);
-      if (match) return match[1];
-    }
-    return null;
-  };
-
   const handleProcess = () => {
+    setFileId(null);
     if (!driveLink.trim()) {
       toast({ title: "No link provided", description: "Please paste a Google Drive link.", variant: "destructive" });
       return;
     }
-    const id = extractFileId(driveLink);
+    const id = extractGoogleFileId(driveLink);
     if (!id) {
       toast({ title: "Invalid Link", description: "Could not extract a file ID from that link. Make sure you paste the full Google Drive URL.", variant: "destructive" });
       return;
@@ -49,33 +37,33 @@ const GoogleDriveToPDF = () => {
       slide: `https://docs.google.com/presentation/d/${fileId}/export/pdf`,
       file: `https://drive.google.com/uc?export=download&id=${fileId}`,
     };
-    window.open(urls[type], '_blank');
-    toast({ title: "Download Started", description: "Your PDF export should begin in a new tab. Make sure the file is publicly shared." });
+    window.open(urls[type], '_blank', 'noopener,noreferrer');
+    toast({ title: "Export link opened", description: "Google handles access and export in the new tab. Other File downloads the original format." });
   };
 
   const seoContent = {
     toolName: "Google Drive to PDF Converter",
-    whatIs: "Google Drive to PDF Converter helps you export Google Docs, Sheets, and Slides as PDF documents using Google's own export URLs. Simply paste the sharing link of your publicly shared file, select the correct file type, and click to download the PDF export. This tool works by constructing the correct Google export URL for your file — the actual export happens through Google's servers, ensuring full fidelity of your document. No files are processed or stored on our servers.",
+    whatIs: "Google Drive to PDF Converter helps you export Google Docs, Sheets, and Slides as PDF documents using Google's own export URLs. Simply paste the sharing link of your file you have permission to access, select the correct file type, and click to download the PDF export. This tool works by constructing the correct Google export URL for your file — the actual export happens through Google's servers, ensuring full fidelity of your document. No files are processed or stored on our servers.",
     howToUse: [
-      "Copy the sharing link of your Google Drive file (make sure it's set to 'Anyone with the link can view').",
+      "Copy the link of a Google Drive file you have permission to access.",
       "Paste the link in the input field above.",
       "Click 'Process Link' to extract the file ID.",
       "Select the correct file type (Google Doc, Sheet, Slides, or Other File).",
-      "Your browser will open Google's PDF export URL and the download will begin."
+      "Your browser opens Google’s export URL. Sign in to Google if required. Other File downloads the original format."
     ],
     features: [
       "Supports Google Docs, Sheets, Slides, and other Drive files",
       "Uses Google's native export for full document fidelity",
       "No file upload or server processing — links open directly",
-      "Works with any publicly shared Google Drive file",
+      "Works with accessible Google Drive files; Google controls export permissions",
       "Handles multiple Google Drive URL formats automatically",
       "Free with no registration required"
     ],
     safetyNote: "This tool does not download, process, or store your files. It simply constructs the correct Google export URL based on your file's sharing link. The actual PDF export is handled entirely by Google's servers. Your files remain secure in your Google Drive account.",
     faqs: [
-      { question: "Why does my download fail?", answer: "The file must be publicly shared with 'Anyone with the link can view' permission. If it's restricted, Google will block the export. Also make sure you select the correct file type (Doc, Sheet, or Slides)." },
+      { question: "Why does my download fail?", answer: "You need permission to access and export the file. Sign in to the correct Google account and choose the correct type (Doc, Sheet, or Slides)." },
       { question: "Does this tool access my Google account?", answer: "No. This tool does not connect to your Google account at all. It simply opens the standard Google export URL in your browser. Google handles the authentication and download." },
-      { question: "Can I convert private files?", answer: "The file needs to be publicly accessible via link for the export URL to work. If you're logged into Google in the same browser, some restricted files may still work." },
+      { question: "Can I convert private files?", answer: "Private files can work when you are signed in to an account with access and export permission. You do not need to make them publicly shared." },
       { question: "Why are there different file type buttons?", answer: "Google uses different export URL patterns for Docs, Sheets, and Slides. Selecting the correct type ensures the export URL works properly." }
     ]
   };
@@ -175,7 +163,7 @@ const GoogleDriveToPDF = () => {
                 <li>• Google Docs → PDF (full formatting preserved)</li>
                 <li>• Google Sheets → PDF (all sheets included)</li>
                 <li>• Google Slides → PDF (one slide per page)</li>
-                <li>• Other publicly shared files → Direct download</li>
+                <li>• Other file you have permission to accesss → Direct download</li>
               </ul>
             </CardContent>
           </Card>

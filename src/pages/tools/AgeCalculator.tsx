@@ -131,6 +131,7 @@ const AgeCalculator = () => {
   const t = translations[language];
 
   const handleCalculate = () => {
+    setResult(null);
     if (!birthDate) {
       toast.error("Please enter your birth date");
       return;

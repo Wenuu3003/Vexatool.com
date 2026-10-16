@@ -1,26 +1,7 @@
-# Robots.txt for VexaTool
-# https://vexatool.com
-
+# VexaTool crawl rules shared by crawlers.
 User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /_functions/
-
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Mediapartners-Google
-Allow: /
-
-User-agent: AdsBot-Google
-Allow: /
-
-User-agent: AdsBot-Google-Mobile
-Allow: /
 
 Sitemap: https://vexatool.com/sitemap.xml

@@ -1,0 +1,52 @@
+[
+  {
+    "tool": "merge",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "merge-encrypted",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "split",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "rotate",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "rotate-encrypted",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "merge",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "tool": "merge-encrypted",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "tool": "split",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "tool": "rotate",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "tool": "rotate-encrypted",
+    "width": 1440,
+    "passed": true
+  }
+]

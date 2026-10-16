@@ -1,0 +1,74 @@
+[
+  {
+    "tool": "protect",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "ppt",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "currency",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "percentage",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "gst",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "emi",
+    "width": 390,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "protect",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "ppt",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "currency",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "percentage",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "gst",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "tool": "emi",
+    "width": 1440,
+    "overflow": false,
+    "errors": []
+  }
+]

@@ -1,275 +1,96 @@
-import { useState } from "react";
-import { Lock, Download, Eye, EyeOff, ShieldCheck } from "lucide-react";
-import { ToolLayout } from "@/components/ToolLayout";
-import { FileUpload } from "@/components/FileUpload";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
-import { CanonicalHead } from "@/components/CanonicalHead";
-import ToolSEOContent from "@/components/ToolSEOContent";
-import { PDFDocument } from "pdf-lib";
+import { useEffect, useRef, useState } from 'react';
+import { Lock, Download, Eye, EyeOff } from 'lucide-react';
+import { ToolLayout } from '@/components/ToolLayout';
+import { FileUpload } from '@/components/FileUpload';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { CanonicalHead } from '@/components/CanonicalHead';
+import ToolSEOContent from '@/components/ToolSEOContent';
+import { MAX_PDF_BYTES, passwordError } from '@/lib/pdf-protection/encrypt';
+import { protectPdf } from '@/lib/pdf-protection/client';
 
-const ProtectPDF = () => {
+export default function ProtectPDF() {
   const [files, setFiles] = useState<File[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const validatePassword = (pwd: string): { valid: boolean; message: string } => {
-    if (pwd.length < 4) {
-      return { valid: false, message: "Password must be at least 4 characters long." };
-    }
-    if (pwd.length > 128) {
-      return { valid: false, message: "Password must be less than 128 characters." };
-    }
-    return { valid: true, message: "" };
+  const [password, setPassword] = useState('');
+  const [confirmation, setConfirmation] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState<{ url: string; name: string } | null>(null);
+  const operation = useRef<AbortController | null>(null);
+  const downloadUrl = useRef<string | null>(null);
+  useEffect(() => () => { operation.current?.abort(); if (downloadUrl.current) URL.revokeObjectURL(downloadUrl.current); }, []);
+  const clearResult = () => {
+    if (downloadUrl.current) URL.revokeObjectURL(downloadUrl.current);
+    downloadUrl.current = null;
+    setResult(null);
   };
-
-  const handleProtect = async () => {
-    if (files.length === 0) {
-      toast({
-        title: "No file selected",
-        description: "Please select a PDF file to protect.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const trimmedPassword = password.trim();
-    const validation = validatePassword(trimmedPassword);
-    
-    if (!validation.valid) {
-      toast({
-        title: "Invalid password",
-        description: validation.message,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (trimmedPassword !== confirmPassword.trim()) {
-      toast({
-        title: "Passwords don't match",
-        description: "Please ensure both passwords are identical.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsProcessing(true);
-
+  const run = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (busy) return;
+    clearResult();
+    setError('');
+    const file = files[0];
+    const invalid = passwordError(password);
+    if (!file || files.length !== 1) return setError('Choose one PDF.');
+    if (file.size > MAX_PDF_BYTES || !file.size) return setError('Choose a PDF up to 25 MB.');
+    if (invalid) return setError(invalid);
+    if (password !== confirmation) return setError('Passwords do not match exactly.');
+    const controller = new AbortController();
+    operation.current = controller;
+    setBusy(true);
     try {
-      const file = files[0];
-      const arrayBuffer = await file.arrayBuffer();
-      
-      // Load the PDF document
-      const pdfDoc = await PDFDocument.load(arrayBuffer, {
-        ignoreEncryption: true,
-      });
-
-      // pdf-lib doesn't support encryption directly, but we can add document metadata
-      // and use the browser's built-in PDF encryption via a different approach
-      // For proper encryption, we need to use a server-side solution or a library like pdf-lib-encrypt
-      
-      // Since pdf-lib doesn't support AES encryption natively, we'll implement
-      // a clear warning and provide the best available client-side protection
-      
-      // Set document metadata to indicate protection intent
-      pdfDoc.setTitle(pdfDoc.getTitle() || file.name.replace('.pdf', ''));
-      pdfDoc.setCreator('VexaTool - Protected PDF');
-      pdfDoc.setProducer('VexaTool PDF Protection Tool');
-      
-      // Save the PDF with encryption settings if available
-      // Note: pdf-lib has limited encryption support - we use what's available
-      const pdfBytes = await pdfDoc.save();
-      
-      // Create and download the file - wrap in Uint8Array for proper Blob compatibility
-      const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `protected_${file.name}`;
-      link.click();
-
-      URL.revokeObjectURL(url);
-
-      toast({
-        title: "PDF processed successfully",
-        description: "Note: For full AES-256 encryption, please use our server-based protection feature (coming soon). This version provides basic document protection.",
-      });
-
-      setFiles([]);
-      setPassword("");
-      setConfirmPassword("");
-    } catch (error) {
-      if (import.meta.env.DEV) {
-        console.error("Protect error:", error);
-      }
-      toast({
-        title: "Error",
-        description: "Failed to process PDF. The file may be corrupted or already encrypted.",
-        variant: "destructive",
-      });
+      const bytes = await protectPdf(new Uint8Array(await file.arrayBuffer()), password, controller.signal);
+      if (controller.signal.aborted) return;
+      const url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }));
+      downloadUrl.current = url;
+      setResult({ url, name: `protected_${file.name}` });
+      setPassword(''); setConfirmation(''); setVisible(false);
+    } catch (failure) {
+      if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : 'Encryption failed.');
     } finally {
-      setIsProcessing(false);
+      if (operation.current === controller) { operation.current = null; setBusy(false); }
     }
   };
-
-  const seoContent = {
-    toolName: "Protect PDF",
-    whatIs: "Protect PDF is a free online tool that helps you add password protection to your PDF documents to prevent unauthorized access. In today's digital world, safeguarding sensitive information is essential — whether it is financial reports, legal contracts, medical records, employee documents, or personal files. Password-protecting your PDFs ensures that only authorized individuals who know the password can open and view the content. This tool processes everything directly in your browser, so your confidential documents are never uploaded to any external server. While this version provides basic document protection using client-side processing, it is ideal for adding a layer of security before sharing documents via email, cloud storage, or messaging platforms.",
-    howToUse: [
-      "Upload your PDF file by clicking the upload area or dragging and dropping your document.",
-      "Enter a strong password that you want to use for protection — minimum 4 characters.",
-      "Confirm your password by entering it again in the confirmation field.",
-      "Verify that the 'Passwords match' indicator appears in green.",
-      "Click 'Protect & Download' to process and download your protected PDF.",
-      "Share the protected PDF file and communicate the password separately through a secure channel."
-    ],
-    features: [
-      "Add password protection to any PDF document for access control.",
-      "Password confirmation field prevents typos and ensures accuracy.",
-      "Password strength validation with minimum 4-character requirement.",
-      "Show/hide password toggle for easy verification during entry.",
-      "Works with all PDF file sizes and page counts.",
-      "Simple, intuitive one-click protection process.",
-      "No registration, account, or payment required.",
-      "Instant download of the protected file after processing."
-    ],
-    safetyNote: "Your PDF files are processed entirely in your browser — no files are uploaded to our servers or any third-party service. We recommend using strong, unique passwords for your protected documents. Always share passwords through a separate secure channel (like a phone call or encrypted message), never in the same email or message as the protected file.",
-    faqs: [
-      { question: "What makes a strong password?", answer: "A strong password should be at least 8-12 characters long and include a mix of uppercase letters, lowercase letters, numbers, and special characters. Avoid using easily guessable information like birthdays, names, or common words." },
-      { question: "Can I remove the password later?", answer: "Yes, you can use our Unlock PDF tool to remove password protection from PDFs, provided you know the current password." },
-      { question: "Will protected PDFs work on all devices?", answer: "Yes, password-protected PDFs are standard and can be opened on any device with a PDF reader. Recipients will be prompted to enter the password before viewing." },
-      { question: "How secure is the protection?", answer: "This tool provides basic document protection processed in your browser. For enterprise-grade AES-256 encryption, professional PDF software like Adobe Acrobat is recommended." },
-      { question: "Can I protect multiple PDFs at once?", answer: "The tool processes one file at a time for security. Simply repeat the process for each file you need to protect." },
-      { question: "Will the protected PDF have a watermark?", answer: "No. VexaTool never adds watermarks or branding to your documents." },
-      { question: "What happens if I forget the password?", answer: "If you forget the password, there is no way to recover it. We recommend storing passwords in a secure password manager." },
-      { question: "Can I set different passwords for opening and editing?", answer: "Currently, the tool sets a single password for opening the document. Separate owner/user password support is planned for a future update." },
-      { question: "Does protection change the PDF content?", answer: "No. The content, formatting, images, and structure of your PDF remain completely unchanged. Only the access restriction is added." },
-      { question: "Is there a file size limit?", answer: "There is no strict limit, but very large files may take longer to process depending on your device's capabilities." }
-    ]
-  };
-
-  const passwordsMatch = password.trim() === confirmPassword.trim() && password.trim().length > 0;
-  const isValidPassword = validatePassword(password.trim()).valid;
-
-  return (
-    <>
-      <CanonicalHead 
-        title="Protect PDF with Password Free Online | VexaTool"
-        description="Free online PDF protection tool. Add password protection to your PDF documents. Secure your PDFs."
-        keywords="protect PDF, password PDF, encrypt PDF, secure PDF, PDF password protection, lock PDF"
-      />
-      <ToolLayout
-        title="Protect PDF"
-        description="Add password protection to your PDF documents"
-        icon={Lock}
-        colorClass="bg-tool-protect"
-      >
-      <FileUpload
-        files={files}
-        onFilesChange={setFiles}
-        colorClass="bg-tool-protect"
-      />
-
-      {files.length > 0 && (
-        <div className="mt-8 max-w-md mx-auto space-y-6">
-          <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
-            <div className="flex items-start gap-3">
-              <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-amber-800 dark:text-amber-200">
-                <p className="font-medium mb-1">Client-Side Processing</p>
-                <p>Your PDF is processed entirely in your browser. For enterprise-grade AES-256 encryption, consider using Adobe Acrobat or similar professional tools.</p>
+  return <>
+    <CanonicalHead title="Protect PDF with AES-256 Password Encryption | VexaTool" description="Encrypt an unencrypted PDF with a password in your browser. Up to 25 MB; no document upload required for encryption." keywords="protect PDF, encrypt PDF, password PDF" />
+    <ToolLayout title="Protect PDF" description="Add a password required to open your PDF" icon={Lock} colorClass="bg-tool-protect">
+      <div className="mx-auto max-w-xl space-y-6">
+        <p className="rounded-lg border bg-muted/40 p-4 text-sm">AES-256 encryption runs on your device. Choose one unencrypted PDF up to 25 MB. Keep your original file: encryption changes the file and can invalidate digital signatures.</p>
+        <form onSubmit={run} className="space-y-5">
+          <fieldset disabled={busy} className="space-y-5 min-w-0">
+            <FileUpload files={files} onFilesChange={(next) => { setFiles(next.slice(0, 1)); clearResult(); setError(''); }} colorClass="bg-tool-protect" />
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <div className="flex gap-2">
+                <Input id="password" autoComplete="new-password" type={visible ? 'text' : 'password'} value={password} onChange={e => { setPassword(e.target.value); clearResult(); }} aria-describedby="password-help" />
+                <Button type="button" variant="outline" onClick={() => setVisible(!visible)} aria-label={visible ? 'Hide passwords' : 'Show passwords'}>{visible ? <EyeOff size={18} /> : <Eye size={18} />}</Button>
               </div>
+              <p id="password-help" className="text-xs text-muted-foreground">Use a long, unique password (at least 8 characters, at most 127 UTF-8 bytes). Spaces are preserved exactly. Store it safely; this tool cannot recover it.</p>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter password (min 4 characters)"
-                maxLength={128}
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm password</Label>
+              <Input id="confirmPassword" autoComplete="new-password" type={visible ? 'text' : 'password'} value={confirmation} onChange={e => { setConfirmation(e.target.value); clearResult(); }} />
+              {confirmation && password !== confirmation && <p className="text-sm text-destructive">Passwords do not match exactly.</p>}
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <div className="relative">
-              <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-enter password"
-                maxLength={128}
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-              >
-                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-            {confirmPassword && !passwordsMatch && (
-              <p className="text-xs text-destructive">Passwords do not match</p>
-            )}
-            {passwordsMatch && isValidPassword && (
-              <p className="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3" /> Passwords match
-              </p>
-            )}
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            Choose a strong password to protect your document. Minimum 4 characters required.
-          </p>
-
-          <div className="text-center">
-            <Button
-              size="lg"
-              onClick={handleProtect}
-              disabled={isProcessing || !passwordsMatch || !isValidPassword}
-              className="gap-2"
-            >
-              {isProcessing ? (
-                "Processing..."
-              ) : (
-                <>
-                  <Download className="w-5 h-5" />
-                  Protect & Download
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
-      <ToolSEOContent {...seoContent} />
-      </ToolLayout>
-    </>
-  );
-};
-
-export default ProtectPDF;
+            <Button type="submit" className="w-full gap-2" disabled={!files.length || !!passwordError(password) || password !== confirmation}><Lock size={18} />{busy ? 'Encrypting…' : 'Encrypt PDF'}</Button>
+          </fieldset>
+          {busy && <Button type="button" variant="outline" onClick={() => { operation.current?.abort(); setError('Protection cancelled. No output was downloaded.'); }}>Cancel</Button>}
+        </form>
+        {error && <p role="alert" className="rounded-lg border border-destructive p-4 text-sm text-destructive">{error}</p>}
+        {result && <div role="status" className="space-y-3 rounded-lg border p-4">
+          <p className="font-medium">Your encrypted PDF is ready.</p>
+          <p className="text-sm text-muted-foreground">Open the downloaded file in a PDF reader and check it with your password before sharing. Send the password separately.</p>
+          <Button asChild className="w-full gap-2"><a href={result.url} download={result.name}><Download size={18} />Download encrypted PDF</a></Button>
+        </div>}
+      </div>
+      <ToolSEOContent toolName="Protect PDF" whatIs="Encrypt an existing PDF with AES-256 so a compatible PDF reader requires your password to open it. The encryption engine runs in a browser worker; the document and password are not sent to a server by this operation. Encryption strength also depends on your password and the security of your device." howToUse={['Select one valid, unencrypted PDF up to 25 MB.', 'Enter and confirm a long, unique password. Spaces count exactly.', 'Choose Encrypt PDF and then download the result.', 'Check the downloaded document in a PDF reader. Share the password separately.']} features={['AES-256 password encryption using qpdf.', 'Processing in a browser worker.', 'Download only after successful encryption.', 'Cancel processing at any time.']} safetyNote="Keep your original. Rewriting a digitally signed PDF can invalidate signatures. Already encrypted files are not supported. No recovery service is provided; save your password securely. Very complex documents may exceed your device’s memory or the processing time limit." faqs={[
+        { question: 'Which files are supported?', answer: 'One valid, unencrypted PDF up to 25 MB. Corrupt, empty and already encrypted documents are rejected. A small but complex file may still exceed device resources.' },
+        { question: 'Does this prevent copying after opening?', answer: 'No. The password controls opening the document; this tool does not impose printing or copying restrictions once it is opened.' },
+        { question: 'Will every reader open it?', answer: 'Use a reader that supports AES-256 PDF encryption. Older readers may not. Check the output before sharing.' },
+        { question: 'Are files uploaded for encryption?', answer: 'This operation processes PDF bytes and passwords locally. The browser downloads the engine assets; it does not upload the document for encryption.' }
+      ]} />
+    </ToolLayout>
+  </>;
+}

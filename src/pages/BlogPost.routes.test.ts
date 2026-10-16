@@ -1,3 +1,4 @@
+import { blogPosts as listedPosts } from "./Blog";
 import { describe, it, expect } from "vitest";
 import { blogPosts as sitemapBlogSlugs } from "@/config/routes";
 import { allBlogContent, legacyBlogRedirects } from "./BlogPost";
@@ -66,5 +67,17 @@ describe("Blog router regression", () => {
     ];
     const missing = phase3.filter((slug) => !allBlogContent[slug]);
     expect(missing, `Phase 3 slugs missing: ${missing.join(", ")}`).toEqual([]);
+  });
+});
+
+describe("Blog discovery", () => {
+  it("lists each canonical article exactly once", () => {
+    const slugs = listedPosts.map(post => post.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    expect([...slugs].sort()).toEqual(Object.keys(allBlogContent).sort());
+  });
+  it("redirects the duplicate tools guide to its canonical article", () => {
+    expect(legacyBlogRedirects["best-free-pdf-tools-online"]).toBe("best-free-pdf-tools-online-2026");
+    expect(allBlogContent["best-free-pdf-tools-online"]).toBeUndefined();
   });
 });

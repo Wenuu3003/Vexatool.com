@@ -1,0 +1,102 @@
+[
+  {
+    "output": "resize.jpg",
+    "width": 390,
+    "format": "JPEG",
+    "dimensions": [
+      32,
+      24
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "convert.jpg",
+    "width": 390,
+    "format": "JPEG",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "convert.png",
+    "width": 390,
+    "format": "PNG",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "convert.webp",
+    "width": 390,
+    "format": "WEBP",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "compress.png",
+    "width": 390,
+    "format": "PNG",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "resize.jpg",
+    "width": 1440,
+    "format": "JPEG",
+    "dimensions": [
+      32,
+      24
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "convert.jpg",
+    "width": 1440,
+    "format": "JPEG",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "convert.png",
+    "width": 1440,
+    "format": "PNG",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "convert.webp",
+    "width": 1440,
+    "format": "WEBP",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  },
+  {
+    "output": "compress.png",
+    "width": 1440,
+    "format": "PNG",
+    "dimensions": [
+      64,
+      48
+    ],
+    "bluePixelsVerified": true
+  }
+]

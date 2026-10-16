@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -151,7 +152,12 @@ export default function ImageResizer() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
+  const [searchParams] = useSearchParams();
+  const requestedMode = searchParams.get("mode");
   const [specialMode, setSpecialMode] = useState<SpecialMode>("none");
+  useEffect(() => {
+    setSpecialMode(["govtjob", "passport", "whatsapp", "aadhaar"].includes(requestedMode || "") ? requestedMode as SpecialMode : "none");
+  }, [requestedMode]);
   const [govtMaxKB, setGovtMaxKB] = useState<20 | 50>(20);
   const [passportMaxKB, setPassportMaxKB] = useState<20 | 50>(20);
   const [whatsappMaxKB, setWhatsappMaxKB] = useState<20 | 50>(20);
@@ -186,6 +192,12 @@ export default function ImageResizer() {
       setResized(null);
       setActiveQuickKB(null);
     };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      setImage(null);
+      setResized(null);
+      toast({ title: "Invalid image", description: "The image is corrupt or unsupported.", variant: "destructive" });
+    };
     img.src = url;
   }, [toast]);
 
@@ -213,14 +225,14 @@ export default function ImageResizer() {
   };
 
   const handleWidthChange = (value: string) => {
-    const newWidth = parseInt(value) || 1;
+    const newWidth = Number(value);
     setWidth(newWidth);
     if (maintainRatio && image) setHeight(Math.round(newWidth / aspectRatioRef.current));
     setPreset("custom");
   };
 
   const handleHeightChange = (value: string) => {
-    const newHeight = parseInt(value) || 1;
+    const newHeight = Number(value);
     setHeight(newHeight);
     if (maintainRatio && image) setWidth(Math.round(newHeight * aspectRatioRef.current));
     setPreset("custom");
@@ -333,6 +345,11 @@ export default function ImageResizer() {
 
   const handleResize = async () => {
     if (!image) return;
+    setResized(null);
+    if (![width, height].every(n => Number.isInteger(n) && n >= 1 && n <= 10000) || width * height > 25000000) {
+      toast({ title: "Invalid dimensions", description: "Use whole numbers from 1 to 10000, with at most 25 million pixels.", variant: "destructive" });
+      return;
+    }
     setIsProcessing(true);
     setProgress(0);
     setProgressLabel("Resizing…");
@@ -343,6 +360,8 @@ export default function ImageResizer() {
       canvas.height = height;
       const ctx = canvas.getContext("2d")!;
       const img = await loadImg();
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, width, height);
       ctx.drawImage(img, 0, 0, width, height);
       const dataUrl = canvas.toDataURL("image/jpeg", quality / 100);
       const sizeKB = Math.round((dataUrl.length - 22) * 0.75 / 1024);
@@ -391,7 +410,7 @@ export default function ImageResizer() {
 
   const seoContent = {
     toolName: "Image Resizer – Resize to 20KB 50KB, WhatsApp DP, Aadhaar & Passport Photo India",
-    whatIs: "Our free Image Resizer is India's most powerful online tool for resizing photos to exact file sizes and dimensions. Resize an image to 20KB for a government job application, 50KB for online forms, or WhatsApp DP size (192×192px) in one click. It also supports Aadhaar photo (200×200px), Passport Photo (2×2 inch, 300 DPI), and Govt Job Form mode (3.5×4.5 cm with white background). The smart algorithm reduces quality gradually while maintaining maximum clarity — your photos will pass all government portal verifications.",
+    whatIs: "Our free Image Resizer is India's most powerful online tool for resizing photos to exact file sizes and dimensions. Resize an image to 20KB for a government job application, 50KB for online forms, or WhatsApp DP size (192×192px) in one click. It also supports Aadhaar photo (200×200px), Passport Photo (2×2 inch, 300 DPI), and Govt Job Form mode (3.5×4.5 cm with white background). The smart algorithm reduces quality gradually while maintaining maximum clarity — check the current application requirements before submitting your photo.",
     howToUse: [
       "Upload your photo by clicking the upload area or dragging and dropping.",
       "Choose a Quick Resize button (20KB, 50KB, 100KB, 200KB) for instant compression.",
@@ -417,7 +436,7 @@ export default function ImageResizer() {
       { question: "What size photo is needed for Aadhaar card update?", answer: "Aadhaar / UIDAI requires a passport-size photo with white background, typically 200×200px. Select 'Aadhaar Photo' mode and the tool automatically applies the correct size, white background, and 20KB/50KB limit." },
       { question: "What is the standard passport photo size in India?", answer: "The standard Indian passport photo size is 2×2 inches (51×51mm) at 300 DPI, which equals 600×600 pixels. Our Passport Photo India mode automatically sets these dimensions." },
       { question: "What size photo is required for govt job application forms?", answer: "Most Indian government job forms (SSC, UPSC, Railway, Banking) require a passport size photo of 3.5×4.5 cm with a white background, and file size between 10KB to 50KB in JPEG format. Our Govt Job Form mode handles all of this automatically." },
-      { question: "Does this tool add white background to photos?", answer: "Yes. WhatsApp DP, Aadhaar Photo, Govt Job Form, and Passport Photo modes all automatically add a white background, meeting the requirement for all Indian government documents." },
+      { question: "Does this tool add white background to photos?", answer: "Yes. WhatsApp DP, Aadhaar Photo, Govt Job Form, and Passport Photo modes all automatically add a white background, Requirements vary by application; verify the required size, background and file limits before submitting." },
       { question: "Will compressing to 20KB reduce photo quality?", answer: "The smart compression algorithm reduces quality gradually, from high to minimum, to hit the target size. For typical passport and ID photos, the result at 20KB is perfectly clear and accepted by all government portals." },
       { question: "Can I type a custom KB target size?", answer: "Yes. In the Custom Target Size section, type any KB value (e.g., 30, 75, 150) and click Compress. The smart algorithm will find the best quality-size combination to match your target." },
     ],

@@ -37,6 +37,7 @@ export const blogPosts = [
   'digital-signature-guide',
   'pdf-accessibility-guide',
   'best-free-pdf-tools-online-2026',
+  'how-to-sign-pdf-online-free-securely',
   // Phase 3 — new posts
   'secure-pdf-processing-browser-based',
   'pdf-vs-word-when-to-use-each',
@@ -718,36 +719,57 @@ export const BASE_URL = 'https://vexatool.com';
 // Tool update dates for accurate lastmod (format: YYYY-MM-DD)
 // Update these when significant changes are made to specific tools
 export const toolUpdateDates: Record<string, string> = {
+  '/protect-pdf': '2026-10-14',
+  '/ppt-to-pdf': '2026-10-14',
+  '/currency-converter': '2026-10-14',
+  '/percentage-calculator': '2026-10-14',
+  '/gst-calculator': '2026-10-14',
+  '/emi-calculator': '2026-10-14',
+  '/merge-pdf': '2026-10-14',
+  '/split-pdf': '2026-10-14',
+  '/rotate-pdf': '2026-10-14',
+  '/image-to-pdf': '2026-10-14',
+  '/pdf-to-image': '2026-10-14',
+  '/pdf-to-jpg': '2026-10-14',
+  '/pdf-to-png': '2026-10-14',
+  '/image-resizer': '2026-10-14',
+  '/image-format-converter': '2026-10-14',
+  '/compress-image': '2026-10-14',
+  '/age-calculator': '2026-10-14',
+  '/bmi-calculator': '2026-10-14',
+  '/compress-pdf': '2026-10-14',
+  '/file-compressor': '2026-10-14',
+  '/google-drive-to-pdf': '2026-10-14',
+  '/organize-pdf': '2026-10-14',
+  '/repair-pdf': '2026-10-14',
+  '/sign-pdf': '2026-10-14',
+  '/watermark-pdf': '2026-10-14',
+  '/word-to-excel': '2026-10-14',
+  '/word-to-pdf': '2026-10-14',
+  '/background-remover': '2026-10-15',
+
   '/': '2026-01-23',
   '/blog': '2026-01-23',
   '/edit-pdf': '2026-01-23', // Major update: Professional PDF Editor
-  '/watermark-pdf': '2026-01-23',
-  '/sign-pdf': '2026-01-23', 
-  '/merge-pdf': '2026-01-23',
-  '/split-pdf': '2026-01-23',
-  '/compress-pdf': '2026-01-23',
   '/pdf-to-excel': '2026-01-23',
   '/excel-to-pdf': '2026-01-23',
   '/qr-code-generator': '2026-01-20',
   '/qr-code-scanner': '2026-01-20',
-  '/background-remover': '2026-01-20',
-  '/image-resizer': '2026-01-20',
-  '/compress-image': '2026-01-20',
   '/pincode-generator': '2026-01-20',
 };
 
 // Default lastmod date for routes without specific update dates
-const DEFAULT_LASTMOD = '2026-01-23';
+// Omit dates when the content modification date is not known.
 
 export const generateSitemapXml = (): string => {
   const urls = routes
     .filter(route => route.includeInSitemap)
     .map(route => {
       // Use specific update date if available, otherwise default
-      const lastmod = toolUpdateDates[route.path] || DEFAULT_LASTMOD;
+      const lastmod = toolUpdateDates[route.path];
       return `  <url>
     <loc>${BASE_URL}${route.path === '/' ? '' : route.path}</loc>
-    <lastmod>${lastmod}</lastmod>
+    ${lastmod ? `<lastmod>${lastmod}</lastmod>` : ""}
     <changefreq>${route.changefreq}</changefreq>
     <priority>${route.priority}</priority>
   </url>`;

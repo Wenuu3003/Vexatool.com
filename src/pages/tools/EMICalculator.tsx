@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,8 @@ export default function EMICalculator() {
   const [showSchedule, setShowSchedule] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => { setResult(null); setShowSchedule(false); }, [principal, interestRate, tenure, tenureType]);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -39,12 +41,13 @@ export default function EMICalculator() {
   };
 
   const calculateEMI = () => {
+    setResult(null);
     const p = parseFloat(principal);
     const r = parseFloat(interestRate) / 12 / 100;
     const n = tenureType === "years" ? parseFloat(tenure) * 12 : parseFloat(tenure);
 
-    if (isNaN(p) || isNaN(r) || isNaN(n) || p <= 0 || n <= 0) {
-      toast({ title: "Invalid input", description: "Please enter valid values.", variant: "destructive" });
+    if (!Number.isFinite(p) || !Number.isFinite(r) || !Number.isFinite(n) || p <= 0 || !Number.isInteger(n) || n <= 0 || n > 1200) {
+      toast({ title: "Invalid input", description: "Enter finite values and a tenure of 1–1200 whole months (up to 100 years).", variant: "destructive" });
       return;
     }
 
@@ -57,11 +60,16 @@ export default function EMICalculator() {
     if (parseFloat(interestRate) === 0) {
       emi = p / n;
     } else {
-      emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      emi = (p * r) / -Math.expm1(-n * Math.log1p(r));
     }
 
     const totalPayment = emi * n;
     const totalInterest = totalPayment - p;
+
+    if (![emi, totalPayment, totalInterest].every(Number.isFinite)) {
+      toast({ title: "Values too large", description: "Use smaller values.", variant: "destructive" });
+      return;
+    }
 
     // Generate amortization schedule
     const schedule: EMIResult["schedule"] = [];

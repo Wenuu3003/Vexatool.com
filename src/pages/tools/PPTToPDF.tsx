@@ -9,10 +9,7 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { Progress } from "@/components/ui/progress";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
-interface SlideContent {
-  text: string[];
-  images: { data: Uint8Array; type: 'png' | 'jpg' }[];
-}
+import { extractContentFromPPTX } from '@/lib/extractPptx';
 
 const PPTToPDF = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,10 +19,11 @@ const PPTToPDF = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isProcessing) return;
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       const fileName = selectedFile.name.toLowerCase();
-      if (fileName.endsWith('.pptx') || fileName.endsWith('.ppt')) {
+      if (fileName.endsWith('.pptx')) {
         setFile(selectedFile);
         setIsConverted(false);
         toast({
@@ -33,80 +31,14 @@ const PPTToPDF = () => {
           description: `${selectedFile.name} is ready for conversion.`,
         });
       } else {
+        setFile(null);
+        setIsConverted(false);
         toast({
           title: "Invalid file type",
-          description: "Please select a PowerPoint file (.ppt or .pptx)",
+          description: "Select a .pptx file. Legacy .ppt is unsupported; save it as .pptx first.",
           variant: "destructive",
         });
       }
-    }
-  };
-
-  const extractContentFromPPTX = async (file: File): Promise<SlideContent[]> => {
-    try {
-      const arrayBuffer = await file.arrayBuffer();
-      const JSZip = (await import('jszip')).default;
-      const zip = await JSZip.loadAsync(arrayBuffer);
-      
-      // Extract all media files first
-      const mediaFiles: Map<string, { data: Uint8Array; type: 'png' | 'jpg' }> = new Map();
-      const mediaFileNames = Object.keys(zip.files).filter(name => 
-        name.startsWith('ppt/media/') && (name.endsWith('.png') || name.endsWith('.jpg') || name.endsWith('.jpeg'))
-      );
-      
-      for (const mediaFile of mediaFileNames) {
-        const data = await zip.file(mediaFile)?.async('uint8array');
-        if (data) {
-          const type = mediaFile.endsWith('.png') ? 'png' : 'jpg';
-          const fileName = mediaFile.split('/').pop() || '';
-          mediaFiles.set(fileName, { data, type });
-        }
-      }
-      
-      const slides: SlideContent[] = [];
-      const slideFiles = Object.keys(zip.files)
-        .filter(name => name.match(/ppt\/slides\/slide\d+\.xml$/))
-        .sort((a, b) => {
-          const numA = parseInt(a.match(/slide(\d+)/)?.[1] || '0');
-          const numB = parseInt(b.match(/slide(\d+)/)?.[1] || '0');
-          return numA - numB;
-        });
-
-      for (const slideFile of slideFiles) {
-        const slideContent: SlideContent = { text: [], images: [] };
-        const content = await zip.file(slideFile)?.async('text');
-        
-        if (content) {
-          // Extract text from XML
-          const textMatches = content.match(/<a:t>([^<]*)<\/a:t>/g) || [];
-          slideContent.text = textMatches
-            .map(match => match.replace(/<a:t>|<\/a:t>/g, ''))
-            .filter(text => text.trim());
-        }
-        
-        // Get slide relationships to find which images are on this slide
-        const slideNum = slideFile.match(/slide(\d+)/)?.[1];
-        const relsFile = `ppt/slides/_rels/slide${slideNum}.xml.rels`;
-        const relsContent = await zip.file(relsFile)?.async('text');
-        
-        if (relsContent) {
-          // Find image references in relationships
-          const imageRefs = relsContent.match(/Target="\.\.\/media\/([^"]+)"/g) || [];
-          for (const ref of imageRefs) {
-            const fileName = ref.match(/Target="\.\.\/media\/([^"]+)"/)?.[1];
-            if (fileName && mediaFiles.has(fileName)) {
-              slideContent.images.push(mediaFiles.get(fileName)!);
-            }
-          }
-        }
-        
-        slides.push(slideContent);
-      }
-      
-      return slides.length > 0 ? slides : [{ text: ['No content found in presentation'], images: [] }];
-    } catch (error) {
-      console.error('Error extracting PPTX:', error);
-      return [{ text: ['Could not extract content - creating placeholder slides'], images: [] }];
     }
   };
 
@@ -120,6 +52,7 @@ const PPTToPDF = () => {
       return;
     }
 
+    setIsConverted(false);
     setIsProcessing(true);
     setProgress(10);
 
@@ -266,56 +199,7 @@ const PPTToPDF = () => {
           setProgress(50 + Math.round((i / slides.length) * 40));
         }
       } else {
-        // For .ppt files, create a simple PDF with file info
-        const page = pdfDoc.addPage([960, 540]);
-        
-        page.drawRectangle({
-          x: 0,
-          y: 0,
-          width: 960,
-          height: 540,
-          color: rgb(1, 1, 1),
-        });
-        
-        page.drawText('PowerPoint Presentation', {
-          x: 40,
-          y: 480,
-          size: 32,
-          font: boldFont,
-          color: rgb(0.2, 0.2, 0.2),
-        });
-        
-        page.drawText(`File: ${file.name}`, {
-          x: 40,
-          y: 420,
-          size: 18,
-          font: font,
-          color: rgb(0.3, 0.3, 0.3),
-        });
-        
-        page.drawText(`Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`, {
-          x: 40,
-          y: 390,
-          size: 18,
-          font: font,
-          color: rgb(0.3, 0.3, 0.3),
-        });
-        
-        page.drawText('Note: Legacy .ppt format has limited browser support.', {
-          x: 40,
-          y: 330,
-          size: 14,
-          font: font,
-          color: rgb(0.5, 0.5, 0.5),
-        });
-        
-        page.drawText('For best results, save as .pptx in PowerPoint first.', {
-          x: 40,
-          y: 300,
-          size: 14,
-          font: font,
-          color: rgb(0.5, 0.5, 0.5),
-        });
+        throw new Error('Legacy .ppt is unsupported. Save as .pptx first.');
       }
       
       setProgress(90);
@@ -338,13 +222,13 @@ const PPTToPDF = () => {
       
       toast({
         title: "Conversion Complete!",
-        description: "Your PowerPoint has been converted to PDF successfully.",
+        description: "A simplified PDF was created. Check it before sharing; original slide layout is not preserved.",
       });
     } catch (error) {
       console.error('Conversion error:', error);
       toast({
         title: "Conversion failed",
-        description: "Could not convert the file. Please try again.",
+        description: error instanceof Error ? error.message : "Conversion failed. No PDF was created.",
         variant: "destructive",
       });
     } finally {
@@ -354,10 +238,11 @@ const PPTToPDF = () => {
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    if (isProcessing) return;
     const droppedFile = e.dataTransfer.files[0];
     if (droppedFile) {
       const fileName = droppedFile.name.toLowerCase();
-      if (fileName.endsWith('.pptx') || fileName.endsWith('.ppt')) {
+      if (fileName.endsWith('.pptx')) {
         setFile(droppedFile);
         setIsConverted(false);
         toast({
@@ -365,59 +250,40 @@ const PPTToPDF = () => {
           description: `${droppedFile.name} is ready for conversion.`,
         });
       } else {
+        setFile(null);
+        setIsConverted(false);
         toast({
           title: "Invalid file type",
-          description: "Please select a PowerPoint file (.ppt or .pptx)",
+          description: "Select a .pptx file. Legacy .ppt is unsupported; save it as .pptx first.",
           variant: "destructive",
         });
       }
     }
-  }, []);
+  }, [isProcessing]);
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
   }, []);
 
   const seoContent = {
-    toolName: "PowerPoint to PDF Converter",
-    whatIs: "PowerPoint to PDF Converter is a free online tool that converts your PPT and PPTX presentations to PDF format directly in your browser. The tool extracts both text content AND images from your slides, creating a rich PDF document that preserves your presentation visuals. All processing happens locally - your files are never uploaded to any server, ensuring complete privacy.",
-    howToUse: [
-      "Click the upload area or drag and drop your PowerPoint file (.ppt or .pptx).",
-      "Wait for the file to be processed.",
-      "Click 'Convert to PDF' to start the conversion.",
-      "Your PDF will be downloaded automatically with images and text preserved.",
-      "The PDF maintains your slide content, images, and structure."
-    ],
-    features: [
-      "Convert PPTX and PPT files to PDF",
-      "Extracts images and graphics from slides",
-      "Preserves text content with proper formatting",
-      "Maintains slide structure and layout",
-      "100% browser-based processing",
-      "No file upload to servers",
-      "Progress indicator for conversion",
-      "Instant download after conversion"
-    ],
-    safetyNote: "Your PowerPoint files are processed entirely in your browser. No documents are uploaded to any server, ensuring complete privacy and security. The conversion happens locally on your device.",
-    faqs: [
-      { question: "Does this preserve images?", answer: "Yes! The converter now extracts and embeds PNG and JPG images from your PPTX slides directly into the PDF, maintaining visual fidelity." },
-      { question: "Does this preserve formatting?", answer: "The tool extracts text content and images, creating PDF slides that closely match your original presentation. Complex animations and transitions are not preserved as PDFs are static documents." },
-      { question: "Can I convert .ppt files?", answer: "Yes, both .ppt (legacy) and .pptx formats are supported. However, .pptx files provide better image and text extraction due to their XML-based structure." },
-      { question: "Is there a file size limit?", answer: "Since processing happens in your browser, very large files may take longer. For best performance, files under 50MB are recommended." },
-      { question: "Are my files secure?", answer: "Absolutely! Your files never leave your device. All processing is done locally in your browser, ensuring complete privacy." }
-    ]
+    toolName: "PPTX to simplified PDF",
+    whatIs: "Extract supported text and PNG/JPEG images from PPTX into a simplified PDF. This is not a faithful PowerPoint renderer: slide layout, fonts, charts, shapes, animations and some content are not preserved. Legacy PPT is unsupported.",
+    howToUse: ["Save legacy PPT as PPTX first.", "Choose a PPTX up to 25 MB.", "Convert and inspect every output page before sharing."],
+    features: ["Local text and PNG/JPEG extraction", "Clear errors for unreadable presentations", "Simplified PDF output"],
+    safetyNote: "Keep the original. Complex slides may lose content or formatting. For faithful output use PowerPoint's Export to PDF. The conversion operation does not upload the document.",
+    faqs: [{question: "Is original layout preserved?", answer: "No. This tool extracts supported content into a simplified layout. Use PowerPoint export for faithful slides."}, {question: "Can I use legacy PPT?", answer: "No. Save as PPTX first. Invalid or unsupported presentations do not produce a placeholder PDF."}]
   };
 
   return (
     <>
       <CanonicalHead 
         title="PowerPoint to PDF Converter Free Online | VexaTool"
-        description="Free PowerPoint to PDF converter. Convert PPT and PPTX presentations to PDF instantly. 100% private."
+        description="Extract supported PPTX text and images into a simplified PDF. Original layout is not preserved; legacy PPT is unsupported."
         keywords="PowerPoint to PDF, PPT to PDF, PPTX to PDF, convert presentation, free PPT converter"
       />
       <ToolLayout
         title="PowerPoint to PDF"
-        description="Convert PPT and PPTX files to PDF instantly"
+        description="PPTX to simplified PDF — original layout is not preserved"
         icon={Presentation}
         colorClass="bg-orange-600"
       >
@@ -425,20 +291,20 @@ const PPTToPDF = () => {
         <Alert>
           <Info className="h-4 w-4" />
           <AlertDescription>
-            Convert PowerPoint presentations to PDF directly in your browser. Your files stay private - no server upload.
+            Extract supported text and PNG/JPEG images into a simplified PDF. Layout, charts, shapes and some content are not preserved. Use PowerPoint Export for a faithful copy.
           </AlertDescription>
         </Alert>
 
         <div 
           className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors cursor-pointer"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={() => { if (!isProcessing) fileInputRef.current?.click(); }}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
         >
           <input
             ref={fileInputRef}
             type="file"
-            accept=".ppt,.pptx"
+            accept=".pptx"
             onChange={handleFileChange}
             className="hidden"
             id="ppt-upload"
@@ -456,7 +322,7 @@ const PPTToPDF = () => {
             {file ? file.name : "Click or drag to select PowerPoint file"}
           </p>
           <p className="text-sm text-muted-foreground">
-            Supports .ppt and .pptx files
+            PPTX only · Up to 25 MB · Legacy PPT unsupported
           </p>
         </div>
 
@@ -508,7 +374,7 @@ const PPTToPDF = () => {
           <ul className="space-y-2 text-sm text-muted-foreground ml-8">
             <li className="flex items-start gap-2">
               <span className="text-orange-600 mt-1">•</span>
-              <span>Upload your PowerPoint file (.ppt or .pptx)</span>
+              <span>Upload your PowerPoint file (.pptx only)</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-orange-600 mt-1">•</span>
@@ -520,7 +386,7 @@ const PPTToPDF = () => {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-orange-600 mt-1">•</span>
-              <span>A PDF is generated preserving your visual content</span>
+              <span>A simplified PDF is generated; inspect every page before sharing</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-orange-600 mt-1">•</span>
@@ -530,10 +396,9 @@ const PPTToPDF = () => {
         </div>
 
         <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-6 space-y-4">
-          <h3 className="font-semibold text-green-700 dark:text-green-400">🔒 Privacy Guaranteed</h3>
+          <h3 className="font-semibold text-green-700 dark:text-green-400">Local conversion</h3>
           <p className="text-sm text-muted-foreground">
-            Your files are processed 100% in your browser. Nothing is uploaded to any server. 
-            Your presentations remain completely private and secure.
+            This conversion operation reads the document locally and does not upload it to a server.
           </p>
         </div>
       </div>

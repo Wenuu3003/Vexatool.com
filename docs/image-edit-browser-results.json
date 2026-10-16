@@ -1,0 +1,50 @@
+[
+  {
+    "tool": "image-resizer",
+    "width": 390,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "image-format-converter",
+    "width": 390,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "compress-image",
+    "width": 390,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "image-resizer",
+    "width": 1440,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "image-format-converter",
+    "width": 1440,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  },
+  {
+    "tool": "compress-image",
+    "width": 1440,
+    "validDownload": true,
+    "corruptRejected": true,
+    "noOverflow": true,
+    "noUncaughtErrors": true
+  }
+]

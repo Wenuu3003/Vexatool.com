@@ -270,6 +270,7 @@ const CompressImage = () => {
                         <Button 
                           size="sm" 
                           variant="outline"
+                          aria-label={`Download image ${index + 1}`}
                           onClick={() => handleDownload(compressedImages[index])}
                         >
                           <Download className="w-4 h-4" />

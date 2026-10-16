@@ -59,6 +59,7 @@ const ToolButton = memo(({
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
+          aria-label={tooltip}
           variant={activeTool === tool ? 'default' : 'ghost'}
           size="icon"
           className="h-8 w-8"

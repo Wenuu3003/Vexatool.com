@@ -35,7 +35,7 @@ const RepairPDF = () => {
       
       // Attempt to load and rebuild the PDF
       const pdfDoc = await PDFDocument.load(arrayBuffer, {
-        ignoreEncryption: true,
+        ignoreEncryption: false,
         updateMetadata: false,
       });
 

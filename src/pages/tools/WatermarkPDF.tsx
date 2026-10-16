@@ -1,3 +1,4 @@
+import { imageToPng } from "@/lib/imageToPng";
 import { useState } from "react";
 import { Droplets, Download, Image, Type, Upload, Sparkles } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -118,7 +119,7 @@ const WatermarkPDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
       const pages = pdf.getPages();
 
       if (watermarkType === "text") {
@@ -167,21 +168,7 @@ const WatermarkPDF = () => {
         } else if (imageFile.type === "image/jpeg" || imageFile.type === "image/jpg") {
           image = await pdf.embedJpg(imageBytes);
         } else {
-          // Convert other formats to PNG via canvas
-          const img = new window.Image();
-          img.src = URL.createObjectURL(imageFile);
-          await new Promise((resolve) => { img.onload = resolve; });
-          
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          ctx?.drawImage(img, 0, 0);
-          
-          const pngDataUrl = canvas.toDataURL("image/png");
-          const pngBase64 = pngDataUrl.split(",")[1];
-          const pngBytes = Uint8Array.from(atob(pngBase64), c => c.charCodeAt(0));
-          image = await pdf.embedPng(pngBytes);
+          image = await pdf.embedPng(await imageToPng(imageFile));
         }
 
         for (const page of pages) {

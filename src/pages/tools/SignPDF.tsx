@@ -271,7 +271,7 @@ const SignPDF = () => {
     try {
       const arrayBuffer = await files[0].arrayBuffer();
       const pdfLibDoc = await PDFDocument.load(arrayBuffer, {
-        ignoreEncryption: true,
+        ignoreEncryption: false,
         updateMetadata: false,
       });
       const pages = pdfLibDoc.getPages();

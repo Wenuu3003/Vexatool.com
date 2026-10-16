@@ -1,0 +1,14 @@
+[
+  {
+    "width": 390,
+    "mergePagesAndOrder": true,
+    "splitSelectedPages": true,
+    "rotationAndText": true
+  },
+  {
+    "width": 1440,
+    "mergePagesAndOrder": true,
+    "splitSelectedPages": true,
+    "rotationAndText": true
+  }
+]

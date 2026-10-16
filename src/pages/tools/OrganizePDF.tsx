@@ -19,11 +19,12 @@ const OrganizePDF = () => {
     if (newFiles.length > 0) {
       try {
         const arrayBuffer = await newFiles[0].arrayBuffer();
-        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+        const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
         const count = pdf.getPageCount();
         setTotalPages(count);
         setPageOrder(Array.from({ length: count }, (_, i) => i));
       } catch {
+        toast({ title: "Cannot open PDF", description: "The file is corrupt or password-protected. Unlock it first if needed.", variant: "destructive" });
         setTotalPages(0);
         setPageOrder([]);
       }
@@ -34,6 +35,7 @@ const OrganizePDF = () => {
   };
 
   const movePage = (from: number, to: number) => {
+    if (!Number.isInteger(from) || from < 0 || from >= pageOrder.length || to < 0 || to >= pageOrder.length) return;
     const newOrder = [...pageOrder];
     const [removed] = newOrder.splice(from, 1);
     newOrder.splice(to, 0, removed);
@@ -41,7 +43,7 @@ const OrganizePDF = () => {
   };
 
   const handleOrganize = async () => {
-    if (files.length === 0) {
+    if (files.length === 0 || pageOrder.length === 0) {
       toast({
         title: "No file selected",
         description: "Please select a PDF file to organize.",
@@ -54,7 +56,7 @@ const OrganizePDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
 
       const newPdf = await PDFDocument.create();
       const copiedPages = await newPdf.copyPages(pdf, pageOrder);
@@ -104,21 +106,21 @@ const OrganizePDF = () => {
     howToUse: [
       "Upload your PDF file by clicking the upload area or dragging and dropping.",
       "View the page tiles showing the current order of your PDF pages.",
-      "Drag and drop the page tiles to rearrange them in your desired order.",
+      "Use the arrow buttons or drag page tiles to reorder them; delete unwanted pages with the × button.",
       "Click 'Save & Download' to create your reorganized PDF.",
       "Your new PDF will download with pages in the new order."
     ],
     features: [
       "Intuitive drag-and-drop interface",
       "Visual page representation for easy organization",
-      "Works with PDFs of any size",
+      "File size depends on available browser memory",
       "Maintains original page quality",
-      "No page limit restrictions",
+      "Keep at least one page when deleting pages",
       "Instant processing and download"
     ],
     safetyNote: "Your PDF files are processed entirely in your browser using secure client-side technology. No files are uploaded to any server during the reorganization process, ensuring complete privacy for your documents.",
     faqs: [
-      { question: "Can I delete pages while organizing?", answer: "This tool focuses on reordering pages. To delete specific pages, use our Split PDF tool to extract only the pages you need, then merge them if necessary." },
+      { question: "Can I delete pages while organizing?", answer: "Use the delete button on a page tile. Keep at least one page in the document." },
       { question: "Will reorganizing affect my PDF quality?", answer: "No, reorganizing only changes the page order. All content, formatting, and quality remain exactly the same as the original document." },
       { question: "How do I move a page to a specific position?", answer: "Simply drag the page tile and drop it in the desired position. The other pages will automatically shift to accommodate the moved page." },
       { question: "Can I undo my changes?", answer: "The original PDF remains unchanged until you download. Simply refresh the page or re-upload your file to start over with the original page order." }
@@ -148,14 +150,14 @@ const OrganizePDF = () => {
         <div className="mt-8 max-w-2xl mx-auto space-y-6">
           <div className="p-4 bg-card rounded-lg border border-border">
             <h3 className="font-medium text-foreground mb-4">
-              Drag to reorder pages ({totalPages} pages)
+              Reorder or delete pages ({pageOrder.length} of {totalPages} pages)
             </h3>
-            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {pageOrder.map((pageIndex, orderIndex) => (
                 <div
-                  key={orderIndex}
-                  className="flex items-center justify-center gap-1 p-3 bg-muted rounded-lg cursor-move hover:bg-primary/10 transition-colors"
-                  draggable
+                  key={pageIndex}
+                  className="flex flex-wrap items-center justify-center gap-1 p-3 bg-muted rounded-lg cursor-move hover:bg-primary/10 transition-colors"
+                  draggable={!isProcessing}
                   onDragStart={(e) => e.dataTransfer.setData("text/plain", orderIndex.toString())}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
@@ -165,7 +167,12 @@ const OrganizePDF = () => {
                   }}
                 >
                   <GripVertical className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-sm font-medium">{pageIndex + 1}</span>
+                  <span className="text-sm font-medium">Page {pageIndex + 1}</span>
+                  <div className="flex w-full justify-center gap-1">
+                    <Button size="sm" variant="outline" aria-label={`Move page ${pageIndex + 1} earlier`} disabled={isProcessing || orderIndex === 0} onClick={() => movePage(orderIndex, orderIndex - 1)}>←</Button>
+                    <Button size="sm" variant="outline" aria-label={`Move page ${pageIndex + 1} later`} disabled={isProcessing || orderIndex === pageOrder.length - 1} onClick={() => movePage(orderIndex, orderIndex + 1)}>→</Button>
+                    <Button size="sm" variant="outline" aria-label={`Delete page ${pageIndex + 1}`} disabled={isProcessing || pageOrder.length <= 1} onClick={() => setPageOrder(order => order.filter(p => p !== pageIndex))}>×</Button>
+                  </div>
                 </div>
               ))}
             </div>

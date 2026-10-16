@@ -1,3 +1,4 @@
+import { imageToPng } from "@/lib/imageToPng";
 import { useState } from "react";
 import { Image, Download } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -49,23 +50,7 @@ const ImageToPDF = () => {
         } else if (file.type === 'image/png') {
           image = await pdfDoc.embedPng(bytes);
         } else {
-          // For other formats, convert to canvas then to PNG
-          const img = document.createElement('img');
-          img.src = URL.createObjectURL(file);
-          await new Promise(resolve => img.onload = resolve);
-          
-          const canvas = document.createElement('canvas');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext('2d')!;
-          ctx.drawImage(img, 0, 0);
-          
-          const pngBlob = await new Promise<Blob>((resolve) => 
-            canvas.toBlob(blob => resolve(blob!), 'image/png')
-          );
-          const pngBytes = new Uint8Array(await pngBlob.arrayBuffer());
-          image = await pdfDoc.embedPng(pngBytes);
-          URL.revokeObjectURL(img.src);
+          image = await pdfDoc.embedPng(await imageToPng(file));
         }
 
         const page = pdfDoc.addPage([image.width, image.height]);
@@ -99,7 +84,7 @@ const ImageToPDF = () => {
       }
       toast({
         title: "Error",
-        description: "Failed to convert images to PDF. Please try again.",
+        description: "Conversion failed. Check for corrupt or unsupported images and try again.",
         variant: "destructive",
       });
     } finally {
@@ -109,7 +94,7 @@ const ImageToPDF = () => {
 
   const seoContent = {
     toolName: "Image to PDF Converter",
-    whatIs: "The Image to PDF Converter is a free online tool that transforms your images into professional PDF documents. Whether you have JPG photographs, PNG graphics, WebP images, GIF animations, or other formats, this tool combines them into a single, well-organized PDF file. It is perfect for creating photo albums, digitizing paper documents from phone camera scans, building portfolios, compiling product catalogs, or any collection of images that needs to be shared or archived as a single PDF. Each image is embedded at full resolution with its original dimensions, ensuring no quality loss. The entire conversion process happens in your browser, so your personal photos, identity documents, and sensitive images are never uploaded to any server.",
+    whatIs: "The Image to PDF Converter is a free online tool that transforms your images into professional PDF documents. Whether you have JPG photographs, PNG graphics, WebP images, GIF still frames, or other formats, this tool combines them into a single, well-organized PDF file. It is perfect for creating photo albums, digitizing paper documents from phone camera scans, building portfolios, compiling product catalogs, or any collection of images that needs to be shared or archived as a single PDF. Each image is embedded at full resolution with its original dimensions, ensuring no quality loss. The entire conversion process happens in your browser, so your personal photos, identity documents, and sensitive images are never uploaded to any server.",
     howToUse: [
       "Click the upload area to select your image files from your device.",
       "Choose multiple images of any supported format — JPG, PNG, WebP, GIF, BMP, and more.",
@@ -119,9 +104,9 @@ const ImageToPDF = () => {
       "Your PDF will download automatically with each image on its own page."
     ],
     features: [
-      "Support for all major image formats including JPG, PNG, WebP, GIF, BMP, and TIFF.",
-      "Combine unlimited images into one organized PDF document.",
-      "Automatic format conversion for unsupported types — all images work seamlessly.",
+      "JPG and PNG support, plus formats your browser can decode such as WebP.",
+      "Combine multiple images, within available browser memory.",
+      "Other browser-supported images are converted to a still PNG; unsupported or corrupt files produce an error.",
       "Maintains original image quality, resolution, and aspect ratio.",
       "Visual preview grid shows thumbnails with easy one-click removal.",
       "Batch upload support — add images from multiple folders incrementally.",
@@ -130,7 +115,7 @@ const ImageToPDF = () => {
     ],
     safetyNote: "All image processing happens directly in your browser using secure client-side technology. Your files are never uploaded to any server, ensuring complete privacy for your personal photos, identity documents, and sensitive images. The conversion is performed locally, and only you have access to the resulting PDF file.",
     faqs: [
-      { question: "What image formats are supported?", answer: "The tool supports JPG/JPEG, PNG, WebP, GIF, BMP, TIFF, and most other common image formats. Unsupported formats are automatically converted to PNG before being added to the PDF." },
+      { question: "What image formats are supported?", answer: "JPG/JPEG and PNG are embedded directly. Other formats require browser decoding support. Animated images become a single still frame. TIFF is not guaranteed." },
       { question: "What order will the images appear?", answer: "Images appear in the order you selected them. You can remove images and re-add them to change the order before conversion." },
       { question: "Will image quality be reduced?", answer: "No, images are embedded in the PDF at their original quality and resolution. JPG and PNG files are directly embedded, while other formats are converted to PNG to preserve quality." },
       { question: "Can I add images from different folders?", answer: "Yes! You can add images in multiple batches. Each time you select files, they are added to your existing selection." },

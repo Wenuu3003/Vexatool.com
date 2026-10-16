@@ -27,11 +27,11 @@ const RotatePDF = () => {
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
-      const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+      const pdf = await PDFDocument.load(arrayBuffer);
 
       const pages = pdf.getPages();
       pages.forEach((page) => {
-        page.setRotation(degrees(page.getRotation().angle + rotation));
+        page.setRotation(degrees((page.getRotation().angle + rotation) % 360));
       });
 
       const pdfBytes = await pdf.save();

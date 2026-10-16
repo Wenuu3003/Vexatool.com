@@ -34,7 +34,7 @@ Updated 2026-10-14. Draft PR #28 only; no live deployment. All 50 pages have now
 | JPGToPDF | Selected browser flows passed at 390/1440px: valid multi-image output and corrupt rejection; PDF page dimensions, colors and order independently verified |
 | LoveCalculator | Names produced entertainment result; no claim of real relationship accuracy |
 | MergePDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
-| OrganizePDF | Two-page unchanged export plus corrupt/encrypted rejection checked; reorder/delete interaction still pending |
+| OrganizePDF | Reorder and delete passed at 390/1440px with independent page-count/text-order checks; mobile/keyboard arrow buttons and last-page deletion guard added. Corrupt/encrypted rejection previously checked |
 | PDFToExcel | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | PDFToHTML | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | PDFToImage | Selected 390/1440px browser flows passed: two-page rendering/download, corrupt and protected input rejection; image format, pixel dimensions and colors verified |
@@ -54,7 +54,7 @@ Updated 2026-10-14. Draft PR #28 only; no live deployment. All 50 pages have now
 | SignPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | SplitPDF | Draft fix; selected 390px/1440px browser and independent PDF-output checks passed |
 | UnitConverter | 1000 meters to 1 kilometer browser calculation passed |
-| UnlockPDF | Selected correct-password workflow passed; unencrypted raster output visually compared; searchable text is lost; wrong/absent-password regression still pending |
+| UnlockPDF | Selected correct-password workflow passed; unencrypted raster output visually compared; searchable text is lost; wrong/absent-password browser checks passed at 390/1440px with no output produced |
 | WatermarkPDF | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | WhatsAppDPResizer | Selected valid-file output at 390/1440px checked; see remaining-tools reports for exact fixtures and limitations |
 | WordCounter | Sample counts confirmed: 3 words, 17 characters, 1 sentence, 1 paragraph |

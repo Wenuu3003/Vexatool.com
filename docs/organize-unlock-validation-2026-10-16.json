@@ -1,0 +1,82 @@
+{
+  "browser": [
+    {
+      "tool": "OrganizePDF",
+      "mode": "reorder",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "OrganizePDF",
+      "mode": "delete",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "UnlockPDF",
+      "mode": "absent-password",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "UnlockPDF",
+      "mode": "wrong-password",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "tool": "OrganizePDF",
+      "mode": "reorder",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "OrganizePDF",
+      "mode": "delete",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "UnlockPDF",
+      "mode": "absent-password",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "tool": "UnlockPDF",
+      "mode": "wrong-password",
+      "width": 1440,
+      "passed": true
+    }
+  ],
+  "independentPDFInspection": [
+    {
+      "width": 390,
+      "operation": "reorder",
+      "pages": 2,
+      "expectedOrder": true
+    },
+    {
+      "width": 390,
+      "operation": "delete",
+      "pages": 1,
+      "expectedOrder": true
+    },
+    {
+      "width": 1440,
+      "operation": "reorder",
+      "pages": 2,
+      "expectedOrder": true
+    },
+    {
+      "width": 1440,
+      "operation": "delete",
+      "pages": 1,
+      "expectedOrder": true
+    }
+  ],
+  "automatedTests": 184,
+  "build": "passed",
+  "applicationTypecheck": "passed",
+  "published": false
+}

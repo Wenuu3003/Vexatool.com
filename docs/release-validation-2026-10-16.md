@@ -18,7 +18,15 @@ The fixture is https://huggingface.co/datasets/Xenova/transformers.js-docs/resol
 ## Remaining acceptance work
 
 - Authenticated Google document export needs an authorized accessible document/session.
-- Organize PDF reorder/delete and Unlock PDF wrong/absent-password browser regressions remain pending.
+- Organize PDF reorder/delete and Unlock PDF wrong/absent-password browser regressions now pass at both widths; see follow-up below.
 - Native editable PPTX output is not implemented; current PDF-to-PowerPoint output is an explicitly described JPEG slide ZIP. Office/HTML conversion fidelity remains limited.
 - Large and damaged PDFs, compression target/quality cases, camera QR scanning, additional browser engines and live postal/currency providers need targeted checks.
 - Deployed asset delivery, live URL indexability and Search Console processing remain unverified. No all-50 release certification or ranking guarantee is implied.
+
+## Organize / Unlock follow-up
+
+Organize PDF previously depended on desktop drag-and-drop and did not implement deletion. Accessible earlier/later/delete buttons now support touch and keyboard use. Invalid drag indexes are ignored and deletion of the final page is disabled. Browser tests at 390px and 1440px moved page 2 before page 1, exported, then separately deleted page 1 and exported. Independent pypdf inspection confirmed [beta, alpha] order and the one-page beta-only output. No text/raster reconstruction is used for these operations.
+
+Unlock PDF tests at both widths confirmed an absent password disables the button; submitting Enter reports Password required without producing a file. A wrong password reports Incorrect password and produces neither download nor success controls. The prior correct-password output test remains applicable.
+
+Eight browser checks passed. 184 automated tests, production build and application TypeScript checks passed. Draft only; no deployment. Evidence: organize-unlock-validation-2026-10-16.json.

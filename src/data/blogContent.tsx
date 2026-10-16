@@ -427,7 +427,7 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h3>Loan Amount (Principal)</h3>
         <p>
-          Higher loan amounts mean higher EMIs. Before house hunting, determine how much EMI you can afford (typically 40-50% of monthly income) and work backward to find your loan eligibility.
+          Higher loan amounts mean higher EMIs. Before house hunting, review essential expenses, existing debt and emergency savings. A calculator does not determine lender eligibility or personal affordability.
         </p>
 
         <h3>Interest Rate</h3>
@@ -446,8 +446,8 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
         </p>
         <ul>
           <li>Monthly EMI: ₹43,391</li>
-          <li>Total Interest Payable: ₹54,13,840</li>
-          <li>Total Amount Payable: ₹1,04,13,840</li>
+          <li>Total Interest Payable: approximately ₹54,13,879</li>
+          <li>Total Amount Payable: approximately ₹1,04,13,879</li>
         </ul>
         <p>
           Over 20 years, you pay more than double the principal in total. This reality check emphasizes the importance of choosing optimal loan terms.
@@ -467,17 +467,17 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h3>Consider Floating vs Fixed Rates</h3>
         <p>
-          Floating rates start lower but can increase. Fixed rates provide certainty but are typically higher. In falling rate environments, floating works better. Understand your risk tolerance.
+          Floating rates can change and affect payments or tenure. Fixed-rate terms vary by lender. Compare the actual offer and the risks of payment changes.
         </p>
 
         <h3>Prepay When Possible</h3>
         <p>
-          Partial prepayments reduce principal, lowering subsequent interest calculations. Use bonuses, tax refunds, and windfalls for prepayment. Most home loans allow penalty-free prepayment.
+          Partial prepayments reduce principal, lowering subsequent interest calculations. Use bonuses, tax refunds, and windfalls for prepayment. Check the applicable terms and charges before making a prepayment.
         </p>
 
         <h2>EMI Affordability Guidelines</h2>
         <p>
-          Financial experts recommend keeping total EMIs (all loans combined) under 50% of net monthly income. For comfortable financial health, target 30-40%. Consider these factors:
+          There is no income percentage that is affordable for everyone. Check your budget and consider these factors:
         </p>
         <ul>
           <li>Job stability and income growth potential</li>
@@ -487,18 +487,8 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           <li>Lifestyle maintenance needs</li>
         </ul>
 
-        <h2>Car Loan vs Home Loan EMI</h2>
-        <p>
-          Car loans typically have shorter tenures (3-7 years) and higher interest rates (8-12%) compared to home loans (8-10% for 15-30 years). A ₹10 lakh car loan at 9% for 5 years means ₹20,758 monthly EMI.
-        </p>
-        <p>
-          Unlike homes that appreciate, cars depreciate rapidly. Consider this when deciding between new and used vehicles or loan versus cash purchase.
-        </p>
-
-        <h2>Personal Loan EMI Considerations</h2>
-        <p>
-          Personal loans carry highest interest rates (12-24%) with shortest tenures. Use only for genuine emergencies or high-return investments. A ₹5 lakh personal loan at 14% for 3 years means ₹17,096 monthly EMI.
-        </p>
+        <h2>Compare actual loan offers</h2>
+        <p>Use the amount, rate and tenure from the lender’s offer rather than generic market-rate ranges. This calculator assumes a constant rate and regular monthly payments; fees, insurance, rate resets and payment timing can change the actual cost. Compare the lender’s repayment schedule and Key Facts Statement, including APR and charges. See the <a href="https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12663&amp;Mode=">RBI explanation of the Key Facts Statement</a>.</p>
 
         <h2>Using the EMI Calculator Effectively</h2>
         <p>
@@ -546,19 +536,8 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
           <li><strong>UTGST:</strong> For Union Territories</li>
         </ul>
 
-        <h2>GST Rate Slabs</h2>
-        <p>
-          GST in India has four main rate slabs:
-        </p>
-        <ul>
-          <li><strong>5%:</strong> Essential goods like packaged food, footwear under ₹500</li>
-          <li><strong>12%:</strong> Computer, processed food, mobile phones</li>
-          <li><strong>18%:</strong> Most services, FMCG products, capital goods</li>
-          <li><strong>28%:</strong> Luxury items, automobiles, tobacco</li>
-        </ul>
-        <p>
-          Some items are exempt (0%) including fresh vegetables, milk, and educational services.
-        </p>
+        <h2>Choose the applicable rate before calculating</h2>
+        <p>This guide explains arithmetic, not a current product-rate schedule. Rates, exemptions and effective dates depend on the classification and applicable notifications. Check the <a href="https://www.gstcouncil.gov.in/cgst-rate-notification">official GST rate notifications</a> and your invoice requirements before choosing a rate. The examples below use an assumed 18% only; they do not establish the tax rate for any product.</p>
 
         <h2>How to Calculate GST</h2>
 
@@ -604,33 +583,24 @@ export const newBlogPosts: Record<string, BlogPostContent> = {
 
         <h2>Input Tax Credit (ITC)</h2>
         <p>
-          Businesses can claim credit for GST paid on purchases against GST collected on sales. This prevents cascading taxes. ITC is one of GST's biggest advantages for businesses, reducing effective tax burden.
+          Eligible businesses may claim credit subject to applicable conditions and restrictions. This prevents cascading taxes. ITC is one of GST's biggest advantages for businesses, reducing effective tax burden.
         </p>
         <p>
-          Example: You pay ₹180 GST on raw materials and collect ₹360 GST on finished goods. Net GST payable = ₹360 - ₹180 = ₹180.
+          Example: You pay ₹180 GST on raw materials and collect ₹360 GST on finished goods. If the entire ₹180 credit is eligible and available, the illustrative net amount is ₹360 - ₹180 = ₹180.
         </p>
 
-        <h2>GST Registration Requirements</h2>
-        <p>
-          Mandatory registration applies when:
-        </p>
-        <ul>
-          <li>Annual turnover exceeds ₹40 lakh (₹20 lakh for special category states)</li>
-          <li>Making inter-state taxable supplies</li>
-          <li>E-commerce operators and suppliers through e-commerce</li>
-          <li>Non-resident taxable persons</li>
-          <li>Casual taxable persons</li>
-        </ul>
+        <h2>Registration and credit eligibility</h2>
+        <p>The calculator does not determine registration obligations, place of supply or input tax credit eligibility. These depend on the transaction, conditions and current rules. Verify them through the <a href="https://www.gst.gov.in/">GST portal</a> or a qualified tax professional; do not infer eligibility from a numerical result.</p>
 
         <h2>Using the GST Calculator</h2>
         <p>
-          The VexaTool GST Calculator handles all scenarios:
+          Use the VexaTool GST Calculator for a single amount and a rate you have already verified:
         </p>
         <ul>
           <li>Calculate GST on base price</li>
           <li>Extract GST from inclusive price</li>
           <li>See CGST/SGST or IGST breakdown</li>
-          <li>Handle multiple items with different rates</li>
+          <li>Calculate separate items individually when their rates differ</li>
         </ul>
 
         <h2>Common GST Calculation Mistakes</h2>

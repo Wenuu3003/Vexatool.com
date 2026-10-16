@@ -108,9 +108,7 @@ const blogContent: Record<string, BlogPostContent> = {
 
         <h3>Legal Validity</h3>
         <p>
-          Electronic signatures are legally valid in most countries under laws like ESIGN (USA), eIDAS (Europe), and
-          similar legislation worldwide. However, some documents still require handwritten signatures, such as wills,
-          certain real estate transactions, and court documents.
+          VexaTool adds a visible signature, not certificate-backed identity verification or a signing audit trail. Acceptance depends on the document and recipient’s requirements. Confirm the required method before signing; this guide does not establish legal validity.
         </p>
 
         <h3>Best Practices for Legal Compliance</h3>

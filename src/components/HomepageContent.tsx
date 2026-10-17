@@ -18,26 +18,26 @@ export const HomepageContent = () => {
                 </h2>
                 <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
                   <p>
-                    VexaTool processes documents directly in your browser — your files never leave your device. This makes it safe for financial records, legal contracts, Aadhaar cards, salary slips, and any sensitive document you need to handle online. Unlike competitors that upload your files to remote servers, VexaTool uses client-side JavaScript and WebAssembly to do all the work locally.
+                    Many VexaTool file operations use JavaScript and WebAssembly to process documents locally. Features that use external services need network access. Check each tool’s instructions and the Privacy Policy before processing sensitive information.
                   </p>
                   <p>
                     Simple workflow: upload, process, download. No signup, no subscription, no hidden fees. Whether you need to{" "}
                     <Link to="/merge-pdf" className="text-primary hover:underline">merge PDFs</Link> for a job application,{" "}
                     <Link to="/compress-pdf" className="text-primary hover:underline">compress files</Link> for email attachments,{" "}
                     <Link to="/qr-code-generator" className="text-primary hover:underline">generate QR codes</Link> for your business, or{" "}
-                    <Link to="/pdf-to-excel" className="text-primary hover:underline">convert PDF to Excel</Link> for data analysis — it just works. Every tool is tested on budget smartphones, slow networks, and older browsers to ensure accessibility for everyone.
+                    <Link to="/pdf-to-excel" className="text-primary hover:underline">convert PDF to Excel</Link> for data analysis. Supported formats, output quality and processing time vary with the tool, document and device. Review the downloaded result before using it.
                   </p>
                   <p>
-                    Built by a team of experienced developers and security professionals, VexaTool serves hundreds of thousands of users across India and 50+ countries. Read our{" "}
-                    <Link to="/blog" className="text-primary hover:underline">expert guides and tutorials</Link> to get the most out of every tool, or visit our{" "}
+                    Read our{" "}
+                    <Link to="/blog" className="text-primary hover:underline">guides and tutorials</Link> to get the most out of every tool, or visit our{" "}
                     <Link to="/about-us" className="text-primary hover:underline">About Us</Link> page to learn about our commitment to privacy and quality.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2.5 mt-5">
                   {[
-                    { icon: Zap, label: "Instant Processing" },
-                    { icon: Shield, label: "100% Private" },
-                    { icon: MonitorSmartphone, label: "Any Device" },
+                    { icon: Zap, label: "Browser Processing" },
+                    { icon: Shield, label: "Local File Tools" },
+                    { icon: MonitorSmartphone, label: "Responsive Layout" },
                   ].map((item, i) => (
                     <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-medium">
                       <item.icon className="w-3.5 h-3.5" />
@@ -63,7 +63,7 @@ export const HomepageContent = () => {
           {/* Comparison table */}
           <div className="mb-16 sm:mb-20">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-5 sm:mb-6 tracking-tight">
-              How VexaTool Compares
+              Before You Start
             </h2>
             <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
               <table className="w-full text-xs sm:text-sm border border-border rounded-xl overflow-hidden">
@@ -71,18 +71,18 @@ export const HomepageContent = () => {
                   <tr className="bg-muted/60">
                     <th className="text-left p-3 sm:p-3.5 font-semibold text-foreground">Feature</th>
                     <th className="text-center p-3 sm:p-3.5 font-semibold text-foreground">VexaTool</th>
-                    <th className="text-center p-3 sm:p-3.5 font-semibold text-muted-foreground">Others</th>
+                    <th className="text-center p-3 sm:p-3.5 font-semibold text-muted-foreground">What to Check</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
                   {[
-                    ["Price", "100% Free", "Freemium / Paid"],
-                    ["Account Required", "No", "Usually Yes"],
-                    ["Daily Limit", "Unlimited", "2–5 per day"],
-                    ["Processing", "In Browser", "Server Upload"],
-                    ["Privacy", "Files Stay Local", "Cloud Upload"],
-                    ["Watermarks", "Never", "Often in Free Tier"],
-                    ["Mobile", "Fully Responsive", "Varies"],
+                    ["Price", "Free tools", "Tool-specific limits"],
+                    ["Account", "No VexaTool signup", "Google export may need Google login"],
+                    ["File size", "Varies by tool", "Memory and size limits"],
+                    ["Processing", "Many operations run locally", "External features need internet"],
+                    ["Privacy", "See Privacy Policy", "Your document-handling rules"],
+                    ["Output", "Depends on source format", "Review before sharing"],
+                    ["Mobile", "Responsive interface", "Device and browser support"],
                   ].map(([feature, us, them], i) => (
                     <tr key={i} className="hover:bg-muted/20 transition-colors">
                       <td className="p-3 sm:p-3.5 text-foreground font-medium">{feature}</td>
@@ -111,14 +111,14 @@ export const HomepageContent = () => {
               </div>
               <div className="md:col-span-3 p-7 sm:p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-5 sm:mb-6 tracking-tight">
-                  Your Files Stay on Your Device
+                  Understand File Processing
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {[
-                    { title: "Browser-Based Processing", desc: "Files are processed entirely in your browser. Nothing is uploaded." },
-                    { title: "No File Storage", desc: "We don't store, cache, or retain any files you process." },
+                    { title: "Browser-Based Processing", desc: "Many document operations run locally. Check the selected tool for exceptions." },
+                    { title: "Keep Your Original", desc: "Keep a backup and inspect the downloaded result before replacing your original." },
                     { title: "HTTPS Encryption", desc: "All communication uses industry-standard encryption." },
-                    { title: "No Third-Party Access", desc: "Your files are never shared with any third party." },
+                    { title: "External Services", desc: "Some features, ads and analytics contact external services. See the Privacy Policy." },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3 p-3.5 sm:p-4 bg-card border border-border/60 rounded-xl">
                       <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />

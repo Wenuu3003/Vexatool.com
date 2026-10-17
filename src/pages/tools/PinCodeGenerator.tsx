@@ -430,17 +430,15 @@ const PinCodeGenerator = () => {
   return (
     <>
       <Helmet>
-        <title>India PIN Code Finder & Generator 2026 | Search 155,000+ Post Offices Free</title>
-        <meta name="description" content="Find any Indian PIN code instantly! Search 155,000+ post offices by village, city, district or state. Free PIN code generator with live India Post data. Accurate results for all 28 states & 8 UTs." />
+        <title>India PIN Code Finder & Random PIN Generator | VexaTool</title>
+        <meta name="description" content="Look up Indian postal PIN codes online or generate random six-digit examples. Postal lookup needs internet; verify results with India Post." />
         <meta name="keywords" content="india pin code, pin code finder, pincode search, postal code india, post office pin code, village pin code, city pin code, state wise pin code, district pin code, area pin code, 6 digit pin code, india post, postal index number" />
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="googlebot" content="index, follow" />
         <meta name="author" content="VexaTool" />
         <link rel="canonical" href={canonicalUrl} />
         
         {/* Open Graph */}
-        <meta property="og:title" content="India PIN Code Finder & Generator 2026 | 155,000+ Post Offices" />
-        <meta property="og:description" content="Free PIN code search tool with live India Post data. Find village, city, district PIN codes instantly. Works offline too!" />
+        <meta property="og:title" content="India PIN Code Finder & Random PIN Generator | VexaTool" />
+        <meta property="og:description" content="Look up Indian postal PIN codes online or generate random six-digit examples. Postal lookup needs internet; verify results with India Post." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:site_name" content="VexaTool" />
@@ -453,8 +451,8 @@ const PinCodeGenerator = () => {
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@VexaTool" />
-        <meta name="twitter:title" content="India PIN Code Finder 2026 | Free Online Tool" />
-        <meta name="twitter:description" content="Search any Indian PIN code by village, city or district. Live India Post data with offline mode." />
+        <meta name="twitter:title" content="India PIN Code Finder & Random PIN Generator | VexaTool" />
+        <meta name="twitter:description" content="Look up Indian postal PIN codes online or generate random six-digit examples. Postal lookup needs internet; verify results with India Post." />
         <meta name="twitter:image" content="https://vexatool.com/og-image.png" />
         
         <meta name="theme-color" content="#ff2d95" />
@@ -478,13 +476,6 @@ const PinCodeGenerator = () => {
               "@type": "Offer",
               "price": "0",
               "priceCurrency": "INR"
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "4.8",
-              "ratingCount": "2450",
-              "bestRating": "5",
-              "worstRating": "1"
             },
             "provider": {
               "@type": "Organization",
@@ -530,7 +521,7 @@ const PinCodeGenerator = () => {
       
       <ToolLayout
         title="India PIN Code Finder & Generator"
-        description="Search 155,000+ post offices with live India Post data. Find PIN codes by village, city, district or state instantly."
+        description="Look up postal PIN codes online or generate random examples. Verify postal results before use."
         icon={MapPin}
         colorClass="bg-gradient-to-r from-pink-500 to-purple-600"
         category="UtilitiesApplication"

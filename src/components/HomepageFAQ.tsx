@@ -5,62 +5,62 @@ const faqs = [
   {
     question: "Is VexaTool really free to use?",
     answer:
-      "Yes! All tools on VexaTool are completely free with no hidden charges, no premium tiers, and no registration required. Whether you need to merge PDF, compress PDF, convert PDF to Excel, or generate QR codes — everything is free and unlimited.",
+      "VexaTool provides free tools without an account. File-size limits, supported formats and processing requirements vary by tool; check the instructions before starting.",
   },
   {
     question: "Are my files safe and private on VexaTool?",
     answer:
-      "Absolutely. Most tools process files directly in your browser using client-side JavaScript, meaning your files never leave your device. This is especially important for sensitive documents like identification cards, salary slips, and legal agreements. No server uploads needed.",
+      "Most document and image operations run locally in your browser. Some features contact external services for models, exchange rates or postal lookups. Advertising and analytics may also make network requests; see the Privacy Policy before handling sensitive information.",
   },
   {
     question: "Do I need to create an account?",
     answer:
-      "No account, registration, or login is required. Simply visit any tool page, upload your file, and download the result. All tools work without signup — completely anonymous and free.",
+      "Core tools do not require a VexaTool account. Exporting a private Google document may require signing in to Google with permission to access that document.",
   },
   {
     question: "What PDF tools does VexaTool offer?",
     answer:
-      "VexaTool offers 20+ free PDF tools including: PDF editing (merge, split, compress, convert, rotate, protect, sign, watermark, unlock), PDF converters (PDF to Excel, PDF to Word, Word to PDF, Image to PDF, PDF to JPG, PDF to PNG), and advanced features like PDF repair and organize.",
+      "PDF tools include merging, splitting, rotation, password encryption, image conversion, editing, signing and page organization. Conversion support and output formats are explained on each tool page.",
   },
   {
     question: "Can I use VexaTool on my mobile phone?",
     answer:
-      "Yes! All tools are fully responsive and work perfectly on smartphones, tablets, and desktop computers. No app installation needed — just open vexatool.com in your mobile browser. We specifically test on budget Android devices and slow networks.",
+      "The interface adapts to mobile and desktop screens. Browser support, available memory and file complexity affect processing; large documents may work better on a desktop.",
   },
   {
     question: "How does VexaTool process files without uploading them?",
     answer:
-      "VexaTool uses modern browser technologies like JavaScript, WebAssembly, and the Canvas API to process files entirely on your device. When you upload a file, it stays in your browser's memory — never sent to any server. This is called client-side processing, and it's the most private way to handle documents online.",
+      "Local file tools use JavaScript, WebAssembly and browser APIs to read and transform a selected file. Other features may require network access; local file processing does not mean the whole website works offline.",
   },
   {
     question: "What image tools are available?",
     answer:
-      "VexaTool provides free image tools including: Image Compressor (reduce file size without quality loss), Image Resizer (resize for social media, passports, government forms), Background Remover (AI-powered background removal), Image Format Converter (JPG, PNG, WebP conversion), and specialized photo resizers for Aadhaar, passport, and WhatsApp DP.",
+      "Image tools include resizing, compression, JPG/PNG/WebP conversion and background removal. Lossy compression can reduce image quality. Check the receiving portal requirements before using a photo preset.",
   },
   {
     question: "Can I convert PDF to Excel while preserving table formatting?",
     answer:
-      "Yes! Our PDF to Excel converter is designed to accurately detect and preserve table structures, columns, and rows from your PDF documents. The conversion maintains data integrity so you can immediately work with the spreadsheet without manual reformatting.",
+      "PDF-to-Excel results depend on the source document. Complex tables, merged cells and scanned pages may not convert accurately. Compare the downloaded sheet with the original and correct missing or misplaced values.",
   },
   {
     question: "Is VexaTool safe for sensitive business documents?",
     answer:
-      "Yes. VexaTool uses 256-bit SSL encryption for all connections and processes files client-side. Your files never leave your device, making it safe for contracts, financial documents, legal agreements, and confidential business files. We store zero user files and share nothing with third parties.",
+      "Check your organization’s handling rules and the tool’s documented behavior first. HTTPS protects data in transit but is not a guarantee of confidentiality or compliance. Review the Privacy Policy and avoid processing restricted documents without authorization.",
   },
   {
     question: "How does VexaTool compare to paid tools like Adobe Acrobat?",
     answer:
-      "VexaTool offers core PDF operations (merge, split, compress, convert, edit, sign) completely free with no watermarks or daily limits. Paid tools like Adobe Acrobat offer advanced features like OCR and digital certificates, but for everyday document tasks, VexaTool provides professional-quality results at zero cost.",
+      "VexaTool supports common browser-based tasks. Complex layout conversion, certificate-based digital signatures and other specialized workflows may need dedicated software. A drawn signature is not a certificate-based signature.",
   },
   {
     question: "What calculators are available on VexaTool?",
     answer:
-      "VexaTool offers free calculators including: EMI Calculator (for home, car, and personal loans), BMI Calculator (body mass index with health insights), GST Calculator (CGST, SGST, IGST for Indian businesses), Percentage Calculator, Age Calculator (with shareable birthday cards), Love Calculator, and Currency Converter with live exchange rates.",
+      "Calculators include EMI, BMI, GST, percentages, age and currency conversion. Results are estimates or mathematical calculations, not medical, tax or financial advice. Currency rates depend on the external provider and its update time.",
   },
   {
     question: "Does VexaTool add watermarks to processed files?",
     answer:
-      "Never. VexaTool does not add watermarks, logos, or branding to any file you process. The output is clean and professional — exactly as you'd expect from a paid tool, but completely free.",
+      "Conversion tools do not intentionally add VexaTool branding to output files. The Watermark PDF tool adds the text or image you choose. Always inspect the downloaded result.",
   },
 ];
 

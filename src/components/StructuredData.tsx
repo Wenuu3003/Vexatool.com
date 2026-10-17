@@ -30,10 +30,11 @@ export const StructuredData = ({ type, data }: StructuredDataProps) => {
         "url": data.url,
         "applicationCategory": data.applicationCategory,
         "operatingSystem": data.operatingSystem || "All",
-        "offers": data.offers || {
+        "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "USD"
+          "priceCurrency": "USD",
+          ...data.offers
         },
         "provider": {
           "@type": "Organization",

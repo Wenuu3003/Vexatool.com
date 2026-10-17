@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const trustItems = [
   { icon: Lock, label: "No File Stored" },
-  { icon: Shield, label: "100% Secure" },
+  { icon: Shield, label: "Browser Tools" },
   { icon: Smartphone, label: "Works on Mobile" },
   { icon: Zap, label: "Instant Results" },
 ];
@@ -134,11 +134,11 @@ export const Hero = () => {
 
           <p className="text-sm sm:text-base md:text-lg max-w-lg mx-auto mb-4 md:mb-5 leading-relaxed text-muted-foreground">
             Merge, edit, compress and convert documents in seconds.
-            No signup. 100% private. Your files never leave your browser.
+            No signup for core tools. Many file operations run locally in your browser.
           </p>
           <p className="text-xs sm:text-sm max-w-md mx-auto mb-8 md:mb-10 leading-relaxed text-muted-foreground">
             VexaTool offers 50+ free tools for professionals, students, and businesses.
-            Browser-based processing means zero file uploads — safe for contracts, IDs, and sensitive documents.
+            Check supported formats, file limits and privacy details on each tool page.
           </p>
 
           <Link

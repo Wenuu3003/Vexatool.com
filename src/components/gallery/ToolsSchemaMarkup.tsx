@@ -151,13 +151,6 @@ export const ToolDetailSchema = ({ toolId, baseUrl = "https://vexatool.com" }: T
       "price": "0",
       "priceCurrency": "USD"
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1250",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
     "featureList": tool.features.join(", "),
     "keywords": tool.seoKeywords.join(", ")
   };

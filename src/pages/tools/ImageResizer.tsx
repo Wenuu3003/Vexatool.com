@@ -445,8 +445,8 @@ export default function ImageResizer() {
   return (
     <>
       <CanonicalHead
-        title="Image Resizer – Resize to 20KB, WhatsApp DP, Aadhaar & Passport Photo India | VexaTool"
-        description="Resize image to 20KB or 50KB for Govt Job Form, UPSC, SSC. WhatsApp DP 192×192px, Aadhaar photo 200×200px. Free, fast, browser-based."
+        title="Image Resizer & Photo Size Presets | VexaTool"
+        description="Resize images to custom dimensions or photo presets in your browser. Target file sizes depend on the image; check application requirements before submitting."
         keywords="resize image to 20kb, whatsapp dp resize, aadhaar photo size, passport size photo india, govt job form photo, compress image to 20kb, resize photo online free"
       />
       <Helmet>

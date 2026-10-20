@@ -128,7 +128,7 @@ export const RelatedTools = ({ currentPath, className = "", maxTools = 5 }: Rela
       
       <p className="mt-4 text-sm text-muted-foreground">
         Looking for more tools? Check out our{" "}
-        <Link to="/#tools-grid" className="text-primary hover:underline">complete collection of free online tools</Link>
+        <Link to="/all-tools" className="text-primary hover:underline">complete collection of free online tools</Link>
         {" "}including PDF editors, image converters, and calculators.
       </p>
     </section>

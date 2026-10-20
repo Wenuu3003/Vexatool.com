@@ -101,6 +101,13 @@ export default function ProgrammaticSEOPage() {
   }
 
   const canonical = page.canonical_url ?? `https://vexatool.com/${page.slug}`;
+  // Exam guides do not define a verified exam-specific preset.
+  // Open custom sizing instead of silently applying the generic govt dimensions.
+  const customPhotoGuide = ["govt-job-photo-resize", "passport-photo-resize", "aadhaar-photo-resize"].includes(page.parent_tool_slug ?? "");
+  const toolHref = customPhotoGuide ? "/image-resizer" : `/${page.parent_tool_slug}`;
+  const breadcrumbs = page.breadcrumbs
+    .filter((b, i, list) => i === list.length - 1 || !list.slice(0, i).some((previous) => previous.href === b.href))
+    .map((b, i, list) => i === list.length - 1 ? { ...b, href: canonical } : b);
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -110,11 +117,11 @@ export default function ProgrammaticSEOPage() {
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   };
-  const breadcrumbsJsonLd = page.breadcrumbs.length
+  const breadcrumbsJsonLd = breadcrumbs.length
     ? {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        itemListElement: page.breadcrumbs.map((b, i) => ({
+        itemListElement: breadcrumbs.map((b, i) => ({
           "@type": "ListItem",
           position: i + 1,
           name: b.name,
@@ -148,12 +155,12 @@ export default function ProgrammaticSEOPage() {
         <Header />
         <main className="flex-1" role="main">
           <article className="container mx-auto px-4 py-10 max-w-3xl">
-            {page.breadcrumbs.length > 0 && (
+            {breadcrumbs.length > 0 && (
               <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground mb-4">
-                {page.breadcrumbs.map((b, i) => (
+                {breadcrumbs.map((b, i) => (
                   <span key={b.href}>
                     {i > 0 && <span className="mx-1.5">/</span>}
-                    {i === page.breadcrumbs.length - 1 ? (
+                    {i === breadcrumbs.length - 1 ? (
                       <span className="text-foreground">{b.name}</span>
                     ) : (
                       <Link to={b.href} className="hover:text-primary">{b.name}</Link>
@@ -173,11 +180,16 @@ export default function ProgrammaticSEOPage() {
             {page.parent_tool_slug && (
               <div className="mb-8">
                 <Link
-                  to={`/${page.parent_tool_slug}`}
+                  to={toolHref}
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"
                 >
-                  Open the Tool
+                  {customPhotoGuide ? "Open Image Resizer — Custom Dimensions" : "Open the Tool"}
                 </Link>
+                {customPhotoGuide && (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    This guide uses the shared Image Resizer. Enter dimensions and a file-size target from your current application instructions; no exam-specific preset is applied.
+                  </p>
+                )}
               </div>
             )}
 

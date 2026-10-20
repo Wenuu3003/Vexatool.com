@@ -63,7 +63,7 @@ export const BacklinkCTA = ({ currentTool }: BacklinkCTAProps) => {
 
       {/* Main action button */}
       <div className="text-center">
-        <Link to="/#tools">
+        <Link to="/all-tools">
           <Button size="lg" className="gap-2 group">
             View All Tools
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

@@ -14,6 +14,7 @@ const QRCodeScanner = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cameraRequestRef = useRef(0);
   const streamRef = useRef<MediaStream | null>(null);
   const animationFrameRef = useRef<number | null>(null);
 
@@ -127,6 +128,7 @@ const QRCodeScanner = () => {
   };
 
   const stopCamera = useCallback(() => {
+    ++cameraRequestRef.current;
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
@@ -166,6 +168,7 @@ const QRCodeScanner = () => {
   }, [scanImage, stopCamera]);
 
   const startCamera = async () => {
+    const requestId = ++cameraRequestRef.current;
     try {
       // Reset state
       setScannedResult(null);
@@ -188,21 +191,29 @@ const QRCodeScanner = () => {
         }
       });
       
+      if (requestId !== cameraRequestRef.current) { stream.getTracks().forEach(track => track.stop()); return; }
       streamRef.current = stream;
       
       // Wait for next tick to ensure video element is mounted
       await new Promise(resolve => setTimeout(resolve, 100));
       
+      if (requestId !== cameraRequestRef.current) { stream.getTracks().forEach(track => track.stop()); return; }
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         
         // Use both onloadedmetadata and oncanplay for better compatibility
+        let started = false;
         const startScanning = () => {
+          if (started || requestId !== cameraRequestRef.current) return;
+          started = true;
           if (videoRef.current) {
             videoRef.current.play().then(() => {
+              if (requestId !== cameraRequestRef.current) return;
               animationFrameRef.current = requestAnimationFrame(scanFrame);
             }).catch(err => {
               console.error("Video play error:", err);
+              stopCamera();
+              toast.error("Camera playback failed. Try uploading a QR image.");
             });
           }
         };
@@ -211,6 +222,7 @@ const QRCodeScanner = () => {
         videoRef.current.oncanplay = startScanning;
       }
     } catch (error) {
+      if (requestId !== cameraRequestRef.current) return;
       console.error("Camera error:", error);
       setIsScanning(false);
       if (error instanceof DOMException) {
@@ -230,6 +242,7 @@ const QRCodeScanner = () => {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      ++cameraRequestRef.current;
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }

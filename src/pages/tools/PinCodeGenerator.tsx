@@ -140,6 +140,7 @@ const PinCodeGenerator = () => {
   
   // Handle village input change for autocomplete - works globally or with filters
   const handleVillageInputChange = (value: string) => {
+    ++villageReqIdRef.current;
     setVillageInput(value);
     setSelectedVillageData(null);
     setVillageSuggestions([]);
@@ -233,13 +234,14 @@ const PinCodeGenerator = () => {
   }, []);
 
   // Save history to localStorage
-  const saveToHistory = (pin: string) => {
-    const newHistory = [pin, ...pinHistory.filter(p => p !== pin)].slice(0, 20);
+  const saveToHistory = (value: string | string[]) => {
+    const pins = Array.isArray(value) ? value : [value];
+    const newHistory = [...new Set([...pins, ...pinHistory])].slice(0, 20);
     setPinHistory(newHistory);
     localStorage.setItem("pincode-history", JSON.stringify(newHistory));
     
     // Update stats
-    const newSearches = totalSearches + 1;
+    const newSearches = totalSearches + pins.length;
     setTotalSearches(newSearches);
     localStorage.setItem("pincode-stats", JSON.stringify({ searches: newSearches }));
   };
@@ -256,7 +258,8 @@ const PinCodeGenerator = () => {
     if (selectedArea) {
       filtered = filtered.filter(d => d.village === selectedArea);
     }
-    if (filtered.length === 0) filtered = EXTENDED_PIN_DATABASE;
+    if (selectedTaluk) filtered = filtered.filter(d => d.mandal === selectedTaluk);
+    if (filtered.length === 0) { toast.error("No local PIN codes match these filters."); return; }
     const randomEntry = filtered[Math.floor(Math.random() * filtered.length)];
     setGeneratedPin(randomEntry.pincode);
     saveToHistory(randomEntry.pincode);
@@ -269,23 +272,27 @@ const PinCodeGenerator = () => {
     if (selectedState) {
       filtered = filtered.filter(d => d.state === selectedState);
     }
-    const generated = new Set<string>();
-    const pins: string[] = [];
-    const maxAttempts = Math.min(bulkCount, filtered.length);
-    while (pins.length < maxAttempts && pins.length < bulkCount) {
-      const randomEntry = filtered[Math.floor(Math.random() * filtered.length)];
-      if (!generated.has(randomEntry.pincode)) {
-        generated.add(randomEntry.pincode);
-        pins.push(randomEntry.pincode);
-      }
+    if (selectedDistrict) filtered = filtered.filter(d => d.district === selectedDistrict);
+    if (selectedTaluk) filtered = filtered.filter(d => d.mandal === selectedTaluk);
+    if (selectedArea) filtered = filtered.filter(d => d.village === selectedArea);
+    const available = [...new Set(filtered.map(d => d.pincode))];
+    for (let i = available.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [available[i], available[j]] = [available[j], available[i]];
     }
+    const pins = available.slice(0, Math.max(0, Math.min(100, Math.floor(bulkCount))));
     setBulkPins(pins);
-    pins.forEach(pin => saveToHistory(pin));
+    if (pins.length) saveToHistory(pins);
     toast.success(`${pins.length} PIN codes generated!`);
   };
 
+  const lookupRequestRef = useRef(0);
+
   // Reverse lookup
   const handleReverseLookup = async () => {
+    const requestId = ++lookupRequestRef.current;
+    setLookupResult(null);
+    setLookupError("");
     if (lookupPin.length !== 6 || !/^\d+$/.test(lookupPin)) {
       setLookupError("Please enter a valid 6-digit PIN code");
       setLookupResult(null);
@@ -306,6 +313,7 @@ const PinCodeGenerator = () => {
     if (isLiveMode) {
       try {
         const live = await lookupIndiaPostPincode(lookupPin);
+        if (requestId !== lookupRequestRef.current) return;
         if (live) {
           setLookupResult(live);
           setLookupError("");
@@ -317,6 +325,7 @@ const PinCodeGenerator = () => {
         setLookupResult(null);
         setLookupError("PIN code not found. Please check and try again.");
       } catch {
+        if (requestId !== lookupRequestRef.current) return;
         setLookupResult(null);
         setLookupError("Lookup failed. Please try again.");
       }
@@ -328,7 +337,10 @@ const PinCodeGenerator = () => {
 
   // Search - live or offline based on mode
   const handleSearch = (query: string) => {
+    ++finderReqIdRef.current;
     setSearchQuery(query);
+    setSearchResults([]);
+    setSearchMessage("");
 
     if (finderTimerRef.current) {
       window.clearTimeout(finderTimerRef.current);
@@ -338,7 +350,8 @@ const PinCodeGenerator = () => {
     const trimmed = query.trim();
     if (trimmed.length >= 3) {
       if (isLiveMode) {
-        // Live mode: use India Post API
+        setSearchMessage("Searching postal service…");
+        // Live mode: use postal provider
         const reqId = ++finderReqIdRef.current;
 
         finderTimerRef.current = window.setTimeout(async () => {
@@ -471,7 +484,7 @@ const PinCodeGenerator = () => {
             "applicationCategory": "UtilityApplication",
             "operatingSystem": "All",
             "browserRequirements": "Requires JavaScript",
-            "description": "Free online tool to find and generate Indian PIN codes. Search by village, city, district or state with live India Post data.",
+            "description": "Free online tool to find and generate Indian PIN codes. Search by village, city, district or state with a local directory and third-party postal lookup.",
             "offers": {
               "@type": "Offer",
               "price": "0",
@@ -484,8 +497,8 @@ const PinCodeGenerator = () => {
             },
             "featureList": [
               "Search PIN codes by village, city, district, state",
-              "Live India Post API integration",
-              "Offline mode with 155,000+ PIN codes",
+              "Third-party postal lookup",
+              "Limited local postal directory",
               "Bulk PIN code generation",
               "Reverse PIN code lookup",
               "Download results as CSV/TXT",
@@ -541,8 +554,16 @@ const PinCodeGenerator = () => {
               <Switch
                 checked={isLiveMode}
                 onCheckedChange={(checked) => {
+                  ++finderReqIdRef.current;
+                  ++villageReqIdRef.current;
+                  if (finderTimerRef.current) window.clearTimeout(finderTimerRef.current);
+                  if (villageTimerRef.current) window.clearTimeout(villageTimerRef.current);
+                  setSearchResults([]);
+                  setSearchQuery("");
+                  setVillageResults([]);
+                  setVillagePopoverOpen(false);
                   setIsLiveMode(checked);
-                  toast.success(checked ? "Live mode: Accurate results from India Post" : "Offline mode: Fast local results");
+                  toast.success(checked ? "Live mode: Third-party postal lookup" : "Offline mode: Fast local results");
                 }}
                 className="data-[state=checked]:bg-green-500"
               />
@@ -754,7 +775,7 @@ const PinCodeGenerator = () => {
                     
                     <Dialog open={bulkDialogOpen} onOpenChange={setBulkDialogOpen}>
                       <DialogTrigger asChild>
-                        <Button variant="outline" className="border-pink-500/30">
+                        <Button variant="outline" aria-label="Open bulk PIN generator" className="border-pink-500/30">
                           <Package className="w-4 h-4" />
                         </Button>
                       </DialogTrigger>
@@ -914,7 +935,7 @@ const PinCodeGenerator = () => {
               {searchQuery.length >= 3 && searchResults.length === 0 && (
                 <p className="text-center text-destructive py-8 flex items-center justify-center gap-2">
                   <AlertCircle className="w-5 h-5" />
-                  No results found for "{searchQuery}"
+                  {searchMessage || `No results found for "${searchQuery}"`}
                 </p>
               )}
 
@@ -945,12 +966,13 @@ const PinCodeGenerator = () => {
                   <Input
                     placeholder="Enter 6-digit PIN code..."
                     value={lookupPin}
-                    onChange={(e) => setLookupPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    onChange={(e) => { ++lookupRequestRef.current; setLookupResult(null); setLookupError(""); setLookupPin(e.target.value.replace(/\D/g, "").slice(0, 6)); }}
                     maxLength={6}
                     className="font-mono text-lg text-center"
                   />
                   <Button 
                     onClick={handleReverseLookup}
+                    aria-label="Look up PIN code"
                     className="bg-gradient-to-r from-pink-500 to-purple-600"
                   >
                     <Search className="w-4 h-4" />
@@ -1076,49 +1098,20 @@ const PinCodeGenerator = () => {
         {/* SEO Content Section with FAQ Schema */}
         <ToolSEOContent
           toolName="India PIN Code Finder"
-          whatIs="India PIN Code Finder is a comprehensive tool to search, generate, and lookup Indian postal codes (PIN - Postal Index Number). With access to over 155,000 post offices across 28 states and 8 Union Territories, this tool helps you find accurate PIN codes for any village, city, or district in India. It features both live India Post API integration for real-time accuracy and offline mode for fast local results."
+          whatIs="Search a limited local postal directory or use a third-party postal lookup service. Random and bulk generation select existing entries from the local directory; they do not create or assign postal codes. Results may be incomplete or outdated."
           howToUse={[
-            "Use the Finder tab to search any village, city, district, or state name",
-            "Enter a 6-digit PIN code in the Lookup tab to find location details",
-            "Generate random PIN codes by selecting state and district in the Generate tab",
-            "Toggle between Live mode (accurate India Post data) and Offline mode (fast local search)",
-            "View your search history and copy or share PIN codes easily"
+            "Search a post-office name or six-digit PIN in the Finder tab.",
+            "Use Lookup to view one matching local or online entry; a PIN may cover multiple offices.",
+            "Use Generate for local samples filtered by location, or bulk export for unique PINs.",
+            "Confirm the delivery office with India Post before using a result for mailing."
           ]}
-          features={[
-            "Search 155,000+ Indian post offices with live India Post data",
-            "Reverse PIN code lookup to find village, district, and state details",
-            "Generate random valid PIN codes filtered by state and district",
-            "Bulk PIN code generation for multiple locations at once",
-            "Village autocomplete with smart suggestions",
-            "Offline mode for fast searches without internet",
-            "Export results as CSV/TXT and share via WhatsApp"
-          ]}
-          safetyNote="This tool uses publicly available India Post data. No personal information is collected or stored. Your search history is saved locally on your device only and can be cleared at any time."
+          features={["Local directory search", "Optional third-party online lookup", "Unique bulk samples limited to available matching PINs", "CSV and TXT exports"]}
+          safetyNote="Online queries are sent to the postal lookup service through our backend. History is stored in this browser and can be cleared. Website analytics and advertising are covered by our privacy policy."
           faqs={[
-            {
-              question: "What is a PIN code in India?",
-              answer: "PIN (Postal Index Number) is a 6-digit code used by India Post to identify delivery post offices. The first digit represents the region (1-9), second digit the sub-region, third the sorting district, and last 3 digits the specific post office."
-            },
-            {
-              question: "How many PIN codes are there in India?",
-              answer: "India has over 155,000 post offices with unique PIN codes across 28 states and 8 Union Territories. Each PIN code covers a specific delivery area served by a particular post office."
-            },
-            {
-              question: "How to find PIN code of a village?",
-              answer: "Use our PIN code finder tool - simply type the village name in the search box and get instant results with accurate PIN codes from our database or live India Post data."
-            },
-            {
-              question: "What do the digits in a PIN code mean?",
-              answer: "Each digit has a specific meaning: 1st digit = postal region (1-9), 2nd digit = sub-region or postal circle, 3rd digit = sorting district, and last 3 digits = specific post office identifier."
-            },
-            {
-              question: "Which states start with PIN code 1?",
-              answer: "PIN codes starting with 1 cover Delhi, Haryana, Punjab, Himachal Pradesh, and Jammu & Kashmir. Each first digit represents a specific geographical region of India."
-            },
-            {
-              question: "Is the India Post data accurate?",
-              answer: "When using Live mode, data is fetched directly from India Post servers ensuring up-to-date accuracy. Offline mode uses a comprehensive local database that is periodically updated."
-            }
+            { question: "Is this an official India Post service?", answer: "No. VexaTool is independent. Online lookup uses api.postalpincode.in through our backend; it is not a direct connection to an official India Post API." },
+            { question: "Are random PIN codes suitable for my address?", answer: "Random results are samples from the local directory. They are not a verified match for your delivery address." },
+            { question: "Why are fewer bulk PINs returned than requested?", answer: "Several offices can share a PIN. Bulk generation returns only the unique PINs available for the selected filters." },
+            { question: "Does local search cover every location?", answer: "No. The bundled directory has limited coverage. A missing result does not prove that a postal code or office does not exist." }
           ]}
         />
 
@@ -1132,8 +1125,7 @@ const PinCodeGenerator = () => {
               <h3 className="text-lg font-semibold text-foreground">What is a PIN Code?</h3>
               <p className="text-muted-foreground">
                 PIN (Postal Index Number) is a 6-digit code introduced by India Post on August 15, 1972. 
-                It uniquely identifies each post office in India, enabling efficient mail sorting and delivery 
-                across 155,000+ post offices serving 1.4 billion people.
+                Multiple post offices may share one PIN. Confirm the appropriate delivery office before mailing.
               </p>
             </section>
 
@@ -1169,7 +1161,7 @@ const PinCodeGenerator = () => {
                 <li><strong>Finder Tab:</strong> Search any village, city or district name to find its PIN code</li>
                 <li><strong>Lookup Tab:</strong> Enter a 6-digit PIN code to find location details</li>
                 <li><strong>Generate Tab:</strong> Generate random PIN codes by state/district</li>
-                <li><strong>Toggle Live/Offline:</strong> Use live India Post data for accuracy or offline for speed</li>
+                <li><strong>Toggle Live/Offline:</strong> Use third-party online lookup or the limited local directory</li>
               </ol>
             </section>
 

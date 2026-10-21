@@ -37,16 +37,28 @@ export async function searchIndiaPost(query: string): Promise<ExtendedPinCodeDat
     PostOfficeQuerySchema.parse(trimmed);
   }
 
-  const { data, error } = await supabase.functions.invoke<IndiaPostalResponse>(
-    "india-postal",
-    { body: { query: trimmed } }
-  );
+  const controller = new AbortController();
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const request = supabase.functions.invoke<IndiaPostalResponse>("india-postal", {
+    body: { query: trimmed }, signal: controller.signal,
+  });
+  const { data, error } = await Promise.race([
+    request,
+    new Promise<never>((_, reject) => {
+      timeout = setTimeout(() => { controller.abort(); reject(new Error("Postal lookup timed out. Please retry.")); }, 20000);
+    }),
+  ]).finally(() => clearTimeout(timeout));
 
   if (error) throw new Error(error.message || "Request failed");
   if (!data) throw new Error("No response from server");
   if (data.error) throw new Error(data.error);
 
-  return Array.isArray(data.results) ? data.results : [];
+  const results = z.array(z.object({
+    state: z.string(), district: z.string(), mandal: z.string(),
+    village: z.string(), post_office: z.string(), pincode: z.string().regex(/^[1-9]\d{5}$/),
+  })).safeParse(data.results);
+  if (!results.success) throw new Error("Invalid postal service response");
+  return results.data as ExtendedPinCodeData[];
 }
 
 export async function lookupIndiaPostPincode(pincode: string): Promise<ExtendedPinCodeData | null> {

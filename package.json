@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
-    "@huggingface/transformers": "^3.8.1",
     "@lovable.dev/cloud-auth-js": "^1.1.2",
     "@neslinesli93/qpdf-wasm": "0.3.0",
     "@radix-ui/react-accordion": "^1.2.11",

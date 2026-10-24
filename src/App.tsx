@@ -56,7 +56,6 @@ const JPGToPDF = lazy(() => import("./pages/tools/JPGToPDF"));
 const PNGToPDF = lazy(() => import("./pages/tools/PNGToPDF"));
 const CompressImage = lazy(() => import("./pages/tools/CompressImage"));
 const FileCompressor = lazy(() => import("./pages/tools/FileCompressor"));
-const BackgroundRemover = lazy(() => import("./pages/tools/BackgroundRemover"));
 const ImageResizer = lazy(() => import("./pages/tools/ImageResizer"));
 const ImageFormatConverter = lazy(() => import("./pages/tools/ImageFormatConverter"));
 
@@ -196,7 +195,6 @@ const App = () => (
               <Route path="/png-to-pdf" element={<PNGToPDF />} />
               <Route path="/compress-image" element={<CompressImage />} />
               <Route path="/file-compressor" element={<FileCompressor />} />
-              <Route path="/background-remover" element={<BackgroundRemover />} />
               <Route path="/whatsapp-dp-resize" element={<WhatsAppDPResizer />} />
               <Route path="/aadhaar-photo-resize" element={<AadhaarPhotoResizer />} />
               <Route path="/govt-job-photo-resize" element={<GovtJobPhotoResizer />} />

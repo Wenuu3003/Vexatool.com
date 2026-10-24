@@ -137,7 +137,7 @@ export const Hero = () => {
             No signup for core tools. Many file operations run locally in your browser.
           </p>
           <p className="text-xs sm:text-sm max-w-md mx-auto mb-8 md:mb-10 leading-relaxed text-muted-foreground">
-            VexaTool offers 50+ free tools for professionals, students, and businesses.
+            VexaTool offers 40+ free tools for professionals, students, and businesses.
             Check supported formats, file limits and privacy details on each tool page.
           </p>
 

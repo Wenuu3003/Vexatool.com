@@ -650,11 +650,6 @@ const relatedArticles: Record<string, { title: string; slug: string }[]> = {
     { title: "Word Counter: Optimize Content for SEO", slug: "word-counter-content-optimization" },
     { title: "PIN Code Finder: Indian Postal Guide", slug: "pincode-finder-india-postal-guide" },
   ],
-  "background-remover-perfect-product-photos": [
-    { title: "Image Compression for Web Performance", slug: "image-compression-web-performance" },
-    { title: "Image Resizer: Perfect Dimensions for Social Media", slug: "image-resizer-social-media-guide" },
-    { title: "Best Free PDF Tools Online in 2026", slug: "best-free-pdf-tools-online-2026" },
-  ],
 };
 
 // Default related articles if no specific mapping exists
@@ -809,7 +804,6 @@ const BlogPost = () => {
                     "pdf-security-guide": { src: "/previews/protect-pdf-preview.webp", alt: "PDF security and password protection guide" },
                     "best-free-pdf-tools-online-2026": { src: "/previews/edit-pdf-preview.webp", alt: "Best free PDF tools available online" },
                     "qr-code-generator-complete-guide": { src: "/previews/qr-code-generator-preview.webp", alt: "QR code generator complete guide" },
-                    "background-remover-perfect-product-photos": { src: "/previews/background-remover-preview.webp", alt: "Background remover for product photos" },
                     "emi-calculator-home-loan-guide": { src: "/previews/emi-calculator-preview.webp", alt: "EMI calculator for home loans" },
                     "gst-calculator-business-guide": { src: "/previews/gst-calculator-preview.webp", alt: "GST calculator for Indian businesses" },
                     "image-compression-web-performance": { src: "/previews/compress-image-preview.webp", alt: "Optimize images for web performance" },

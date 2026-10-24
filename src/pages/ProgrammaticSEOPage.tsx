@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { upscPhotoGuide, upscSources } from "@/data/upscPhotoGuide";
 import NotFound from "@/pages/NotFound";
 
 interface PSeoPage {
@@ -28,6 +29,7 @@ interface PSeoPage {
  * real route (defined elsewhere in the router) always wins.
  */
 const RESERVED_SLUGS = new Set<string>([
+  "background-remover",
   "auth",
   "account",
   "dashboard",
@@ -50,6 +52,8 @@ export default function ProgrammaticSEOPage() {
   const [page, setPage] = useState<PSeoPage | null | undefined>(undefined);
 
   useEffect(() => {
+    if (slug === "upsc-photo-resizer") { setPage(upscPhotoGuide); return; }
+    setPage(undefined);
     if (!slug || RESERVED_SLUGS.has(slug)) {
       setPage(null);
       return;
@@ -72,7 +76,7 @@ export default function ProgrammaticSEOPage() {
         setPage(null);
         return;
       }
-      setPage(data as unknown as PSeoPage);
+      setPage({ ...data, internal_links: data.internal_links.filter((link: {href: string}) => link.href.split(/[?#]/)[0] !== "/background-remover") } as PSeoPage);
     })();
     return () => { cancelled = true; };
   }, [slug]);
@@ -103,7 +107,7 @@ export default function ProgrammaticSEOPage() {
   const canonical = page.canonical_url ?? `https://vexatool.com/${page.slug}`;
   // Exam guides do not define a verified exam-specific preset.
   // Open custom sizing instead of silently applying the generic govt dimensions.
-  const customPhotoGuide = ["govt-job-photo-resize", "passport-photo-resize", "aadhaar-photo-resize"].includes(page.parent_tool_slug ?? "");
+  const customPhotoGuide = page.slug === "upsc-photo-resizer" || ["govt-job-photo-resize", "passport-photo-resize", "aadhaar-photo-resize"].includes(page.parent_tool_slug ?? "");
   const toolHref = customPhotoGuide ? "/image-resizer" : `/${page.parent_tool_slug}`;
   const breadcrumbs = page.breadcrumbs
     .filter((b, i, list) => i === list.length - 1 || !list.slice(0, i).some((previous) => previous.href === b.href))
@@ -193,6 +197,7 @@ export default function ProgrammaticSEOPage() {
               </div>
             )}
 
+            {page.slug === "upsc-photo-resizer" && <section className="mb-8"><h2 className="text-xl font-semibold mb-3">Official sources</h2><ul className="space-y-2">{upscSources.map(source => <li key={source.href}><a href={source.href} target="_blank" rel="noopener noreferrer" className="text-primary underline">{source.label}</a></li>)}</ul></section>}
             {page.sections.map((s) => (
               <section key={s.heading} className="mb-8">
                 <h2 className="text-2xl font-semibold text-foreground mb-3">{s.heading}</h2>

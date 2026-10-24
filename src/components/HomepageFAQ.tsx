@@ -35,7 +35,7 @@ const faqs = [
   {
     question: "What image tools are available?",
     answer:
-      "Image tools include resizing, compression, JPG/PNG/WebP conversion and background removal. Lossy compression can reduce image quality. Check the receiving portal requirements before using a photo preset.",
+      "Image tools include resizing, compression, JPG/PNG/WebP conversion. Lossy compression can reduce image quality. Check the receiving portal requirements before using a photo preset.",
   },
   {
     question: "Can I convert PDF to Excel while preserving table formatting?",

@@ -20,7 +20,7 @@ export const ToolsSchemaMarkup = ({ baseUrl = "https://vexatool.com" }: ToolsSch
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Free Online PDF & Utility Tools",
-    "description": "Collection of 50+ free online tools for PDF editing, image processing, calculators, and AI utilities",
+    "description": "Collection of 40+ free online tools for PDF editing, image processing, calculators, and AI utilities",
     "url": `${baseUrl}/tools`,
     "numberOfItems": toolsData.length,
     "itemListElement": toolsData.map((tool, index) => ({

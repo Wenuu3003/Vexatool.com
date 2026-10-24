@@ -24,7 +24,7 @@ const toolRelationships: Record<string, string[]> = {
   "/repair-pdf": ["/compress-pdf", "/unlock-pdf", "/merge-pdf", "/pdf-to-word", "/edit-pdf"],
   "/pdf-to-image": ["/pdf-to-jpg", "/pdf-to-png", "/image-to-pdf", "/compress-image", "/pdf-to-word"],
   "/pdf-to-jpg": ["/pdf-to-png", "/pdf-to-image", "/jpg-to-pdf", "/compress-image", "/image-to-pdf"],
-  "/pdf-to-png": ["/pdf-to-jpg", "/pdf-to-image", "/png-to-pdf", "/background-remover", "/compress-image"],
+  "/pdf-to-png": ["/pdf-to-jpg", "/pdf-to-image", "/png-to-pdf", "/compress-image"],
   "/pdf-to-html": ["/html-to-pdf", "/pdf-to-word", "/pdf-to-excel", "/edit-pdf", "/pdf-to-powerpoint"],
   "/pdf-to-powerpoint": ["/ppt-to-pdf", "/pdf-to-word", "/pdf-to-excel", "/pdf-to-image", "/pdf-to-html"],
   "/pdf-to-excel": ["/excel-to-pdf", "/pdf-to-word", "/word-to-excel", "/pdf-to-powerpoint", "/compress-pdf"],
@@ -36,16 +36,15 @@ const toolRelationships: Record<string, string[]> = {
   "/html-to-pdf": ["/pdf-to-html", "/word-to-pdf", "/image-to-pdf", "/word-counter", "/compress-pdf"],
   "/image-to-pdf": ["/jpg-to-pdf", "/png-to-pdf", "/pdf-to-image", "/compress-image", "/merge-pdf"],
   "/jpg-to-pdf": ["/png-to-pdf", "/image-to-pdf", "/pdf-to-jpg", "/compress-image", "/merge-pdf"],
-  "/png-to-pdf": ["/jpg-to-pdf", "/image-to-pdf", "/pdf-to-png", "/background-remover", "/compress-image"],
+  "/png-to-pdf": ["/jpg-to-pdf", "/image-to-pdf", "/pdf-to-png", "/compress-image"],
   "/google-drive-to-pdf": ["/word-to-pdf", "/excel-to-pdf", "/ppt-to-pdf", "/compress-pdf", "/merge-pdf"],
   "/word-to-excel": ["/excel-to-word", "/word-to-pdf", "/pdf-to-excel", "/pdf-to-word", "/compress-pdf"],
   "/excel-to-word": ["/word-to-excel", "/excel-to-pdf", "/word-to-pdf", "/pdf-to-word", "/compress-pdf"],
   
   // Image Tools
-  "/compress-image": ["/image-resizer", "/image-format-converter", "/compress-pdf", "/file-compressor", "/background-remover"],
-  "/image-resizer": ["/compress-image", "/image-format-converter", "/background-remover", "/image-to-pdf", "/compress-pdf"],
-  "/image-format-converter": ["/compress-image", "/image-resizer", "/jpg-to-pdf", "/png-to-pdf", "/background-remover"],
-  "/background-remover": ["/compress-image", "/image-resizer", "/image-format-converter", "/png-to-pdf", "/image-to-pdf"],
+  "/compress-image": ["/image-resizer", "/image-format-converter", "/compress-pdf", "/file-compressor",],
+  "/image-resizer": ["/compress-image", "/image-format-converter", "/image-to-pdf", "/compress-pdf"],
+  "/image-format-converter": ["/compress-image", "/image-resizer", "/jpg-to-pdf", "/png-to-pdf",],
   "/file-compressor": ["/compress-image", "/compress-pdf", "/image-resizer", "/merge-pdf", "/image-format-converter"],
   
   // Word Counter & Utility
@@ -63,7 +62,7 @@ const toolRelationships: Record<string, string[]> = {
   
   // Utility Tools
   "/qr-code-generator": ["/qr-code-scanner", "/image-to-pdf", "/compress-image", "/image-resizer", "/merge-pdf"],
-  "/qr-code-scanner": ["/qr-code-generator", "/image-format-converter", "/compress-image", "/background-remover", "/image-resizer"],
+  "/qr-code-scanner": ["/qr-code-generator", "/image-format-converter", "/compress-image", "/image-resizer"],
   "/pincode-generator": ["/calculator", "/gst-calculator", "/currency-converter", "/unit-converter", "/emi-calculator"],
 };
 

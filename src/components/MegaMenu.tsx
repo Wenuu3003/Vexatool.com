@@ -97,7 +97,6 @@ const categories: Category[] = [
       { name: "Image Compressor", href: "/compress-image", icon: ImageDown },
       { name: "Image Converter", href: "/image-format-converter", icon: RefreshCw },
       { name: "Image to PDF", href: "/image-to-pdf", icon: Image },
-      { name: "Background Remover", href: "/background-remover", icon: Eraser, badge: "popular" },
       { name: "File Compressor", href: "/file-compressor", icon: FileDown },
       { name: "WhatsApp DP Resizer", href: "/whatsapp-dp-resize", icon: Smartphone },
       { name: "Aadhaar Photo Resizer", href: "/aadhaar-photo-resize", icon: CreditCard },

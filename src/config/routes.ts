@@ -17,7 +17,6 @@ export const blogPosts = [
   'love-calculator-guide',
   'age-calculator-guide',
   'qr-code-generator-complete-guide',
-  'background-remover-perfect-product-photos',
   'emi-calculator-home-loan-guide',
   'gst-calculator-business-guide',
   'pdf-to-word-formatting-tips',
@@ -145,7 +144,7 @@ export const routes: RouteConfig[] = [
     includeInSitemap: true,
     title: 'Image Tools - Compress, Resize, Convert Images Free | VexaTool',
     description: 'Free online image tools. Compress, resize, convert, remove background from images.',
-    keywords: 'image tools, image compressor, image resizer, background remover',
+    keywords: 'image tools, image compressor, image resizer',
     category: 'Category'
   },
   {
@@ -405,16 +404,6 @@ export const routes: RouteConfig[] = [
     title: 'Image Format Converter - JPG to PNG, PNG to WebP | VexaTool',
     description: 'Convert images between formats. JPG to PNG, PNG to WebP, WebP to JPG. Free online image format converter with quality control.',
     keywords: 'image converter, jpg to png, png to jpg, webp converter, image format converter, convert image online',
-    category: 'Image Tools'
-  },
-  { 
-    path: '/background-remover', 
-    priority: 0.9, 
-    changefreq: 'weekly', 
-    includeInSitemap: true,
-    title: 'Background Remover - Remove Image Background Free | VexaTool',
-    description: 'Remove image background instantly with AI. Free background remover for photos, products, portraits. Transparent background in seconds.',
-    keywords: 'background remover, remove background, transparent background, ai background removal, photo background remover',
     category: 'Image Tools'
   },
   { 
@@ -746,7 +735,6 @@ export const toolUpdateDates: Record<string, string> = {
   '/watermark-pdf': '2026-10-14',
   '/word-to-excel': '2026-10-14',
   '/word-to-pdf': '2026-10-14',
-  '/background-remover': '2026-10-15',
 
   '/': '2026-01-23',
   '/blog': '2026-01-23',

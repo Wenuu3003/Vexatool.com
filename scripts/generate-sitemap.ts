@@ -54,6 +54,7 @@ async function fetchProgrammaticSeoUrls(staticPaths: Set<string>, environment: R
     const blocks: string[] = [];
     for (const row of data as Array<{ slug: string; updated_at: string }>) {
       const slug = row.slug?.trim();
+      if (slug === "background-remover" || slug === "background-remover-perfect-product-photos") continue;
       if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) continue;
       const routePath = `/${slug}`;
       // Avoid duplicating any URL that already exists in the static sitemap.
@@ -104,7 +105,7 @@ export const generateSitemap = async (environment: Record<string, string | undef
       const loc = block.match(/<loc>([^<]+)<\/loc>/)?.[1];
       if (!loc?.startsWith(BASE_URL + '/')) return false;
       const routePath = loc.slice(BASE_URL.length);
-      if (!/^\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(routePath) || staticPaths.has(routePath) || ['/auth', '/account'].includes(routePath) || seen.has(routePath)) return false;
+      if (!/^\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(routePath) || staticPaths.has(routePath) || ['/auth', '/account', '/background-remover'].includes(routePath) || seen.has(routePath)) return false;
       seen.add(routePath);
       return true;
     }).join('\n');

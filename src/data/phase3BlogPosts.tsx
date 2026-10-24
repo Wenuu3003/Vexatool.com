@@ -871,7 +871,6 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
       { name: "Compress Image", href: "/compress-image" },
       { name: "Image Resizer", href: "/image-resizer" },
       { name: "Image Format Converter", href: "/image-format-converter" },
-      { name: "Background Remover", href: "/background-remover" }
     ],
     content: (
       <div className="prose prose-gray dark:prose-invert max-w-none">
@@ -974,8 +973,8 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
         <h3>Should I use WebP everywhere?</h3>
         <p>Yes for photos. SVG for logos. PNG only when you need transparency on sharp graphics.</p>
 
-        <h3>Does background removal help SEO?</h3>
-        <p>Indirectly — clean product photos have higher conversion, which Google rewards. Use <a href="/background-remover" className="text-primary hover:underline">Background Remover</a>.</p>
+        <h3>How should I prepare product photos?</h3>
+        <p>Clear product photos help shoppers understand a product. Use a plain background and accurate lighting.</p>
 
         <h3>How big is too big?</h3>
         <p>Aim for under 200 KB for content images, under 500 KB for hero images.</p>
@@ -1161,7 +1160,7 @@ export const phase3BlogPosts: Record<string, BlogPostContent> = {
         <ol>
           <li>Sign your name on a clean sheet of white paper with a thick black pen.</li>
           <li>Take a sharp, well-lit photo of the signature, or scan it.</li>
-          <li>Remove the background using <a href="/background-remover" className="text-primary hover:underline">Background Remover</a> so the signature becomes a transparent PNG.</li>
+          <li>Prepare a clear signature image on a plain background in the format your document requires.</li>
           <li>Save the PNG somewhere safe — Google Drive, iCloud, or a password-protected folder on your device.</li>
           <li>Whenever you need to sign a PDF, open <a href="/sign-pdf" className="text-primary hover:underline">Sign PDF</a>, switch to the <strong>Upload</strong> tab, and select the PNG. It will appear on the page with full transparency, looking identical to a real signature.</li>
         </ol>

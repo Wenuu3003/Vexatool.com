@@ -7,7 +7,6 @@ const popularTools = [
   { name: "Compress PDF", href: "/compress-pdf", icon: FileDown, gradient: "from-purple-500 to-violet-500" },
   { name: "QR Generator", href: "/qr-code-generator", icon: QrCode, gradient: "from-blue-500 to-indigo-500" },
   { name: "Love Calc", href: "/love-calculator", icon: Heart, gradient: "from-pink-500 to-rose-500" },
-  { name: "Remove BG", href: "/background-remover", icon: Eraser, gradient: "from-amber-500 to-yellow-500" },
   { name: "Image Resize", href: "/image-resizer", icon: Crop, gradient: "from-orange-500 to-red-500" },
 ];
 

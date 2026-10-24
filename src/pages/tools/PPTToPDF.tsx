@@ -1,3 +1,4 @@
+import { wrapOfficeText } from "@/lib/officeText";
 import { useState, useRef, useCallback } from "react";
 import { Presentation, Download, Info, Upload, FileText, CheckCircle, ImageIcon } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -76,7 +77,7 @@ const PPTToPDF = () => {
           // Standard slide dimensions (16:9 aspect ratio)
           const pageWidth = 960;
           const pageHeight = 540;
-          const page = pdfDoc.addPage([pageWidth, pageHeight]);
+          let page = pdfDoc.addPage([pageWidth, pageHeight]);
           
           // Add slide background
           page.drawRectangle({
@@ -117,7 +118,11 @@ const PPTToPDF = () => {
                 const imageX = (pageWidth - scaledWidth) / 2;
                 imageY -= scaledHeight;
                 
-                if (imageY > 60) {
+                if (imageY <= 60) {
+                  page = pdfDoc.addPage([pageWidth, pageHeight]);
+                  imageY = pageHeight - 60 - scaledHeight;
+                }
+                if (imageY > 0) {
                   page.drawImage(embeddedImage, {
                     x: imageX,
                     y: imageY,
@@ -149,39 +154,14 @@ const PPTToPDF = () => {
             const maxWidth = pageWidth - 80;
             
             for (const textLine of slideData.text) {
-              if (yPosition < 50) break;
-              
-              // Word wrap
-              const words = textLine.split(' ');
-              let currentLine = '';
-              
-              for (const word of words) {
-                const testLine = currentLine ? `${currentLine} ${word}` : word;
-                const textWidth = font.widthOfTextAtSize(testLine, 14);
-                
-                if (textWidth > maxWidth && currentLine) {
-                  page.drawText(currentLine, {
-                    x: 40,
-                    y: yPosition,
-                    size: 14,
-                    font: font,
-                    color: rgb(0.1, 0.1, 0.1),
-                  });
-                  yPosition -= lineHeight;
-                  currentLine = word;
-                } else {
-                  currentLine = testLine;
+              const lines = wrapOfficeText(textLine, maxWidth, value => font.widthOfTextAtSize(value, 14));
+              for (const line of lines) {
+                if (yPosition < 50) {
+                  page = pdfDoc.addPage([pageWidth, pageHeight]);
+                  page.drawText(`Slide ${i + 1} (continued)`, {x:40, y:pageHeight-30, size:18, font:boldFont});
+                  yPosition = pageHeight - 70;
                 }
-              }
-              
-              if (currentLine && yPosition >= 50) {
-                page.drawText(currentLine, {
-                  x: 40,
-                  y: yPosition,
-                  size: 14,
-                  font: font,
-                  color: rgb(0.1, 0.1, 0.1),
-                });
+                page.drawText(line, {x:40, y:yPosition, size:14, font, color:rgb(0.1,0.1,0.1)});
                 yPosition -= lineHeight;
               }
             }

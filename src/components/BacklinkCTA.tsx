@@ -13,7 +13,6 @@ export const BacklinkCTA = ({ currentTool }: BacklinkCTAProps) => {
     { name: "Image Compressor", path: "/compress-image", icon: "🖼️" },
     { name: "QR Generator", path: "/qr-code-generator", icon: "📱" },
     { name: "Word Counter", path: "/word-counter", icon: "✍️" },
-    { name: "Background Remover", path: "/background-remover", icon: "🎨" },
   ].filter(tool => !currentTool?.toLowerCase().includes(tool.name.toLowerCase().split(' ')[0]));
 
   return (
@@ -75,7 +74,7 @@ export const BacklinkCTA = ({ currentTool }: BacklinkCTAProps) => {
       <div className="mt-6 pt-6 border-t border-border">
         <p className="text-xs text-muted-foreground text-center">
           Looking for more? Try our{" "}
-          <Link to="/background-remover" className="text-primary hover:underline">Background Remover</Link>,{" "}
+          <Link to="/image-resizer" className="text-primary hover:underline">Image Resizer</Link>,{" "}
           <Link to="/currency-converter" className="text-primary hover:underline">Currency Converter</Link>, or{" "}
           <Link to="/emi-calculator" className="text-primary hover:underline">EMI Calculator</Link>.
           All tools are{" "}

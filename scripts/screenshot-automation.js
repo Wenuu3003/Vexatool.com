@@ -43,7 +43,6 @@ const CONFIG = {
 const TOOLS = [
   { id: 'image-resizer', path: '/image-resizer' },
   { id: 'image-converter', path: '/image-format-converter' },
-  { id: 'background-remover', path: '/background-remover' },
   { id: 'compress-image', path: '/compress-image' },
   { id: 'love-calculator', path: '/love-calculator' },
   { id: 'age-calculator', path: '/age-calculator' },

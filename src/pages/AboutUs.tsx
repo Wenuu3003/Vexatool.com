@@ -32,7 +32,7 @@ const AboutUs = () => (
           <div className="grid sm:grid-cols-2 gap-4">
             {[
               { title: "PDF Tools", path: "/pdf-tools", text: "Merge, split, rotate, encrypt and convert supported documents." },
-              { title: "Image Tools", path: "/image-tools", text: "Resize, compress and convert images or remove backgrounds." },
+              { title: "Image Tools", path: "/image-tools", text: "Resize, compress and convert images." },
               { title: "Calculators", path: "/calculator-tools", text: "Calculate percentages, age, EMI, BMI and other estimates." },
               { title: "QR & Utility Tools", path: "/qr-tools", text: "Generate and scan QR codes; explore the tool directory for text and unit utilities." },
             ].map(item => <Link key={item.path} to={item.path} className="border rounded-xl p-4 hover:border-primary"><h3 className="font-semibold text-foreground mb-2">{item.title}</h3><p className="text-sm text-muted-foreground">{item.text}</p></Link>)}

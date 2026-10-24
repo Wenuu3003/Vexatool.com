@@ -43,7 +43,7 @@ const GoogleDriveToPDF = () => {
 
   const seoContent = {
     toolName: "Google Drive to PDF Converter",
-    whatIs: "Google Drive to PDF Converter helps you export Google Docs, Sheets, and Slides as PDF documents using Google's own export URLs. Simply paste the sharing link of your file you have permission to access, select the correct file type, and click to download the PDF export. This tool works by constructing the correct Google export URL for your file — the actual export happens through Google's servers, ensuring full fidelity of your document. No files are processed or stored on our servers.",
+    whatIs: "Google Drive to PDF Converter helps you export Google Docs, Sheets, and Slides as PDF documents using Google's own export URLs. Simply paste the sharing link of your file you have permission to access, select the correct file type, and click to download the PDF export. This tool works by constructing the correct Google export URL for your file — the actual export happens through Google's servers, using Google’s export settings. No files are processed or stored on our servers.",
     howToUse: [
       "Copy the link of a Google Drive file you have permission to access.",
       "Paste the link in the input field above.",
@@ -53,7 +53,7 @@ const GoogleDriveToPDF = () => {
     ],
     features: [
       "Supports Google Docs, Sheets, Slides, and other Drive files",
-      "Uses Google's native export for full document fidelity",
+      "Uses Google's native PDF export",
       "No file upload or server processing — links open directly",
       "Works with accessible Google Drive files; Google controls export permissions",
       "Handles multiple Google Drive URL formats automatically",
@@ -160,7 +160,7 @@ const GoogleDriveToPDF = () => {
             <CardContent className="pt-6">
               <h3 className="font-semibold mb-3">Supported Files</h3>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Google Docs → PDF (full formatting preserved)</li>
+                <li>• Google Docs → PDF (Google controls export layout)</li>
                 <li>• Google Sheets → PDF (all sheets included)</li>
                 <li>• Google Slides → PDF (one slide per page)</li>
                 <li>• Other file you have permission to accesss → Direct download</li>

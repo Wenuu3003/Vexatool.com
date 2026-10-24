@@ -7,6 +7,7 @@ export async function readExcelFile(file: File): Promise<{
   workbook: ExcelJS.Workbook;
   sheetNames: string[];
 }> {
+  if (file.name.toLowerCase().endsWith('.xls')) throw new Error('Legacy XLS is unsupported. Save as XLSX or CSV first.');
   const arrayBuffer = await file.arrayBuffer();
   const workbook = new ExcelJS.Workbook();
   
@@ -20,7 +21,14 @@ export async function readExcelFile(file: File): Promise<{
     rows.forEach(row => worksheet.addRow(row));
   } else {
     // For xlsx/xls files
-    await workbook.xlsx.load(arrayBuffer);
+    // Omit unsupported drawings in an in-memory copy for cell-data export.
+    const { default: JSZip } = await import('jszip');
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    for (const name of Object.keys(zip.files)) {
+      if (name.startsWith('xl/drawings/')) zip.remove(name);
+    }
+    const dataOnly = await zip.generateAsync({ type: 'arraybuffer' });
+    await workbook.xlsx.load(dataOnly, { ignoreNodes: ['drawing'] });
   }
   
   const sheetNames = workbook.worksheets.map(ws => ws.name);
@@ -30,33 +38,24 @@ export async function readExcelFile(file: File): Promise<{
 /**
  * Parse CSV text into rows
  */
-function parseCSV(text: string): string[][] {
+export function parseCSV(text: string): string[][] {
   const rows: string[][] = [];
-  const lines = text.split('\n');
-  
-  for (const line of lines) {
-    if (line.trim()) {
-      const cells: string[] = [];
-      let current = '';
-      let inQuotes = false;
-      
-      for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          cells.push(current.trim());
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      cells.push(current.trim());
-      rows.push(cells);
-    }
+  let row: string[] = [], cell = '', quoted = false;
+  text = text.replace(/^\uFEFF/, '');
+  const finishRow = () => { row.push(cell); if (row.some(value => value.length)) rows.push(row); row = []; cell = ''; };
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (quoted && text[i + 1] === '"') { cell += '"'; i++; }
+      else quoted = !quoted;
+    } else if (ch === ',' && !quoted) { row.push(cell); cell = ''; }
+    else if ((ch === '\n' || ch === '\r') && !quoted) {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      finishRow();
+    } else cell += ch;
   }
-  
+  if (quoted) throw new Error('Unclosed quoted CSV field.');
+  if (cell.length || row.length) finishRow();
   return rows;
 }
 
@@ -77,14 +76,18 @@ export function sheetToArray(worksheet: ExcelJS.Worksheet): (string | number | b
       const value = cell.value;
       if (value === null || value === undefined) {
         rowData.push(null);
-      } else if (typeof value === 'object' && 'result' in value) {
+      } else if (typeof value === 'object' && 'richText' in value) {
+        rowData.push(value.richText.map(run => run.text).join(''));
+      } else if (typeof value === 'object' && ('formula' in value || 'sharedFormula' in value)) {
         // Formula result
-        rowData.push(value.result?.toString() ?? null);
+        rowData.push(value.result === undefined ? '[Formula result unavailable]' : String(value.result));
       } else if (typeof value === 'object' && 'text' in value) {
         // Rich text
         rowData.push(value.text?.toString() ?? null);
       } else if (value instanceof Date) {
         rowData.push(value.toLocaleDateString());
+      } else if (typeof value === 'object' && 'error' in value) {
+        rowData.push(value.error);
       } else {
         rowData.push(value as string | number | boolean);
       }

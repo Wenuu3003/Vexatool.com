@@ -19,7 +19,6 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
     "Image & QR Tools": [
       { name: "Image Resizer", path: "/image-resizer" },
       { name: "Image Compressor", path: "/compress-image" },
-      { name: "Background Remover", path: "/background-remover" },
       { name: "Image Converter", path: "/image-format-converter" },
       { name: "QR Code Generator", path: "/qr-code-generator" },
       { name: "QR Code Scanner", path: "/qr-code-scanner" },

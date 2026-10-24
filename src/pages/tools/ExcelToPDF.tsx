@@ -1,3 +1,4 @@
+import { wrapOfficeText } from "@/lib/officeText";
 import { useState, useCallback } from "react";
 import { Table, Download, FileSpreadsheet, Shield, CheckCircle, Settings, Trash2, Plus, X } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -52,10 +53,10 @@ const ExcelToPDF = () => {
       toast({ title: "File too large", description: `Maximum file size is ${MAX_FILE_SIZE_MB}MB. Your file is ${(selectedFile.size / 1024 / 1024).toFixed(1)}MB.`, variant: "destructive" });
       return null;
     }
-    const validExtensions = ['.xlsx', '.xls', '.csv'];
+    const validExtensions = ['.xlsx', '.csv'];
     const isValid = validExtensions.some(ext => selectedFile.name.toLowerCase().endsWith(ext));
     if (!isValid) {
-      toast({ title: "Invalid file type", description: "Please select an Excel file (.xls, .xlsx) or CSV file (.csv)", variant: "destructive" });
+      toast({ title: "Invalid file type", description: "Please select an Excel file (.xlsx) or CSV file (.csv)", variant: "destructive" });
       return null;
     }
     try {
@@ -180,6 +181,7 @@ const ExcelToPDF = () => {
       
       const numCols = Math.max(...cleanedData.map(row => row.length), 1);
       const availableWidth = pageWidth - (margin * 2);
+      if (numCols > 24) throw new Error("This simplified converter supports up to 24 columns. Split the sheet or export from Excel for wider tables.");
 
       // Compute column widths based on content
       const colWidths: number[] = [];
@@ -198,7 +200,7 @@ const ExcelToPDF = () => {
         if (totalWidth > availableWidth) {
           const scale = availableWidth / totalWidth;
           for (let i = 0; i < colWidths.length; i++) {
-            colWidths[i] = Math.max(colWidths[i] * scale, 25);
+            colWidths[i] = colWidths[i] * scale;
           }
         }
       } else {
@@ -208,43 +210,7 @@ const ExcelToPDF = () => {
 
       // Helper: wrap text into lines that fit within a column width
       // Handles long strings without spaces (URLs, IDs, PNRs) via character-level breaking
-      const wrapText = (text: string, maxTextWidth: number): string[] => {
-        if (!text) return [''];
-        const words = text.split(/\s+/);
-        const lines: string[] = [];
-        let currentLine = '';
-
-        for (const word of words) {
-          const testLine = currentLine ? currentLine + ' ' + word : word;
-          const testWidth = font.widthOfTextAtSize(testLine, fontSize);
-          if (testWidth > maxTextWidth && currentLine) {
-            lines.push(currentLine);
-            currentLine = word;
-          } else {
-            currentLine = testLine;
-          }
-        }
-        if (currentLine) {
-          // Character-level break for very long words that don't fit
-          const lineWidth = font.widthOfTextAtSize(currentLine, fontSize);
-          if (lineWidth > maxTextWidth && !currentLine.includes(' ')) {
-            let chunk = '';
-            for (const char of currentLine) {
-              const chunkWidth = font.widthOfTextAtSize(chunk + char, fontSize);
-              if (chunkWidth > maxTextWidth && chunk) {
-                lines.push(chunk);
-                chunk = char;
-              } else {
-                chunk += char;
-              }
-            }
-            if (chunk) lines.push(chunk);
-          } else {
-            lines.push(currentLine);
-          }
-        }
-        return lines.length > 0 ? lines : [''];
-      };
+      const wrapText = (text: string, maxTextWidth: number): string[] => wrapOfficeText(text, Math.max(1, maxTextWidth), value => font.widthOfTextAtSize(value, fontSize));
 
       // Store first row as header for repeat
       const headerRow = cleanedData.length > 0 ? cleanedData[0] : null;
@@ -279,6 +245,7 @@ const ExcelToPDF = () => {
 
         const lineHeight = fontSize + 3;
         const rowHeight = maxLines * lineHeight + cellPadding * 2;
+        if (rowHeight > pageHeight - margin * 2 - 70) throw new Error("A cell is too tall for this simplified table layout. Split long cells or use Excel Export to PDF.");
 
         // Check if row fits on current page
         if (yPos - rowHeight < margin) {
@@ -339,6 +306,7 @@ const ExcelToPDF = () => {
       else setProgress((sheetsProcessed / totalSheets) * 100);
     }
     
+    if (!pdfDoc.getPageCount()) throw new Error("No non-empty sheets selected.");
     return await pdfDoc.save();
   }, [pageSize, orientation, autoFitColumns, removeEmptyRows, oneSheetPerPage]);
 
@@ -388,7 +356,7 @@ const ExcelToPDF = () => {
       }
       toast({
         title: "Conversion Error",
-        description: "Failed to convert Excel to PDF. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to convert Excel to PDF.",
         variant: "destructive",
       });
     } finally {
@@ -465,12 +433,12 @@ const ExcelToPDF = () => {
     <>
       <CanonicalHead 
         title="Excel to PDF Converter – Batch Processing & Clean Sheets | VexaTool"
-        description="Convert Excel to PDF online with batch processing and clean sheet options. Supports XLS, XLSX, and CSV."
+        description="Convert Excel to PDF online with batch processing and clean sheet options. Supports XLSX and CSV; charts and original styles are not preserved."
         keywords="Excel to PDF, XLS to PDF, XLSX to PDF, CSV to PDF, batch Excel convert, spreadsheet to PDF"
       />
       <ToolLayout
         title="Excel to PDF"
-        description="Convert Excel spreadsheets to PDF with formatting"
+        description="Convert XLSX/CSV data to simplified PDF tables"
         icon={Table}
         colorClass="bg-green-600"
       >
@@ -482,7 +450,7 @@ const ExcelToPDF = () => {
               Convert Excel to Professional PDF
             </h2>
             <p className="text-muted-foreground">
-              Transform Excel spreadsheets into shareable PDF documents while maintaining layout and formatting. 
+              Transform Excel spreadsheets into shareable PDF documents as simplified tables. 
               Now with batch processing to convert multiple files at once.
             </p>
           </div>
@@ -493,7 +461,7 @@ const ExcelToPDF = () => {
               { icon: CheckCircle, text: "Batch processing" },
               { icon: Settings, text: "Clean sheet options" },
               { icon: Shield, text: "Secure processing" },
-              { icon: FileSpreadsheet, text: "XLS, XLSX, CSV" },
+              { icon: FileSpreadsheet, text: "XLSX, CSV" },
             ].map((benefit, index) => (
               <div key={index} className="flex items-center gap-2 p-3 bg-card rounded-lg border border-border">
                 <benefit.icon className="w-4 h-4 text-green-600 flex-shrink-0" />
@@ -521,9 +489,10 @@ const ExcelToPDF = () => {
 
           {/* File Upload */}
           <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-green-500/50 transition-colors">
+            <p className="mb-3 text-sm text-muted-foreground">XLSX/CSV data export: charts, original styles and merged-cell layout are not preserved. Formulas use saved results and are not recalculated. Save legacy XLS as XLSX first.</p>
             <input
               type="file"
-              accept=".xls,.xlsx,.csv"
+              accept=".xlsx,.csv"
               onChange={handleFileChange}
               className="hidden"
               id="excel-upload"
@@ -537,7 +506,7 @@ const ExcelToPDF = () => {
                 {batchMode ? "Click to add Excel files" : (file ? file.name : "Click to select Excel file")}
               </p>
               <p className="text-sm text-muted-foreground">
-                Supports .xls, .xlsx, and .csv files {batchMode && "(multiple)"}
+                Supports .xlsx, and .csv files {batchMode && "(multiple)"}
               </p>
             </label>
           </div>
@@ -724,9 +693,9 @@ const ExcelToPDF = () => {
 
           <ToolSEOContent
             toolName="Excel to PDF Converter"
-            whatIs="The Excel to PDF Converter is a free online tool that transforms Excel spreadsheets (.xls, .xlsx) and CSV files into professional PDF documents. It preserves your table formatting, allows you to select specific sheets, and provides options for page size, orientation, and layout. With batch processing support, you can convert multiple files at once."
+            whatIs="The Excel to PDF Converter is a free online tool that transforms Excel spreadsheets (.xlsx) and CSV files into professional PDF documents. It exports cell data into a new table layout; charts, original styles and merged-cell layout are not preserved. It allows you to select specific sheets, and provides options for page size, orientation, and layout. With batch processing support, you can convert multiple files at once."
             howToUse={[
-              "Upload your Excel file (.xls, .xlsx, or .csv) by clicking the upload area.",
+              "Upload your Excel file (.xlsx, or .csv) by clicking the upload area.",
               "For multiple files, switch to 'Batch Processing' mode.",
               "Select which sheets you want to include in the PDF.",
               "Customize page size, orientation, and other options.",
@@ -746,7 +715,7 @@ const ExcelToPDF = () => {
               { question: "Will my table formatting be preserved?", answer: "The tool maintains your table structure, headers, and cell data. For complex formatting like colors and merged cells, the PDF will show a clean representation of your data." },
               { question: "Can I convert multiple sheets to one PDF?", answer: "Yes! Select multiple sheets from your workbook, and they'll all be included in a single PDF document." },
               { question: "What's the difference between A4 and Letter size?", answer: "A4 (210 × 297 mm) is the international standard, while Letter (8.5 × 11 in) is common in North America. Choose based on your printing needs." },
-              { question: "Is there a file size limit?", answer: "There's no strict limit, but very large files may take longer to process since everything happens in your browser." }
+              { question: "Is there a file size limit?", answer: "The maximum input size is 50 MB. Large workbooks may be limited by browser memory." }
             ]}
           />
         </div>

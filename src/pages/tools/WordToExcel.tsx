@@ -21,16 +21,17 @@ const WordToExcel = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      setFile(null);
       if (selectedFile.size > MAX_FILE_SIZE) {
         toast({ title: "File too large", description: `Maximum file size is ${MAX_FILE_SIZE_MB}MB.`, variant: "destructive" });
         return;
       }
-      const valid = ['.doc', '.docx', '.txt'].some(ext => selectedFile.name.toLowerCase().endsWith(ext));
+      const valid = ['.docx', '.txt'].some(ext => selectedFile.name.toLowerCase().endsWith(ext));
       if (valid) {
         setFile(selectedFile);
         setProgress(0);
       } else {
-        toast({ title: "Invalid file type", description: "Please select a Word document (.doc, .docx) or text file (.txt)", variant: "destructive" });
+        toast({ title: "Invalid file type", description: "Please select a Word document (.docx) or text file (.txt)", variant: "destructive" });
       }
     }
   };
@@ -191,7 +192,7 @@ const WordToExcel = () => {
     toolName: "Word to Excel Converter",
     whatIs: "Word to Excel Converter is a free online tool that transforms Word documents into proper Excel spreadsheets (.xlsx). For .docx files with tables, it extracts each table into a separate Excel sheet with formatted headers. Paragraph content is placed in a dedicated sheet. The entire conversion happens in your browser — no files are uploaded.",
     howToUse: [
-      "Click the upload area to select your Word document (.doc, .docx) or text file (.txt).",
+      "Click the upload area to select your Word document (.docx) or text file (.txt).",
       "Review the selected file details.",
       "Click 'Convert to Excel (.xlsx)' to start the conversion.",
       "Your Excel file will download automatically.",
@@ -203,7 +204,7 @@ const WordToExcel = () => {
       "Paragraph content exported to a dedicated sheet",
       "Generates real .xlsx files (not CSV)",
       "Auto-fit column widths",
-      "Supports .doc, .docx, and .txt files",
+      "Supports .docx, and .txt files",
       "100% browser-based — no server upload",
       "Free with no registration required",
     ],
@@ -211,7 +212,7 @@ const WordToExcel = () => {
     faqs: [
       { question: "How does the converter handle Word tables?", answer: "For .docx files, the tool extracts actual table elements from the document XML. Each table becomes a separate Excel sheet with proper rows and columns." },
       { question: "Why .xlsx instead of CSV?", answer: "XLSX supports multiple sheets, formatting, and auto-fitted columns — providing a much better result than flat CSV files." },
-      { question: "Will tables in my Word document be converted accurately?", answer: "Yes — actual Word tables are parsed cell-by-cell. Complex merged cells may need minor adjustment." },
+      { question: "Will tables in my Word document be converted accurately?", answer: "Table values and horizontal grid spacing are extracted. Original styles, vertical merges and nested table layout are not preserved. Review the spreadsheet before use." },
       { question: "Can I convert documents with images?", answer: "The converter focuses on text and table content. Images are not transferred to Excel output." },
     ],
   };
@@ -231,7 +232,7 @@ const WordToExcel = () => {
       >
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
-            <input type="file" accept=".doc,.docx,.txt" onChange={handleFileChange} className="hidden" id="word-excel-upload" />
+            <input type="file" accept=".docx,.txt" onChange={handleFileChange} className="hidden" id="word-excel-upload" />
             <label htmlFor="word-excel-upload" className="cursor-pointer">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-600/10 flex items-center justify-center">
                 <FileText className="w-8 h-8 text-green-600" />
@@ -239,7 +240,7 @@ const WordToExcel = () => {
               <p className="text-lg font-medium text-foreground mb-2">
                 {file ? file.name : "Click to select Word document"}
               </p>
-              <p className="text-sm text-muted-foreground">Supports .doc, .docx, and .txt files</p>
+              <p className="text-sm text-muted-foreground">Supports .docx, and .txt files</p>
             </label>
           </div>
 

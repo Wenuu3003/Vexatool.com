@@ -142,7 +142,7 @@ export const HomepageContent = () => {
               {[
                 { icon: FileText, title: "Students & Educators", desc: "Merge notes, convert assignments, compress files for portals." },
                 { icon: Globe, title: "Business Professionals", desc: "Edit contracts, merge reports, generate QR codes." },
-                { icon: Image, title: "Content Creators", desc: "Resize images, remove backgrounds, convert formats." },
+                { icon: Image, title: "Content Creators", desc: "Resize images, compress files, convert formats." },
                 { icon: Users, title: "Everyday Users", desc: "Calculate BMI, find PIN codes, count words, create QR codes." },
               ].map((item, i) => (
                 <div key={i} className="bg-card border border-border/60 rounded-xl p-4 sm:p-5">

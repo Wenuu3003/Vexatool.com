@@ -28,13 +28,23 @@ export const extractContentFromPPTX = async (file: File): Promise<SlideContent[]
       }
       
       const slides: SlideContent[] = [];
-      const slideFiles = Object.keys(zip.files)
-        .filter(name => name.match(/ppt\/slides\/slide\d+\.xml$/))
-        .sort((a, b) => {
-          const numA = parseInt(a.match(/slide(\d+)/)?.[1] || '0');
-          const numB = parseInt(b.match(/slide(\d+)/)?.[1] || '0');
-          return numA - numB;
+      // The manifest defines display order; slide filenames do not.
+      const manifest = new DOMParser().parseFromString(await zip.file('ppt/presentation.xml')!.async('text'), 'application/xml');
+      const relationshipSource = await zip.file('ppt/_rels/presentation.xml.rels')?.async('text');
+      let slideFiles: string[];
+      if (relationshipSource) {
+        const relationships = new DOMParser().parseFromString(relationshipSource, 'application/xml');
+        const byId = new Map(Array.from(relationships.getElementsByTagName('Relationship')).filter(r => r.getAttribute('TargetMode') !== 'External').map(r => [r.getAttribute('Id'), r.getAttribute('Target') || '']));
+        slideFiles = Array.from(manifest.getElementsByTagNameNS('http://schemas.openxmlformats.org/presentationml/2006/main', 'sldId')).map(node => {
+          const target = byId.get(node.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id'));
+          if (!target) throw new Error('Missing slide relationship.');
+          const resolved = new URL(target, 'https://ppt.local/ppt/presentation.xml').pathname.slice(1);
+          if (!zip.file(resolved)) throw new Error('Missing slide content.');
+          return resolved;
         });
+      } else {
+        slideFiles = Object.keys(zip.files).filter(name => /^ppt\/slides\/slide\d+\.xml$/.test(name)).sort((a,b) => Number(a.match(/slide(\d+)/)?.[1]) - Number(b.match(/slide(\d+)/)?.[1]));
+      }
 
       for (const slideFile of slideFiles) {
         const slideContent: SlideContent = { text: [], images: [] };

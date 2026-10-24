@@ -14,7 +14,6 @@ const tools = [
   { name: "Image Compressor", href: "/compress-image", icon: ImageDown, desc: "Reduce image file size while maintaining quality", gradient: "from-teal-500 to-cyan-500" },
   { name: "Image Converter", href: "/image-format-converter", icon: RefreshCw, desc: "Convert between JPG, PNG, WebP and more", gradient: "from-indigo-500 to-blue-500" },
   { name: "Image to PDF", href: "/image-to-pdf", icon: Image, desc: "Convert images to PDF documents", gradient: "from-blue-500 to-violet-500" },
-  { name: "Background Remover", href: "/background-remover", icon: Eraser, desc: "Remove backgrounds from any image", gradient: "from-purple-500 to-pink-500" },
   { name: "File Compressor", href: "/file-compressor", icon: FileDown, desc: "Compress files to reduce size instantly", gradient: "from-sky-500 to-blue-500" },
   { name: "WhatsApp DP Resizer", href: "/whatsapp-dp-resize", icon: Smartphone, desc: "Resize photos for WhatsApp profile picture", gradient: "from-green-500 to-emerald-500" },
   { name: "Aadhaar Photo Resizer", href: "/aadhaar-photo-resize", icon: CreditCard, desc: "Resize photos for Aadhaar card requirements", gradient: "from-orange-500 to-red-500" },
@@ -26,8 +25,7 @@ const faqs = [
   { q: "What image formats are supported?", a: "Our tools support JPG, PNG, WebP, GIF, and BMP formats. You can convert between any of these formats using the Image Converter." },
   { q: "Is there a file size limit for image uploads?", a: "Most tools handle images up to 20MB. Since processing happens in your browser, very large images may take a moment depending on your device." },
   { q: "Will compressing images reduce quality?", a: "Our compressor uses smart algorithms to reduce file size while maintaining visual quality. You can adjust the quality slider to find the perfect balance." },
-  { q: "Can I resize photos to exact dimensions for government forms?", a: "Yes. We offer dedicated resizers for Aadhaar photos, passport photos, and government job application photos with preset dimensions that meet official requirements." },
-  { q: "Is the background remover accurate?", a: "The background remover uses client-side AI to detect subjects. It works well for photos with clear foreground-background separation. For complex scenes, results may vary." },
+  { q: "Can I resize photos to exact dimensions for government forms?", a: "Use the shared Image Resizer with dimensions from the active application instructions. Named shortcuts are not a guarantee of official compliance." },
 ];
 
 const ImageTools = () => {
@@ -35,8 +33,8 @@ const ImageTools = () => {
     <div className="min-h-screen bg-background">
       <CanonicalHead
         title="Free Image Tools Online – Resize, Compress, Convert & Edit Images | VexaTool"
-        description="Use VexaTool's free online image tools to resize, compress, convert, and remove backgrounds from images. Supports JPG, PNG, WebP. Fast and secure."
-        keywords="image tools online, image resizer, image compressor, background remover, image converter, resize photo online"
+        description="Use VexaTool's free online image tools to resize, compress and convert images. Supports JPG, PNG, WebP. Fast and secure."
+        keywords="image tools online, image resizer, image compressor, image converter, resize photo online"
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
@@ -88,7 +86,7 @@ const ImageTools = () => {
             <div className="md:col-span-2 flex items-center justify-center p-6 md:p-8">
               <img
                 src={imageToolsVisual}
-                alt="Image editing tools showing resize, crop, color palette and background removal features"
+                alt="Image editing tools showing resize, crop, color palette features"
                 className="w-full max-w-md rounded-xl shadow-xl border border-border/40"
                 loading="lazy"
                 decoding="async"

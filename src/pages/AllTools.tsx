@@ -36,14 +36,14 @@ const AllTools = () => {
   return (
     <>
       <Helmet>
-        <title>All Free Online Tools – 50+ PDF & Image Tools | VexaTool</title>
+        <title>All Free Online Tools – 40+ PDF & Image Tools | VexaTool</title>
         <meta
           name="description"
-          content="Browse 50+ free online tools: PDF editor, image compressor, QR code generator, calculators, document converters and more. No signup, 100% secure."
+          content="Browse 40+ free online tools: PDF editor, image compressor, QR code generator, calculators, document converters and more. No signup, 100% secure."
         />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="All Free Online Tools – VexaTool" />
-        <meta property="og:description" content="Browse 50+ free online tools for PDF, images, calculators and more." />
+        <meta property="og:description" content="Browse 40+ free online tools for PDF, images, calculators and more." />
         <meta property="og:url" content={canonicalUrl} />
       </Helmet>
 
@@ -57,7 +57,7 @@ const AllTools = () => {
                 All Free Online Tools
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Browse our complete collection of 50+ free tools. No signup required, 100% secure browser-based processing.
+                Browse our complete collection of 40+ free tools. No signup required, 100% secure browser-based processing.
               </p>
 
               {/* Search */}

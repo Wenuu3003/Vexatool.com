@@ -1,3 +1,4 @@
+import { extractWordText, wrapOfficeText } from "@/lib/officeText";
 import { useState, useCallback } from "react";
 import { FileText, Download, Upload, Shield, CheckCircle, Eye, Trash2, Loader2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -20,15 +21,16 @@ const WordToPDF = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      const validExtensions = ['.doc', '.docx', '.txt', '.rtf'];
+      const validExtensions = ['.docx', '.txt'];
       const isValid = validExtensions.some(ext =>
         selectedFile.name.toLowerCase().endsWith(ext)
       );
 
       if (!isValid) {
+        setFile(null); setPreview("");
         toast({
           title: "Invalid file type",
-          description: "Please select a Word document (.doc, .docx), RTF, or text file (.txt)",
+          description: "Select DOCX or TXT. Export legacy DOC and RTF from Word first.",
           variant: "destructive",
         });
         return;
@@ -39,101 +41,6 @@ const WordToPDF = () => {
       setProgress(0);
     }
   };
-
-  const extractTextFromFile = useCallback(async (file: File): Promise<string> => {
-    const fileName = file.name.toLowerCase();
-
-    // Plain text
-    if (fileName.endsWith('.txt')) {
-      return await file.text();
-    }
-
-    // RTF - strip control codes
-    if (fileName.endsWith('.rtf')) {
-      const text = await file.text();
-      return text
-        .replace(/\\[a-z]+\d* ?/gi, '')
-        .replace(/[{}]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    // DOCX - proper ZIP extraction using JSZip
-    if (fileName.endsWith('.docx')) {
-      try {
-        const arrayBuffer = await file.arrayBuffer();
-        const JSZip = (await import('jszip')).default;
-        const zip = await JSZip.loadAsync(arrayBuffer);
-        const docXml = await zip.file('word/document.xml')?.async('text');
-
-        if (docXml) {
-          // Parse paragraphs properly
-          const paragraphs: string[] = [];
-          const paraMatches = docXml.match(/<w:p[\s>][\s\S]*?<\/w:p>/g) || [];
-
-          for (const para of paraMatches) {
-            const textParts = para.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) || [];
-            const paraText = textParts
-              .map(t => t.replace(/<[^>]+>/g, ''))
-              .join('');
-            paragraphs.push(paraText);
-          }
-
-          const result = paragraphs.join('\n').trim();
-          if (result.length > 0) return result;
-        }
-      } catch {
-        throw new Error("Invalid DOCX document");
-      }
-      throw new Error("No supported text found in DOCX document");
-    }
-
-    // Fallback for .doc files: extract readable text from binary
-    const arrayBuffer = await file.arrayBuffer();
-    const bytes = new Uint8Array(arrayBuffer);
-    
-    // For .doc binary files, look for text runs between control sequences
-    // Extract only sequences of printable ASCII that look like real words
-    const textChunks: string[] = [];
-    let currentChunk = "";
-    
-    for (let i = 0; i < bytes.length; i++) {
-      const char = bytes[i];
-      if ((char >= 32 && char <= 126) || char === 10 || char === 13 || char === 9) {
-        currentChunk += String.fromCharCode(char);
-      } else {
-        if (currentChunk.trim().length > 3) {
-          textChunks.push(currentChunk.trim());
-        }
-        currentChunk = "";
-      }
-    }
-    if (currentChunk.trim().length > 3) {
-      textChunks.push(currentChunk.trim());
-    }
-
-    // Filter out binary noise: keep only chunks that contain actual words
-    // (at least 2 words with letters, not just symbols/numbers)
-    const wordPattern = /[a-zA-Z]{2,}/;
-    const meaningfulChunks = textChunks.filter(chunk => {
-      const words = chunk.split(/\s+/).filter(w => wordPattern.test(w));
-      return words.length >= 2;
-    });
-
-    // Remove common binary artifacts
-    const cleaned = meaningfulChunks
-      .join('\n')
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
-      .replace(/(.)\1{5,}/g, '$1$1$1') // Reduce repeated chars
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
-
-    if (cleaned.length < 50) {
-      return `Document: ${file.name}\n\nThis is a legacy .doc file format. For best results with .doc files, we recommend:\n\n1. Open the file in Microsoft Word or Google Docs\n2. Save it as .docx format\n3. Upload the .docx file here for accurate text extraction\n\nAlternatively, use Word's built-in PDF export (File → Save As → PDF).`;
-    }
-
-    return cleaned;
-  }, []);
 
   const handleConvert = async () => {
     if (!file) {
@@ -150,7 +57,7 @@ const WordToPDF = () => {
     setProgressLabel("Reading document...");
 
     try {
-      const text = await extractTextFromFile(file);
+      const text = await extractWordText(file);
       setPreview(text.substring(0, 300) + (text.length > 300 ? '...' : ''));
 
       setProgress(40);
@@ -172,23 +79,7 @@ const WordToPDF = () => {
       setProgress(60);
       setProgressLabel("Formatting pages...");
 
-      const wrapText = (text: string): string[] => {
-        const words = text.split(' ');
-        const lines: string[] = [];
-        let currentLine = '';
-        for (const word of words) {
-          const testLine = currentLine ? `${currentLine} ${word}` : word;
-          const testWidth = font.widthOfTextAtSize(testLine, fontSize);
-          if (testWidth > maxWidth && currentLine) {
-            lines.push(currentLine);
-            currentLine = word;
-          } else {
-            currentLine = testLine;
-          }
-        }
-        if (currentLine) lines.push(currentLine);
-        return lines;
-      };
+      const wrapText = (value: string) => wrapOfficeText(value, maxWidth, line => font.widthOfTextAtSize(line, fontSize));
 
       const paragraphs = text.split('\n');
       const allLines: string[] = [];
@@ -284,8 +175,8 @@ const WordToPDF = () => {
   return (
     <>
       <CanonicalHead
-        title="Word to PDF Converter Free Online - DOC DOCX to PDF | VexaTool"
-        description="Free online Word to PDF converter. Convert DOC, DOCX, RTF and TXT files to PDF format instantly."
+        title="Word to PDF Converter Free Online - DOCX Text to PDF | VexaTool"
+        description="Free online Word to PDF converter. Convert supported DOCX body text and TXT to a text-only PDF. Original layout and images are omitted."
         keywords="word to pdf, doc to pdf, docx to pdf, convert word, word converter, free word to pdf"
       />
       <ToolLayout
@@ -302,14 +193,14 @@ const WordToPDF = () => {
             </h2>
             <p className="text-muted-foreground">
               Transform your Word documents into universally accessible PDF files. Supports
-              .doc, .docx, .txt, and .rtf files with proper text extraction and pagination.
+              .docx and .txt files with proper text extraction and pagination.
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { icon: CheckCircle, text: "No registration" },
-              { icon: Upload, text: "DOC, DOCX, TXT, RTF" },
+              { icon: Upload, text: "DOCX, TXT" },
               { icon: Shield, text: "Secure processing" },
               { icon: FileText, text: "Professional PDF" },
             ].map((benefit, index) => (
@@ -321,7 +212,8 @@ const WordToPDF = () => {
           </div>
 
           <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-blue-500/50 transition-colors">
-            <input type="file" accept=".doc,.docx,.txt,.rtf" onChange={handleFileChange} className="hidden" id="word-upload" />
+            <p className="mb-4 text-sm text-muted-foreground">Text-only conversion: images, headers, footers and original layout are omitted. Use Word Export to PDF when formatting matters.</p>
+            <input type="file" accept=".docx,.txt" onChange={handleFileChange} className="hidden" id="word-upload" />
             <label htmlFor="word-upload" className="cursor-pointer">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-600/10 flex items-center justify-center">
                 <FileText className="w-8 h-8 text-blue-600" />
@@ -329,7 +221,7 @@ const WordToPDF = () => {
               <p className="text-lg font-medium text-foreground mb-2">
                 {file ? file.name : "Click to select Word document"}
               </p>
-              <p className="text-sm text-muted-foreground">Supports .doc, .docx, .txt, and .rtf files</p>
+              <p className="text-sm text-muted-foreground">Supports .docx and .txt files</p>
             </label>
           </div>
 
@@ -400,7 +292,7 @@ const WordToPDF = () => {
 
           <ToolSEOContent
             toolName="Word to PDF Converter"
-            whatIs="The Word to PDF Converter transforms Microsoft Word documents (.doc, .docx), RTF files, and text files (.txt) into universally accessible PDF format. For .docx files, it uses proper ZIP-based extraction to accurately read document content. PDFs preserve your document's formatting across all devices and platforms."
+            whatIs="Creates a text-only PDF from DOCX body text or TXT. Images, headers, footers, table layout, fonts and original formatting are not preserved. For a faithful PDF, use Word Export to PDF. Legacy DOC and RTF are unsupported."
             howToUse={[
               "Click the upload area or drag and drop your Word document.",
               "Preview the file information displayed after selection.",
@@ -410,7 +302,7 @@ const WordToPDF = () => {
             ]}
             features={[
               "Proper DOCX extraction using ZIP parsing for accurate text",
-              "Supports .doc, .docx, .txt, and .rtf formats",
+              "Supports .docx and .txt formats",
               "Automatic text wrapping and pagination for long documents",
               "Professional layout with title, page numbers, and proper margins",
               "Fast browser-based processing with no uploads",
@@ -420,8 +312,8 @@ const WordToPDF = () => {
             ]}
             safetyNote="Your documents are processed entirely within your browser using secure client-side technology. No files are uploaded to external servers."
             faqs={[
-              { question: "Will my Word document formatting be preserved?", answer: "Text content is fully preserved with proper paragraph breaks. For complex formatting with tables, images, and styling, use Microsoft Word's built-in PDF export." },
-              { question: "What Word file formats are supported?", answer: "DOC, DOCX, TXT, and RTF files are supported. DOCX files get the best text extraction using proper ZIP-based parsing." },
+              { question: "Will my Word document formatting be preserved?", answer: "Supported body text is extracted with paragraph breaks; headers and footers are omitted. For complex formatting with tables, images, and styling, use Microsoft Word's built-in PDF export." },
+              { question: "What Word file formats are supported?", answer: "DOCX body text and TXT are supported. Save legacy DOC and RTF as DOCX first." },
               { question: "Is there a file size limit?", answer: "No strict limit, but very large files (50MB+) may be slow on mobile devices. Most Word documents convert in seconds." },
               { question: "Are my documents stored anywhere?", answer: "No. Everything is processed in your browser. Files never leave your device." },
             ]}

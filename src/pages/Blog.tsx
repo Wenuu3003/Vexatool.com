@@ -66,13 +66,6 @@ export const blogPosts: BlogPost[] = [
     readTime: "9 min read",
   },
   {
-    slug: "background-remover-perfect-product-photos",
-    title: "Background Remover: How to Create Perfect Product Photos for E-Commerce",
-    excerpt: "Transform product photography with AI background removal. Professional tips for creating stunning product images that boost sales.",
-    date: "2026-01-22",
-    readTime: "8 min read",
-  },
-  {
     slug: "emi-calculator-home-loan-guide",
     title: "EMI Calculator Guide: Master Your Home Loan Payments in India",
     excerpt: "Understand EMI calculations for home loans, car loans, and personal loans. Complete guide with formulas, tips, and money-saving strategies.",
@@ -311,7 +304,6 @@ const Blog = () => {
                   "pdf-security-guide": "/previews/protect-pdf-preview.webp",
                   "best-free-pdf-tools-online-2026": "/previews/edit-pdf-preview.webp",
                   "qr-code-generator-complete-guide": "/previews/qr-code-generator-preview.webp",
-                  "background-remover-perfect-product-photos": "/previews/background-remover-preview.webp",
                   "emi-calculator-home-loan-guide": "/previews/emi-calculator-preview.webp",
                   "gst-calculator-business-guide": "/previews/gst-calculator-preview.webp",
                   "image-compression-web-performance": "/previews/compress-image-preview.webp",

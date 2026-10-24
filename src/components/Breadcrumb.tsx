@@ -48,7 +48,6 @@ const categoryMap: Record<string, { name: string; path: string }> = {
   "compress-image": { name: "Image Tools", path: "/image-tools" },
   "image-resizer": { name: "Image Tools", path: "/image-tools" },
   "image-format-converter": { name: "Image Tools", path: "/image-tools" },
-  "background-remover": { name: "Image Tools", path: "/image-tools" },
   "file-compressor": { name: "Image Tools", path: "/image-tools" },
   "whatsapp-dp-resize": { name: "Image Tools", path: "/image-tools" },
   "aadhaar-photo-resize": { name: "Image Tools", path: "/image-tools" },

@@ -21,15 +21,16 @@ const ExcelToWord = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
+      setFile(null);
       if (selectedFile.size > MAX_FILE_SIZE) {
         toast({ title: "File too large", description: `Maximum file size is ${MAX_FILE_SIZE_MB}MB.`, variant: "destructive" });
         return;
       }
-      if (selectedFile.name.endsWith('.csv') || selectedFile.name.endsWith('.xls') || selectedFile.name.endsWith('.xlsx')) {
+      if (['.csv', '.xlsx'].some(ext => selectedFile.name.toLowerCase().endsWith(ext))) {
         setFile(selectedFile);
         setProgress(0);
       } else {
-        toast({ title: "Invalid file type", description: "Please select an Excel file (.csv, .xls, .xlsx)", variant: "destructive" });
+        toast({ title: "Invalid file type", description: "Please select an Excel file (.csv, .xlsx)", variant: "destructive" });
       }
     }
   };
@@ -204,7 +205,7 @@ const ExcelToWord = () => {
     toolName: "Excel to Word Converter",
     whatIs: "Excel to Word Converter is a free online tool that transforms Excel spreadsheets and CSV files into genuine Microsoft Word documents (.docx). Unlike basic converters that output RTF, this tool generates real DOCX files with properly formatted tables, preserving your row and column structure. The entire conversion happens in your browser — your spreadsheet data never leaves your device.",
     howToUse: [
-      "Click the upload area to select your Excel file (.xls, .xlsx, or .csv).",
+      "Click the upload area to select your Excel file (.xlsx, or .csv).",
       "Review the selected file details shown below the upload area.",
       "Click 'Convert to Word (.docx)' to start the conversion.",
       "Monitor the progress bar as your document is generated.",
@@ -212,7 +213,7 @@ const ExcelToWord = () => {
     ],
     features: [
       "Generates real .docx files — not RTF",
-      "Converts .xls, .xlsx, and .csv files",
+      "Converts .xlsx, and .csv files",
       "Creates formatted Word tables with borders and headers",
       "Handles multiple sheets with separate tables",
       "First row is automatically bolded as table header",
@@ -225,16 +226,16 @@ const ExcelToWord = () => {
       { question: "Does this generate a real DOCX file?", answer: "Yes! The converter generates a genuine .docx file (Microsoft Word format) with properly formatted tables. It is not an RTF wrapper — it is a true Word document compatible with Microsoft Word, Google Docs, and LibreOffice." },
       { question: "Will my table formatting be preserved?", answer: "The converter creates structured Word tables with borders and proper column widths. The first row is automatically bolded as a header. You can further style the table in your word processor." },
       { question: "Can I convert files with multiple sheets?", answer: "Yes! All sheets from your Excel workbook are included in the output with separate tables and sheet name headings." },
-      { question: "What about formulas in my Excel file?", answer: "The converter exports the visible computed values, not the underlying formulas. Keep your original Excel file if you need to preserve formulas." },
-      { question: "Is there a file size limit?", answer: "There is no strict limit. Standard spreadsheets convert in seconds. Very large files with thousands of rows may take a moment longer." }
+      { question: "What about formulas in my Excel file?", answer: "The converter uses saved formula results and does not recalculate formulas. Missing results are marked unavailable." },
+      { question: "Is there a file size limit?", answer: "The input limit is 50 MB. Large workbooks may also be limited by browser memory." }
     ]
   };
 
   return (
     <>
       <CanonicalHead
-        title="Excel to Word Converter Free Online - XLS to DOCX | VexaTool"
-        description="Free online Excel to Word converter. Convert XLS, XLSX, and CSV files to real Word documents (.docx) with formatted tables."
+        title="Excel to Word Converter Free Online - XLSX to DOCX | VexaTool"
+        description="Free online Excel to Word converter. Convert XLSX and CSV files to real Word documents (.docx) with formatted tables."
         keywords="excel to word, xls to docx, csv to word, spreadsheet to word, convert excel to word"
       />
       <ToolLayout
@@ -245,9 +246,10 @@ const ExcelToWord = () => {
       >
         <div className="max-w-3xl mx-auto space-y-6">
           <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
+            <p className="mb-3 text-sm text-muted-foreground">XLSX/CSV data export: charts, original styles and merged-cell layout are not preserved. Formulas use saved results and are not recalculated. Save legacy XLS as XLSX first.</p>
             <input
               type="file"
-              accept=".csv,.xls,.xlsx"
+              accept=".csv,.xlsx"
               onChange={handleFileChange}
               className="hidden"
               id="excel-word-upload"
@@ -260,7 +262,7 @@ const ExcelToWord = () => {
                 {file ? file.name : "Click to select Excel file"}
               </p>
               <p className="text-sm text-muted-foreground">
-                Supports .csv, .xls, and .xlsx files
+                Supports .csv and .xlsx files
               </p>
             </label>
           </div>

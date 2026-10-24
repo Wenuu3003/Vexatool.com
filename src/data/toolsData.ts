@@ -337,19 +337,6 @@ export const toolsData: ToolData[] = [
     seoKeywords: ["image to PDF", "JPG to PDF", "convert images", "photo to PDF"]
   },
   {
-    id: "background-remover",
-    title: "Background Remover",
-    description: "Remove background from any image. Download as PNG with transparent background, JPG, or WebP format.",
-    shortDescription: "Remove background from any image instantly.",
-    icon: Eraser,
-    colorClass: "bg-gradient-to-br from-purple-500 to-pink-500",
-    href: "/background-remover",
-    category: "image",
-    previewImage: "/previews/background-remover-preview.webp",
-    features: ["Transparent PNG", "Custom backgrounds", "High quality", "Instant results"],
-    seoKeywords: ["background remover", "remove background", "transparent image", "bg remover"]
-  },
-  {
     id: "file-compressor",
     title: "File Compressor",
     description: "Compress files to reduce size. Supports images and documents with smart compression.",

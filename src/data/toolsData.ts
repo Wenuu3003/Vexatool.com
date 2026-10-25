@@ -29,7 +29,7 @@ export const toolCategories = [
   { id: "image", name: "Image Tools", icon: Image },
   { id: "calculator", name: "Calculators", icon: Calculator },
   { id: "qr", name: "QR Tools", icon: QrCode },
-  { id: "utility", name: "Utilities", icon: Wrench },
+  { id: "utility", name: "Online Utility Tools", icon: Wrench },
   { id: "document", name: "Document Converters", icon: FileSpreadsheet },
 ];
 

@@ -172,9 +172,9 @@ export const routes: RouteConfig[] = [
     priority: 0.9,
     changefreq: 'weekly',
     includeInSitemap: true,
-    title: 'Utility Tools - Word Counter, Unit Converter & More | VexaTool',
+    title: 'Online Utility Tools - Word Counter, Unit Converter & More | VexaTool',
     description: 'Free online utility tools. Word counter, unit converter, file compressor, pin code finder.',
-    keywords: 'utility tools, word counter, unit converter, file compressor',
+    keywords: 'online utility tools, word counter, unit converter, file compressor',
     category: 'Category'
   },
   {

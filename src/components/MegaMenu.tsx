@@ -127,7 +127,7 @@ const categories: Category[] = [
     ],
   },
   {
-    name: "Utilities",
+    name: "Online Utility Tools",
     icon: Wrench,
     tools: [
       { name: "PIN Code Generator", href: "/pincode-generator", icon: MapPin },

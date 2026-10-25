@@ -18,7 +18,7 @@ VexaTool offers 50+ free utilities that run entirely client-side in your browser
 - [Image Tools](/image-tools): Resize, compress, convert, and remove backgrounds.
 - [Calculator Tools](/calculator-tools): EMI, GST, BMI, age, percentage, and unit conversions.
 - [QR Tools](/qr-tools): Generate and scan QR codes with logo and label support.
-- [Utility Tools](/utility-tools): Word counter, PIN code finder, currency converter.
+- [Online Utility Tools](/utility-tools): Word counter, PIN code finder, currency converter.
 
 ## Popular Tools
 

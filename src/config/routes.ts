@@ -172,9 +172,9 @@ export const routes: RouteConfig[] = [
     priority: 0.9,
     changefreq: 'weekly',
     includeInSitemap: true,
-    title: 'Utility Tools - Word Counter, Unit Converter & More | VexaTool',
+    title: 'Online Utility Tools - Word Counter, Unit Converter & More | VexaTool',
     description: 'Free online utility tools. Word counter, unit converter, file compressor, pin code finder.',
-    keywords: 'utility tools, word counter, unit converter, file compressor',
+    keywords: 'online utility tools, word counter, unit converter, file compressor',
     category: 'Category'
   },
   {
@@ -208,7 +208,7 @@ export const routes: RouteConfig[] = [
     title: 'Word Counter - Count Words, Characters, Sentences Free | VexaTool',
     description: 'Free word counter tool. Count words, characters, sentences, paragraphs instantly. Perfect for essays, articles, social media posts.',
     keywords: 'word counter, character counter, word count, letter count, text counter, essay word counter',
-    category: 'Utility Tools'
+    category: 'Online Utility Tools'
   },
   
   // Utility Tools - High priority
@@ -332,7 +332,7 @@ export const routes: RouteConfig[] = [
     title: 'PIN Code Finder India - Search Indian Postal Codes | VexaTool',
     description: 'Find Indian PIN codes instantly. Search postal codes by location, post office, district. Complete India PIN code database with details.',
     keywords: 'pin code finder, india pin code, postal code india, zip code india, post office pin code, area pin code',
-    category: 'Utility Tools'
+    category: 'Online Utility Tools'
   },
   
   // Image Tools
@@ -401,9 +401,9 @@ export const routes: RouteConfig[] = [
     priority: 0.8, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Image Format Converter - JPG to PNG, PNG to WebP | VexaTool',
-    description: 'Convert images between formats. JPG to PNG, PNG to WebP, WebP to JPG. Free online image format converter with quality control.',
-    keywords: 'image converter, jpg to png, png to jpg, webp converter, image format converter, convert image online',
+    title: 'JPEG to JPG, PNG to JPG, WebP to JPG Image Converter | VexaTool',
+    description: 'Free online image format converter. Convert JPEG to JPG, PNG to JPG, WebP to JPG, JPG to PNG and more, with quality control and batch conversion.',
+    keywords: 'jpeg to jpg, png to jpg, webp to jpg, jpg to png, jpg to webp, webp to png, image format converter, convert image online, image converter',
     category: 'Image Tools'
   },
   { 
@@ -444,7 +444,7 @@ export const routes: RouteConfig[] = [
     title: 'File Compressor - Compress Files Online Free | VexaTool',
     description: 'Compress files to reduce size. Support for images, documents, PDFs. Free online file compressor with maximum compression.',
     keywords: 'file compressor, compress files, reduce file size, file compression, compress documents',
-    category: 'Utility Tools'
+    category: 'Online Utility Tools'
   },
   
   // PDF Tools

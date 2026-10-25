@@ -23,13 +23,13 @@ const UtilityTools = () => {
   return (
     <div className="min-h-screen bg-background">
       <CanonicalHead
-        title="Free Utility Tools Online – PIN Code Finder, Word Counter & More | VexaTool"
-        description="Use VexaTool's free online utility tools including Indian PIN Code finder and Word Counter. Practical everyday tools, fast and easy."
-        keywords="utility tools online, PIN code finder, word counter, pincode generator India, character counter, text analyzer"
+        title="Online Utility Tools – Free PIN Code Finder, Word Counter & More | VexaTool"
+        description="Use VexaTool's free Online Utility Tools including Indian PIN Code finder and Word Counter. Practical everyday tools, fast and easy."
+        keywords="online utility tools, PIN code finder, word counter, pincode generator India, character counter, text analyzer"
       />
       <Header />
       <main className="container mx-auto px-4 py-12 max-w-5xl">
-        <Breadcrumb items={[{ name: "Utility Tools", path: "/utility-tools" }]} className="mb-6" />
+        <Breadcrumb items={[{ name: "Online Utility Tools", path: "/utility-tools" }]} className="mb-6" />
         <h1 className="text-4xl font-bold text-foreground mb-4">Free Online Utility Tools</h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-3xl">
           Practical everyday tools for word counting, PIN code lookup, and unit conversion. Simple, fast, and free.

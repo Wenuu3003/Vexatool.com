@@ -29,7 +29,7 @@ export const toolCategories = [
   { id: "image", name: "Image Tools", icon: Image },
   { id: "calculator", name: "Calculators", icon: Calculator },
   { id: "qr", name: "QR Tools", icon: QrCode },
-  { id: "utility", name: "Utilities", icon: Wrench },
+  { id: "utility", name: "Online Utility Tools", icon: Wrench },
   { id: "document", name: "Document Converters", icon: FileSpreadsheet },
 ];
 
@@ -321,7 +321,7 @@ export const toolsData: ToolData[] = [
     category: "image",
     previewImage: "/previews/image-converter-preview.webp",
     features: ["JPG to PNG", "PNG to JPG", "WebP support", "Batch convert"],
-    seoKeywords: ["image converter", "PNG to JPG", "JPG to PNG", "format converter"]
+    seoKeywords: ["jpeg to jpg", "png to jpg", "webp to jpg", "jpg to png", "image format converter"]
   },
   {
     id: "image-to-pdf",

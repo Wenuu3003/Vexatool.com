@@ -54,9 +54,9 @@ const categoryMap: Record<string, { name: string; path: string }> = {
   "govt-job-photo-resize": { name: "Image Tools", path: "/image-tools" },
   "passport-photo-resize": { name: "Image Tools", path: "/image-tools" },
   // Utility Tools
-  "word-counter": { name: "Utility Tools", path: "/utility-tools" },
-  "pincode-generator": { name: "Utility Tools", path: "/utility-tools" },
-  "unit-converter": { name: "Utility Tools", path: "/utility-tools" },
+  "word-counter": { name: "Online Utility Tools", path: "/utility-tools" },
+  "pincode-generator": { name: "Online Utility Tools", path: "/utility-tools" },
+  "unit-converter": { name: "Online Utility Tools", path: "/utility-tools" },
   // Calculator Tools
   "calculator": { name: "Calculator Tools", path: "/calculator-tools" },
   "love-calculator": { name: "Calculator Tools", path: "/calculator-tools" },

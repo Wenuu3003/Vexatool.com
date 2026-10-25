@@ -220,7 +220,7 @@ export default function UnitConverter() {
       description="Convert between different units of measurement including length, weight, temperature, area, volume, and more."
       icon={ArrowRightLeft}
       colorClass="bg-gradient-to-br from-teal-500 to-cyan-600"
-      category="Utility Tools"
+      category="Online Utility Tools"
     >
       <div className="space-y-6">
         <div className="space-y-2">

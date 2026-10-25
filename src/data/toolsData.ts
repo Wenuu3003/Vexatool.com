@@ -321,7 +321,7 @@ export const toolsData: ToolData[] = [
     category: "image",
     previewImage: "/previews/image-converter-preview.webp",
     features: ["JPG to PNG", "PNG to JPG", "WebP support", "Batch convert"],
-    seoKeywords: ["image converter", "PNG to JPG", "JPG to PNG", "format converter"]
+    seoKeywords: ["jpeg to jpg", "png to jpg", "webp to jpg", "jpg to png", "image format converter"]
   },
   {
     id: "image-to-pdf",

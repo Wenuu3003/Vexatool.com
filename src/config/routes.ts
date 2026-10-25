@@ -401,9 +401,9 @@ export const routes: RouteConfig[] = [
     priority: 0.8, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Image Format Converter - JPG to PNG, PNG to WebP | VexaTool',
-    description: 'Convert images between formats. JPG to PNG, PNG to WebP, WebP to JPG. Free online image format converter with quality control.',
-    keywords: 'image converter, jpg to png, png to jpg, webp converter, image format converter, convert image online',
+    title: 'JPEG to JPG, PNG to JPG, WebP to JPG Image Converter | VexaTool',
+    description: 'Free online image format converter. Convert JPEG to JPG, PNG to JPG, WebP to JPG, JPG to PNG and more, with quality control and batch conversion.',
+    keywords: 'jpeg to jpg, png to jpg, webp to jpg, jpg to png, jpg to webp, webp to png, image format converter, convert image online, image converter',
     category: 'Image Tools'
   },
   { 

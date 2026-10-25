@@ -208,7 +208,7 @@ export const routes: RouteConfig[] = [
     title: 'Word Counter - Count Words, Characters, Sentences Free | VexaTool',
     description: 'Free word counter tool. Count words, characters, sentences, paragraphs instantly. Perfect for essays, articles, social media posts.',
     keywords: 'word counter, character counter, word count, letter count, text counter, essay word counter',
-    category: 'Utility Tools'
+    category: 'Online Utility Tools'
   },
   
   // Utility Tools - High priority
@@ -332,7 +332,7 @@ export const routes: RouteConfig[] = [
     title: 'PIN Code Finder India - Search Indian Postal Codes | VexaTool',
     description: 'Find Indian PIN codes instantly. Search postal codes by location, post office, district. Complete India PIN code database with details.',
     keywords: 'pin code finder, india pin code, postal code india, zip code india, post office pin code, area pin code',
-    category: 'Utility Tools'
+    category: 'Online Utility Tools'
   },
   
   // Image Tools
@@ -444,7 +444,7 @@ export const routes: RouteConfig[] = [
     title: 'File Compressor - Compress Files Online Free | VexaTool',
     description: 'Compress files to reduce size. Support for images, documents, PDFs. Free online file compressor with maximum compression.',
     keywords: 'file compressor, compress files, reduce file size, file compression, compress documents',
-    category: 'Utility Tools'
+    category: 'Online Utility Tools'
   },
   
   // PDF Tools

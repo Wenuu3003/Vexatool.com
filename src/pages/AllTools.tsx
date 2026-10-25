@@ -22,7 +22,7 @@ const AllTools = () => {
       tools = tools.filter((t) => t.category === activeCategory);
     }
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.trim().toLowerCase();
       tools = tools.filter(
         (t) =>
           t.title.toLowerCase().includes(q) ||
@@ -39,7 +39,7 @@ const AllTools = () => {
         <title>All Free Online Tools – 40+ PDF & Image Tools | VexaTool</title>
         <meta
           name="description"
-          content="Browse 40+ free online tools: PDF editor, image compressor, QR code generator, calculators, document converters and more. No signup, 100% secure."
+          content="Browse 40+ free online tools: PDF editor, image compressor, QR code generator, calculators, document converters and more. No signup for core tools."
         />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="All Free Online Tools – VexaTool" />
@@ -57,13 +57,14 @@ const AllTools = () => {
                 All Free Online Tools
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Browse our complete collection of 40+ free tools. No signup required, 100% secure browser-based processing.
+                Browse our complete collection of 40+ free tools. No signup for core tools. Check each tool for processing details.
               </p>
 
               {/* Search */}
               <div className="max-w-md mx-auto mb-8 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
+                  aria-label="Search tools"
                   placeholder="Search tools..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -74,6 +75,7 @@ const AllTools = () => {
               {/* Category Filters */}
               <div className="flex flex-wrap justify-center gap-2 mb-10">
                 <button
+                  aria-pressed={activeCategory === "all"}
                   onClick={() => setActiveCategory("all")}
                   className={cn(
                     "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
@@ -89,6 +91,7 @@ const AllTools = () => {
                   return (
                     <button
                       key={cat.id}
+                      aria-pressed={activeCategory === cat.id}
                       onClick={() => setActiveCategory(cat.id)}
                       className={cn(
                         "px-4 py-2 rounded-lg text-sm font-medium transition-colors",

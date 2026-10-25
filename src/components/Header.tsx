@@ -1,7 +1,7 @@
 import { ChevronDown, Menu, LogOut, User, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MegaMenu, MobileMegaMenu } from "@/components/MegaMenu";
@@ -11,6 +11,28 @@ export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => { setMobileMenuOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => { if (desktop.matches) setMobileMenuOpen(false); };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    closeOnDesktop();
+    desktop.addEventListener("change", closeOnDesktop);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      desktop.removeEventListener("change", closeOnDesktop);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [mobileMenuOpen]);
   const { user, signOut } = useAuth();
 
   useEffect(() => {
@@ -56,20 +78,20 @@ export const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/pdf-tools")}>
-              PDF Tools
+            <Button asChild variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm">
+              <Link to="/pdf-tools">PDF Tools</Link>
             </Button>
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/image-tools")}>
-              Image Tools
+            <Button asChild variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm">
+              <Link to="/image-tools">Image Tools</Link>
             </Button>
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/calculator-tools")}>
-              Calculator Tools
+            <Button asChild variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm">
+              <Link to="/calculator-tools">Calculator Tools</Link>
             </Button>
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/qr-tools")}>
-              QR Tools
+            <Button asChild variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm">
+              <Link to="/qr-tools">QR Tools</Link>
             </Button>
-            <Button variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm" onClick={() => handleNavigation("/blog")}>
-              Blog
+            <Button asChild variant="ghost" size="sm" className="text-foreground hover:text-primary text-sm">
+              <Link to="/blog">Blog</Link>
             </Button>
           </nav>
 
@@ -103,7 +125,7 @@ export const Header = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={mobileMenuOpen ? "Close menu" : "Open menu"} aria-expanded={mobileMenuOpen}>
+          <Button ref={menuButtonRef} aria-controls="mobile-navigation" variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={mobileMenuOpen ? "Close menu" : "Open menu"} aria-expanded={mobileMenuOpen}>
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </Button>
         </div>
@@ -123,7 +145,7 @@ export const Header = () => {
 
     {/* Mobile Navigation */}
     {mobileMenuOpen && (
-      <div className="lg:hidden fixed inset-0 top-16 bg-card z-[60] overflow-y-auto animate-fade-in overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+      <div id="mobile-navigation" role="navigation" aria-label="Mobile navigation" className="lg:hidden fixed inset-0 top-16 bg-card z-[60] overflow-y-auto animate-fade-in overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
         <MobileMegaMenu onNavigate={closeMobileMenu} />
         <div className="p-4 border-t border-border">
           {user ? (

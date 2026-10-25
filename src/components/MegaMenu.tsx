@@ -163,9 +163,10 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
     index === self.findIndex(t => t.href === tool.href)
   );
   
-  const searchResults = searchQuery
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const searchResults = normalizedQuery
     ? uniqueTools.filter((tool) =>
-        tool.name.toLowerCase().includes(searchQuery.toLowerCase())
+        tool.name.toLowerCase().includes(normalizedQuery)
       )
     : [];
 
@@ -175,16 +176,16 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
       <div className="p-4 border-b border-border shrink-0">
         <div className="relative max-w-md mx-auto">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search tools..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 pr-10" />
+          <Input aria-label="Search tools" placeholder="Search tools..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 pr-10" />
           {searchQuery && (
-            <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+            <button aria-label="Clear search" onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
           )}
         </div>
       </div>
 
-      {searchQuery && searchResults.length > 0 && (
+      {normalizedQuery && searchResults.length > 0 && (
         <ScrollArea className="flex-1 overscroll-contain">
           <div className="p-4">
             <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Search Results ({searchResults.length})</h3>
@@ -200,7 +201,11 @@ export const MegaMenu = ({ onNavigate }: MegaMenuProps) => {
         </ScrollArea>
       )}
 
-      {!searchQuery && (
+      {normalizedQuery && searchResults.length === 0 && (
+        <p role="status" className="p-4 text-sm text-muted-foreground">No tools found. Try a different search term.</p>
+      )}
+
+      {!normalizedQuery && (
         <div className="flex-1 overflow-y-auto overscroll-contain">
           <div className="grid md:grid-cols-6 divide-y md:divide-y-0 md:divide-x divide-border">
             {categories.map((category) => (
@@ -244,28 +249,29 @@ export const MobileMegaMenu = ({ onNavigate }: MegaMenuProps) => {
     index === self.findIndex(t => t.href === tool.href)
   );
   
-  const searchResults = searchQuery
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const searchResults = normalizedQuery
     ? uniqueTools.filter((tool) =>
-        tool.name.toLowerCase().includes(searchQuery.toLowerCase())
+        tool.name.toLowerCase().includes(normalizedQuery)
       )
     : [];
 
   return (
-    <div className="py-4 h-full overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
+    <div className="py-4 overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
       {/* Search */}
       <div className="px-4 mb-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Search tools..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
+          <Input aria-label="Search tools" placeholder="Search tools..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10 pr-10" />
           {searchQuery && (
-            <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+            <button aria-label="Clear search" onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
               <X className="w-4 h-4 text-muted-foreground" />
             </button>
           )}
         </div>
       </div>
 
-      {searchQuery && searchResults.length > 0 && (
+      {normalizedQuery && searchResults.length > 0 && (
         <div className="px-4 pb-4 border-b border-border">
           <p className="text-xs text-muted-foreground mb-2">{searchResults.length} results</p>
           {searchResults.map((tool) => (
@@ -277,11 +283,15 @@ export const MobileMegaMenu = ({ onNavigate }: MegaMenuProps) => {
         </div>
       )}
 
-      {!searchQuery && (
+      {normalizedQuery && searchResults.length === 0 && (
+        <p role="status" className="p-4 text-sm text-muted-foreground">No tools found. Try a different search term.</p>
+      )}
+
+      {!normalizedQuery && (
         <div className="space-y-1">
           {categories.map((category) => (
             <div key={category.name}>
-              <button onClick={() => toggleCategory(category.name)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted transition-colors">
+              <button aria-expanded={expandedCategory === category.name} onClick={() => toggleCategory(category.name)} className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted transition-colors">
                 <div className="flex items-center gap-3">
                   <category.icon className="w-5 h-5 text-primary" />
                   <span className="font-medium">{category.name}</span>

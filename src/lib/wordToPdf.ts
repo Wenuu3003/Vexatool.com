@@ -32,7 +32,7 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
       section.style.cssText = 'box-sizing:border-box;width:794px;min-height:1123px;padding:48px;font:15px Arial;background:white;color:black;';
       for (const line of text.split(/\r?\n/)) {
         const p = doc.createElement('p'); p.textContent = line || '\u00a0';
-        p.style.cssText = 'white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;margin:0;'; section.append(p);
+        p.style.cssText = 'white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;margin:0;padding-bottom:8px;'; section.append(p);
       }
       container.append(section);
     } else {
@@ -50,7 +50,7 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
       throw new Error('No supported document content found.');
     }
     const pdf = await PDFDocument.create();
-    let preview = container.textContent?.trim() || '';
+    const preview = Array.from(container.querySelectorAll('p')).map(p => p.textContent).join('\n').trim();
     for (const [index, section] of sections.entries()) {
       onProgress(40 + Math.round(index / sections.length * 45), 'Rendering PDF pages...');
       const style = frame.contentWindow?.getComputedStyle(section);

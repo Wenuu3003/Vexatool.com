@@ -12,4 +12,8 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
-- Tell the user these changes reach the live site only on the next publish.
+- Verify Google Drive-to-PDF export when a real publicly accessible Drive document link is supplied (blocked: no testable public link).
+
+## Completed Word-to-PDF repair and tool audit
+- Repaired local DOCX rendering; supplied table/logo document and mobile download verified without redesigning the interface or changing ads.
+- All 49 tool pages rendered; 48 basic workflows verified with explicit limitations, Google Drive export unverified. 197 tests passed; supervised build OK. Delivered the 49-tool audit report in Files.

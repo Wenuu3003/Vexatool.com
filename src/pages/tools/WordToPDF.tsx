@@ -1,11 +1,10 @@
-import { extractWordText, wrapOfficeText } from "@/lib/officeText";
+import { convertWordToPdf } from "@/lib/wordToPdf";
 import { useState, useCallback } from "react";
 import { FileText, Download, Upload, Shield, CheckCircle, Eye, Trash2, Loader2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
@@ -57,96 +56,24 @@ const WordToPDF = () => {
     setProgressLabel("Reading document...");
 
     try {
-      const text = await extractWordText(file);
+      const { bytes: pdfBytes, pageCount: pageNum, preview: text } = await convertWordToPdf(file, (value, label) => {
+        setProgress(value);
+        setProgressLabel(label);
+      });
       setPreview(text.substring(0, 300) + (text.length > 300 ? '...' : ''));
 
-      setProgress(40);
-      setProgressLabel("Creating PDF...");
-
-      const pdfDoc = await PDFDocument.create();
-      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-      const fontSize = 11;
-      const titleFontSize = 16;
-      const margin = 50;
-      const pageWidth = 612;
-      const pageHeight = 792;
-      const lineHeight = fontSize * 1.5;
-      const maxWidth = pageWidth - (margin * 2);
-      const maxLinesPerPage = Math.floor((pageHeight - (margin * 2) - titleFontSize - 20) / lineHeight);
-
-      setProgress(60);
-      setProgressLabel("Formatting pages...");
-
-      const wrapText = (value: string) => wrapOfficeText(value, maxWidth, line => font.widthOfTextAtSize(line, fontSize));
-
-      const paragraphs = text.split('\n');
-      const allLines: string[] = [];
-      for (const para of paragraphs) {
-        if (para.trim()) {
-          allLines.push(...wrapText(para.trim()));
-        } else {
-          allLines.push('');
-        }
-      }
-
-      setProgress(80);
-      setProgressLabel("Writing PDF...");
-
-      let lineIndex = 0;
-      let pageNum = 0;
-
-      while (lineIndex < allLines.length) {
-        const page = pdfDoc.addPage([pageWidth, pageHeight]);
-        let y = pageHeight - margin;
-
-        if (pageNum === 0) {
-          const title = file.name.replace(/\.(doc|docx|txt|rtf)$/i, '');
-          page.drawText(title, {
-            x: margin, y, size: titleFontSize, font: boldFont, color: rgb(0.1, 0.1, 0.1),
-          });
-          y -= titleFontSize + 20;
-        }
-
-        const linesOnThisPage = pageNum === 0 ? maxLinesPerPage - 2 : maxLinesPerPage;
-
-        for (let i = 0; i < linesOnThisPage && lineIndex < allLines.length; i++) {
-          const line = allLines[lineIndex];
-          if (line) {
-            page.drawText(line, {
-              x: margin, y, size: fontSize, font, color: rgb(0.15, 0.15, 0.15),
-            });
-          }
-          y -= lineHeight;
-          lineIndex++;
-        }
-
-        const pageNumText = `Page ${pageNum + 1}`;
-        const pageNumWidth = font.widthOfTextAtSize(pageNumText, 9);
-        page.drawText(pageNumText, {
-          x: (pageWidth - pageNumWidth) / 2, y: 30, size: 9, font, color: rgb(0.5, 0.5, 0.5),
-        });
-
-        pageNum++;
-      }
-
-      setProgress(95);
-      setProgressLabel("Finalizing...");
-
-      const pdfBytes = await pdfDoc.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = file.name.replace(/\.(doc|docx|txt|rtf)$/i, '.pdf');
       link.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
 
       setProgress(100);
       setProgressLabel("Done!");
 
-      await saveFileHistory(file.name, "word", "word-to-pdf");
+      await saveFileHistory(file.name, "word", "word-to-pdf").catch(() => undefined);
 
       toast({
         title: "Conversion Complete!",
@@ -158,7 +85,7 @@ const WordToPDF = () => {
       }
       toast({
         title: "Conversion Error",
-        description: "Failed to convert document. The file may be corrupted or in an unsupported format.",
+        description: error instanceof Error ? error.message : "Failed to convert document. Please use a valid DOCX or TXT file.",
         variant: "destructive",
       });
     } finally {
@@ -175,8 +102,8 @@ const WordToPDF = () => {
   return (
     <>
       <CanonicalHead
-        title="Word to PDF Converter Free Online - DOCX Text to PDF | VexaTool"
-        description="Free online Word to PDF converter. Convert supported DOCX body text and TXT to a text-only PDF. Original layout and images are omitted."
+        title="Word to PDF Converter Free Online - DOCX to PDF | VexaTool"
+        description="Convert DOCX and TXT to PDF in your browser. Render supported tables, images and text styling without uploading your document."
         keywords="word to pdf, doc to pdf, docx to pdf, convert word, word converter, free word to pdf"
       />
       <ToolLayout
@@ -193,7 +120,7 @@ const WordToPDF = () => {
             </h2>
             <p className="text-muted-foreground">
               Transform your Word documents into universally accessible PDF files. Supports
-              .docx and .txt files with proper text extraction and pagination.
+              .docx and .txt files with document rendering and pagination.
             </p>
           </div>
 
@@ -212,7 +139,7 @@ const WordToPDF = () => {
           </div>
 
           <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-blue-500/50 transition-colors">
-            <p className="mb-4 text-sm text-muted-foreground">Text-only conversion: images, headers, footers and original layout are omitted. Use Word Export to PDF when formatting matters.</p>
+            <p className="mb-4 text-sm text-muted-foreground">DOCX tables, images and text styling are rendered locally. PDF pages are images; complex Word layouts and unavailable fonts may differ.</p>
             <input type="file" accept=".docx,.txt" onChange={handleFileChange} className="hidden" id="word-upload" />
             <label htmlFor="word-upload" className="cursor-pointer">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-600/10 flex items-center justify-center">
@@ -292,7 +219,7 @@ const WordToPDF = () => {
 
           <ToolSEOContent
             toolName="Word to PDF Converter"
-            whatIs="Creates a text-only PDF from DOCX body text or TXT. Images, headers, footers, table layout, fonts and original formatting are not preserved. For a faithful PDF, use Word Export to PDF. Legacy DOC and RTF are unsupported."
+            whatIs="Creates a PDF from DOCX or TXT entirely in your browser, rendering supported tables, images, headers, footers and text styling. Pages are image-based, not editable or searchable text. Complex Word layouts and unavailable fonts may differ; use Word Export for exact fidelity. Legacy DOC and RTF are unsupported."
             howToUse={[
               "Click the upload area or drag and drop your Word document.",
               "Preview the file information displayed after selection.",
@@ -301,10 +228,10 @@ const WordToPDF = () => {
               "Your converted PDF will download automatically when ready.",
             ]}
             features={[
-              "Proper DOCX extraction using ZIP parsing for accurate text",
+              "DOCX layout rendering with supported tables and images",
               "Supports .docx and .txt formats",
-              "Automatic text wrapping and pagination for long documents",
-              "Professional layout with title, page numbers, and proper margins",
+              "Pagination with table-row and paragraph boundaries",
+              "Document page sizes, margins and supported text styling",
               "Fast browser-based processing with no uploads",
               "Progress tracking with descriptive step labels",
               "Content preview before final download",
@@ -312,8 +239,8 @@ const WordToPDF = () => {
             ]}
             safetyNote="Your documents are processed entirely within your browser using secure client-side technology. No files are uploaded to external servers."
             faqs={[
-              { question: "Will my Word document formatting be preserved?", answer: "Supported body text is extracted with paragraph breaks; headers and footers are omitted. For complex formatting with tables, images, and styling, use Microsoft Word's built-in PDF export." },
-              { question: "What Word file formats are supported?", answer: "DOCX body text and TXT are supported. Save legacy DOC and RTF as DOCX first." },
+              { question: "Will my Word document formatting be preserved?", answer: "Supported tables, images and text styling are rendered into image-based PDF pages. Complex layouts and fonts not installed on your device may differ. Use Microsoft Word's PDF export when exact fidelity or searchable text is required." },
+              { question: "What Word file formats are supported?", answer: "DOCX and TXT are supported. Save legacy DOC and RTF as DOCX first." },
               { question: "Is there a file size limit?", answer: "No strict limit, but very large files (50MB+) may be slow on mobile devices. Most Word documents convert in seconds." },
               { question: "Are my documents stored anywhere?", answer: "No. Everything is processed in your browser. Files never leave your device." },
             ]}

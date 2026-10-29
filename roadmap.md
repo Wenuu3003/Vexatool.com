@@ -12,4 +12,5 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
-- Tell the user these changes reach the live site only on the next publish.
+- Repair Word-to-PDF using the supplied table document; preserve the existing interface and ads.
+- Run all-tool regression checks and deliver a report that distinguishes functional passes from unverified flows.

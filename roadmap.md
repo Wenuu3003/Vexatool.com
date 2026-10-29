@@ -12,7 +12,7 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
-- Verify Google Drive-to-PDF export when a real publicly accessible Drive document link is supplied (blocked: no testable public link).
+- Verify Google Drive-to-PDF anonymous browser download (blocked: supplied document has only owner/writer permissions, no public sharing). Link handling and independently retrieved authorized 2-page PDF verified; updated audit delivered.
 
 ## Completed Word-to-PDF repair and tool audit
 - Repaired local DOCX rendering; supplied table/logo document and mobile download verified without redesigning the interface or changing ads.

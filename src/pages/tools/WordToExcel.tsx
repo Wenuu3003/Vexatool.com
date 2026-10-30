@@ -70,7 +70,12 @@ const WordToExcel = () => {
               for (const row of table.rows) {
                 const padded = [...row];
                 while (padded.length < maxCols) padded.push('');
-                ws.addRow(padded);
+                const excelRow = ws.addRow(padded);
+                excelRow.eachCell(cell => {
+                  if (String(cell.value ?? '').includes('\n')) {
+                    cell.alignment = { wrapText: true, vertical: 'top' };
+                  }
+                });
               }
 
               // Bold header row

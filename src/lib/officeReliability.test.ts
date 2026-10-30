@@ -26,6 +26,23 @@ describe('Office conversion content fidelity', () => {
     expect(await extractWordText(doc)).toBe('A & B\nCell <1>\nLast');
     expect(await parseDocxContent(doc)).toEqual({paragraphs:['A & B'],tables:[{rows:[['Cell <1>','','Last']]}]});
   });
+  it('preserves separate address paragraphs and blank lines inside table cells', async () => {
+    const zip = new JSZip();
+    zip.file('word/document.xml', '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:tbl><w:tr><w:tc><w:p><w:r><w:t>123 Main St</w:t></w:r></w:p><w:p><w:r><w:t>Springfield</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>First</w:t></w:r></w:p><w:p/><w:p><w:r><w:t>Third</w:t></w:r></w:p></w:tc></w:tr></w:tbl></w:body></w:document>');
+    const content = await parseDocxContent(file('address.docx', await zip.generateAsync({ type: 'uint8array' })));
+    expect(content.tables[0].rows[0]).toEqual(['123 Main St\nSpringfield', 'First\n\nThird']);
+    const workbook = new ExcelJS.Workbook();
+    workbook.addWorksheet('Table Data').addRow(content.tables[0].rows[0]);
+    const reopened = new ExcelJS.Workbook();
+    await reopened.xlsx.load(await workbook.xlsx.writeBuffer());
+    expect(reopened.worksheets[0].getCell('A1').value).toBe('123 Main St\nSpringfield');
+  });
+  it('keeps adjacent formatted runs together while preserving tabs and explicit line breaks', async () => {
+    const zip = new JSZip();
+    zip.file('word/document.xml', '<x:document xmlns:x="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><x:body><x:tbl><x:tr><x:tc><x:p><x:r><x:t>Hel</x:t></x:r><x:r><x:t>lo</x:t><x:tab/><x:t>World</x:t><x:br/><x:t>Next</x:t><x:cr/><x:t>Last</x:t></x:r></x:p></x:tc></x:tr></x:tbl></x:body></x:document>');
+    const content = await parseDocxContent(file('breaks.docx', await zip.generateAsync({ type: 'uint8array' })));
+    expect(content.tables[0].rows[0][0]).toBe('Hello\tWorld\nNext\nLast');
+  });
   it('wraps long IDs without losing characters', () => {
     const token='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.repeat(10);
     const lines=wrapOfficeText(token,10,value=>value.length);

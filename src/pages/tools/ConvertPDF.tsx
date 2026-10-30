@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { FileType2, Download, FileText, CheckCircle, Shield, Clock, Eye } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { FileUpload } from "@/components/FileUpload";
@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { PDFDocument } from "pdf-lib";
-import { pdfjsLib } from "@/lib/pdfWorker";
-import { Document, Packer, Paragraph, TextRun, HeadingLevel } from "docx";
+import { convertPdfToWord } from "@/lib/pdfToWord";
 import { useFileHistory } from "@/hooks/useFileHistory";
 import { AdPlaceholder } from "@/components/AdBanner";
 import { CanonicalHead } from "@/components/CanonicalHead";
@@ -40,40 +39,6 @@ const ConvertPDF = () => {
     }
   };
 
-  const extractTextFromPDF = useCallback(async (file: File): Promise<string[]> => {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const pageTexts: string[] = [];
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      setProgress((i / pdf.numPages) * 70);
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      
-      // Extract text preserving structure
-      let lastY = -1;
-      let pageText = '';
-      
-      for (const item of textContent.items as { str: string; transform: number[] }[]) {
-        const currentY = Math.round(item.transform[5]);
-        
-        // New line detection
-        if (lastY !== -1 && Math.abs(currentY - lastY) > 5) {
-          pageText += '\n';
-        } else if (pageText.length > 0 && !pageText.endsWith(' ') && !pageText.endsWith('\n')) {
-          pageText += ' ';
-        }
-        
-        pageText += item.str;
-        lastY = currentY;
-      }
-      
-      pageTexts.push(pageText.trim());
-    }
-    
-    return pageTexts;
-  }, []);
-
   const handleProcess = async () => {
     if (files.length === 0) {
       toast({
@@ -88,80 +53,24 @@ const ConvertPDF = () => {
     setProgress(0);
 
     try {
-      // Extract text from PDF
-      const pageTexts = await extractTextFromPDF(files[0]);
-      const fullText = pageTexts.join('\n\n---\n\n');
+      const { blob, pageCount: convertedPages, preview: fullText } = await convertPdfToWord(files[0], setProgress);
+      setPageCount(convertedPages);
       setExtractedText(fullText.substring(0, 500) + (fullText.length > 500 ? '...' : ''));
       
-      setProgress(80);
-
-      // Create Word document using docx library
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: [
-            // Title
-            new Paragraph({
-              text: files[0].name.replace('.pdf', ''),
-              heading: HeadingLevel.TITLE,
-              spacing: { after: 400 },
-            }),
-            // Metadata
-            new Paragraph({
-              children: [
-                new TextRun({ text: `Converted from PDF • ${pageCount} page(s)`, italics: true, size: 20 }),
-              ],
-              spacing: { after: 400 },
-            }),
-            // Content from each page
-            ...pageTexts.flatMap((pageText, index) => {
-              const paragraphs: Paragraph[] = [];
-              
-              // Page separator (except for first page)
-              if (index > 0) {
-                paragraphs.push(
-                  new Paragraph({
-                    children: [new TextRun({ text: `— Page ${index + 1} —`, bold: true })],
-                    spacing: { before: 400, after: 200 },
-                  })
-                );
-              }
-              
-              // Split text into paragraphs
-              const textParagraphs = pageText.split('\n').filter(p => p.trim());
-              textParagraphs.forEach(text => {
-                paragraphs.push(
-                  new Paragraph({
-                    children: [new TextRun({ text: text.trim(), size: 24 })],
-                    spacing: { after: 120 },
-                  })
-                );
-              });
-              
-              return paragraphs;
-            }),
-          ],
-        }],
-      });
-
-      setProgress(90);
-
-      // Generate and download DOCX
-      const blob = await Packer.toBlob(doc);
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${files[0].name.replace('.pdf', '')}.docx`;
+      link.download = `${files[0].name.replace(/\.pdf$/i, '')}.docx`;
       link.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
 
       setProgress(100);
       
-      await saveFileHistory(files[0].name, "pdf", "pdf-to-word");
+      await saveFileHistory(files[0].name, "pdf", "pdf-to-word").catch(() => undefined);
 
       toast({
         title: "Conversion Complete!",
-        description: `Successfully converted ${pageCount} page(s) to Word document.`,
+        description: `Preserved ${convertedPages} page(s). Available editable text is included separately.`,
       });
     } catch (error) {
       if (import.meta.env.DEV) {
@@ -169,7 +78,7 @@ const ConvertPDF = () => {
       }
       toast({
         title: "Conversion Error",
-        description: "Failed to convert PDF. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to convert PDF. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -181,12 +90,12 @@ const ConvertPDF = () => {
     <>
       <CanonicalHead 
         title="PDF to Word Converter Free Online - Convert PDF to DOCX | VexaTool"
-        description="Free PDF to Word converter. Convert PDF documents to editable DOCX files online. Full text extraction."
+        description="Convert PDF to DOCX locally with original page images and separately editable extracted text. No document uploads."
         keywords="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word"
       />
       <ToolLayout
         title="PDF to Word"
-        description="Convert PDF documents to editable Word files"
+        description="Preserve PDF pages in Word with separately editable text"
         icon={FileType2}
         colorClass="bg-tool-convert"
       >
@@ -198,9 +107,9 @@ const ConvertPDF = () => {
               Convert PDF to Editable Word Document
             </h2>
             <p className="text-muted-foreground">
-              Transform your PDF files into fully editable Word documents (.docx). Our converter extracts 
-              text from all pages while preserving paragraph structure, making it easy to edit, modify, 
-              and reuse content from your PDF files.
+              Original PDF pages are preserved as images in your Word document (.docx).
+              Available text is included in a separate editable section. Page images are not editable text;
+              scanned pages are preserved visually without OCR.
             </p>
           </div>
 
@@ -306,7 +215,7 @@ const ConvertPDF = () => {
           
           <ToolSEOContent
             toolName="PDF to Word Converter"
-            whatIs="The PDF to Word Converter is a powerful online tool that transforms PDF documents into fully editable Microsoft Word files (.docx). Whether you received a contract that needs modifications, a report that requires updating, or academic material you want to annotate and rework, this converter makes it possible without retyping. Using advanced text extraction technology, it analyzes each page of your PDF, identifies text content and paragraph structure, and recreates it as a properly formatted Word document. The entire conversion happens locally in your browser — your confidential documents, financial statements, and personal files are never uploaded to any server. The output works seamlessly in Microsoft Word, Google Docs, LibreOffice Writer, and other word processors."
+            whatIs="Converts PDF pages into DOCX with each original page preserved as an image, including tables, graphics and scanned content. Available text is appended in a separately editable section. This does not recreate fully editable tables or exact Word layouts, and does not perform OCR. Processing stays in your browser with no document uploads."
             howToUse={[
               "Click the upload area or drag and drop your PDF file to begin.",
               "Wait for the file to be analyzed — the page count is displayed automatically.",
@@ -318,22 +227,22 @@ const ConvertPDF = () => {
             features={[
               "Full text extraction from all PDF pages with paragraph preservation.",
               "Creates genuine DOCX files compatible with Microsoft Word, Google Docs, and LibreOffice.",
-              "Multi-page PDF support with clear page separation markers in output.",
+              "Original page visuals with separate Word page sections.",
               "Real-time progress tracking during the conversion process.",
               "Text preview before download to verify extraction quality and accuracy.",
               "Local browser processing — no server uploads for complete document privacy.",
               "Maintains paragraph structure and text flow from the original PDF.",
-              "Professional formatting with title page, page numbers, and proper margins.",
+              "Original page dimensions and separately editable extracted text.",
               "Free to use with no registration, daily limits, or watermarks on output."
             ]}
             safetyNote="Your PDF files are processed entirely in your browser using secure client-side JavaScript technology. No documents are uploaded to external servers, ensuring the complete privacy and confidentiality of your files. The original PDF remains unchanged on your device, and both the source file and converted Word document stay under your full control."
             faqs={[
-              { question: "Will all formatting from my PDF be preserved?", answer: "Text content and paragraph structure are preserved accurately. Complex formatting like tables, images, and special layouts may require manual adjustment in the Word document. The converter focuses on extracting editable text reliably." },
-              { question: "Can I convert scanned PDFs to Word?", answer: "This tool works best with text-based PDFs where the text is selectable. Scanned PDFs (which are essentially images) require OCR technology. For scanned documents, try our Edit PDF tool which includes OCR capabilities." },
-              { question: "What about images and graphics in my PDF?", answer: "Currently, the converter extracts text content only. Images, charts, and graphics are not transferred to the Word document. For PDFs with important visual elements, you may need to add them manually after conversion." },
+              { question: "Will all formatting from my PDF be preserved?", answer: "Original page appearance is preserved as images, not fully editable layouts. Extracted text appears separately and may need formatting adjustments." },
+              { question: "Can I convert scanned PDFs to Word?", answer: "Scanned pages are preserved as images. No OCR is performed, so pages without a text layer do not produce editable text." },
+              { question: "What about images and graphics in my PDF?", answer: "Images, tables and graphics are retained within the original page images. They are not recreated as separate editable Word objects." },
               { question: "Is there a page limit for conversion?", answer: "There is no strict page limit, but very large PDFs (100+ pages) may take longer to process. The conversion happens in your browser, so performance depends on your device's capabilities." },
               { question: "Can I convert multiple PDFs to Word at once?", answer: "The tool processes one PDF at a time to ensure quality. For batch conversion, simply process each file sequentially." },
-              { question: "Will the output Word file have editable text?", answer: "Yes! The entire purpose of this tool is to produce fully editable text. You can modify, copy, format, and rework the content in any word processor." },
+              { question: "Will the output Word file have editable text?", answer: "When the PDF has a text layer, extracted text is included in a separate editable section after the original page images. Text inside page images is not editable." },
               { question: "Do I need Microsoft Word installed?", answer: "No. You can use any word processor that supports DOCX format, including free options like Google Docs and LibreOffice Writer." },
               { question: "Is the conversion free?", answer: "Yes, completely free with no hidden charges, no registration required, and no daily usage limits." },
               { question: "Can I convert password-protected PDFs?", answer: "Password-protected PDFs need to be unlocked first. Use our Unlock PDF tool to remove protection, then convert the unlocked file." },

@@ -1,3 +1,5 @@
+import { prepareTextFonts, exportFontFamily, exportFontCss } from './browserText';
+import { extractWordText } from './officeText';
 import { PDFDocument } from 'pdf-lib';
 
 /** Choose a row/paragraph boundary instead of cutting ordinary content in half. */
@@ -25,7 +27,7 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
     doc.body.append(container);
     onProgress(20, 'Reading document layout...');
     if (file.name.toLowerCase().endsWith('.txt')) {
-      const text = await file.text();
+      const text = await extractWordText(file);
       if (!text.trim()) throw new Error('The text file is empty.');
       const section = doc.createElement('section');
       section.className = 'vexa-word';
@@ -43,6 +45,11 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
         renderAltChunks: false, renderChanges: false, renderComments: false,
       });
     }
+    await prepareTextFonts(container.textContent || '');
+    await prepareTextFonts(container.textContent || '', doc);
+    const fallback = doc.createElement('style');
+    fallback.textContent = exportFontCss() + `.vexa-word, .vexa-word * { font-family: ${exportFontFamily} !important; }`;
+    if (/[\u0900-\u097F\u0C00-\u0C7F]/.test(container.textContent || '')) doc.head.append(fallback);
     await doc.fonts.ready;
     await Promise.all(Array.from(container.querySelectorAll('img')).map(image => image.decode().catch(() => undefined)));
     const sections = Array.from(container.querySelectorAll<HTMLElement>('section.vexa-word'));
@@ -66,7 +73,7 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
       });
       const origin = section.getBoundingClientRect().top;
       const boundaries = Array.from(section.querySelectorAll('tr,p:not(td p)'))
-        .map(element => element.getBoundingClientRect().bottom - origin);
+        .map(element => element.getBoundingClientRect().top - origin);
       const contentEnd = height - bottom;
       const capacity = pageHeight - top - bottom;
       if (capacity <= 0 || width <= 0) throw new Error('Invalid Word page dimensions.');

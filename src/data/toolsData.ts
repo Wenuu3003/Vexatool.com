@@ -90,27 +90,27 @@ export const toolsData: ToolData[] = [
   {
     id: "pdf-to-word",
     title: "PDF to Word",
-    description: "Convert PDF files into editable DOC and DOCX documents. Preserve formatting and layout.",
-    shortDescription: "Convert PDF files to editable Word documents.",
+    description: "Preserve PDF pages as images in DOCX and append available editable text separately. No OCR.",
+    shortDescription: "Export PDF page images and extracted text to Word.",
     icon: FileType2,
     colorClass: "bg-gradient-to-br from-blue-600 to-blue-700",
     href: "/pdf-to-word",
     category: "pdf",
     previewImage: "/previews/pdf-to-word-preview.webp",
-    features: ["Layout preservation", "Font matching", "Table extraction", "Batch convert"],
+    features: ["Original page images", "Separate extracted text", "DOCX download", "Browser processing"],
     seoKeywords: ["PDF to Word", "convert PDF", "PDF to DOCX", "PDF converter"]
   },
   {
     id: "word-to-pdf",
     title: "Word to PDF",
-    description: "Convert Word documents (DOC, DOCX) to PDF format instantly. Perfect formatting every time.",
+    description: "Render supported DOCX tables, images and text styling into image-based PDF pages. Complex layouts may differ; legacy DOC is unsupported.",
     shortDescription: "Convert Word documents to PDF format.",
     icon: FileText,
     colorClass: "bg-gradient-to-br from-blue-500 to-cyan-500",
     href: "/word-to-pdf",
     category: "pdf",
     previewImage: "/previews/word-to-pdf-preview.webp",
-    features: ["Perfect formatting", "Font embedding", "Batch convert", "Fast processing"],
+    features: ["Supported DOCX layout", "Automatic pagination", "PDF download", "Browser processing"],
     seoKeywords: ["Word to PDF", "DOCX to PDF", "convert Word", "Word converter"]
   },
   {
@@ -602,14 +602,14 @@ export const toolsData: ToolData[] = [
   {
     id: "pdf-to-powerpoint",
     title: "PDF to PowerPoint",
-    description: "Convert PDF documents to editable PowerPoint presentations. Extract slides and content.",
-    shortDescription: "Convert PDF to editable PowerPoint presentations.",
+    description: "Render PDF pages as JPEG slide images in a ZIP for importing into PowerPoint. Does not generate editable PPTX.",
+    shortDescription: "Export PDF slide images as a ZIP for PowerPoint.",
     icon: Presentation,
     colorClass: "bg-gradient-to-br from-orange-500 to-red-500",
     href: "/pdf-to-powerpoint",
     category: "document",
     previewImage: "/previews/pdf-to-powerpoint-preview.webp",
-    features: ["Slide extraction", "Image preservation", "Text editing", "Batch convert"],
+    features: ["JPEG slide images", "Page appearance preserved", "ZIP download", "Import instructions"],
     seoKeywords: ["PDF to PowerPoint", "PDF to PPT", "convert PDF", "presentation converter"]
   },
   {
@@ -641,27 +641,27 @@ export const toolsData: ToolData[] = [
   {
     id: "ppt-to-pdf",
     title: "PPT to PDF",
-    description: "Convert PowerPoint presentations to PDF documents. Preserve slides, animations preview, and formatting.",
+    description: "Extract supported PPTX text and images to a simple PDF. Original layouts, charts and animations are not reproduced.",
     shortDescription: "Convert PowerPoint presentations to PDF.",
     icon: Presentation,
     colorClass: "bg-gradient-to-br from-red-500 to-orange-500",
     href: "/ppt-to-pdf",
     category: "document",
     previewImage: "/previews/ppt-to-pdf-preview.webp",
-    features: ["Slide preservation", "Formatting", "Fast conversion", "Batch convert"],
+    features: ["PPTX text and images", "Slide order", "Continuation pages", "PDF download"],
     seoKeywords: ["PPT to PDF", "PowerPoint to PDF", "convert PPT", "presentation to PDF"]
   },
   {
     id: "html-to-pdf",
     title: "HTML to PDF",
-    description: "Convert HTML web pages to PDF documents. Capture full page content with styling and layout.",
+    description: "Convert pasted HTML text to a simple PDF with basic headings and lists. Full CSS layouts and images are not reproduced.",
     shortDescription: "Convert HTML web pages to PDF documents.",
     icon: Code,
     colorClass: "bg-gradient-to-br from-cyan-500 to-teal-500",
     href: "/html-to-pdf",
     category: "document",
     previewImage: "/previews/html-to-pdf-preview.webp",
-    features: ["Full page capture", "CSS styling", "Layout preservation", "Custom sizing"],
+    features: ["Pasted HTML", "Basic text formatting", "Automatic pagination", "PDF download"],
     seoKeywords: ["HTML to PDF", "convert webpage to PDF", "HTML PDF converter", "web page to PDF"]
   },
   {

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -107,13 +107,13 @@ export default function UnitConverter() {
   const [fromUnit, setFromUnit] = useState("m");
   const [toUnit, setToUnit] = useState("km");
   const [fromValue, setFromValue] = useState("1");
-  const [toValue, setToValue] = useState("");
+  const [toValue, setToValue] = useState("0.001");
 
   const currentCategory = categories[category];
 
   const convert = (value: string, from: string, to: string, cat: CategoryKey): string => {
     const numValue = parseFloat(value);
-    if (isNaN(numValue)) return "";
+    if (!Number.isFinite(numValue)) return "";
 
     if (cat === "temperature") {
       return convertTemperature(numValue, from, to);
@@ -166,13 +166,14 @@ export default function UnitConverter() {
   };
 
   const formatResult = (value: number): string => {
+    if (!Number.isFinite(value)) return "";
     if (Math.abs(value) < 0.0001 && value !== 0) {
       return value.toExponential(6);
     }
     if (Math.abs(value) >= 1000000) {
       return value.toExponential(6);
     }
-    return value.toLocaleString("en-US", { maximumFractionDigits: 10 });
+    return value.toLocaleString("en-US", { maximumFractionDigits: 10, useGrouping: false });
   };
 
   const handleFromValueChange = (value: string) => {
@@ -202,11 +203,6 @@ export default function UnitConverter() {
     setFromValue(toValue);
     setToValue(tempValue);
   };
-
-  // Initialize
-  useMemo(() => {
-    setToValue(convert(fromValue, fromUnit, toUnit, category));
-  }, []);
 
   return (
     <>
@@ -274,7 +270,7 @@ export default function UnitConverter() {
 
           {/* Swap Button */}
           <div className="flex items-end justify-center sm:hidden">
-            <Button variant="outline" size="icon" onClick={swapUnits}>
+            <Button variant="outline" size="icon" aria-label="Swap units" onClick={swapUnits}>
               <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
@@ -303,7 +299,7 @@ export default function UnitConverter() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button variant="outline" size="icon" onClick={swapUnits} className="hidden sm:flex mt-6">
+              <Button variant="outline" size="icon" aria-label="Swap units" onClick={swapUnits} className="hidden sm:flex mt-6">
                 <RefreshCw className="h-4 w-4" />
               </Button>
             </div>

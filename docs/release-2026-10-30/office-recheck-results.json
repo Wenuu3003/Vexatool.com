@@ -1,0 +1,32 @@
+[
+  {
+    "tool": "pdf-to-word",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "word-to-pdf",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "word-to-excel",
+    "width": 390,
+    "passed": true
+  },
+  {
+    "tool": "pdf-to-word",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "tool": "word-to-pdf",
+    "width": 1440,
+    "passed": true
+  },
+  {
+    "tool": "word-to-excel",
+    "width": 1440,
+    "passed": true
+  }
+]

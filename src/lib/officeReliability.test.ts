@@ -57,3 +57,9 @@ describe('Office conversion content fidelity', () => {
     expect(result.map(slide=>slide.text[0])).toEqual(['Slide 2','Slide 1']);
   });
 });
+
+it('reads UTF-16 text exports and rejects empty TXT',async()=>{
+  const bytes=new Uint8Array([255,254,65,0,32,0,22,12]);
+  expect(await extractWordText(file('unicode.txt',bytes))).toBe('A ఖ');
+  await expect(extractWordText(file('empty.txt',new Uint8Array()))).rejects.toThrow('empty');
+});

@@ -12,6 +12,7 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
+- Research audience communities, forums and directories; deliver tailored drafts without posting them.
 - Repair PDF-to-Word page/layout loss and verify Word-to-PDF pagination with downloaded documents; preserve UI and ads.
 - Verify Google Drive-to-PDF anonymous browser download (blocked: supplied document has only owner/writer permissions, no public sharing). Link handling and independently retrieved authorized 2-page PDF verified; updated audit delivered.
 

@@ -1,4 +1,3 @@
-import { prepareTextFonts, exportFontFamily, exportFontCss } from './browserText';
 import { extractWordText } from './officeText';
 import { PDFDocument } from 'pdf-lib';
 
@@ -45,11 +44,6 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
         renderAltChunks: false, renderChanges: false, renderComments: false,
       });
     }
-    await prepareTextFonts(container.textContent || '');
-    await prepareTextFonts(container.textContent || '', doc);
-    const fallback = doc.createElement('style');
-    fallback.textContent = exportFontCss() + `.vexa-word, .vexa-word * { font-family: ${exportFontFamily} !important; }`;
-    if (/[\u0900-\u097F\u0C00-\u0C7F]/.test(container.textContent || '')) doc.head.append(fallback);
     await doc.fonts.ready;
     await Promise.all(Array.from(container.querySelectorAll('img')).map(image => image.decode().catch(() => undefined)));
     const sections = Array.from(container.querySelectorAll<HTMLElement>('section.vexa-word'));

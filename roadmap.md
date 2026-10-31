@@ -12,10 +12,11 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
-- Research audience communities, forums and directories; deliver tailored drafts without posting them.
-- Repair PDF-to-Word page/layout loss and verify Word-to-PDF pagination with downloaded documents; preserve UI and ads.
 - Verify Google Drive-to-PDF anonymous browser download (blocked: supplied document has only owner/writer permissions, no public sharing). Link handling and independently retrieved authorized 2-page PDF verified; updated audit delivered.
 
 ## Completed Word-to-PDF repair and tool audit
+- Repaired PDF-to-Word visual page sections with separately editable extracted text; downloaded DOCX re-opened in LibreOffice and all four pages inspected. Mobile download verified.
+- Repaired Word raster line placement and page boundaries; all 80 multiline table rows, repeated headers/footers and supplied railway document visually verified; ads and interface structure unchanged.
+- Researched 12 outreach destinations and drafted tailored submissions with promotion/fee restrictions; nothing posted or submitted.
 - Repaired local DOCX rendering; supplied table/logo document and mobile download verified without redesigning the interface or changing ads.
 - All 49 tool pages rendered; 48 basic workflows verified with explicit limitations, Google Drive export unverified. 197 tests passed; supervised build OK. Delivered the 49-tool audit report in Files.

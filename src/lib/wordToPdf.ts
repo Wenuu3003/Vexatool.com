@@ -1,4 +1,3 @@
-import { prepareTextFonts, exportFontFamily, exportFontCss } from './browserText';
 import { extractWordText } from './officeText';
 import { PDFDocument } from 'pdf-lib';
 
@@ -12,9 +11,7 @@ export function nextWordPageBreak(start: number, limit: number, end: number, bou
 
 /** Render locally in an isolated document so site CSS cannot alter Word layout. */
 export async function convertWordToPdf(file: File, onProgress: (value: number, label: string) => void) {
-  const [{ renderAsync }, { default: html2canvas }] = await Promise.all([
-    import('docx-preview'), import('html2canvas'),
-  ]);
+  const { renderAsync } = await import('docx-preview');
   const frame = document.createElement('iframe');
   frame.setAttribute('aria-hidden', 'true');
   frame.style.cssText = 'position:fixed;left:-100000px;top:0;width:1000px;height:2000px;border:0;pointer-events:none;';
@@ -22,7 +19,7 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
   try {
     const doc = frame.contentDocument;
     if (!doc) throw new Error('Could not initialize the document renderer.');
-    doc.open(); doc.write('<!doctype html><html><head></head><body></body></html>'); doc.close();
+    doc.open(); doc.write('<!doctype html><html><head></head><body style="margin:0"></body></html>'); doc.close();
     const container = doc.createElement('div');
     doc.body.append(container);
     onProgress(20, 'Reading document layout...');
@@ -45,11 +42,6 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
         renderAltChunks: false, renderChanges: false, renderComments: false,
       });
     }
-    await prepareTextFonts(container.textContent || '');
-    await prepareTextFonts(container.textContent || '', doc);
-    const fallback = doc.createElement('style');
-    fallback.textContent = exportFontCss() + `.vexa-word, .vexa-word * { font-family: ${exportFontFamily} !important; }`;
-    if (/[\u0900-\u097F\u0C00-\u0C7F]/.test(container.textContent || '')) doc.head.append(fallback);
     await doc.fonts.ready;
     await Promise.all(Array.from(container.querySelectorAll('img')).map(image => image.decode().catch(() => undefined)));
     const sections = Array.from(container.querySelectorAll<HTMLElement>('section.vexa-word'));
@@ -67,17 +59,34 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
       const width = section.getBoundingClientRect().width;
       const height = Math.max(section.scrollHeight, section.offsetHeight);
       const scale = Math.min(2, 8192 / height, Math.sqrt(16000000 / (width * height)));
-      const canvas = await html2canvas(section, {
-        scale, backgroundColor: '#ffffff', logging: false, useCORS: false,
-        width, height, windowWidth: 1000, windowHeight: 2000,
-      });
+      // Let the browser paint line boxes rather than reimplementing glyph placement.
+      const canvas = doc.createElement('canvas');
+      canvas.width = Math.ceil(width * scale); canvas.height = Math.ceil(height * scale);
+      const capture = canvas.getContext('2d');
+      if (!capture) throw new Error('Canvas rendering is unavailable.');
+      const wrapper = doc.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+      wrapper.setAttribute('style', `width:${width}px;height:${height}px;background:white;`);
+      for (const stylesheet of Array.from(doc.head.querySelectorAll('style'))) wrapper.append(stylesheet.cloneNode(true));
+      wrapper.append(section.cloneNode(true));
+      const markup = new XMLSerializer().serializeToString(wrapper);
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvas.width}" height="${canvas.height}" viewBox="0 0 ${width} ${height}"><foreignObject width="100%" height="100%">${markup}</foreignObject></svg>`;
+      const source = new Image();
+      source.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      await source.decode();
+      capture.drawImage(source, 0, 0, canvas.width, canvas.height);
       const origin = section.getBoundingClientRect().top;
+      const header = section.querySelector(':scope > header')?.getBoundingClientRect();
+      const footer = section.querySelector(':scope > footer')?.getBoundingClientRect();
+      const body = Array.from(section.children).filter(element => !['HEADER', 'FOOTER'].includes(element.tagName));
+      const bodyTop = Math.max(top, header ? header.bottom - origin : top);
+      const bodyEnd = Math.max(bodyTop, ...body.map(element => element.getBoundingClientRect().bottom - origin));
       const boundaries = Array.from(section.querySelectorAll('tr,p:not(td p)'))
         .map(element => element.getBoundingClientRect().top - origin);
-      const contentEnd = height - bottom;
-      const capacity = pageHeight - top - bottom;
+      const contentEnd = Math.min(height - bottom, bodyEnd);
+      const footerHeight = footer?.height || 0;
+      const capacity = pageHeight - bodyTop - bottom - footerHeight;
       if (capacity <= 0 || width <= 0) throw new Error('Invalid Word page dimensions.');
-      let cursor = top;
+      let cursor = bodyTop;
       while (cursor < contentEnd - 0.5) {
         const end = nextWordPageBreak(cursor, capacity, contentEnd, boundaries);
         const pageCanvas = doc.createElement('canvas');
@@ -85,12 +94,12 @@ export async function convertWordToPdf(file: File, onProgress: (value: number, l
         const ctx = pageCanvas.getContext('2d');
         if (!ctx) throw new Error('Canvas rendering is unavailable.');
         ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-        // Preserve the original top margin/header on the first page of each section.
-        if (cursor === top && top > 0) ctx.drawImage(canvas, 0, 0, canvas.width, top * scale, 0, 0, canvas.width, top * scale);
+        // Repeat supported headers/footers when the renderer's section overflows onto more pages.
+        if (bodyTop > 0) ctx.drawImage(canvas, 0, 0, canvas.width, bodyTop * scale, 0, 0, canvas.width, bodyTop * scale);
         ctx.drawImage(canvas, 0, cursor * scale, canvas.width, (end - cursor) * scale,
-          0, top * scale, canvas.width, (end - cursor) * scale);
-        if (end === contentEnd && bottom > 0) ctx.drawImage(canvas, 0, contentEnd * scale, canvas.width, bottom * scale,
-          0, (pageHeight - bottom) * scale, canvas.width, bottom * scale);
+          0, bodyTop * scale, canvas.width, (end - cursor) * scale);
+        if (footer && footerHeight > 0) ctx.drawImage(canvas, 0, (footer.top - origin) * scale, canvas.width, footerHeight * scale,
+          0, (pageHeight - bottom - footerHeight) * scale, canvas.width, footerHeight * scale);
         const image = await pdf.embedPng(pageCanvas.toDataURL('image/png'));
         const page = pdf.addPage([width * 0.75, pageHeight * 0.75]);
         page.drawImage(image, { x: 0, y: 0, width: page.getWidth(), height: page.getHeight() });

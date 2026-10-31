@@ -1,5 +1,4 @@
 import { convertWordToPdf } from "@/lib/wordToPdf";
-import { downloadBrowserBlob } from "@/lib/browserDownload";
 import { useState, useCallback } from "react";
 import { FileText, Download, Upload, Shield, CheckCircle, Eye, Trash2, Loader2 } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -11,7 +10,6 @@ import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
 
 const WordToPDF = () => {
-  const [download, setDownload] = useState<{blob: Blob; name: string} | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -53,7 +51,6 @@ const WordToPDF = () => {
       return;
     }
 
-    setDownload(null);
     setIsProcessing(true);
     setProgress(10);
     setProgressLabel("Reading document...");
@@ -66,14 +63,17 @@ const WordToPDF = () => {
       setPreview(text.substring(0, 300) + (text.length > 300 ? '...' : ''));
 
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
-      const name = file.name.replace(/\.(docx|txt)$/i, '.pdf');
-      setDownload({blob, name});
-      downloadBrowserBlob(blob, name);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file.name.replace(/\.(doc|docx|txt|rtf)$/i, '.pdf');
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
 
       setProgress(100);
       setProgressLabel("Done!");
 
-      void saveFileHistory(file.name, "word", "word-to-pdf").catch(() => undefined);
+      await saveFileHistory(file.name, "word", "word-to-pdf").catch(() => undefined);
 
       toast({
         title: "Conversion Complete!",
@@ -217,12 +217,11 @@ const WordToPDF = () => {
             </div>
           </div>
 
-          {download && <Button variant="outline" onClick={() => downloadBrowserBlob(download.blob, download.name)}>Download PDF Again</Button>}
           <ToolSEOContent
             toolName="Word to PDF Converter"
             whatIs="Creates a PDF from DOCX or TXT entirely in your browser, rendering supported tables, images, headers, footers and text styling. Pages are image-based, not editable or searchable text. Complex Word layouts and unavailable fonts may differ; use Word Export for exact fidelity. Legacy DOC and RTF are unsupported."
             howToUse={[
-              "Click the upload area to select your Word document.",
+              "Click the upload area or drag and drop your Word document.",
               "Preview the file information displayed after selection.",
               "Click 'Convert to PDF' to begin the conversion process.",
               "Monitor the progress bar as your document is processed.",

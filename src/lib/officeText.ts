@@ -15,13 +15,7 @@ export function wrapOfficeText(text: string, width: number, measure: (value: str
   return lines.length ? lines : [''];
 }
 export async function extractWordText(file: File): Promise<string> {
-  if (file.name.toLowerCase().endsWith('.txt')) {
-    const bytes = new Uint8Array(await file.arrayBuffer());
-    const encoding = bytes[0] === 0xff && bytes[1] === 0xfe ? 'utf-16le' : bytes[0] === 0xfe && bytes[1] === 0xff ? 'utf-16be' : 'utf-8';
-    const text = new TextDecoder(encoding, { fatal: true }).decode(bytes).trim();
-    if (!text) throw new Error('The text file is empty. Choose a file containing text.');
-    return text;
-  }
+  if (file.name.toLowerCase().endsWith('.txt')) return file.text();
   if (!file.name.toLowerCase().endsWith('.docx')) throw new Error('Use DOCX or TXT. Export legacy DOC and RTF from Word first.');
   const { default: JSZip } = await import('jszip');
   const zip = await JSZip.loadAsync(await file.arrayBuffer());

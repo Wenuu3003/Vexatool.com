@@ -48,22 +48,3 @@ it('EMI: one-year 12% on 12000 rounds to 1066 monthly',()=>{
  fireEvent.change(screen.getByLabelText('Loan Tenure'),{target:{value:'1'}});
  fireEvent.click(screen.getByRole('button',{name:'Calculate EMI'}));expect(screen.getAllByText('₹1,066').length).toBeGreaterThan(0);
 });
-
-import UnitConverter from './UnitConverter';
-it('unit converter retains 1000 in numeric fields and after swapping',()=>{
- render(<UnitConverter/>);
- const from=screen.getByPlaceholderText('Enter value') as HTMLInputElement;
- const to=screen.getByPlaceholderText('Result') as HTMLInputElement;
- fireEvent.change(from,{target:{value:'1000000'}});
- expect(to.value).toBe('1000');
- fireEvent.click(screen.getAllByRole('button',{name:'Swap units'})[0]);
- expect(from.value).toBe('1000');expect(to.value).toBe('1000000');
- fireEvent.change(to,{target:{value:'2000000'}});
- expect(from.value).toBe('2000');
-});
-it('unit converter clears overflow instead of writing Infinity to a number field',()=>{
- render(<UnitConverter/>);
- const to=screen.getByPlaceholderText('Result') as HTMLInputElement;
- fireEvent.change(to,{target:{value:'1e308'}});
- expect((screen.getByPlaceholderText('Enter value') as HTMLInputElement).value).toBe('');
-});

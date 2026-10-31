@@ -97,7 +97,7 @@ export default function ImageFormatConverter() {
         if (!ctx) throw new Error("Could not get canvas context");
 
         // For PNG transparency support
-        if (targetFormat !== "image/jpeg") {
+        if (targetFormat === "image/png") {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
         } else {
           ctx.fillStyle = "#FFFFFF";
@@ -150,7 +150,6 @@ export default function ImageFormatConverter() {
   };
 
   const handleReset = () => {
-    images.forEach(image => URL.revokeObjectURL(image.preview));
     setImages([]);
     setConvertedImages([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -246,7 +245,7 @@ export default function ImageFormatConverter() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Convert To</Label>
-                <Select value={targetFormat} onValueChange={(value) => { setTargetFormat(value); setConvertedImages([]); }}>
+                <Select value={targetFormat} onValueChange={setTargetFormat}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select format" />
                   </SelectTrigger>
@@ -263,7 +262,7 @@ export default function ImageFormatConverter() {
                 <Label>Quality: {quality}%</Label>
                 <Slider
                   value={[quality]}
-                  onValueChange={(v) => { setQuality(v[0]); setConvertedImages([]); }}
+                  onValueChange={(v) => setQuality(v[0])}
                   min={10}
                   max={100}
                   step={5}

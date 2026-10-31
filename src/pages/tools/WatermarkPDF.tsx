@@ -3,9 +3,6 @@ import { useState } from "react";
 import { Droplets, Download, Image, Type, Upload, Sparkles } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { degrees } from "pdf-lib";
-import { textPng } from "@/lib/browserText";
-import { downloadBrowserBlob } from "@/lib/browserDownload";
-import { watermarkPlacement, type WatermarkPosition } from "@/lib/watermarkGeometry";
 import { FileUpload } from "@/components/FileUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import { toast } from "@/hooks/use-toast";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
+
+type WatermarkPosition = "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right" | "tile";
 
 // Preset watermark options
 const WATERMARK_PRESETS = [
@@ -31,7 +30,6 @@ const WATERMARK_PRESETS = [
 const WatermarkPDF = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [download, setDownload] = useState<Blob | null>(null);
   const [watermarkType, setWatermarkType] = useState<"text" | "image">("text");
   const [watermarkText, setWatermarkText] = useState("Powered by VexaTool");
   const [opacity, setOpacity] = useState([25]);
@@ -72,6 +70,23 @@ const WatermarkPDF = () => {
     }
   };
 
+  const getPositionCoordinates = (pageWidth: number, pageHeight: number, watermarkWidth: number, watermarkHeight: number) => {
+    const margin = 50;
+    switch (position) {
+      case "top-left":
+        return { x: margin, y: pageHeight - margin - watermarkHeight };
+      case "top-right":
+        return { x: pageWidth - margin - watermarkWidth, y: pageHeight - margin - watermarkHeight };
+      case "bottom-left":
+        return { x: margin, y: margin };
+      case "bottom-right":
+        return { x: pageWidth - margin - watermarkWidth, y: margin };
+      case "center":
+      default:
+        return { x: (pageWidth - watermarkWidth) / 2, y: (pageHeight - watermarkHeight) / 2 };
+    }
+  };
+
   const handleWatermark = async () => {
     if (files.length === 0) {
       toast({
@@ -101,45 +116,90 @@ const WatermarkPDF = () => {
     }
 
     setIsProcessing(true);
-    setDownload(null);
 
     try {
       const arrayBuffer = await files[0].arrayBuffer();
       const pdf = await PDFDocument.load(arrayBuffer, { ignoreEncryption: false });
       const pages = pdf.getPages();
 
-      if (!pages.length) throw new Error("This PDF has no pages.");
-      let image;
-      let desiredWidth: number;
-      let desiredHeight: number;
       if (watermarkType === "text") {
-        const rendered = await textPng(watermarkText.trim(), 48);
-        image = await pdf.embedPng(rendered.bytes);
-        desiredWidth = rendered.width * fontSize[0] / 48;
-        desiredHeight = rendered.height * fontSize[0] / 48;
-      } else {
-        image = await pdf.embedPng(await imageToPng(imageFile!));
-        desiredWidth = image.width * imageScale[0] / 100;
-        desiredHeight = image.height * imageScale[0] / 100;
-      }
-      for (const page of pages) {
-        const box = page.getCropBox();
-        const pageRotation = page.getRotation().angle;
-        const angle = watermarkType === "text" ? rotation : 0;
-        const tile = position === "tile";
-        const viewWidth = pageRotation % 180 ? box.height : box.width;
-        const viewHeight = pageRotation % 180 ? box.width : box.height;
-        const tileScale = tile ? Math.min(.6, viewWidth / (4 * desiredWidth), viewHeight / (4 * desiredHeight)) : 1;
-        const placement = watermarkPlacement(box, pageRotation, desiredWidth * tileScale, desiredHeight * tileScale, angle, tile ? "center" : position);
-        for (const col of tile ? [-1, 0, 1] : [0]) {
-          for (const row of tile ? [-1, 0, 1] : [0]) {
-            const dx = col * viewWidth / 3, dy = row * viewHeight / 3;
-            const rad = pageRotation * Math.PI / 180;
+        // Text watermark
+        for (const page of pages) {
+          const { width, height } = page.getSize();
+          const currentFontSize = fontSize[0];
+          const textWidth = watermarkText.length * currentFontSize * 0.5;
+          const textHeight = currentFontSize;
+
+          if (position === "tile") {
+            // Tile pattern
+            const spacingX = 200;
+            const spacingY = 150;
+            for (let x = 0; x < width; x += spacingX) {
+              for (let y = 0; y < height; y += spacingY) {
+                page.drawText(watermarkText, {
+                  x: x,
+                  y: y,
+                  size: currentFontSize * 0.6,
+                  color: rgb(0.5, 0.5, 0.5),
+                  opacity: opacity[0] / 100,
+                  rotate: degrees(rotation),
+                });
+              }
+            }
+          } else {
+            const { x, y } = getPositionCoordinates(width, height, textWidth, textHeight);
+            page.drawText(watermarkText, {
+              x: position === "center" ? x + textWidth / 2 : x,
+              y: position === "center" ? y : y,
+              size: currentFontSize,
+              color: rgb(0.5, 0.5, 0.5),
+              opacity: opacity[0] / 100,
+              rotate: degrees(rotation),
+            });
+          }
+        }
+      } else if (watermarkType === "image" && imageFile) {
+        // Image watermark
+        const imageBytes = await imageFile.arrayBuffer();
+        let image;
+        
+        if (imageFile.type === "image/png") {
+          image = await pdf.embedPng(imageBytes);
+        } else if (imageFile.type === "image/jpeg" || imageFile.type === "image/jpg") {
+          image = await pdf.embedJpg(imageBytes);
+        } else {
+          image = await pdf.embedPng(await imageToPng(imageFile));
+        }
+
+        for (const page of pages) {
+          const { width: pageWidth, height: pageHeight } = page.getSize();
+          const scale = imageScale[0] / 100;
+          const imgWidth = image.width * scale;
+          const imgHeight = image.height * scale;
+
+          if (position === "tile") {
+            // Tile pattern for image
+            const spacingX = imgWidth + 100;
+            const spacingY = imgHeight + 100;
+            for (let x = 0; x < pageWidth; x += spacingX) {
+              for (let y = 0; y < pageHeight; y += spacingY) {
+                page.drawImage(image, {
+                  x: x,
+                  y: y,
+                  width: imgWidth * 0.5,
+                  height: imgHeight * 0.5,
+                  opacity: opacity[0] / 100,
+                });
+              }
+            }
+          } else {
+            const { x, y } = getPositionCoordinates(pageWidth, pageHeight, imgWidth, imgHeight);
             page.drawImage(image, {
-              x: placement.x + dx * Math.cos(rad) - dy * Math.sin(rad),
-              y: placement.y + dx * Math.sin(rad) + dy * Math.cos(rad),
-              width: placement.width, height: placement.height,
-              rotate: degrees(placement.angle), opacity: opacity[0] / 100,
+              x: x,
+              y: y,
+              width: imgWidth,
+              height: imgHeight,
+              opacity: opacity[0] / 100,
             });
           }
         }
@@ -147,23 +207,30 @@ const WatermarkPDF = () => {
 
       const pdfBytes = await pdf.save();
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" });
-      setDownload(blob);
-      downloadBrowserBlob(blob, "watermarked.pdf");
-      void saveFileHistory(files[0].name, "pdf", "watermark-pdf");
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "watermarked.pdf";
+      link.click();
+
+      URL.revokeObjectURL(url);
+
+      await saveFileHistory(files[0].name, "pdf", "watermark-pdf");
 
       toast({
         title: "Success!",
         description: "Watermark added successfully.",
       });
 
-
+      setFiles([]);
     } catch (error) {
       if (import.meta.env.DEV) {
         console.error("Watermark error:", error);
       }
       toast({
         title: "Error",
-        description: error instanceof Error && /encrypt/i.test(error.message) ? "This PDF is password-protected. Unlock it first, then add the watermark." : "Could not add the watermark. Check that the PDF and logo open correctly, then try again.",
+        description: "Failed to add watermark. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -221,7 +288,7 @@ const WatermarkPDF = () => {
         <div className="max-w-2xl mx-auto space-y-6">
           <FileUpload
             files={files}
-            onFilesChange={(value) => { setFiles(value); setDownload(null); }}
+            onFilesChange={setFiles}
             colorClass="bg-tool-watermark"
             accept=".pdf"
             multiple={false}
@@ -360,7 +427,7 @@ const WatermarkPDF = () => {
 
                 <div className="space-y-2">
                   <Label>Position</Label>
-                  <RadioGroup value={position} onValueChange={(v) => setPosition(v as WatermarkPosition)} className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <RadioGroup value={position} onValueChange={(v) => setPosition(v as WatermarkPosition)} className="grid grid-cols-3 gap-2">
                     {[
                       { value: "center", label: "Center" },
                       { value: "top-left", label: "Top Left" },
@@ -378,7 +445,7 @@ const WatermarkPDF = () => {
                 </div>
               </div>
 
-              <div className="text-center pt-4 space-y-3">
+              <div className="text-center pt-4">
                 <Button
                   size="lg"
                   onClick={handleWatermark}
@@ -397,7 +464,6 @@ const WatermarkPDF = () => {
                     </>
                   )}
                 </Button>
-                {download && <div><Button variant="outline" onClick={() => downloadBrowserBlob(download, "watermarked.pdf")}>Download Last Result</Button><p className="text-xs text-muted-foreground mt-2">Changed settings? Add the watermark again to create an updated file.</p></div>}
               </div>
             </div>
           )}

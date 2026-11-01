@@ -4,7 +4,7 @@
  */
 import { pdfjsLib } from "@/lib/pdfWorker";
 
-interface TextItem {
+export interface TextItem {
   str: string;
   x: number;
   y: number;
@@ -68,32 +68,53 @@ function getColumnIndex(x: number, boundaries: number[]): number {
 }
 
 /**
- * Group items into rows by Y-coordinate proximity.
- * Uses adaptive tolerance based on item heights.
+ * Group items into rows by Y-coordinate proximity, comparing each item with
+ * the row's running centre so slightly offset baselines stay together.
  */
 function groupIntoRows(items: TextItem[]): Map<number, TextItem[]> {
-  const rows = new Map<number, TextItem[]>();
-  const sortedItems = [...items].sort((a, b) => b.y - a.y); // top to bottom
-
-  // Adaptive tolerance: half of median item height, minimum 3
+  const sortedItems = [...items].sort((a, b) => a.y - b.y); // top to bottom (y grows downward)
   const heights = items.map(it => it.height).filter(h => h > 0).sort((a, b) => a - b);
   const medianHeight = heights.length > 0 ? heights[Math.floor(heights.length / 2)] : 10;
-  const yTolerance = Math.max(medianHeight * 0.5, 3);
-
+  const yTolerance = Math.max(medianHeight * 0.45, 2.5);
+  const groups: { y: number; items: TextItem[] }[] = [];
   for (const item of sortedItems) {
-    let matched = false;
-    for (const [key, group] of rows) {
-      if (Math.abs(item.y - key) <= yTolerance) {
-        group.push(item);
-        matched = true;
-        break;
-      }
-    }
-    if (!matched) {
-      rows.set(item.y, [item]);
-    }
+    const g = groups.find(gr => Math.abs(item.y - gr.y) <= yTolerance);
+    if (g) {
+      g.items.push(item);
+      g.y = g.items.reduce((sum, it) => sum + it.y, 0) / g.items.length;
+    } else groups.push({ y: item.y, items: [item] });
   }
+  const rows = new Map<number, TextItem[]>();
+  for (const g of groups) rows.set(g.y, g.items);
   return rows;
+}
+
+/**
+ * Find column bands from the horizontal space actually covered by text in
+ * multi-cell rows. Gaps that no row writes into become column separators, so
+ * right-aligned amounts and left-aligned labels land in the correct column.
+ */
+function projectColumns(rows: TextItem[][]): { start: number; end: number }[] {
+  const multi = rows.filter(r => r.length >= 2);
+  if (multi.length < 2) return [];
+  const spans = multi.flat().map(it => ({ start: it.x, end: it.x + Math.max(it.width, 1) })).sort((a, b) => a.start - b.start);
+  const bands: { start: number; end: number }[] = [];
+  for (const sp of spans) {
+    const last = bands[bands.length - 1];
+    if (last && sp.start <= last.end + 2) last.end = Math.max(last.end, sp.end);
+    else bands.push({ ...sp });
+  }
+  return bands;
+}
+
+function bandIndex(item: TextItem, bands: { start: number; end: number }[]): number {
+  const centre = item.x + item.width / 2;
+  let best = 0, bestDist = Infinity;
+  bands.forEach((b, i) => {
+    const d = centre < b.start ? b.start - centre : centre > b.end ? centre - b.end : 0;
+    if (d < bestDist) { bestDist = d; best = i; }
+  });
+  return best;
 }
 
 /**
@@ -174,51 +195,53 @@ function detectTableRegions(
 /**
  * Extract structured data from a single PDF page.
  */
-function extractPageData(items: TextItem[]): string[][] {
+function dropEmptyColumns(rows: string[][]): string[][] {
+  if (!rows.length) return rows;
+  const keep = rows[0].map((_, i) => rows.some(r => (r[i] || "").trim()));
+  return rows.map(r => r.filter((_, i) => keep[i]));
+}
+
+export function extractPageData(items: TextItem[]): string[][] {
   if (items.length === 0) return [];
 
   // Group into rows
   const rowMap = groupIntoRows(items);
-  const sortedYKeys = [...rowMap.keys()].sort((a, b) => b - a);
+  const sortedYKeys = [...rowMap.keys()].sort((a, b) => a - b); // top of page first
 
   // Merge adjacent items within each row
   for (const key of sortedYKeys) {
     rowMap.set(key, mergeAdjacentItems(rowMap.get(key)!));
   }
 
-  // Collect all merged items for column detection
-  const allMerged: TextItem[] = [];
-  for (const key of sortedYKeys) {
-    allMerged.push(...rowMap.get(key)!);
+  const rowsList = sortedYKeys.map(key => rowMap.get(key)!);
+  const bands = projectColumns(rowsList);
+  const result: string[][] = [];
+
+  if (bands.length >= 2) {
+    for (const rowItems of rowsList) {
+      const cells = new Array(bands.length).fill("");
+      for (const item of [...rowItems].sort((p, q) => p.x - q.x)) {
+        const idx = bandIndex(item, bands);
+        cells[idx] = cells[idx] ? `${cells[idx]} ${item.str.trim()}` : item.str.trim();
+      }
+      if (cells.some(c => c.trim())) result.push(cells);
+    }
+    return dropEmptyColumns(result);
   }
 
-  // Detect column boundaries
+  // Fallback for pages without a clear grid: cluster left edges.
+  const allMerged: TextItem[] = rowsList.flat();
   const colBoundaries = clusterColumns(allMerged);
   const numCols = colBoundaries.length;
-
   if (numCols === 0) return [];
-
-  // Build structured rows
-  const result: string[][] = [];
-  for (const yKey of sortedYKeys) {
-    const rowItems = rowMap.get(yKey)!;
+  for (const rowItems of rowsList) {
     const cells = new Array(numCols).fill("");
-
     for (const item of rowItems) {
       const colIdx = getColumnIndex(item.x, colBoundaries);
-      if (cells[colIdx]) {
-        cells[colIdx] += " " + item.str.trim();
-      } else {
-        cells[colIdx] = item.str.trim();
-      }
+      cells[colIdx] = cells[colIdx] ? `${cells[colIdx]} ${item.str.trim()}` : item.str.trim();
     }
-
-    // Skip completely empty rows
-    if (cells.some(c => c.trim())) {
-      result.push(cells);
-    }
+    if (cells.some(c => c.trim())) result.push(cells);
   }
-
   return result;
 }
 

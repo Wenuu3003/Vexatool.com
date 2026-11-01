@@ -111,15 +111,24 @@ const PDFToExcel = () => {
     workbook.creator = 'VexaTool';
     workbook.created = new Date();
 
+    const thin = { style: 'thin' as const, color: { argb: 'FFBFBFBF' } };
     for (const sheet of sheets) {
       const ws = workbook.addWorksheet(sheet.name);
       const maxCols = Math.max(...sheet.data.map(r => r.length), 1);
 
-      for (const row of sheet.data) {
-        const padded = [...row];
-        while (padded.length < maxCols) padded.push('');
-        ws.addRow(padded);
-      }
+      sheet.data.forEach((row, r) => {
+        const excelRow = ws.getRow(r + 1);
+        for (let c = 0; c < maxCols; c++) {
+          const raw = row[c] ?? '';
+          const cell = excelRow.getCell(c + 1);
+          // Header stays text; body numbers become real Excel numbers.
+          const typed = r === 0 ? { value: raw } : toTypedCell(raw);
+          cell.value = typed.value;
+          if ('numFmt' in typed && typed.numFmt) cell.numFmt = typed.numFmt;
+          if (detectTables) cell.border = { top: thin, left: thin, bottom: thin, right: thin };
+          cell.alignment = { vertical: 'top', wrapText: true, horizontal: typeof typed.value === 'number' ? 'right' : 'left' };
+        }
+      });
 
       // Bold first row as header
       if (sheet.data.length > 0) {
@@ -128,17 +137,18 @@ const PDFToExcel = () => {
         headerRow.eachCell(cell => {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE8F0FE' } };
         });
+        if (sheet.data.length > 1) ws.views = [{ state: 'frozen', ySplit: 1 }];
       }
 
       // Auto-fit columns
       if (preserveFormatting) {
         for (let i = 1; i <= maxCols; i++) {
           const col = ws.getColumn(i);
-          let maxWidth = 10;
-          col.eachCell({ includeEmpty: false }, cell => {
-            const len = String(cell.value ?? '').length;
+          let maxWidth = 8;
+          for (const row of sheet.data) {
+            const len = String(row[i - 1] ?? '').length;
             if (len > maxWidth) maxWidth = Math.min(len, 50);
-          });
+          }
           col.width = maxWidth + 2;
         }
       }

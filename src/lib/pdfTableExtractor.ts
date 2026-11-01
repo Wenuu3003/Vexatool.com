@@ -206,7 +206,7 @@ export function extractPageData(items: TextItem[]): string[][] {
 
   // Group into rows
   const rowMap = groupIntoRows(items);
-  const sortedYKeys = [...rowMap.keys()].sort((a, b) => b - a);
+  const sortedYKeys = [...rowMap.keys()].sort((a, b) => a - b); // top of page first
 
   // Merge adjacent items within each row
   for (const key of sortedYKeys) {

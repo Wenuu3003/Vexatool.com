@@ -193,8 +193,9 @@ function renderSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, opts
         const text = formatCellValue(ws.getCell(r, c));
         if (!text) continue;
         const { font, size } = cellFont(ws.getCell(r, c), fonts, s);
-        const lines = wrapCell(text, font, size, w - PAD * 2);
-        h = Math.max(h, lines.length * size * 1.2 + PAD * 2);
+        const pad = PAD * Math.min(1, s);
+        const lines = wrapCell(text, font, size, w - pad * 2);
+        h = Math.max(h, lines.length * size * 1.2 + pad * 2);
       }
       return h;
     });
@@ -320,20 +321,21 @@ function drawCell(pg: PDFPage, cell: ExcelJS.Cell, fonts: Fonts, x: number, top:
 
   const text = formatCellValue(cell);
   if (!text) return;
+  const pad = PAD * Math.min(1, scale);
   const { font, size } = cellFont(cell, fonts, scale);
   const color = argbToRgb(cell.font?.color?.argb) || rgb(0.1, 0.1, 0.1);
-  const lines = wrapCell(text, font, size, w - PAD * 2);
+  const lines = wrapCell(text, font, size, w - pad * 2);
   const lineH = size * 1.2;
   const blockH = lines.length * lineH;
   const al = cell.alignment || {};
   const isNum = typeof cell.value === 'number' || (cell.type === ExcelJS.ValueType.Formula && typeof cell.result === 'number');
   const horiz = al.horizontal || (isNum ? 'right' : 'left');
   const vert = al.vertical || 'bottom';
-  let ty = vert === 'top' ? top - PAD : vert === 'middle' ? top - (h - blockH) / 2 : top - h + PAD + blockH;
+  let ty = vert === 'top' ? top - pad : vert === 'middle' ? top - (h - blockH) / 2 : top - h + pad + blockH;
   for (const line of lines) {
     ty -= lineH;
     const lw = font.widthOfTextAtSize(line, size);
-    const tx = horiz === 'right' ? x + w - PAD - lw : horiz === 'center' || horiz === 'centerContinuous' ? x + (w - lw) / 2 : x + PAD + (al.indent || 0) * 6 * scale;
+    const tx = horiz === 'right' ? x + w - pad - lw : horiz === 'center' || horiz === 'centerContinuous' ? x + (w - lw) / 2 : x + pad + (al.indent || 0) * 6 * scale;
     pg.drawText(line, { x: Math.max(x + 1, tx), y: ty + size * 0.22, size, font, color });
   }
 }

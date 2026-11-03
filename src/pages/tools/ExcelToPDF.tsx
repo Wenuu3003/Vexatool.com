@@ -1,4 +1,3 @@
-import { wrapOfficeText } from "@/lib/officeText";
 import { useState, useCallback } from "react";
 import { Table, Download, FileSpreadsheet, Shield, CheckCircle, Settings, Trash2, Plus, X } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
@@ -9,9 +8,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import ExcelJS from "exceljs";
-import { readExcelFile, sheetToArray } from "@/lib/excelUtils";
+import { readExcelFile } from "@/lib/excelUtils";
+import { convertWorkbookToPdf } from "@/lib/excelToPdf";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";
@@ -128,186 +127,14 @@ const ExcelToPDF = () => {
   };
 
   const convertWorkbookToPDF = useCallback(async (
-    wb: ExcelJS.Workbook, 
+    wb: ExcelJS.Workbook,
     sheetsToConvert: string[],
     onProgress?: (p: number) => void
   ): Promise<Uint8Array> => {
-    const pdfDoc = await PDFDocument.create();
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-
-    // Auto-detect orientation for wide sheets if user selected portrait
-    let effectiveOrientation = orientation;
-    if (orientation === "portrait") {
-      // Check if any sheet has many columns suggesting landscape is better
-      for (const sheetName of sheetsToConvert) {
-        const ws = wb.getWorksheet(sheetName);
-        if (ws && ws.columnCount > 6) {
-          effectiveOrientation = "landscape";
-          break;
-        }
-      }
-    }
-    
-    const pageWidth = pageSize === "a4" 
-      ? (effectiveOrientation === "portrait" ? 595 : 842)
-      : (effectiveOrientation === "portrait" ? 612 : 792);
-    const pageHeight = pageSize === "a4"
-      ? (effectiveOrientation === "portrait" ? 842 : 595)
-      : (effectiveOrientation === "portrait" ? 792 : 612);
-    
-    const margin = 40;
-    const fontSize = 9;
-    const headerFontSize = 12;
-    const cellPadding = 4;
-    
-    let sheetsProcessed = 0;
-    const totalSheets = sheetsToConvert.length;
-
-    for (const sheetName of sheetsToConvert) {
-      const ws = wb.getWorksheet(sheetName);
-      if (!ws) continue;
-      
-      const jsonData = sheetToArray(ws);
-      
-      let cleanedData = jsonData;
-      if (removeEmptyRows) {
-        cleanedData = jsonData.filter(row => 
-          row.some(cell => cell !== null && cell !== undefined && String(cell).trim() !== '')
-        );
-      }
-      
-      if (cleanedData.length === 0) continue;
-      
-      const numCols = Math.max(...cleanedData.map(row => row.length), 1);
-      const availableWidth = pageWidth - (margin * 2);
-      if (numCols > 24) throw new Error("This simplified converter supports up to 24 columns. Split the sheet or export from Excel for wider tables.");
-
-      // Compute column widths based on content
-      const colWidths: number[] = [];
-      if (autoFitColumns) {
-        for (let col = 0; col < numCols; col++) {
-          let maxWidth = 30;
-          cleanedData.forEach(row => {
-            const cellValue = String(row[col] ?? '');
-            const textWidth = font.widthOfTextAtSize(cellValue.substring(0, 60), fontSize) + cellPadding * 2;
-            if (textWidth > maxWidth) maxWidth = Math.min(textWidth, 200);
-          });
-          colWidths.push(maxWidth);
-        }
-        
-        const totalWidth = colWidths.reduce((a, b) => a + b, 0);
-        if (totalWidth > availableWidth) {
-          const scale = availableWidth / totalWidth;
-          for (let i = 0; i < colWidths.length; i++) {
-            colWidths[i] = colWidths[i] * scale;
-          }
-        }
-      } else {
-        const colWidth = availableWidth / numCols;
-        for (let i = 0; i < numCols; i++) colWidths.push(colWidth);
-      }
-
-      // Helper: wrap text into lines that fit within a column width
-      // Handles long strings without spaces (URLs, IDs, PNRs) via character-level breaking
-      const wrapText = (text: string, maxTextWidth: number): string[] => wrapOfficeText(text, Math.max(1, maxTextWidth), value => font.widthOfTextAtSize(value, fontSize));
-
-      // Store first row as header for repeat
-      const headerRow = cleanedData.length > 0 ? cleanedData[0] : null;
-      
-      let page = pdfDoc.addPage([pageWidth, pageHeight]);
-      let y = pageHeight - margin;
-      
-      // Sheet title
-      page.drawText(sheetName, {
-        x: margin,
-        y: y,
-        size: headerFontSize,
-        font: boldFont,
-        color: rgb(0.2, 0.2, 0.2),
-      });
-      y -= headerFontSize + 10;
-
-      const drawTableRow = (rowCells: (string | number | boolean | null)[], isHeader: boolean, currentPage: ReturnType<typeof pdfDoc.addPage>, startY: number): { page: ReturnType<typeof pdfDoc.addPage>; endY: number } => {
-        let pg = currentPage;
-        let yPos = startY;
-
-        // Calculate row height based on wrapped text
-        const wrappedCells: string[][] = [];
-        let maxLines = 1;
-        for (let col = 0; col < numCols; col++) {
-          const cellValue = String(rowCells[col] ?? '');
-          const maxTextWidth = colWidths[col] - cellPadding * 2;
-          const lines = wrapText(cellValue, maxTextWidth);
-          wrappedCells.push(lines);
-          if (lines.length > maxLines) maxLines = lines.length;
-        }
-
-        const lineHeight = fontSize + 3;
-        const rowHeight = maxLines * lineHeight + cellPadding * 2;
-        if (rowHeight > pageHeight - margin * 2 - 70) throw new Error("A cell is too tall for this simplified table layout. Split long cells or use Excel Export to PDF.");
-
-        // Check if row fits on current page
-        if (yPos - rowHeight < margin) {
-          pg = pdfDoc.addPage([pageWidth, pageHeight]);
-          yPos = pageHeight - margin;
-
-          // Repeat header on new page
-          if (headerRow && !isHeader) {
-            const headerResult = drawTableRow(headerRow, true, pg, yPos);
-            pg = headerResult.page;
-            yPos = headerResult.endY;
-          }
-        }
-
-        // Draw cells
-        let x = margin;
-        for (let col = 0; col < numCols; col++) {
-          const colWidth = colWidths[col];
-
-          // Cell background
-          pg.drawRectangle({
-            x: x,
-            y: yPos - rowHeight,
-            width: colWidth,
-            height: rowHeight,
-            borderColor: rgb(0.75, 0.75, 0.75),
-            borderWidth: 0.5,
-            color: isHeader ? rgb(0.93, 0.95, 0.98) : undefined,
-          });
-
-          // Draw wrapped text lines
-          const lines = wrappedCells[col];
-          for (let li = 0; li < lines.length; li++) {
-            pg.drawText(lines[li], {
-              x: x + cellPadding,
-              y: yPos - cellPadding - (li + 1) * lineHeight + 2,
-              size: fontSize,
-              font: isHeader ? boldFont : font,
-              color: rgb(0.1, 0.1, 0.1),
-            });
-          }
-          x += colWidth;
-        }
-
-        return { page: pg, endY: yPos - rowHeight };
-      };
-      
-      for (let rowIdx = 0; rowIdx < cleanedData.length; rowIdx++) {
-        const row = cleanedData[rowIdx];
-        const isHeader = rowIdx === 0;
-        const result = drawTableRow(row, isHeader, page, y);
-        page = result.page;
-        y = result.endY;
-      }
-      
-      sheetsProcessed++;
-      if (onProgress) onProgress((sheetsProcessed / totalSheets) * 100);
-      else setProgress((sheetsProcessed / totalSheets) * 100);
-    }
-    
-    if (!pdfDoc.getPageCount()) throw new Error("No non-empty sheets selected.");
-    return await pdfDoc.save();
+    return convertWorkbookToPdf(wb, sheetsToConvert, {
+      pageSize, orientation, autoFitColumns, removeEmptyRows, oneSheetPerPage,
+      onProgress: onProgress ?? ((p) => setProgress(p)),
+    });
   }, [pageSize, orientation, autoFitColumns, removeEmptyRows, oneSheetPerPage]);
 
   const handleConvert = useCallback(async () => {

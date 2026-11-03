@@ -40,6 +40,48 @@ export function argbToRgb(argb?: string): RGB | undefined {
   return rgb(parseInt(hex.slice(0, 2), 16) / 255, parseInt(hex.slice(2, 4), 16) / 255, parseInt(hex.slice(4, 6), 16) / 255);
 }
 
+/**
+ * Files saved by some apps omit cached formula results. Work out plain
+ * arithmetic and SUM/AVERAGE/MIN/MAX over cells on the same sheet; anything
+ * else stays blank rather than showing a wrong number.
+ */
+function evaluateSimpleFormula(cell: Pick<ExcelJS.Cell, 'value' | 'numFmt'>, formula: string, depth: number): number | undefined {
+  const ws = (cell as ExcelJS.Cell).worksheet;
+  if (!ws || !formula || depth > 20) return undefined;
+  const num = (ref: string): number => {
+    const c = ws.getCell(ref.replace(/\$/g, ''));
+    const v = c.value as unknown;
+    if (typeof v === 'number') return v;
+    if (v && typeof v === 'object') {
+      const o = v as { result?: unknown; formula?: string };
+      if (typeof o.result === 'number') return o.result;
+      if (o.formula) { const r = evaluateSimpleFormula(c, o.formula, depth + 1); if (r !== undefined) return r; }
+    }
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  };
+  const rangeVals = (a: string, b: string): number[] => {
+    const pa = parseRange(`${a}:${b}`.replace(/\$/g, ''));
+    if (!pa) return [];
+    const out: number[] = [];
+    for (let r = pa.r1; r <= pa.r2; r++) for (let c = pa.c1; c <= pa.c2; c++) out.push(num(`${String.fromCharCode(64 + c)}${r}`));
+    return out;
+  };
+  let expr = formula.toUpperCase().replace(/^=/, '');
+  expr = expr.replace(/(SUM|AVERAGE|MIN|MAX)\((\$?[A-Z]+\$?\d+):(\$?[A-Z]+\$?\d+)\)/g, (_, fn, a, b) => {
+    const vals = rangeVals(a, b);
+    if (!vals.length) return '0';
+    const v = fn === 'SUM' ? vals.reduce((x, y) => x + y, 0) : fn === 'AVERAGE' ? vals.reduce((x, y) => x + y, 0) / vals.length : fn === 'MIN' ? Math.min(...vals) : Math.max(...vals);
+    return `(${v})`;
+  });
+  expr = expr.replace(/\$?[A-Z]{1,3}\$?\d+/g, ref => `(${num(ref)})`);
+  if (!/^[\d.+\-*/()\s eE]*$/.test(expr)) return undefined;
+  try {
+    const r = Function(`"use strict";return (${expr});`)() as number;
+    return Number.isFinite(r) ? r : undefined;
+  } catch { return undefined; }
+}
+
 /** Format a cell value roughly the way Excel displays it. */
 export function formatCellValue(cell: Pick<ExcelJS.Cell, 'value' | 'numFmt'>): string {
   let v: unknown = cell.value;
@@ -47,7 +89,7 @@ export function formatCellValue(cell: Pick<ExcelJS.Cell, 'value' | 'numFmt'>): s
   if (typeof v === 'object' && v !== null) {
     const o = v as Record<string, unknown>;
     if ('richText' in o) return (o.richText as { text: string }[]).map(r => r.text).join('');
-    if ('formula' in o || 'sharedFormula' in o) v = o.result ?? '';
+    if ('formula' in o || 'sharedFormula' in o) v = o.result ?? evaluateSimpleFormula(cell, String(o.formula ?? ''), 0) ?? '';
     else if ('hyperlink' in o) return String(o.text ?? o.hyperlink ?? '');
     else if ('error' in o) return String(o.error);
     if (v && typeof v === 'object' && 'error' in (v as object)) return String((v as { error: string }).error);
@@ -193,8 +235,9 @@ function renderSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, opts
         const text = formatCellValue(ws.getCell(r, c));
         if (!text) continue;
         const { font, size } = cellFont(ws.getCell(r, c), fonts, s);
-        const lines = wrapCell(text, font, size, w - PAD * 2);
-        h = Math.max(h, lines.length * size * 1.2 + PAD * 2);
+        const pad = PAD * Math.min(1, s);
+        const lines = wrapCell(text, font, size, w - pad * 2);
+        h = Math.max(h, lines.length * size * 1.2 + pad * 2);
       }
       return h;
     });
@@ -202,11 +245,11 @@ function renderSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, opts
   };
   let lay = layout(scale);
   if (opts.oneSheetPerPage) {
-    const total = lay.rowH.reduce((a, b) => a + b, 0) + 22;
-    if (total > availH) {
-      const s2 = Math.max(scale * (availH / total), 0.35);
-      lay = layout(s2);
-      scale = s2;
+    for (let tries = 0; tries < 8; tries++) {
+      const total = lay.rowH.reduce((a, b) => a + b, 0) + 22;
+      if (total <= availH || scale <= 0.3) break;
+      scale = Math.max(scale * Math.min(0.95, availH / total), 0.3);
+      lay = layout(scale);
     }
   }
   drawSheet(pdf, ws, fonts, lay, { pageW, pageH, availH });
@@ -257,8 +300,15 @@ function drawSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, lay: L
     for (let i = s; i <= e; i++) blockEnd[i] = Math.max(blockEnd[i], e);
   }
 
-  // Repeat the first row as a header when it is a plain single row.
-  const firstIsHeader = rows.length > 2 && blockEnd[0] === 0;
+  // Repeat the column-header row (skipping merged title rows above it).
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(rows.length - 2, 6); i++) {
+    if (blockEnd[i] !== i) continue;
+    const r = rows[i];
+    const hasWideMerge = cols.some(c => { const m = merges.get(`${r}:${c}`); return m && m.c2 > m.c1; });
+    const filled = cols.filter(c => !covered.has(`${r}:${c}`) && formatCellValue(ws.getCell(r, c)).trim()).length;
+    if (!hasWideMerge && filled >= Math.max(2, Math.ceil(cols.length / 2))) { headerIdx = i; break; }
+  }
 
   let pg: PDFPage = pdf.addPage([page.pageW, page.pageH]);
   let y = page.pageH - MARGIN;
@@ -294,7 +344,7 @@ function drawSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, lay: L
     if (y - h < bottom && y < page.pageH - MARGIN - 1) {
       pg = pdf.addPage([page.pageW, page.pageH]);
       y = page.pageH - MARGIN;
-      if (firstIsHeader && i > 0) { drawRange(0, 0); y -= rowH[0]; }
+      if (headerIdx >= 0 && i > headerIdx) { const top = y; drawRange(headerIdx, headerIdx); y = top - rowH[headerIdx]; }
     }
     drawRange(i, e);
     y -= h;
@@ -320,20 +370,21 @@ function drawCell(pg: PDFPage, cell: ExcelJS.Cell, fonts: Fonts, x: number, top:
 
   const text = formatCellValue(cell);
   if (!text) return;
+  const pad = PAD * Math.min(1, scale);
   const { font, size } = cellFont(cell, fonts, scale);
   const color = argbToRgb(cell.font?.color?.argb) || rgb(0.1, 0.1, 0.1);
-  const lines = wrapCell(text, font, size, w - PAD * 2);
+  const lines = wrapCell(text, font, size, w - pad * 2);
   const lineH = size * 1.2;
   const blockH = lines.length * lineH;
   const al = cell.alignment || {};
-  const isNum = typeof cell.value === 'number' || (cell.type === ExcelJS.ValueType.Formula && typeof cell.result === 'number');
+  const isNum = typeof cell.value === 'number' || (cell.type === ExcelJS.ValueType.Formula && /^[-(]?[^A-Za-z]*\d[^A-Za-z]*$/.test(text));
   const horiz = al.horizontal || (isNum ? 'right' : 'left');
   const vert = al.vertical || 'bottom';
-  let ty = vert === 'top' ? top - PAD : vert === 'middle' ? top - (h - blockH) / 2 : top - h + PAD + blockH;
+  let ty = vert === 'top' ? top - pad : vert === 'middle' ? top - (h - blockH) / 2 : top - h + pad + blockH;
   for (const line of lines) {
     ty -= lineH;
     const lw = font.widthOfTextAtSize(line, size);
-    const tx = horiz === 'right' ? x + w - PAD - lw : horiz === 'center' || horiz === 'centerContinuous' ? x + (w - lw) / 2 : x + PAD + (al.indent || 0) * 6 * scale;
+    const tx = horiz === 'right' ? x + w - pad - lw : horiz === 'center' || horiz === 'centerContinuous' ? x + (w - lw) / 2 : x + pad + (al.indent || 0) * 6 * scale;
     pg.drawText(line, { x: Math.max(x + 1, tx), y: ty + size * 0.22, size, font, color });
   }
 }

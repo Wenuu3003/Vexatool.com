@@ -40,6 +40,48 @@ export function argbToRgb(argb?: string): RGB | undefined {
   return rgb(parseInt(hex.slice(0, 2), 16) / 255, parseInt(hex.slice(2, 4), 16) / 255, parseInt(hex.slice(4, 6), 16) / 255);
 }
 
+/**
+ * Files saved by some apps omit cached formula results. Work out plain
+ * arithmetic and SUM/AVERAGE/MIN/MAX over cells on the same sheet; anything
+ * else stays blank rather than showing a wrong number.
+ */
+function evaluateSimpleFormula(cell: Pick<ExcelJS.Cell, 'value' | 'numFmt'>, formula: string, depth: number): number | undefined {
+  const ws = (cell as ExcelJS.Cell).worksheet;
+  if (!ws || !formula || depth > 20) return undefined;
+  const num = (ref: string): number => {
+    const c = ws.getCell(ref.replace(/\$/g, ''));
+    const v = c.value as unknown;
+    if (typeof v === 'number') return v;
+    if (v && typeof v === 'object') {
+      const o = v as { result?: unknown; formula?: string };
+      if (typeof o.result === 'number') return o.result;
+      if (o.formula) { const r = evaluateSimpleFormula(c, o.formula, depth + 1); if (r !== undefined) return r; }
+    }
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  };
+  const rangeVals = (a: string, b: string): number[] => {
+    const pa = parseRange(`${a}:${b}`.replace(/\$/g, ''));
+    if (!pa) return [];
+    const out: number[] = [];
+    for (let r = pa.r1; r <= pa.r2; r++) for (let c = pa.c1; c <= pa.c2; c++) out.push(num(`${String.fromCharCode(64 + c)}${r}`));
+    return out;
+  };
+  let expr = formula.toUpperCase().replace(/^=/, '');
+  expr = expr.replace(/(SUM|AVERAGE|MIN|MAX)\((\$?[A-Z]+\$?\d+):(\$?[A-Z]+\$?\d+)\)/g, (_, fn, a, b) => {
+    const vals = rangeVals(a, b);
+    if (!vals.length) return '0';
+    const v = fn === 'SUM' ? vals.reduce((x, y) => x + y, 0) : fn === 'AVERAGE' ? vals.reduce((x, y) => x + y, 0) / vals.length : fn === 'MIN' ? Math.min(...vals) : Math.max(...vals);
+    return `(${v})`;
+  });
+  expr = expr.replace(/\$?[A-Z]{1,3}\$?\d+/g, ref => `(${num(ref)})`);
+  if (!/^[\d.+\-*/()\s eE]*$/.test(expr)) return undefined;
+  try {
+    const r = Function(`"use strict";return (${expr});`)() as number;
+    return Number.isFinite(r) ? r : undefined;
+  } catch { return undefined; }
+}
+
 /** Format a cell value roughly the way Excel displays it. */
 export function formatCellValue(cell: Pick<ExcelJS.Cell, 'value' | 'numFmt'>): string {
   let v: unknown = cell.value;
@@ -47,7 +89,7 @@ export function formatCellValue(cell: Pick<ExcelJS.Cell, 'value' | 'numFmt'>): s
   if (typeof v === 'object' && v !== null) {
     const o = v as Record<string, unknown>;
     if ('richText' in o) return (o.richText as { text: string }[]).map(r => r.text).join('');
-    if ('formula' in o || 'sharedFormula' in o) v = o.result ?? '';
+    if ('formula' in o || 'sharedFormula' in o) v = o.result ?? evaluateSimpleFormula(cell, String(o.formula ?? ''), 0) ?? '';
     else if ('hyperlink' in o) return String(o.text ?? o.hyperlink ?? '');
     else if ('error' in o) return String(o.error);
     if (v && typeof v === 'object' && 'error' in (v as object)) return String((v as { error: string }).error);

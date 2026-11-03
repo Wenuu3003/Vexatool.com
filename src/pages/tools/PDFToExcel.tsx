@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { PDFDocument } from "pdf-lib";
 import { extractPDFToTableData, type ExtractionResult } from "@/lib/pdfTableExtractor";
 import ExcelJS from "exceljs";
+import { toTypedCell } from "@/lib/spreadsheetCells";
 import { CanonicalHead } from "@/components/CanonicalHead";
 import ToolSEOContent from "@/components/ToolSEOContent";
 import { useFileHistory } from "@/hooks/useFileHistory";

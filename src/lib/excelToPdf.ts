@@ -300,8 +300,15 @@ function drawSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, lay: L
     for (let i = s; i <= e; i++) blockEnd[i] = Math.max(blockEnd[i], e);
   }
 
-  // Repeat the first row as a header when it is a plain single row.
-  const firstIsHeader = rows.length > 2 && blockEnd[0] === 0;
+  // Repeat the column-header row (skipping merged title rows above it).
+  let headerIdx = -1;
+  for (let i = 0; i < Math.min(rows.length - 2, 6); i++) {
+    if (blockEnd[i] !== i) continue;
+    const r = rows[i];
+    const hasWideMerge = cols.some(c => { const m = merges.get(`${r}:${c}`); return m && m.c2 > m.c1; });
+    const filled = cols.filter(c => !covered.has(`${r}:${c}`) && formatCellValue(ws.getCell(r, c)).trim()).length;
+    if (!hasWideMerge && filled >= Math.max(2, Math.ceil(cols.length / 2))) { headerIdx = i; break; }
+  }
 
   let pg: PDFPage = pdf.addPage([page.pageW, page.pageH]);
   let y = page.pageH - MARGIN;
@@ -337,7 +344,7 @@ function drawSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, lay: L
     if (y - h < bottom && y < page.pageH - MARGIN - 1) {
       pg = pdf.addPage([page.pageW, page.pageH]);
       y = page.pageH - MARGIN;
-      if (firstIsHeader && i > 0) { drawRange(0, 0); y -= rowH[0]; }
+      if (headerIdx >= 0 && i > headerIdx) { const top = y; drawRange(headerIdx, headerIdx); y = top - rowH[headerIdx]; }
     }
     drawRange(i, e);
     y -= h;
@@ -370,7 +377,7 @@ function drawCell(pg: PDFPage, cell: ExcelJS.Cell, fonts: Fonts, x: number, top:
   const lineH = size * 1.2;
   const blockH = lines.length * lineH;
   const al = cell.alignment || {};
-  const isNum = typeof cell.value === 'number' || (cell.type === ExcelJS.ValueType.Formula && typeof cell.result === 'number');
+  const isNum = typeof cell.value === 'number' || (cell.type === ExcelJS.ValueType.Formula && /^[-(]?[^A-Za-z]*\d[^A-Za-z]*$/.test(text));
   const horiz = al.horizontal || (isNum ? 'right' : 'left');
   const vert = al.vertical || 'bottom';
   let ty = vert === 'top' ? top - pad : vert === 'middle' ? top - (h - blockH) / 2 : top - h + pad + blockH;

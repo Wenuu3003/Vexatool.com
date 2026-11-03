@@ -202,11 +202,11 @@ function renderSheet(pdf: PDFDocument, ws: ExcelJS.Worksheet, fonts: Fonts, opts
   };
   let lay = layout(scale);
   if (opts.oneSheetPerPage) {
-    const total = lay.rowH.reduce((a, b) => a + b, 0) + 22;
-    if (total > availH) {
-      const s2 = Math.max(scale * (availH / total), 0.35);
-      lay = layout(s2);
-      scale = s2;
+    for (let tries = 0; tries < 8; tries++) {
+      const total = lay.rowH.reduce((a, b) => a + b, 0) + 22;
+      if (total <= availH || scale <= 0.3) break;
+      scale = Math.max(scale * Math.min(0.95, availH / total), 0.3);
+      lay = layout(scale);
     }
   }
   drawSheet(pdf, ws, fonts, lay, { pageW, pageH, availH });

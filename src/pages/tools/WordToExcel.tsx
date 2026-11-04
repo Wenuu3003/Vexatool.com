@@ -225,12 +225,12 @@ const WordToExcel = () => {
   return (
     <>
       <CanonicalHead
-        title="Word to Excel Converter Free Online - DOC to XLSX | VexaTool"
-        description="Free online Word to Excel converter. Extract tables from Word documents into proper Excel spreadsheets (.xlsx) with formatted headers."
-        keywords="word to excel, doc to xlsx, docx to excel, word to spreadsheet, convert word to excel"
+        title="Word to Excel Converter Online Free - Convert Word to Excel | VexaTool"
+        description="Free online Word to Excel converter. Convert Word documents to Excel spreadsheets (.xlsx) with formatted tables — no upload, no signup."
+        keywords="word to excel, word to excel converter, convert word to excel, word to excel converter online, word to excel converter free, convert word to excel online free, doc to xlsx, word to spreadsheet"
       />
       <ToolLayout
-        title="Word to Excel"
+        title="Word to Excel Converter Online Free"
         description="Convert Word documents to Excel spreadsheet format"
         icon={FileSpreadsheet}
         colorClass="bg-green-600"

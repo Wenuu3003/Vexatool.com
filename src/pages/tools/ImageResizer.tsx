@@ -445,16 +445,16 @@ export default function ImageResizer() {
   return (
     <>
       <CanonicalHead
-        title="Image Resizer & Photo Size Presets | VexaTool"
-        description="Resize images to custom dimensions or photo presets in your browser. Target file sizes depend on the image; check application requirements before submitting."
-        keywords="resize image to 20kb, whatsapp dp resize, aadhaar photo size, passport size photo india, govt job form photo, compress image to 20kb, resize photo online free"
+        title={requestedMode === "passport" ? "Passport Photo Resizer Online Free - Size Guide | VexaTool" : "Image Resizer & Photo Size Presets | VexaTool"}
+        description={requestedMode === "passport" ? "Resize passport-style photos online free. Compare 200px by 200px, 200 x 230 pixels and 4.5 x 3.5 cm; use custom sizing to match your application instructions." : "Resize images to custom dimensions or photo presets in your browser. Target file sizes depend on the image; check application requirements before submitting."}
+        keywords={requestedMode === "passport" ? "what is 200px by 200px passport size photo, photo size 4.5 x 3.5 and photograph dimension 200 x 230" : "resize image to 20kb, whatsapp dp resize, aadhaar photo size, passport size photo india, govt job form photo, compress image to 20kb, resize photo online free"}
       />
       <Helmet>
         <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
       </Helmet>
 
       <ToolLayout
-        title="Image Resizer"
+        title={requestedMode === "passport" ? "Passport Photo Resizer Online Free - Size Guide" : "Image Resizer"}
         description="Resize to exact KB for Govt Forms, Passport Photos & Social Media"
         icon={Maximize}
         colorClass="bg-gradient-to-br from-cyan-500 to-blue-600"

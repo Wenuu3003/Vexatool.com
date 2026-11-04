@@ -151,12 +151,12 @@ const CompressPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Compress PDF Online Free | Reduce PDF Size Fast"
-        description="Compress PDF to an exact size — 50 KB, 100 KB, 200 KB, 1 MB or any custom KB/MB. Free, in-browser, with quality warnings and nearest-achievable-size suggestions."
-        keywords="compress PDF to 100 KB, compress PDF to 200 KB, compress PDF to specific size, reduce PDF size online, PDF compressor free, shrink PDF, custom size PDF compressor, compress PDF India"
+        title="PDF Compressor Online Free - 100 KB to 1 MB | VexaTool"
+        description="Compress PDF online with 100 KB, 200 KB, 300 KB, 500 KB or 1 MB targets. Free browser processing with a warning when your target size cannot be reached."
+        keywords="compress files to 100 kb, pdf compressor 200kb, compress pdf online upto 1 mb, reduce pdf size to 300 kb, compress the pdf file below 200 kb size online free, pdf compressor 500 kb online, pdf compressor 1 mb"
       />
       <ToolLayout
-        title="Compress PDF to Exact Size – 50 KB, 100 KB, 200 KB or Custom"
+        title="PDF Compressor Online Free - 100 KB to 1 MB"
         description="Pick a target size in KB or MB. We compress in your browser to the highest quality that fits — with a warning if your target isn't achievable."
         icon={FileDown}
         colorClass="bg-tool-compress"

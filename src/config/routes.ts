@@ -299,9 +299,9 @@ export const routes: RouteConfig[] = [
     priority: 0.9, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Love Calculator ❤️ Free Compatibility Test with Zodiac & Share Cards | VexaTool',
-    description: 'Free Love Calculator with zodiac compatibility. Upload photos, get Instagram & WhatsApp ready images. Fun & safe!',
-    keywords: 'love calculator, love compatibility test, zodiac love calculator, instagram story maker, whatsapp status, numerology',
+    title: 'Love Calculator Online Free - Name Compatibility | VexaTool',
+    description: 'Try the free online love calculator with names, zodiac signs and numerology. Explore compatibility and share your result for entertainment, not a prediction.',
+    keywords: 'love calculator',
     category: 'Calculator Tools'
   },
   {
@@ -341,9 +341,9 @@ export const routes: RouteConfig[] = [
     priority: 0.9, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Compress Image - Reduce Image Size Online Free | VexaTool',
-    description: 'Compress images online for free. Reduce image file size without losing quality. JPG, PNG, WebP compressor. Up to 90% size reduction.',
-    keywords: 'compress image, image compressor, reduce image size, jpg compressor, png compressor, photo compressor',
+    title: 'Image Compressor Online Free - Aim for 20 KB | VexaTool',
+    description: 'Compress JPG, PNG and WebP images online free, including saved WhatsApp photos. Lower quality to work toward 20 KB; the final size depends on your image.',
+    keywords: 'how to get 20kb image from whatsapp, compress image to 20kb',
     category: 'Image Tools'
   },
   { 
@@ -391,9 +391,9 @@ export const routes: RouteConfig[] = [
     priority: 0.9,
     changefreq: 'weekly',
     includeInSitemap: true,
-    title: 'Passport Size Photo Online Free India – 2x2 inch 300 DPI | VexaTool',
-    description: 'Create passport size photo online free. Perfect 2x2 inch (51x51mm) passport photo at 300 DPI with white background. For Indian passport, visa.',
-    keywords: 'passport size photo online, passport photo maker india, 2x2 passport photo free, passport photo 300 dpi, make passport photo online, indian passport photo size',
+    title: 'Passport Photo Resizer Online Free - Size Guide | VexaTool',
+    description: 'Resize passport-style photos online free. Compare 200px by 200px, 200 x 230 pixels and 4.5 x 3.5 cm; use custom sizing to match your application instructions.',
+    keywords: 'what is 200px by 200px passport size photo, photo size 4.5 x 3.5 and photograph dimension 200 x 230',
     category: 'Image Tools'
   },
   { 
@@ -441,9 +441,9 @@ export const routes: RouteConfig[] = [
     priority: 0.8, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'File Compressor - Compress Files Online Free | VexaTool',
-    description: 'Compress files to reduce size. Support for images, documents, PDFs. Free online file compressor with maximum compression.',
-    keywords: 'file compressor, compress files, reduce file size, file compression, compress documents',
+    title: 'File Compressor Online Free - Reduce File Size | VexaTool',
+    description: 'Compress image and PDF files online free. Working toward a 100 KB upload limit? Results depend on the file; use the PDF compressor for a specific PDF target.',
+    keywords: 'compress files to 100 kb',
     category: 'Online Utility Tools'
   },
   
@@ -473,9 +473,9 @@ export const routes: RouteConfig[] = [
     priority: 0.9, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Compress PDF - Reduce PDF Size Online Free | VexaTool',
-    description: 'Compress PDF files to reduce size without losing quality. Free online PDF compressor. Reduce PDF up to 90% smaller.',
-    keywords: 'compress pdf, reduce pdf size, pdf compressor, shrink pdf, optimize pdf, pdf size reducer',
+    title: 'PDF Compressor Online Free - 100 KB to 1 MB | VexaTool',
+    description: 'Compress PDF online with 100 KB, 200 KB, 300 KB, 500 KB or 1 MB targets. Free browser processing with a warning when your target size cannot be reached.',
+    keywords: 'compress files to 100 kb, pdf compressor 200kb, compress pdf online upto 1 mb, reduce pdf size to 300 kb, compress the pdf file below 200 kb size online free, pdf compressor 500 kb online, pdf compressor 1 mb',
     category: 'PDF Tools'
   },
   { 
@@ -695,9 +695,9 @@ export const routes: RouteConfig[] = [
     priority: 0.8, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Google Drive to PDF - Convert Docs, Sheets, Slides | VexaTool',
-    description: 'Convert Google Docs, Sheets, Slides to PDF. Free Google Drive to PDF converter. Download as PDF instantly.',
-    keywords: 'google drive to pdf, google docs to pdf, google sheets to pdf, google slides to pdf, drive pdf',
+    title: 'Google Drive to PDF Converter Online Free | VexaTool',
+    description: 'Convert a Google Drive link to PDF online free. Export accessible Google Docs, Sheets and Slides using Google PDF export; access permissions still apply.',
+    keywords: 'google drive to pdf, google drive link to pdf, drive to pdf, gdrive to pdf, convert googledrive to pdf, google drive to pdf converter, convert drive to pdf',
     category: 'Document Converters'
   },
 ];

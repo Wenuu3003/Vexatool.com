@@ -170,12 +170,12 @@ const FileCompressor = () => {
   return (
     <>
       <CanonicalHead 
-        title="File Compressor Free Online - Compress Images PDF Files | VexaTool"
-        description="Free online file compressor. Compress images, PDFs and other files to reduce size with quality control."
-        keywords="file compressor, compress files, reduce file size, image compression, pdf compression"
+        title="File Compressor Online Free - Reduce File Size | VexaTool"
+        description="Compress image and PDF files online free. Working toward a 100 KB upload limit? Results depend on the file; use the PDF compressor for a specific PDF target."
+        keywords="compress files to 100 kb"
       />
       <ToolLayout
-        title="File Compressor"
+        title="File Compressor Online Free - Reduce File Size"
         description="Compress images and PDF files to reduce size"
         icon={FileArchive}
         colorClass="bg-rose-500"

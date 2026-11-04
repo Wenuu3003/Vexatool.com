@@ -176,13 +176,13 @@ const CompressImage = () => {
   return (
     <>
       <CanonicalHead
-        title="Compress Images Online Free - Reduce JPG, PNG, WebP Size | VexaTool"
-        description="Free online image compressor. Reduce JPG, PNG, and WebP file sizes up to 90% while maintaining quality."
-        keywords="image compressor, compress images, reduce image size, JPG compressor, PNG compressor, WebP compressor"
+        title="Image Compressor Online Free - Aim for 20 KB | VexaTool"
+        description="Compress JPG, PNG and WebP images online free, including saved WhatsApp photos. Lower quality to work toward 20 KB; the final size depends on your image."
+        keywords="how to get 20kb image from whatsapp, compress image to 20kb"
       />
       
       <ToolLayout
-        title="Compress Images"
+        title="Image Compressor Online Free - Aim for 20 KB"
         description="Reduce image file sizes while maintaining quality"
         icon={ImageDown}
         colorClass="bg-teal-500"

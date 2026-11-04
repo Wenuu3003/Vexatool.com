@@ -262,13 +262,13 @@ export default function LoveCalculator() {
   return (
     <>
       <CanonicalHead
-        title="Love Calculator ❤️ Free Compatibility Test with Zodiac & Shareable Cards"
-        description="Free Love Calculator with zodiac compatibility, numerology, and name matching. Upload photos, get Instagram & WhatsApp ready images. Fun & safe!"
-        keywords="love calculator, love compatibility test, zodiac love calculator, name love calculator, numerology compatibility"
+        title="Love Calculator Online Free - Name Compatibility | VexaTool"
+        description="Try the free online love calculator with names, zodiac signs and numerology. Explore compatibility and share your result for entertainment, not a prediction."
+        keywords="love calculator"
       />
 
       <ToolLayout
-        title="Love Calculator"
+        title="Love Calculator Online Free"
         description="Professional love compatibility test with numerology & zodiac analysis"
         icon={Heart}
         colorClass="bg-gradient-to-br from-pink-500 to-rose-500"

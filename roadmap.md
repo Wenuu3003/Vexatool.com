@@ -12,6 +12,7 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
+- Update only Bing-query-backed tool titles, H1s and search descriptions/keywords; verify unchanged URLs, menu names and functionality.
 - Verify Google Drive-to-PDF anonymous browser download (blocked: supplied document has only owner/writer permissions, no public sharing). Link handling and independently retrieved authorized 2-page PDF verified; updated audit delivered.
 
 ## Completed Word-to-PDF repair and tool audit

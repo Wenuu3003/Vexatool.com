@@ -623,7 +623,7 @@ export const toolsData: ToolData[] = [
     category: "document",
     previewImage: "/previews/word-to-excel-preview.webp",
     features: ["Table extraction", "Data preservation", "Formatting", "Batch convert"],
-    seoKeywords: ["Word to Excel", "DOCX to XLSX", "convert Word to Excel", "Word Excel converter"]
+    seoKeywords: ["word to excel converter", "word to excel", "convert word to excel", "word to excel converter online", "word to excel converter free", "convert word to excel online free"]
   },
   {
     id: "excel-to-word",
@@ -636,7 +636,7 @@ export const toolsData: ToolData[] = [
     category: "document",
     previewImage: "/previews/excel-to-word-preview.webp",
     features: ["Table formatting", "Data layout", "Multiple sheets", "Batch convert"],
-    seoKeywords: ["Excel to Word", "XLSX to DOCX", "convert Excel to Word", "Excel Word converter"]
+    seoKeywords: ["excel to word converter", "excel to word", "convert excel to word", "excel to word converter online free", "xl to word converter", "excel to word converter free"]
   },
   {
     id: "ppt-to-pdf",

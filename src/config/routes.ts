@@ -645,9 +645,9 @@ export const routes: RouteConfig[] = [
     priority: 0.8, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Word to Excel - Convert DOC to XLS, CSV Free | VexaTool',
-    description: 'Convert Word documents to Excel spreadsheets. Free DOC to XLS, CSV converter online.',
-    keywords: 'word to excel, doc to xls, docx to xlsx, word to spreadsheet, document to excel',
+    title: 'Word to Excel Converter Online Free - Convert Word to Excel | VexaTool',
+    description: 'Free online Word to Excel converter. Convert Word documents to Excel spreadsheets (.xlsx) with formatted tables.',
+    keywords: 'word to excel, word to excel converter, convert word to excel, word to excel converter online, word to excel converter free, convert word to excel online free',
     category: 'Document Converters'
   },
   { 
@@ -655,9 +655,9 @@ export const routes: RouteConfig[] = [
     priority: 0.8, 
     changefreq: 'weekly', 
     includeInSitemap: true,
-    title: 'Excel to Word - Convert XLS, XLSX to DOC Free | VexaTool',
-    description: 'Convert Excel spreadsheets to Word documents. Free XLS to DOC, XLSX to DOCX converter.',
-    keywords: 'excel to word, xls to doc, xlsx to docx, spreadsheet to word, excel word converter',
+    title: 'Excel to Word Converter Online Free - Convert Excel to Word | VexaTool',
+    description: 'Free online Excel to Word converter. Convert Excel (XLSX) and CSV files to real Word documents (.docx).',
+    keywords: 'excel to word, excel to word converter, convert excel to word, excel to word converter online free, xl to word converter, excel to word converter free',
     category: 'Document Converters'
   },
   { 

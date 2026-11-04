@@ -234,12 +234,12 @@ const ExcelToWord = () => {
   return (
     <>
       <CanonicalHead
-        title="Excel to Word Converter Free Online - XLSX to DOCX | VexaTool"
-        description="Free online Excel to Word converter. Convert XLSX and CSV files to real Word documents (.docx) with formatted tables."
-        keywords="excel to word, xls to docx, csv to word, spreadsheet to word, convert excel to word"
+        title="Excel to Word Converter Online Free - Convert Excel to Word | VexaTool"
+        description="Free online Excel to Word converter. Convert Excel (XLSX) and CSV files to real Word documents (.docx) with formatted tables — no upload, no signup."
+        keywords="excel to word, excel to word converter, convert excel to word, excel to word converter online free, xl to word converter, excel to word converter free, xlsx to docx, csv to word"
       />
       <ToolLayout
-        title="Excel to Word"
+        title="Excel to Word Converter Online Free"
         description="Convert Excel spreadsheets to Word documents (.docx)"
         icon={FileText}
         colorClass="bg-blue-600"

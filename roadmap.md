@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Done
+- Updated Bing-backed titles/H1s/search descriptions for Google Drive to PDF, PDF/Image/File Compressors, Love Calculator and Passport Photo Resizer (including its existing redirected mode), plus 14 matching resizer/size guides. Other tool metadata, URLs, menu names, controls and ads left unchanged. Verified 23 rendered destinations, no browser errors, 208 passing tests and supervised build OK.
 - Renamed the Utility category label to "Online Utility Tools" everywhere it is shown or described: mega menu, tool cards category list, breadcrumb, "Back to" button, category page heading and head tags, route metadata, Unit Converter page label, llms.txt. URL `/utility-tools` left unchanged on purpose.
 - Folded the Bing opportunity queries that the existing Image Format Converter genuinely handles into its search text (title, description, keywords on the page and in the sitemap/route registry and tool registry): `jpeg to jpg`, `png to jpg`, `webp to jpg`, `jpg to png`, `jpg to webp`, `webp to png`.
 - Verified in the live preview: mega menu and breadcrumb show the new name, converter page title reads "JPEG to JPG, PNG to JPG, WebP to JPG Converter | VexaTool". Tests 194/194, build OK.
@@ -12,7 +13,6 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
-- Update only Bing-query-backed tool titles, H1s and search descriptions/keywords; verify unchanged URLs, menu names and functionality.
 - Verify Google Drive-to-PDF anonymous browser download (blocked: supplied document has only owner/writer permissions, no public sharing). Link handling and independently retrieved authorized 2-page PDF verified; updated audit delivered.
 
 ## Completed Word-to-PDF repair and tool audit

@@ -378,7 +378,7 @@ const UnlockPDF = () => {
   return (
     <>
       <CanonicalHead
-        title="Unlock PDF Free Online - Remove PDF Password & Restrictions | VexaTool"
+        title="Unlock PDF Free Online"
         description="Free online PDF unlocker. Remove password protection and restrictions from PDF files instantly. Preview unlocked PDF before downloading. 100% secure, browser-based."
         keywords="unlock PDF, remove PDF password, PDF unlocker, decrypt PDF, remove PDF protection, PDF password remover, remove PDF restrictions"
       />

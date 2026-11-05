@@ -113,7 +113,7 @@ const EditPDF = () => {
   return (
     <>
       <CanonicalHead
-        title="Edit PDF Online Free – Block-Based Text Editor with OCR | VexaTool"
+        title="PDF Editor Free Online"
         description="Free online PDF editor with block-based text editing and OCR. Edit text in scanned PDFs, replace paragraphs, table rows, form fields. No watermark, no signup. Works on mobile."
         keywords="edit PDF online free, PDF editor no watermark, edit scanned PDF OCR, block-based PDF editing, free PDF text editor, online PDF editor India, edit PDF on mobile, replace text in PDF, PDF editor for students, OCR PDF editor free"
       />

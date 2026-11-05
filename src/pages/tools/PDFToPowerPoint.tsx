@@ -195,7 +195,7 @@ Total slides: ${numPages}
   return (
     <>
       <CanonicalHead
-        title="PDF to PowerPoint Slide Images (ZIP) | VexaTool"
+        title="PDF to PowerPoint Free Online"
         description="Render PDF pages as JPEG images in a ZIP for importing into PowerPoint or Google Slides. Does not create an editable PPTX file."
         keywords="PDF to PowerPoint, PDF to PPT, convert PDF to slides, PDF to presentation, free PDF to PPT"
       />

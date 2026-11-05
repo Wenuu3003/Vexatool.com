@@ -115,7 +115,7 @@ const SplitPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="Split PDF Online Free - Extract Pages from PDF | VexaTool"
+        title="Split PDF Free Online"
         description="Free online PDF splitter. Extract specific pages from PDF files. Split PDFs into multiple documents easily."
         keywords="split PDF, extract PDF pages, PDF splitter, divide PDF, separate PDF pages, free PDF split"
       />

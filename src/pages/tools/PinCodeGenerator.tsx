@@ -443,14 +443,14 @@ const PinCodeGenerator = () => {
   return (
     <>
       <Helmet>
-        <title>India PIN Code Finder & Random PIN Generator | VexaTool</title>
+        <title>Pincode Generator Free Online</title>
         <meta name="description" content="Look up Indian postal PIN codes online or generate random six-digit examples. Postal lookup needs internet; verify results with India Post." />
         <meta name="keywords" content="india pin code, pin code finder, pincode search, postal code india, post office pin code, village pin code, city pin code, state wise pin code, district pin code, area pin code, 6 digit pin code, india post, postal index number" />
         <meta name="author" content="VexaTool" />
         <link rel="canonical" href={canonicalUrl} />
         
         {/* Open Graph */}
-        <meta property="og:title" content="India PIN Code Finder & Random PIN Generator | VexaTool" />
+        <meta property="og:title" content="Pincode Generator Free Online" />
         <meta property="og:description" content="Look up Indian postal PIN codes online or generate random six-digit examples. Postal lookup needs internet; verify results with India Post." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
@@ -464,7 +464,7 @@ const PinCodeGenerator = () => {
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@VexaTool" />
-        <meta name="twitter:title" content="India PIN Code Finder & Random PIN Generator | VexaTool" />
+        <meta name="twitter:title" content="Pincode Generator Free Online" />
         <meta name="twitter:description" content="Look up Indian postal PIN codes online or generate random six-digit examples. Postal lookup needs internet; verify results with India Post." />
         <meta name="twitter:image" content="https://vexatool.com/og-image.png" />
         

@@ -257,7 +257,7 @@ const PPTToPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="PowerPoint to PDF Converter Free Online | VexaTool"
+        title="PPT to PDF Free Online"
         description="Extract supported PPTX text and images into a simplified PDF. Original layout is not preserved; legacy PPT is unsupported."
         keywords="PowerPoint to PDF, PPT to PDF, PPTX to PDF, convert presentation, free PPT converter"
       />

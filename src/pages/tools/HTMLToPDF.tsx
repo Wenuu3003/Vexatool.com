@@ -231,7 +231,7 @@ const HTMLToPDF = () => {
   return (
     <>
       <CanonicalHead
-        title="HTML to PDF Converter Free Online | VexaTool"
+        title="HTML to PDF Free Online"
         description="Free online HTML to PDF converter. Convert HTML code to downloadable PDF documents instantly. No print dialog needed."
         keywords="HTML to PDF, convert HTML, web to PDF, code to PDF, free HTML converter"
       />

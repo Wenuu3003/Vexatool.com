@@ -91,7 +91,7 @@ const PDFToJPG = () => {
   return (
     <>
       <CanonicalHead
-        title="PDF to JPG Converter Free Online - Convert PDF to JPEG | VexaTool"
+        title="PDF to JPG Free Online"
         description="Free online PDF to JPG converter. Convert PDF pages to high-quality JPEG images with full page rendering. No signup required."
         keywords="pdf to jpg, pdf to jpeg, convert pdf to image, extract pdf pages, free pdf to jpg"
       />

@@ -385,7 +385,7 @@ const SignPDF = () => {
   return (
     <>
       <CanonicalHead
-        title="Sign PDF Online Free - Add Digital Signature | VexaTool"
+        title="Sign PDF Free Online"
         description="Free online PDF signing tool. Add your signature to PDF documents. Draw or type your signature easily."
         keywords="sign PDF, e-signature PDF, digital signature, add signature to PDF, free PDF signer"
       />

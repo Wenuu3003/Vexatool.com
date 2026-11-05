@@ -54,7 +54,7 @@ export default function ProtectPDF() {
     }
   };
   return <>
-    <CanonicalHead title="Protect PDF with AES-256 Password Encryption | VexaTool" description="Encrypt an unencrypted PDF with a password in your browser. Up to 25 MB; no document upload required for encryption." keywords="protect PDF, encrypt PDF, password PDF" />
+    <CanonicalHead title="Protect PDF Free Online" description="Encrypt an unencrypted PDF with a password in your browser. Up to 25 MB; no document upload required for encryption." keywords="protect PDF, encrypt PDF, password PDF" />
     <ToolLayout title="Protect PDF" description="Add a password required to open your PDF" icon={Lock} colorClass="bg-tool-protect">
       <div className="mx-auto max-w-xl space-y-6">
         <p className="rounded-lg border bg-muted/40 p-4 text-sm">AES-256 encryption runs on your device. Choose one unencrypted PDF up to 25 MB. Keep your original file: encryption changes the file and can invalidate digital signatures.</p>

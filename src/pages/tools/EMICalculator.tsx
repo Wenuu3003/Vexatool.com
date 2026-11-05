@@ -100,7 +100,7 @@ export default function EMICalculator() {
   return (
     <>
       <CanonicalHead
-        title="EMI Calculator Free Online - Loan EMI Calculator India | VexaTool"
+        title="EMI Calculator Free Online"
         description="Free EMI calculator for home loans, car loans, personal loans. Calculate monthly EMI, total interest and amortization."
         keywords="EMI calculator, loan calculator, home loan EMI, car loan EMI, personal loan EMI, interest calculator"
       />

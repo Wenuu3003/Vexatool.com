@@ -96,7 +96,7 @@ export default function GSTCalculator() {
   return (
     <>
       <CanonicalHead
-        title="GST Calculator Free Online - CGST SGST IGST Calculator India | VexaTool"
+        title="GST Calculator Free Online"
         description="Free GST calculator for India. Calculate CGST, SGST, IGST with all GST rates. Add or extract GST instantly."
         keywords="GST calculator, CGST calculator, SGST calculator, IGST calculator, GST India, tax calculator"
       />

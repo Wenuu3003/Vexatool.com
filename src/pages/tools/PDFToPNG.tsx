@@ -91,7 +91,7 @@ const PDFToPNG = () => {
   return (
     <>
       <CanonicalHead
-        title="PDF to PNG Converter Free Online - Convert PDF to PNG | VexaTool"
+        title="PDF to PNG Free Online"
         description="Free online PDF to PNG converter. Convert PDF pages to high-quality PNG images with full page rendering."
         keywords="pdf to png, convert pdf to png, extract pdf pages, transparent png, free pdf converter"
       />

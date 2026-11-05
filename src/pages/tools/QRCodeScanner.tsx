@@ -270,7 +270,7 @@ const QRCodeScanner = () => {
   return (
     <>
       <CanonicalHead 
-        title="QR Code Scanner Free Online - Scan QR from Image or Camera | VexaTool"
+        title="QR Code Scanner Free Online"
         description="Free online QR code scanner. Scan QR codes from images or camera instantly. Fast and accurate reading."
         keywords="QR code scanner, scan QR code, read QR code, QR reader, free QR scanner, camera QR scan"
       />

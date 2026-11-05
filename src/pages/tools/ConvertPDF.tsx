@@ -89,7 +89,7 @@ const ConvertPDF = () => {
   return (
     <>
       <CanonicalHead 
-        title="PDF to Word Converter Free Online - Convert PDF to DOCX | VexaTool"
+        title="PDF to Word Free Online"
         description="Convert PDF to DOCX locally with original page images and separately editable extracted text. No document uploads."
         keywords="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word"
       />

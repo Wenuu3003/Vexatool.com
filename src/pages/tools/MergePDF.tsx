@@ -165,7 +165,7 @@ const MergePDF = () => {
   return (
     <>
       <CanonicalHead
-        title="Merge PDF Online Free – Combine PDFs | VexaTool"
+        title="Merge PDF Free Online"
         description="Free online PDF merger. Combine multiple PDFs into one file instantly. No signup, no watermarks, secure browser-based processing."
         keywords="merge PDF online, combine PDF free, join PDF files, PDF merger online, free PDF combine, merge PDF India, combine multiple PDFs, how to merge PDF without software, secure PDF merging, best PDF merger online"
       />

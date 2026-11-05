@@ -140,7 +140,7 @@ export default function BMICalculator() {
   return (
     <>
       <CanonicalHead
-        title="BMI Calculator Free Online - Body Mass Index Calculator | VexaTool"
+        title="BMI Calculator Free Online"
         description="Free BMI calculator. Calculate your Body Mass Index instantly with health guidance, wellness tips, and healthy weight range."
         keywords="BMI calculator, body mass index, weight calculator, health calculator, BMI chart, BMI check, healthy weight"
       />

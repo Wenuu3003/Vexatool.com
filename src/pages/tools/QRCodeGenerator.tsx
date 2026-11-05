@@ -565,7 +565,7 @@ const QRCodeGenerator = () => {
   return (
     <>
       <CanonicalHead
-        title="Free QR Code Generator with Logo & Label | VexaTool"
+        title="QR Code Generator Free Online"
         description="Create custom QR codes with center logos, branded labels, and custom colors. Download PNG or SVG. Free, private, browser-based QR generator for business and personal use."
         keywords="QR code generator free, QR code with logo, QR code with text below, custom QR code maker, QR code label, QR code generator India, WhatsApp QR code, UPI QR code, branded QR code"
       />

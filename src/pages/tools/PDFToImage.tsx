@@ -122,7 +122,7 @@ const PDFToImage = () => {
   return (
     <>
       <CanonicalHead
-        title="PDF to Image Converter Free Online - PDF to JPG PNG | VexaTool"
+        title="PDF to Image Free Online"
         description="Free online PDF to image converter. Convert PDF pages to JPG or PNG images with full page rendering. No signup required."
         keywords="pdf to image, pdf to jpg, pdf to png, convert pdf, extract pdf images, free pdf converter"
       />

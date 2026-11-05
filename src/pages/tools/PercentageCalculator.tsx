@@ -71,7 +71,7 @@ const PercentageCalculator = () => {
   return (
     <>
       <CanonicalHead
-        title="Percentage Calculator Online Free – Calculate Percent Instantly | VexaTool"
+        title="Percentage Calculator Free Online"
         description="Free online percentage calculator. Calculate percentage of a number, percentage change, increase and decrease. Fast, accurate and easy to use."
         keywords="percentage calculator, percent calculator, calculate percentage, percentage change, percentage increase, percentage decrease"
       />

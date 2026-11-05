@@ -17,19 +17,10 @@ export function buildPdfWordDocument(pages: WordPdfPage[]) {
         transformation: { width: page.width * 96 / 72, height: page.height * 96 / 72 },
         floating: { horizontalPosition: { relative: 'page', offset: 0 }, verticalPosition: { relative: 'page', offset: 0 },
           behindDocument: true, allowOverlap: true },
-        altText: { title: 'Original PDF page', description: 'Page appearance preserved as an image; extracted text follows separately.', name: 'PDF page' },
+        altText: { title: 'Original PDF page', description: 'Page appearance preserved as an image.', name: 'PDF page' },
       })],
     })],
   }));
-  if (pages.some(page => page.text.trim())) {
-    sections.push({ properties: { type: SectionType.NEXT_PAGE }, children: [
-      new Paragraph({ text: 'Editable extracted text', heading: 'Heading1' }),
-      ...pages.flatMap((page, index) => [
-        new Paragraph({ text: `Page ${index + 1}`, pageBreakBefore: index > 0 }),
-        ...page.text.split('\n').map(text => new Paragraph({ children: [new TextRun(text)] })),
-      ]),
-    ] });
-  }
   return new Document({ sections });
 }
 

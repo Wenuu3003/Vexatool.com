@@ -116,7 +116,7 @@ const ConvertPDF = () => {
           {/* Benefits */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: CheckCircle, text: "Full text extraction" },
+              { icon: CheckCircle, text: "Exact page copy" },
               { icon: FileText, text: "DOCX format" },
               { icon: Shield, text: "Secure & private" },
               { icon: Clock, text: "Fast conversion" },

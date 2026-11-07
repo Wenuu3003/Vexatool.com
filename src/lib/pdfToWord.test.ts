@@ -5,7 +5,7 @@ import { buildPdfWordDocument } from './pdfToWord';
 
 const image = new Uint8Array([137, 80, 78, 71]);
 describe('PDF to Word page preservation', () => {
-  it('embeds both original pages at their dimensions and retains editable text separately', async () => {
+  it('embeds each original page at its dimensions with no extra appended pages', async () => {
     const zip = await JSZip.loadAsync(await Packer.toBuffer(buildPdfWordDocument([
       { width: 595, height: 842, image, text: 'First page\nAddress' },
       { width: 842, height: 595, image, text: 'Second page' },
@@ -14,10 +14,10 @@ describe('PDF to Word page preservation', () => {
     expect(xml?.match(/<w:drawing>/g)).toHaveLength(2);
     expect(xml).toContain('w:w="11900" w:h="16840"');
     expect(xml).toContain('w:w="16840" w:h="11900"');
-    expect(xml).toContain('Editable extracted text');
-    expect(xml).toContain('First page');
-    expect(xml).toContain('Second page');
-    expect(xml?.match(/w:val="nextPage"/g)?.length).toBeGreaterThanOrEqual(2);
+    expect(xml).not.toContain('Editable extracted text');
+    expect(xml).not.toContain('First page');
+    expect(xml).not.toContain('Second page');
+    expect(xml?.match(/w:val="nextPage"/g)).toHaveLength(2);
   });
   it('keeps scanned pages as images without inventing editable OCR text', async () => {
     const zip = await JSZip.loadAsync(await Packer.toBuffer(buildPdfWordDocument([{ width: 595, height: 842, image, text: '' }])));

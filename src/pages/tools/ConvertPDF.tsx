@@ -70,7 +70,7 @@ const ConvertPDF = () => {
 
       toast({
         title: "Conversion Complete!",
-        description: `Preserved ${convertedPages} page(s). Available editable text is included separately.`,
+        description: `Preserved ${convertedPages} page(s) exactly as they appear in the PDF.`,
       });
     } catch (error) {
       if (import.meta.env.DEV) {
@@ -90,12 +90,12 @@ const ConvertPDF = () => {
     <>
       <CanonicalHead 
         title="PDF to Word Free Online"
-        description="Convert PDF to DOCX locally with original page images and separately editable extracted text. No document uploads."
+        description="Convert PDF to DOCX locally with every page preserved exactly as it appears. No document uploads."
         keywords="PDF to Word, convert PDF to DOC, PDF converter, PDF to DOCX, free PDF to Word"
       />
       <ToolLayout
         title="PDF to Word"
-        description="Preserve PDF pages in Word with separately editable text"
+        description="Preserve PDF pages exactly in Word"
         icon={FileType2}
         colorClass="bg-tool-convert"
       >
@@ -104,12 +104,12 @@ const ConvertPDF = () => {
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
             <h2 className="text-xl font-semibold text-foreground mb-3 flex items-center gap-2">
               <FileType2 className="w-5 h-5 text-blue-600" />
-              Convert PDF to Editable Word Document
+              Convert PDF to Word Document
             </h2>
             <p className="text-muted-foreground">
-              Original PDF pages are preserved as images in your Word document (.docx).
-              Available text is included in a separate editable section. Page images are not editable text;
-              scanned pages are preserved visually without OCR.
+              Every PDF page is preserved as a high-quality image in your Word document (.docx),
+              so the result looks exactly like the original — tables, graphics and scanned pages included.
+              A text preview is shown before download so you can check the content.
             </p>
           </div>
 

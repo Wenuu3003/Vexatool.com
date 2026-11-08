@@ -13,6 +13,7 @@
 - `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
 
 ## Open
+- Investigate government-PC third-party-cookie error with blue Reload button; need the exact address and error screenshot to distinguish preview access from the published website.
 - Verify Google Drive-to-PDF anonymous browser download (blocked: supplied document has only owner/writer permissions, no public sharing). Link handling and independently retrieved authorized 2-page PDF verified; updated audit delivered.
 
 ## Completed Word-to-PDF repair and tool audit

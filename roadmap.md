@@ -1,24 +1,8 @@
-# Roadmap
+# Hardening pass roadmap
 
-## Done
-- Updated Bing-backed titles/H1s/search descriptions for Google Drive to PDF, PDF/Image/File Compressors, Love Calculator and Passport Photo Resizer (including its existing redirected mode), plus 14 matching resizer/size guides. Other tool metadata, URLs, menu names, controls and ads left unchanged. Verified 23 rendered destinations, no browser errors, 208 passing tests and supervised build OK.
-- Renamed the Utility category label to "Online Utility Tools" everywhere it is shown or described: mega menu, tool cards category list, breadcrumb, "Back to" button, category page heading and head tags, route metadata, Unit Converter page label, llms.txt. URL `/utility-tools` left unchanged on purpose.
-- Folded the Bing opportunity queries that the existing Image Format Converter genuinely handles into its search text (title, description, keywords on the page and in the sitemap/route registry and tool registry): `jpeg to jpg`, `png to jpg`, `webp to jpg`, `jpg to png`, `jpg to webp`, `webp to png`.
-- Verified in the live preview: mega menu and breadcrumb show the new name, converter page title reads "JPEG to JPG, PNG to JPG, WebP to JPG Converter | VexaTool". Tests 194/194, build OK.
-
-## Deliberately left out (needs a decision, not a code edit)
-- `open jpg file`, `open jpeg file`, `open pdf file` — no viewer tool exists; claiming them would be a false page description.
-- `mp4 to mp3` — no audio/video conversion tool built.
-- `avif to jpg`, `jfif to jpg` — the converter only advertises JPG, PNG and WebP, so not claimed.
-- `pdf压缩` — Chinese query on an English page; would be irrelevant keyword stuffing.
-
-## Open
-- Investigate government-PC third-party-cookie error with blue Reload button; need the exact address and error screenshot to distinguish preview access from the published website.
-- Verify Google Drive-to-PDF anonymous browser download (blocked: supplied document has only owner/writer permissions, no public sharing). Link handling and independently retrieved authorized 2-page PDF verified; updated audit delivered.
-
-## Completed Word-to-PDF repair and tool audit
-- Repaired PDF-to-Word visual page sections with separately editable extracted text; downloaded DOCX re-opened in LibreOffice and all four pages inspected. Mobile download verified.
-- Repaired Word raster line placement and page boundaries; all 80 multiline table rows, repeated headers/footers and supplied railway document visually verified; ads and interface structure unchanged.
-- Researched 12 outreach destinations and drafted tailored submissions with promotion/fee restrictions; nothing posted or submitted.
-- Repaired local DOCX rendering; supplied table/logo document and mobile download verified without redesigning the interface or changing ads.
-- All 49 tool pages rendered; 48 basic workflows verified with explicit limitations, Google Drive export unverified. 197 tests passed; supervised build OK. Delivered the 49-tool audit report in Files.
+- [ ] 1. Edit PDF: true redaction or export warning
+- [ ] 2. Honest labeling: PDF-to-PPT, PPT-to-PDF, File Compressor, Word-to-PDF, PDF-to-Excel (title, description, visible note, meta)
+- [ ] 3. Photo tools: verify presets vs official requirements, add preset list + official-portal note
+- [ ] 4. Mobile QA 360x640 all 49 tools
+- [ ] 5. Test uncovered paths: Sign PDF, Split PDF modes, Repair PDF corrupt, Compress PDF targets, Drive Other File, QR decode, Compress Image reduction
+- [ ] 6. Automated tests + report + publish note

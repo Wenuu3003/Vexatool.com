@@ -557,6 +557,11 @@ export default function ImageResizer() {
                   <FileImage className="h-4 w-4" />
                   Special Modes
                 </h3>
+                <p className="text-xs text-muted-foreground">
+                  Presets follow commonly published specifications, but requirements change.
+                  Always confirm the exact photo size, background and file-size limit on the
+                  official portal (UIDAI, Passport Seva, SSC, UPSC, IBPS, etc.) before submitting.
+                </p>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {/* Govt Job Form */}
                   <div

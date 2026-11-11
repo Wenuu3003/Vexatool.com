@@ -65,6 +65,10 @@ const PassportPhotoResizer = () => {
             <li>Recent photo (within 6 months)</li>
             <li>No glasses, uniform head size</li>
           </ul>
+          <p className="text-sm text-muted-foreground">
+            <strong>Note:</strong> Requirements can change — always confirm the current photo
+            specifications on the official Passport Seva or visa portal before submitting.
+          </p>
         </section>
       </ToolLayout>
     </>

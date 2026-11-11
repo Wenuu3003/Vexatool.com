@@ -176,7 +176,7 @@ const FileCompressor = () => {
       />
       <ToolLayout
         title="File Compressor Online Free - Reduce File Size"
-        description="Compress images and PDF files to reduce size"
+        description="Compress images and PDF files to reduce size — ZIP and other archive files are not supported"
         icon={FileArchive}
         colorClass="bg-rose-500"
       >

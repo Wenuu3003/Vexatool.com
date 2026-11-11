@@ -209,7 +209,7 @@ Total slides: ${numPages}
           <Alert>
             <Info className="h-4 w-4" />
             <AlertDescription>
-              Each PDF page is rendered as a high-quality image and packaged in a ZIP file with import instructions for PowerPoint and Google Slides.
+              Each PDF page is rendered as a high-quality image and packaged in a ZIP file with import instructions for PowerPoint and Google Slides. This tool does not create an editable PPTX file — the output is slide images only.
             </AlertDescription>
           </Alert>
 

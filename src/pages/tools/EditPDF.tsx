@@ -97,7 +97,7 @@ const EditPDF = () => {
       },
       {
         question: "How does the text replacement keep alignment accurate in the exported PDF?",
-        answer: "The editor uses font-metric baseline alignment. It calculates the exact ascent, line height, and character width of the original text, then positions replacement text at the same coordinates. A white redaction mask covers the original content. This ensures both the on-screen preview and the exported PDF match perfectly."
+        answer: "The editor uses font-metric baseline alignment. It calculates the exact ascent, line height, and character width of the original text, then positions replacement text at the same coordinates. A white redaction mask covers the original content visually. Note: the mask covers the original text but does not remove it from the file — original text may still be recoverable from the PDF, so do not rely on this for sensitive or confidential information."
       },
       {
         question: "What happens when I click Download PDF?",

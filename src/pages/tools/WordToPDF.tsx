@@ -103,7 +103,7 @@ const WordToPDF = () => {
     <>
       <CanonicalHead
         title="Word to PDF Free Online"
-        description="Convert DOCX and TXT to PDF in your browser. Render supported tables, images and text styling without uploading your document."
+        description="Convert DOCX and TXT to PDF in your browser. Render supported tables, images and text styling without uploading your document. Output is image-based and not searchable text."
         keywords="word to pdf, doc to pdf, docx to pdf, convert word, word converter, free word to pdf"
       />
       <ToolLayout
@@ -120,7 +120,9 @@ const WordToPDF = () => {
             </h2>
             <p className="text-muted-foreground">
               Transform your Word documents into universally accessible PDF files. Supports
-              .docx and .txt files with document rendering and pagination.
+              .docx and .txt files with document rendering and pagination. Note: the output
+              PDF is image-based — pages look like your document, but the text is not
+              searchable or selectable.
             </p>
           </div>
 

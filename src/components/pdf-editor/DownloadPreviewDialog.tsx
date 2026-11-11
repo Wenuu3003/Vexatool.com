@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Download, FileText, Type, Square, Image, Pencil, Droplets, Eye, RotateCw, Trash2, Copy, Plus } from 'lucide-react';
+import { Download, FileText, Type, Square, Image, Pencil, Droplets, Eye, RotateCw, Trash2, Copy, Plus, AlertTriangle } from 'lucide-react';
 import { AnyElement, PageInfo, TextElement, ShapeElement, ImageElement, DrawingElement, WatermarkElement, RedactElement } from './types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -222,6 +222,16 @@ export const DownloadPreviewDialog = ({
               <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No changes detected</p>
               <p className="text-xs">The PDF will be saved as-is</p>
+            </div>
+          )}
+          {(summary.redactElements > 0 || summary.textElements > 0) && (
+            <div className="flex items-start gap-2 p-3 rounded-lg border border-amber-500/40 bg-amber-500/10 text-xs text-amber-700 dark:text-amber-400">
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
+              <span>
+                Redactions and text replacements cover the original content visually.
+                Original text may still be recoverable from the PDF — do not rely on
+                this for sensitive or confidential information.
+              </span>
             </div>
           )}
         </div>

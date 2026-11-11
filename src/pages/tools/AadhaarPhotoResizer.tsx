@@ -63,6 +63,10 @@ const AadhaarPhotoResizer = () => {
             <li>Format: JPEG/JPG</li>
             <li>Face must be clearly visible, no sunglasses</li>
           </ul>
+          <p className="text-sm text-muted-foreground">
+            <strong>Note:</strong> Requirements can change — always confirm the current photo
+            specifications on the official UIDAI portal before submitting.
+          </p>
         </section>
       </ToolLayout>
     </>

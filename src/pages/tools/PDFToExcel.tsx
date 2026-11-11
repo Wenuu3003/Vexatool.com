@@ -296,7 +296,7 @@ const PDFToExcel = () => {
     <>
       <CanonicalHead 
         title="PDF to Excel Free Online"
-        description="Free PDF to Excel converter online. Extract tables from PDF to editable Excel spreadsheets instantly. Batch processing, no signup, 100% secure."
+        description="Free PDF to Excel converter online. Extract tables from text-based PDFs to editable Excel spreadsheets instantly. Scanned PDFs are not supported. Batch processing, no signup, 100% secure."
         keywords="PDF to Excel online, convert PDF to Excel free, free PDF to XLS converter, extract tables from PDF, PDF to spreadsheet, PDF to Excel India"
       />
       <ToolLayout
@@ -315,6 +315,7 @@ const PDFToExcel = () => {
             <p className="text-muted-foreground">
               This PDF to Excel converter helps users extract tables and structured data from PDF documents 
               and convert them into editable Excel spreadsheets. Supports batch processing for multiple files.
+              Note: scanned PDFs (images of pages) are not supported — the PDF must contain real text.
             </p>
           </div>
 

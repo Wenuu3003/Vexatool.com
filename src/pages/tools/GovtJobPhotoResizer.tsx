@@ -65,6 +65,11 @@ const GovtJobPhotoResizer = () => {
             <li>Format: JPEG</li>
             <li>Recent photograph, face clearly visible</li>
           </ul>
+          <p className="text-sm text-muted-foreground">
+            <strong>Note:</strong> Each exam sets its own rules — always confirm the required
+            dimensions and file-size limit on the official notification or portal (SSC, UPSC,
+            IBPS, RRB, etc.) before submitting.
+          </p>
         </section>
       </ToolLayout>
     </>

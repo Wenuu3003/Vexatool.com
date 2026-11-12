@@ -475,6 +475,10 @@ export default function ImageResizer() {
               <div className="text-center">
                 <p className="font-semibold text-lg">Click to upload or drag & drop</p>
                 <p className="text-sm text-muted-foreground mt-1">JPG, PNG, WebP · Max 25MB</p>
+                <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
+                  Using a preset for Aadhaar, passport, or a government form? Always confirm the
+                  exact photo size and file-size limit on the official portal before submitting.
+                </p>
               </div>
             </div>
           ) : (

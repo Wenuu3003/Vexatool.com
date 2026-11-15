@@ -119,7 +119,6 @@ export const Header = () => {
     {mobileMenuOpen && (
       <div id="mobile-navigation" role="navigation" aria-label="Mobile navigation" className="lg:hidden fixed inset-0 top-16 bg-card z-[60] overflow-y-auto animate-fade-in overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
         <MobileMegaMenu onNavigate={closeMobileMenu} />
-        </div>
       </div>
     )}
   </>;

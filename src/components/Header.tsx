@@ -95,34 +95,6 @@ export const Header = () => {
             </Button>
           </nav>
 
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-2">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <User className="w-4 h-4" />
-                    <span className="max-w-[100px] truncate">{user.email?.split("@")[0]}</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleSignOut} className="gap-2">
-                    <LogOut className="w-4 h-4" />
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
-                <Button variant="ghost" size="sm" className="text-foreground" onClick={() => handleNavigation("/auth")}>
-                  Login
-                </Button>
-                <Button variant="default" size="sm" onClick={() => handleNavigation("/auth")}>
-                  Sign up
-                </Button>
-              </>
-            )}
-          </div>
 
           {/* Mobile Menu Button */}
           <Button ref={menuButtonRef} aria-controls="mobile-navigation" variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={mobileMenuOpen ? "Close menu" : "Open menu"} aria-expanded={mobileMenuOpen}>
@@ -147,22 +119,6 @@ export const Header = () => {
     {mobileMenuOpen && (
       <div id="mobile-navigation" role="navigation" aria-label="Mobile navigation" className="lg:hidden fixed inset-0 top-16 bg-card z-[60] overflow-y-auto animate-fade-in overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
         <MobileMegaMenu onNavigate={closeMobileMenu} />
-        <div className="p-4 border-t border-border">
-          {user ? (
-            <Button variant="outline" className="w-full gap-2" onClick={handleSignOut}>
-              <LogOut className="w-4 h-4" />
-              Sign out
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              <Button variant="outline" className="flex-1" onClick={() => handleNavigation("/auth")}>
-                Login
-              </Button>
-              <Button variant="default" className="flex-1" onClick={() => handleNavigation("/auth")}>
-                Sign up
-              </Button>
-            </div>
-          )}
         </div>
       </div>
     )}

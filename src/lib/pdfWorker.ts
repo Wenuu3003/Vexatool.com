@@ -4,14 +4,12 @@
  * This prevents worker initialization failures across different build environments.
  */
 import * as pdfjsLib from "pdfjs-dist";
+import pdfWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
 // Use Vite's import.meta.url pattern for the worker
 // This is the most reliable approach for Vite-based builds
 try {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-  ).toString();
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 } catch {
   // Fallback to CDN if local worker resolution fails (e.g. in some preview environments)
   const version = pdfjsLib.version;

@@ -107,8 +107,8 @@ const ConvertPDF = () => {
               Convert PDF to Word Document
             </h2>
             <p className="text-muted-foreground">
-              Every PDF page is preserved as a high-quality image in your Word document (.docx),
-              so the result looks exactly like the original — tables, graphics and scanned pages included.
+              The text in your PDF becomes editable text in your Word document (.docx),
+              so you can change it. Layout and tables are simplified; scanned pages stay as images.
               A text preview is shown before download so you can check the content.
             </p>
           </div>
@@ -215,7 +215,7 @@ const ConvertPDF = () => {
           
           <ToolSEOContent
             toolName="PDF to Word Converter"
-            whatIs="Converts PDF pages into DOCX with each original page preserved as a high-quality image, including tables, graphics and scanned content, so the Word document looks exactly like the PDF. This does not recreate fully editable tables or exact Word layouts, and does not perform OCR. Processing stays in your browser with no document uploads."
+            whatIs="Converts PDF pages into DOCX with the text as editable paragraphs, one Word page per PDF page. Tables, columns and exact layout are not recreated, and scanned pages without text are kept as images (no OCR). Processing stays in your browser with no document uploads."
             howToUse={[
               "Click the upload area or drag and drop your PDF file to begin.",
               "Wait for the file to be analyzed — the page count is displayed automatically.",
@@ -236,16 +236,16 @@ const ConvertPDF = () => {
             ]}
             safetyNote="Your PDF files are processed entirely in your browser using secure client-side JavaScript technology. No documents are uploaded to external servers, ensuring the complete privacy and confidentiality of your files. The original PDF remains unchanged on your device, and both the source file and converted Word document stay under your full control."
             faqs={[
-              { question: "Will all formatting from my PDF be preserved?", answer: "Yes — each page is preserved as a high-quality image, so the Word document looks exactly like the original PDF. The page content is not editable text." },
-              { question: "Can I convert scanned PDFs to Word?", answer: "Yes. Scanned pages are preserved visually exactly as they appear. No OCR is performed, so the text inside them is not editable." },
-              { question: "What about images and graphics in my PDF?", answer: "Images, tables and graphics are retained within the original page images. They are not recreated as separate editable Word objects." },
+              { question: "Will all formatting from my PDF be preserved?", answer: "No. The text becomes editable, line by line, but tables, columns, fonts and exact positions are not recreated." },
+              { question: "Can I convert scanned PDFs to Word?", answer: "Scanned pages have no real text, so they are kept as images. No OCR is performed, so text in scanned pages is not editable." },
+              { question: "What about images and graphics in my PDF?", answer: "Text is extracted as editable text. Images and graphics on text pages are not copied; table contents come out as lines of text." },
               { question: "Is there a page limit for conversion?", answer: "There is no strict page limit, but very large PDFs (100+ pages) may take longer to process. The conversion happens in your browser, so performance depends on your device's capabilities." },
               { question: "Can I convert multiple PDFs to Word at once?", answer: "The tool processes one PDF at a time to ensure quality. For batch conversion, simply process each file sequentially." },
-              { question: "Will the output Word file have editable text?", answer: "No. Each page is preserved as an image so the document matches the PDF exactly. A text preview is shown before download so you can check the content." },
+              { question: "Will the output Word file have editable text?", answer: "Yes, for PDFs that contain real text. Scanned pages without text stay as images. A text preview is shown before download." },
               { question: "Do I need Microsoft Word installed?", answer: "No. You can use any word processor that supports DOCX format, including free options like Google Docs and LibreOffice Writer." },
               { question: "Is the conversion free?", answer: "Yes, completely free with no hidden charges, no registration required, and no daily usage limits." },
               { question: "Can I convert password-protected PDFs?", answer: "Password-protected PDFs need to be unlocked first. Use our Unlock PDF tool to remove protection, then convert the unlocked file." },
-              { question: "Why does my converted document look identical to the original?", answer: "Each PDF page is embedded as a high-quality image at its original size, so the Word document is a faithful copy of the PDF — nothing is reflowed, rearranged, or added." }
+              { question: "Why does my Word file look different from the PDF?", answer: "The text is turned into normal editable paragraphs so you can change it. That means the original layout, tables and fonts are simplified." }
             ]}
           />
         </div>

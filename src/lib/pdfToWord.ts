@@ -1,5 +1,5 @@
 import { Document, ImageRun, Packer, Paragraph, SectionType, TextRun, type ISectionOptions } from 'docx';
-import { pdfjsLib } from './pdfWorker';
+import { pdfjsLib, withPdfWorkerFallback } from './pdfWorker';
 
 export interface WordPdfPage { width: number; height: number; image: Uint8Array; text: string }
 
@@ -36,7 +36,8 @@ export function buildPdfWordDocument(pages: WordPdfPage[]) {
 }
 
 export async function convertPdfToWord(file: File, onProgress: (value: number) => void) {
-  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+  const bytes = await file.arrayBuffer();
+  const pdf = await withPdfWorkerFallback(() => pdfjsLib.getDocument({ data: new Uint8Array(bytes.slice(0)) }).promise);
   try {
     const pages: WordPdfPage[] = [];
     for (let number = 1; number <= pdf.numPages; number++) {

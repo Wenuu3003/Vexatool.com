@@ -29,4 +29,24 @@ export async function loadPDF(data: ArrayBuffer, options?: { ignoreEncryption?: 
   return loadingTask.promise;
 }
 
+const CDN_WORKER = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+let workerCheck: Promise<void> | undefined;
+
+/**
+ * Make sure the worker file can actually be downloaded on this device before PDF.js needs it.
+ * PDF.js caches a failed worker setup, so a retry after failure doesn't help — we check first and
+ * switch to the matching CDN worker when the bundled file can't be fetched (stale cache, blocked file).
+ */
+export function ensurePdfWorker() {
+  workerCheck ??= fetch(String(pdfjsLib.GlobalWorkerOptions.workerSrc), { cache: 'no-store' })
+    .then(response => { if (!response.ok) throw new Error(String(response.status)); })
+    .catch(() => { pdfjsLib.GlobalWorkerOptions.workerSrc = CDN_WORKER; });
+  return workerCheck;
+}
+
+export async function withPdfWorkerFallback<T>(task: () => Promise<T>): Promise<T> {
+  await ensurePdfWorker();
+  return task();
+}
+
 export { pdfjsLib };

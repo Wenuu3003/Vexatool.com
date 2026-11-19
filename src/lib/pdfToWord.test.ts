@@ -25,3 +25,16 @@ describe('PDF to Word', () => {
     expect(xml).toContain('<w:drawing>');
   });
 });
+
+describe('PDF to Word layout', () => {
+  it('rebuilds aligned multi-column rows as a real Word table', async () => {
+    const row = (y: number, cells: string[]) => cells.map((text, i) => ({ x: 40 + i * 120, y, width: 50, size: 10, text }));
+    const items = [{ x: 200, y: 40, width: 120, size: 14, text: 'SOUTHERN RAILWAY', bold: true },
+      ...row(100, ['SL', 'LOCATION', 'REMARKS']), ...row(115, ['1', 'L NO 128', 'EMPTY']), ...row(130, ['2', 'F 12/20', 'EMPTY'])];
+    const xml = await xmlOf([{ width: 595, height: 842, image, text: 'x', items }]);
+    expect(xml.match(/<w:tbl>/g)).toHaveLength(1);
+    expect(xml.match(/<w:tr>/g)).toHaveLength(3);
+    expect(xml).toContain('>L NO 128<');
+    expect(xml).toContain('<w:b/>');
+  });
+});

@@ -124,11 +124,11 @@ export const Hero = () => {
             id="hero-heading"
             className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-bold mb-4 md:mb-5 leading-[1.15] tracking-tight text-foreground"
           >
-            Free Online Tools for
+            Free Online PDF, Image &
             <br className="hidden sm:block" />
             {" "}
             <span className="bg-gradient-to-r from-primary via-[hsl(230,80%,62%)] to-secondary bg-clip-text text-transparent">
-              PDF, Image & More
+              File Converter Tools
             </span>
           </h1>
 

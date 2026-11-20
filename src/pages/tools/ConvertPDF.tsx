@@ -108,7 +108,7 @@ const ConvertPDF = () => {
             </h2>
             <p className="text-muted-foreground">
               The text in your PDF becomes editable text in your Word document (.docx),
-              so you can change it. Layout and tables are simplified; scanned pages stay as images.
+              with headings, font sizes and tables rebuilt as real Word tables. Scanned pages stay as images.
               A text preview is shown before download so you can check the content.
             </p>
           </div>

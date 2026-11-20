@@ -16,7 +16,7 @@ const tw = (pt: number) => Math.max(0, Math.round(pt * 20));
 
 /** Group items into lines (by baseline) and lines into cells (split at wide horizontal gaps). */
 export function groupLines(items: WordTextItem[]): Line[] {
-  const sorted = items.filter(i => i.text.trim() || i.text === ' ').sort((a, b) => a.y - b.y || a.x - b.x);
+  const sorted = items.filter(i => i.text.trim()).sort((a, b) => a.y - b.y || a.x - b.x);
   const lines: { y: number; size: number; items: WordTextItem[] }[] = [];
   for (const item of sorted) {
     const line = lines.find(l => Math.abs(l.y - item.y) <= Math.max(2, Math.min(l.size, item.size) * 0.45));
@@ -27,7 +27,7 @@ export function groupLines(items: WordTextItem[]): Line[] {
     const cells: Cell[] = [];
     for (const item of line.items.sort((a, b) => a.x - b.x)) {
       const last = cells[cells.length - 1];
-      if (last && item.x - last.end < Math.max(item.size, last.size) * 1.2) {
+      if (last && item.x - last.end < Math.max(item.size, last.size) * 0.6) {
         last.runs.push(item); last.end = Math.max(last.end, item.x + item.width);
       } else cells.push({ x: item.x, end: item.x + item.width, size: item.size, runs: [item] });
     }
@@ -58,12 +58,13 @@ function columnStarts(block: Line[]): number[] {
 function buildTable(block: Line[], contentWidth: number): Table {
   const cols = columnStarts(block);
   const edges = [...cols.slice(1), MARGIN + contentWidth];
-  const widths = cols.map((c, i) => Math.max(400, tw(edges[i] - Math.max(MARGIN, i === 0 ? MARGIN : c))));
+  const widths = cols.map((c, i) => Math.max(400, tw(edges[i] - c)));
   const border = { style: BorderStyle.SINGLE, size: 4, color: '999999' };
   const borders = { top: border, bottom: border, left: border, right: border };
   return new Table({
     width: { size: widths.reduce((a, b) => a + b, 0), type: WidthType.DXA },
     columnWidths: widths,
+    indent: { size: tw(Math.max(0, cols[0] - MARGIN - 4)), type: WidthType.DXA },
     rows: block.map(line => {
       const slots: Cell[][] = cols.map(() => []);
       for (const cell of line.cells) {

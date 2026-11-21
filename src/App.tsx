@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { CookieConsent } from "./components/CookieConsent";
 import { AdSenseLoader } from "./components/AdSenseLoader";
@@ -20,7 +20,6 @@ import Index from "./pages/Index";
 
 // Pages
 const NotFound = lazy(() => import("./pages/NotFound"));
-const Auth = lazy(() => import("./pages/Auth"));
 const Account = lazy(() => import("./pages/Account"));
 
 // Category Pages
@@ -134,7 +133,8 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/all-tools" element={<AllTools />} />
-              <Route path="/auth" element={<Auth />} />
+              {/* Sign-in page removed: redirect any old /auth links to home */}
+              <Route path="/auth" element={<Navigate to="/" replace />} />
               <Route path="/account" element={<Account />} />
               {/* Category Pages */}
               <Route path="/pdf-tools" element={<PDFTools />} />

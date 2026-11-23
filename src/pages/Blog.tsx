@@ -81,10 +81,10 @@ export const blogPosts: BlogPost[] = [
   },
   {
     slug: "pdf-to-word-formatting-tips",
-    title: "PDF to Word Conversion: Preserve Formatting Like a Pro",
-    excerpt: "Expert techniques for converting PDF to Word while maintaining perfect formatting. Solve common conversion problems and layout issues.",
-    date: "2026-01-19",
-    readTime: "8 min read",
+    title: "PDF to Word Converter FAQ: Editable Text, Tables and Scanned Files",
+    excerpt: "Answers about converting PDF to editable Word: privacy, tables, scanned pages, images, mobile use and how to get a cleaner DOCX file.",
+    date: "2026-11-22",
+    readTime: "9 min read",
   },
   {
     slug: "image-compression-web-performance",

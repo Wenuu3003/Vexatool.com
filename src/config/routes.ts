@@ -705,6 +705,16 @@ export const routes: RouteConfig[] = [
 // Use the custom domain for sitemap generation
 export const BASE_URL = 'https://vexatool.com';
 
+// Dynamic sitemap entries must not revive private/redirect routes or retired pages.
+export const isProgrammaticSitemapPath = (path: string): boolean => {
+  if (!/^\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path)) return false;
+  if (routes.some(route => route.path === path)) return false;
+  return ![
+    '/auth', '/dashboard', '/admin', '/tools', '/calculators', '/converters', '/api',
+    '/background-remover', '/background-remover-perfect-product-photos',
+  ].includes(path);
+};
+
 // Tool update dates for accurate lastmod (format: YYYY-MM-DD)
 // Update these when significant changes are made to specific tools
 export const toolUpdateDates: Record<string, string> = {

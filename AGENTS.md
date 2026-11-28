@@ -1,4 +1,7 @@
 # Architecture rules
 
+- Dynamic sitemap generation and cached fallback both use the route-aware exclusion guard, so private, redirect, static and retired paths cannot reappear as programmatic entries.
+- All missing-page renders set noindex, and canonical helpers normalize trailing slashes and query fragments, to avoid indexing nonexistent or duplicate URL variants.
+
 - Word-to-PDF renders DOCX locally with docx-preview inside an isolated iframe, captures browser-painted layout with a self-contained SVG foreignObject, then paginates raster output at row/paragraph starts with supported headers/footers repeated. This avoids reconstructed glyph placement and site CSS interference; never replace it with plain-text extraction or claim full Microsoft Word fidelity/searchable output.
 - PDF-to-Word preserves original pages as local PDF.js raster images in per-page DOCX sections only — no appended text pages (users rejected the extra page); extracted text is shown as an in-page preview only. Never describe raster pages as editable layouts or imply OCR.

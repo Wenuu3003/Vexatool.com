@@ -11,7 +11,7 @@
  * a valid sitemap.xml in the public directory.
  */
 
-import { generateSitemapXml } from '../src/config/routes.ts';
+import { generateSitemapXml, isProgrammaticSitemapPath } from '../src/config/routes.ts';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
@@ -25,8 +25,8 @@ const BASE_URL = 'https://vexatool.com';
 /**
  * Fetch published programmatic SEO pages from Supabase and return
  * <url> blocks ready to be appended to the static sitemap.
- * Falls back to an empty string (with a warning) if Supabase is unreachable
- * so the build never breaks because of a transient network issue.
+ * Returns null on unavailable access so generation preserves the last-known
+ * dynamic snapshot after revalidating exclusions.
  */
 async function fetchProgrammaticSeoUrls(staticPaths: Set<string>, environment: Record<string, string | undefined>): Promise<string | null> {
   const url = environment.VITE_SUPABASE_URL;
@@ -54,11 +54,10 @@ async function fetchProgrammaticSeoUrls(staticPaths: Set<string>, environment: R
     const blocks: string[] = [];
     for (const row of data as Array<{ slug: string; updated_at: string }>) {
       const slug = row.slug?.trim();
-      if (slug === "background-remover" || slug === "background-remover-perfect-product-photos") continue;
       if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) continue;
       const routePath = `/${slug}`;
       // Avoid duplicating any URL that already exists in the static sitemap.
-      if (staticPaths.has(routePath) || seen.has(slug)) continue;
+      if (!isProgrammaticSitemapPath(routePath) || staticPaths.has(routePath) || seen.has(slug)) continue;
       seen.add(slug);
       const lastmod = row.updated_at?.slice(0, 10);
       const validDate = lastmod && /^\d{4}-\d{2}-\d{2}$/.test(lastmod) && Number.isFinite(Date.parse(lastmod)) && Date.parse(lastmod) <= Date.now();
@@ -105,7 +104,7 @@ export const generateSitemap = async (environment: Record<string, string | undef
       const loc = block.match(/<loc>([^<]+)<\/loc>/)?.[1];
       if (!loc?.startsWith(BASE_URL + '/')) return false;
       const routePath = loc.slice(BASE_URL.length);
-      if (!/^\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(routePath) || staticPaths.has(routePath) || ['/auth', '/account', '/background-remover'].includes(routePath) || seen.has(routePath)) return false;
+      if (!isProgrammaticSitemapPath(routePath) || staticPaths.has(routePath) || seen.has(routePath)) return false;
       seen.add(routePath);
       return true;
     }).join('\n');

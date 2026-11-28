@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { routes, generateSitemapXml } from './routes';
+import { routes, generateSitemapXml, isProgrammaticSitemapPath } from './routes';
 
 // Private pages and legacy photo URLs intentionally stay out of search indexes.
 // The photo URLs forward visitors to /image-resizer with a preset selected.
@@ -10,6 +10,15 @@ const excludedPaths = [
 ];
 
 describe('sitemap coverage', () => {
+  it.each([...excludedPaths, '/background-remover', '/background-remover-perfect-product-photos', '/tools', '/admin'])('never restores excluded %s as a dynamic sitemap entry', path => {
+    expect(isProgrammaticSitemapPath(path)).toBe(false);
+  });
+  it('keeps QR category static and admits valid dynamic guides', () => {
+    expect(routes.find(route => route.path === '/qr-tools')?.includeInSitemap).toBe(true);
+    expect(isProgrammaticSitemapPath('/qr-tools')).toBe(false);
+    expect(isProgrammaticSitemapPath('/compress-pdf-to-200kb')).toBe(true);
+    expect(isProgrammaticSitemapPath('/missing/nested')).toBe(false);
+  });
   it('includes every indexable static public app route exactly once', () => {
     const app = readFileSync('src/App.tsx', 'utf8');
     const paths = [...app.matchAll(/<Route path="([^"]+)"/g)].map(m => m[1]).filter(p => !p.includes(':') && !p.includes('*') && !excludedPaths.includes(p));

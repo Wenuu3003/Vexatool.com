@@ -4,11 +4,10 @@ const BASE_URL = "https://vexatool.com";
 
 export const useCanonicalUrl = () => {
   const location = useLocation();
-  const path = location.pathname === "/" ? "" : location.pathname;
-  return `${BASE_URL}${path}`;
+  return getCanonicalUrl(location.pathname);
 };
 
 export const getCanonicalUrl = (path: string) => {
-  const cleanPath = path === "/" ? "" : path;
+  const cleanPath = path.split(/[?#]/)[0].replace(/\/+$/, "");
   return `${BASE_URL}${cleanPath}`;
 };
